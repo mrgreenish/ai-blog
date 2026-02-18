@@ -1,0 +1,74 @@
+---
+title: "Common AI Coding Pitfalls (and How to Dodge Them)"
+description: "The failure modes I've hit most often when coding with AI — and the habits that prevent them. Not theory, just patterns I've seen repeat."
+story: "You ask the model to fix a bug. It fixes it. Then it fixes the fix. Then it fixes that fix. Twenty minutes later you have a 300-line diff and the original bug is still there."
+category: workflows
+order: 8
+interactiveTools: [dev-benchmark]
+---
+
+After months of daily AI-assisted development, certain failure modes repeat. They're not random — they have patterns, and once you recognize them, you can stop them early.
+
+These are the four I hit most often.
+
+## The Doom Spiral
+
+You ask the model to fix a bug. It patches it. You run the code — still broken, slightly differently. You paste the new error back. It patches that. The patches start referencing each other. The diff grows. The original problem is buried under layers of compensation.
+
+This is the doom spiral: the model doubles down on a direction instead of stepping back to question whether the direction is right. Each patch feels like progress. Collectively they're compounding the problem.
+
+**How it happens.** The model doesn't have a strong signal that it's going wrong. You keep providing new errors, which it interprets as "keep trying this approach." It doesn't have the instinct to say "wait, I think we're solving the wrong problem."
+
+**How to stop it.** When you've seen two or three patches that feel like they're fighting each other, stop. Don't paste the next error. Instead ask: "Step back — what's the actual root cause here? Ignore the patches we've tried. What should the fix look like from scratch?" This resets the context and usually surfaces the real issue quickly.
+
+The other prevention: commit before you start. If the spiral happens, you can reset to a clean state and try a different approach rather than untangling a mess.
+
+## "Looks Fine, Must Be Fine"
+
+The model hands you code. It runs. Tests pass. You skim it, see nothing obviously wrong, and merge it.
+
+Three days later a bug surfaces that was sitting right there in the code you skimmed.
+
+This is the most dangerous failure mode because it feels like success. The code works — until it doesn't. And because you didn't really read it, you don't own it. When it breaks, you're debugging code you don't understand.
+
+**Why it happens.** AI-generated code looks polished. It's formatted correctly, has reasonable variable names, follows familiar patterns. The visual signal of "good code" is there even when the logic is subtly wrong. It's easy to skim past a wrong assumption or a missing edge case when everything looks clean.
+
+**The rule I follow.** Read every line the model writes before accepting it. Not skim — read. If I can't explain what a block of code does, I ask the model to explain it. If the explanation doesn't make sense, I don't merge it.
+
+This slows you down. It's worth it. The goal isn't to generate code faster — it's to ship code you understand and can maintain.
+
+## Complexity Creep
+
+You ask for a simple feature. The model gives you a factory, an interface, a strategy pattern, and three layers of abstraction. It's technically correct. It's also completely unmaintainable for a feature that didn't need any of that.
+
+AI models have a bias toward "clever" solutions. They've been trained on a lot of code, including a lot of over-engineered code, and they pattern-match to patterns that look sophisticated. Simple, direct code is underrepresented in their training relative to how often it's the right answer.
+
+**The signal.** If you're reading the model's output and thinking "I wouldn't have built it this way" — that's worth paying attention to. Not because you're always right, but because complexity you didn't choose is complexity you'll have to maintain.
+
+**The fix.** Add an explicit constraint to your prompt: "Keep this as simple as possible. Prefer direct code over abstractions. Don't introduce patterns unless they're clearly necessary." This is often enough to shift the output significantly.
+
+If the model still produces something over-engineered, ask it: "Is there a simpler version of this that solves the same problem?" Usually there is, and it'll give it to you.
+
+## Outdated Patterns
+
+Models have a training cutoff, and the AI tooling space moves fast. A model might suggest a pattern that was best practice eighteen months ago and has since been superseded — or deprecated entirely.
+
+I've seen this with Next.js APIs, React patterns, and AI SDK usage. The model confidently suggests something that's technically correct for an older version and wrong for the current one.
+
+**The check.** When a model suggests an approach for something that changes frequently — framework APIs, AI SDKs, tooling configuration — ask yourself: "Is this how I'd do it manually today?" If you're not sure, verify against the current docs before implementing.
+
+This isn't about distrusting the model — it's about knowing where its knowledge has gaps. For stable patterns (data structures, algorithms, general architecture), the model is usually reliable. For fast-moving APIs and tooling, verify.
+
+## The stay-sane checklist
+
+Before merging anything AI-assisted, I run through five questions:
+
+- Can I explain this design to someone else?
+- Did I read all the generated code, not just skim it?
+- Is this the simplest version that solves the problem?
+- Are there any APIs or patterns here I should verify against current docs?
+- Would I have built it this way if I'd written it myself?
+
+If the answer to any of these is "no" or "not sure," that's a signal to slow down.
+
+<DevBenchmark />

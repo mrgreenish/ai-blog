@@ -1,0 +1,68 @@
+---
+title: "Cursor Custom Modes and Architect Mode"
+description: "How to use Cursor's custom modes to get better results. Architect mode for planning, Max Mode for big context, Agent Mode for execution — and why the combination matters."
+story: "I used to jump straight to implementation. The model would start coding, I'd notice it was going in the wrong direction, and we'd spend 20 minutes untangling it. Adding a planning step before implementation cut that waste almost entirely."
+category: tooling
+order: 7
+interactiveTools: [config-generator]
+---
+
+Cursor ships with a default mode that handles most tasks well. But for complex work — feature planning, large refactors, architectural decisions — the default mode isn't the right tool. Custom modes let you shape how the model approaches a task before it starts.
+
+The two I use most: Architect mode for planning, and the Max Mode + Agent Mode combination for large implementations.
+
+## What custom modes actually do
+
+A custom mode is a system prompt that runs before every message in that session. It sets the model's role, constraints, and approach. Instead of starting from a blank slate, the model enters the conversation with a specific mindset.
+
+The practical effect: the model behaves differently. Architect mode makes it think before it acts. A review mode makes it critique rather than generate. A focused mode makes it stay on task rather than expanding scope.
+
+You can find and install community modes at [playbooks.com/modes](https://playbooks.com/modes), or write your own in Cursor's settings.
+
+## Architect mode: plan first, implement second
+
+Architect mode is the mode I reach for when a task is complex enough that jumping straight to implementation is likely to go wrong.
+
+The mode instructs the model to produce a plan before writing any code. The plan covers: what files will be created or modified, what the key implementation decisions are, and what tradeoffs exist. You review the plan, ask questions, push back on decisions — and only then move to implementation.
+
+**Why this works.** Most implementation problems are actually planning problems. The model goes in the wrong direction because it made an assumption early on that you would have corrected if you'd seen it. Architect mode surfaces those assumptions before they become code.
+
+**The workflow:**
+
+1. Open Architect mode
+2. Describe the feature or change you want
+3. Review the plan — look for wrong assumptions, missing constraints, approaches you disagree with
+4. Ask questions or push back: "Why did you choose X over Y?" "What happens if Z?"
+5. When the plan looks right, switch to Agent Mode to implement it
+
+The switch from Architect to Agent is important. Architect mode is for thinking; Agent mode is for doing. Mixing them — asking the model to plan and implement in the same session — tends to produce worse results than keeping them separate.
+
+**Pro tip:** ask the model to show its confidence level and any open questions at the end of the plan. "What are you uncertain about? What would you need to know to be more confident?" This surfaces the gaps in your spec before they become surprises in the implementation.
+
+## Max Mode: when you need the full picture
+
+Max Mode gives the model significantly more context: your entire repository, file structure, open files, recent changes. It's expensive and slower, but for certain tasks it's the right tool.
+
+Use Max Mode when:
+- You're working on a large codebase and the relevant context is spread across many files
+- You're doing a legacy audit or trying to understand how something works across the whole system
+- You're planning a large feature that will touch many parts of the codebase
+- You need the model to understand your conventions and patterns, not just the files you've explicitly shared
+
+Don't use Max Mode for routine tasks. The extra context doesn't help when you're making a targeted change to a specific file — it just adds cost and latency. The signal for Max Mode is "this needs more context to get right."
+
+## The combination: Max Mode + Architect + Agent
+
+For large, complex features, I use all three in sequence:
+
+**Max Mode + Architect:** Start here. Give the model the full codebase context and ask it to plan the feature. With Max Mode on, it can see how similar features are implemented, what patterns exist, and what the right approach is given your specific codebase. The plan it produces is grounded in your actual code, not generic patterns.
+
+**Agent Mode (Max Mode off):** Once the plan is solid, switch to Agent Mode with Max Mode off. The plan is now the context — the model doesn't need the full repo anymore, it needs to execute against a clear spec. Agent Mode with a good plan produces clean, focused output.
+
+This sequence — plan with full context, implement with focused context — is the most reliable flow I've found for large features.
+
+## Generating your own config
+
+If you want to set up a custom mode or generate a `.cursorrules` file that encodes your project's conventions and guardrails, the Config Generator can produce a starting point based on your project type and preferences.
+
+<ConfigGenerator />

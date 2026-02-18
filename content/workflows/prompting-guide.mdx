@@ -1,0 +1,83 @@
+---
+title: "Prompting That Actually Works"
+description: "The prompting habits that consistently produce better output — not a list of tricks, but the underlying principles that make the difference."
+story: "Two developers, same model, same task. One gets a working feature. The other gets a confident wrong answer. The difference is almost always the prompt."
+category: workflows
+order: 7
+interactiveTools: [prompt-lab]
+---
+
+Prompting is a skill, and like most skills, the gap between beginner and intermediate is mostly about a handful of habits. I've watched developers get dramatically different results from the same model on the same task — and the difference is almost always in how they framed the request.
+
+These are the habits that made the biggest difference for me.
+
+## Don't be too brief, don't be too rigid
+
+Both extremes fail. A two-sentence prompt lacks the context the model needs to make good decisions. An over-specified prompt that tries to control every detail prevents the model from applying judgment where judgment is actually useful.
+
+The sweet spot: give the model enough context to understand the problem and the constraints, then let it work. You're not writing a specification — you're briefing a capable developer.
+
+**Too brief:** "Add error handling to this function."  
+**Too rigid:** "Add a try-catch block starting at line 12, catch the TypeError, log it with console.error, and return null."  
+**Right:** "Add error handling to this function. It's called from a React component, so failures should be catchable without crashing the UI. Use whatever pattern fits the existing error handling in this file."
+
+## Explain the why
+
+The model makes better decisions when it understands the goal, not just the task. "Why" gives it the context to make judgment calls that align with what you actually want.
+
+"Refactor this component" is ambiguous — refactor toward what? "Refactor this component to make it easier to add new props without touching the render logic" gives the model a clear direction and a way to evaluate whether its output is good.
+
+This matters most for tasks where there are multiple valid approaches. If the model knows why you're doing something, it can pick the approach that actually serves the goal.
+
+## Provide examples of previous work
+
+If you want the model to match your style — naming conventions, code structure, patterns you use — show it examples. Don't describe your style; show it.
+
+"Follow the same pattern as the existing routes in `src/api/`" is more effective than "use RESTful conventions and consistent naming." The model can read the existing routes and extract the actual pattern, including the things you'd never think to describe explicitly.
+
+This is especially useful for: naming conventions, file structure, component patterns, error handling approaches, and test style.
+
+## Work in small iterations
+
+Long, multi-step prompts that ask for everything at once tend to produce worse results than breaking the task into steps. The model has to hold more in context, make more assumptions, and produce more output in one shot — and errors compound.
+
+The pattern that works: spec first, then plan, then implement, then review. Each step is a separate prompt. You review the output of each step before moving to the next.
+
+**Step 1:** "Given this spec, what's your plan? What files will you create or modify?"  
+**Step 2:** "The plan looks good. Now implement step 1 only."  
+**Step 3:** "Good. Now implement step 2."
+
+This feels slower but it's faster — you catch misunderstandings before they become code, and each step is small enough to review quickly.
+
+## Encourage reasoning before execution
+
+For complex tasks, ask the model to think through the problem before writing code. "What are the tradeoffs here?" or "Walk me through your approach before implementing" surfaces assumptions and lets you correct them before they're baked into the output.
+
+This is especially useful for:
+- Architecture decisions with long-term implications
+- Tasks where there are multiple valid approaches with different tradeoffs
+- Debugging problems where the cause isn't obvious
+
+The model often produces better output when it's been asked to reason first. It's not just a review step — the reasoning process itself improves the implementation.
+
+## Set clear expectations
+
+Be explicit about what you want. "Give me 3 options" means you get 3 options, not 1 with a note that alternatives exist. "Refactor but don't change the public API" means the API stays the same. "Write just the test, not the implementation" means you get just the test.
+
+Models are good at following explicit instructions. The failure mode is leaving things implicit and then being surprised when the model makes a different assumption than you would have.
+
+If you have a specific constraint — don't add dependencies, don't change the test files, keep the response under 50 lines — say it explicitly. Don't assume the model will infer it.
+
+## Clarify what's out of scope
+
+This is the constraint most people forget. Telling the model what not to do is as important as telling it what to do.
+
+"Don't modify files outside `src/components`." "Don't refactor existing code unless I ask." "Don't add error handling — I'll do that separately." These constraints prevent the most common form of scope creep: the model helpfully doing things you didn't ask for.
+
+The model's instinct is to be thorough. Without explicit boundaries, "thorough" means touching more than you wanted. With explicit boundaries, that same instinct produces a clean, focused output.
+
+## Try it yourself
+
+The best way to internalize these habits is to experiment with the same task across different prompt styles. The differences are often striking.
+
+<PromptLab />

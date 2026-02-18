@@ -4,8 +4,8 @@ import { CATEGORY_META } from "@/lib/types";
 
 const SECTION_ARTICLES = {
   models: 4,
-  workflows: 6,
-  tooling: 6,
+  workflows: 8,
+  tooling: 7,
 };
 
 const JOURNEY = [
@@ -17,7 +17,7 @@ const JOURNEY = [
   {
     step: 2,
     cat: "workflows" as const,
-    tagline: "From spec to PR, bug to fix — copy-paste flows that actually work.",
+    tagline: "From spec to PR, avoiding doom spirals — flows that actually work.",
   },
   {
     step: 3,
