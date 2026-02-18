@@ -682,7 +682,7 @@ function ResultsScreen({
           {liked.length > matches.length && (
             <p className="text-center text-xs text-zinc-600">
               {liked.length - matches.length} model
-              {liked.length - matches.length > 1 ? "s" : ""} didn't match back this time.
+              {liked.length - matches.length > 1 ? "s" : ""} didn&apos;t match back this time.
             </p>
           )}
         </>
