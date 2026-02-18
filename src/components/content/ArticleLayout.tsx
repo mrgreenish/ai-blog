@@ -1,15 +1,17 @@
 import Link from "next/link";
-import { ChevronRight, ArrowLeft } from "lucide-react";
+import { ChevronRight, ArrowLeft, ArrowRight } from "lucide-react";
 import type { ArticleFrontmatter, Category } from "@/lib/types";
 import { CATEGORY_META } from "@/lib/types";
+import type { ArticleMeta } from "@/lib/types";
 
 interface ArticleLayoutProps {
   frontmatter: ArticleFrontmatter;
   category: Category;
   children: React.ReactNode;
+  nextArticle?: ArticleMeta | null;
 }
 
-export function ArticleLayout({ frontmatter, category, children }: ArticleLayoutProps) {
+export function ArticleLayout({ frontmatter, category, children, nextArticle }: ArticleLayoutProps) {
   const meta = CATEGORY_META[category];
 
   return (
@@ -64,15 +66,39 @@ export function ArticleLayout({ frontmatter, category, children }: ArticleLayout
       {/* MDX content */}
       <article>{children}</article>
 
-      {/* Back link */}
+      {/* Footer navigation */}
       <div className="mt-16 border-t border-zinc-800 pt-8">
-        <Link
-          href={`/${category}`}
-          className={`inline-flex items-center gap-2 text-sm ${meta.accent} hover:opacity-80 transition-opacity`}
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to {meta.label}
-        </Link>
+        {nextArticle ? (
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+            <Link
+              href={`/${category}`}
+              className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-400 transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to {meta.label}
+            </Link>
+            <Link
+              href={`/${category}/${nextArticle.slug}`}
+              className={`group inline-flex items-center gap-3 rounded-lg border ${meta.accentBg} px-5 py-3 transition-opacity hover:opacity-80`}
+            >
+              <div className="text-right">
+                <div className="text-xs text-zinc-500 mb-0.5">Continue to next part</div>
+                <div className={`text-sm font-medium ${meta.accent}`}>
+                  {nextArticle.frontmatter.title}
+                </div>
+              </div>
+              <ArrowRight className={`h-4 w-4 shrink-0 ${meta.accent}`} />
+            </Link>
+          </div>
+        ) : (
+          <Link
+            href={`/${category}`}
+            className={`inline-flex items-center gap-2 text-sm ${meta.accent} hover:opacity-80 transition-opacity`}
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to {meta.label}
+          </Link>
+        )}
       </div>
     </div>
   );

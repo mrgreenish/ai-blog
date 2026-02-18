@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { compileMDX } from "next-mdx-remote/rsc";
 import rehypePrettyCode from "rehype-pretty-code";
-import { getArticle, getAllArticlePaths } from "@/lib/content";
+import { getArticle, getAllArticlePaths, getNextArticle } from "@/lib/content";
 import { ArticleLayout } from "@/components/content/ArticleLayout";
 import { ModelPicker } from "@/components/interactive/ModelPicker";
 import { ModelMixer } from "@/components/interactive/ModelMixer";
@@ -42,6 +42,8 @@ export default async function ToolingArticlePage({ params }: Props) {
   const article = getArticle("tooling", slug);
   if (!article) notFound();
 
+  const nextArticle = getNextArticle("tooling", slug);
+
   const { content } = await compileMDX<ArticleFrontmatter>({
     source: article.content,
     components: {
@@ -65,7 +67,7 @@ export default async function ToolingArticlePage({ params }: Props) {
   });
 
   return (
-    <ArticleLayout frontmatter={article.frontmatter} category="tooling">
+    <ArticleLayout frontmatter={article.frontmatter} category="tooling" nextArticle={nextArticle}>
       <div className="prose prose-zinc max-w-none">{content}</div>
     </ArticleLayout>
   );

@@ -50,6 +50,13 @@ export function getAllArticles(): ArticleMeta[] {
   return categories.flatMap((cat) => getArticlesByCategory(cat));
 }
 
+export function getNextArticle(category: Category, currentSlug: string): ArticleMeta | null {
+  const articles = getArticlesByCategory(category);
+  const currentIndex = articles.findIndex((a) => a.slug === currentSlug);
+  if (currentIndex === -1 || currentIndex === articles.length - 1) return null;
+  return articles[currentIndex + 1];
+}
+
 export function getAllArticlePaths(): { category: Category; slug: string }[] {
   const categories: Category[] = ["models", "workflows", "tooling"];
   return categories.flatMap((category) => {

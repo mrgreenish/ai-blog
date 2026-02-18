@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { compileMDX } from "next-mdx-remote/rsc";
 import rehypePrettyCode from "rehype-pretty-code";
-import { getArticle, getAllArticlePaths } from "@/lib/content";
+import { getArticle, getAllArticlePaths, getNextArticle } from "@/lib/content";
 import { ArticleLayout } from "@/components/content/ArticleLayout";
 import { ModelPicker } from "@/components/interactive/ModelPicker";
 import { ModelTinder } from "@/components/interactive/ModelTinder";
@@ -43,6 +43,8 @@ export default async function ModelArticlePage({ params }: Props) {
   const article = getArticle("models", slug);
   if (!article) notFound();
 
+  const nextArticle = getNextArticle("models", slug);
+
   const { content } = await compileMDX<ArticleFrontmatter>({
     source: article.content,
     components: {
@@ -67,7 +69,7 @@ export default async function ModelArticlePage({ params }: Props) {
   });
 
   return (
-    <ArticleLayout frontmatter={article.frontmatter} category="models">
+    <ArticleLayout frontmatter={article.frontmatter} category="models" nextArticle={nextArticle}>
       <div className="prose prose-zinc max-w-none">{content}</div>
     </ArticleLayout>
   );

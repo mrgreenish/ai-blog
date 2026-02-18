@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { compileMDX } from "next-mdx-remote/rsc";
 import rehypePrettyCode from "rehype-pretty-code";
-import { getArticle, getAllArticlePaths } from "@/lib/content";
+import { getArticle, getAllArticlePaths, getNextArticle } from "@/lib/content";
 import { ArticleLayout } from "@/components/content/ArticleLayout";
 import { ModelPicker } from "@/components/interactive/ModelPicker";
 import { ModelMixer } from "@/components/interactive/ModelMixer";
@@ -42,6 +42,8 @@ export default async function WorkflowArticlePage({ params }: Props) {
   const article = getArticle("workflows", slug);
   if (!article) notFound();
 
+  const nextArticle = getNextArticle("workflows", slug);
+
   const { content } = await compileMDX<ArticleFrontmatter>({
     source: article.content,
     components: {
@@ -65,7 +67,7 @@ export default async function WorkflowArticlePage({ params }: Props) {
   });
 
   return (
-    <ArticleLayout frontmatter={article.frontmatter} category="workflows">
+    <ArticleLayout frontmatter={article.frontmatter} category="workflows" nextArticle={nextArticle}>
       <div className="prose prose-zinc max-w-none">{content}</div>
     </ArticleLayout>
   );
