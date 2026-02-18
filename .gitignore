@@ -57,3 +57,5 @@ storybook-static/
 
 # OS
 Thumbs.db
+
+.node_modules
