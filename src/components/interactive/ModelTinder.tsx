@@ -970,7 +970,7 @@ export function ModelTinder() {
 
         {phase === "swiping" && (
           <div className="flex flex-col items-center gap-6">
-            <div className="relative w-full max-w-sm">
+            <div className="relative z-0 w-full max-w-sm overflow-hidden">
               {/* Ghost card — sets the container height to match card content */}
               <div className="invisible pointer-events-none" aria-hidden>
                 <CardContent model={MODELS[0]} />
@@ -993,7 +993,7 @@ export function ModelTinder() {
               )}
             </div>
 
-            <div className="flex items-center gap-6">
+            <div className="relative z-50 flex shrink-0 items-center gap-6">
               <button
                 onClick={() => handleSwipe("left")}
                 disabled={isAnimating.current}
