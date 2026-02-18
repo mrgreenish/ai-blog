@@ -200,12 +200,14 @@ function score(modelId: string, answers: Answers): number {
     if (task === "writing") points += 2;
     if (scope === "architecture") points += 4;
     if (scope === "multifile") points += 2;
+    if (scope === "autonomous") points += 1;
     if (stakes === "critical") points += 5;
     if (stakes === "production") points += 2;
     if (stakes === "prototype") points -= 2;
     if (priority === "accuracy") points += 4;
     if (priority === "speed") points -= 3;
     if (autonomy === "gaps") points += 2;
+    if (autonomy === "drive") points += 2;
   }
 
   if (modelId === "composer-1") {
@@ -226,7 +228,9 @@ function score(modelId: string, answers: Answers): number {
     if (scope === "targeted") points -= 2;
     if (stakes === "prototype") points += 2;
     if (stakes === "internal") points += 2;
+    if (stakes === "critical") points -= 3;
     if (priority === "speed") points += 2;
+    if (priority === "accuracy") points -= 1;
     if (autonomy === "drive") points += 5;
     if (autonomy === "gaps") points += 2;
     if (autonomy === "targeted") points -= 3;
