@@ -34,6 +34,24 @@ Codex is different: it's triggered by GitHub events (issues, PR comments, mentio
 
 **Responding to review comments.** Comment on a PR asking Codex to address a specific review comment. It makes the change and updates the PR.
 
+## Claude's personality: creative, proactive, and sometimes too much
+
+Claude has a distinct character compared to other coding agents. It's more willing to take initiative, suggest alternatives, and make judgment calls. That's mostly a strength — but it comes with a specific failure mode you need to know about.
+
+**Claude is creative.** Ask it to implement something and it won't just do the minimum. It'll often suggest a better approach, point out edge cases you didn't think of, or restructure the code in a way that makes the feature easier to implement. This is genuinely useful — it often produces better output than you'd get from a more literal agent.
+
+**Claude is proactive.** It notices things. While implementing a feature, it'll spot a related bug, an inconsistent naming convention, or a missing error handler. It'll mention these, and sometimes fix them without being asked. In a short session this is helpful. In a long session it's how you end up with a 40-file diff when you asked for a 3-file change.
+
+**Claude can do too much.** This is the failure mode. Claude's instinct to be helpful means it will expand scope in ways that feel reasonable in the moment but make the output harder to review and more likely to introduce unintended changes. A task that should touch two files touches eight. A rename becomes a refactor. A bug fix becomes a cleanup.
+
+The fix is explicit scope constraints in your prompt or `CLAUDE.md`:
+
+- "Only modify the files I specify. Do not touch anything else."
+- "If you notice something outside this task's scope, mention it but do not fix it."
+- "Do not refactor existing code unless I ask you to."
+
+The goal isn't to make Claude less capable — it's to direct that capability at the task at hand. Once you have the right guardrails in place, Claude's proactiveness becomes an asset: it surfaces things you'd want to know without acting on them unilaterally.
+
 ## How they complement each other
 
 I use Claude Code for complex, multi-step tasks that require deep codebase understanding. I use Codex for GitHub-integrated workflows — issue triage, PR review, responding to comments.
