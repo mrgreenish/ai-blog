@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
+import { cache } from "react";
 import type { Article, ArticleFrontmatter, ArticleMeta, Category } from "./types";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
@@ -29,7 +30,7 @@ export function getArticlesByCategory(category: Category): ArticleMeta[] {
   );
 }
 
-export function getArticle(category: Category, slug: string): Article | null {
+export const getArticle = cache(function getArticle(category: Category, slug: string): Article | null {
   const filePath = path.join(CONTENT_DIR, category, `${slug}.mdx`);
   if (!fs.existsSync(filePath)) return null;
 
@@ -42,7 +43,7 @@ export function getArticle(category: Category, slug: string): Article | null {
     frontmatter: data as ArticleFrontmatter,
     content,
   };
-}
+});
 
 export function getAllArticles(): ArticleMeta[] {
   const categories: Category[] = ["models", "workflows", "tooling"];
