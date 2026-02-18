@@ -392,14 +392,18 @@ function ModelCard({
   stackIndex: number;
 }) {
   const x = useMotionValue(0);
-  const rotate = useTransform(x, [-200, 200], [-18, 18]);
-  const likeOpacity = useTransform(x, [20, 100], [0, 1]);
-  const passOpacity = useTransform(x, [-100, -20], [1, 0]);
+  const rotate = useTransform(x, [-200, 200], [-14, 14]);
+  const likeOpacity = useTransform(x, [20, 80], [0, 1]);
+  const passOpacity = useTransform(x, [-80, -20], [1, 0]);
+  // Subtle green/red tint behind the card as user swipes
+  const likeBg = useTransform(x, [0, 120], ["rgba(34,197,94,0)", "rgba(34,197,94,0.08)"]);
+  const passBg = useTransform(x, [-120, 0], ["rgba(239,68,68,0.08)", "rgba(239,68,68,0)"]);
 
   const handleDragEnd = () => {
     const xVal = x.get();
-    if (xVal > 120) onSwipe("right");
-    else if (xVal < -120) onSwipe("left");
+    // Lower threshold for easier mobile swiping
+    if (xVal > 80) onSwipe("right");
+    else if (xVal < -80) onSwipe("left");
   };
 
   const scale = 1 - stackIndex * 0.04;
@@ -407,31 +411,48 @@ function ModelCard({
 
   if (!isTop) {
     return (
-      <div
+      <motion.div
         className="absolute left-0 right-0 top-0"
-        style={{ transform: `scale(${scale}) translateY(${yOffset}px)`, zIndex: 10 - stackIndex }}
+        animate={{ scale, y: yOffset }}
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        style={{ zIndex: 10 - stackIndex }}
       >
         <CardContent model={model} />
-      </div>
+      </motion.div>
     );
   }
 
   return (
     <motion.div
       className="absolute left-0 right-0 top-0 cursor-grab active:cursor-grabbing"
-      style={{ x, rotate, zIndex: 20 }}
+      style={{ x, rotate, zIndex: 20, touchAction: "none" }}
       drag="x"
       dragConstraints={{ left: 0, right: 0 }}
-      dragElastic={0.9}
+      dragElastic={0.7}
       onDragEnd={handleDragEnd}
+      initial={{ scale: 0.95, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
-      exit={{ x: x.get() > 0 ? 600 : -600, opacity: 0, transition: { duration: 0.35 } }}
+      exit={{
+        x: x.get() > 0 ? 400 : -400,
+        rotate: x.get() > 0 ? 20 : -20,
+        opacity: 0,
+        transition: { duration: 0.3, ease: "easeIn" },
+      }}
     >
+      {/* Swipe tint overlays */}
+      <motion.div
+        className="pointer-events-none absolute inset-0 z-20 rounded-2xl"
+        style={{ background: likeBg }}
+      />
+      <motion.div
+        className="pointer-events-none absolute inset-0 z-20 rounded-2xl"
+        style={{ background: passBg }}
+      />
       <motion.div
         className="pointer-events-none absolute inset-0 z-30 flex items-start justify-start rounded-2xl p-5"
         style={{ opacity: likeOpacity }}
       >
-        <span className="-rotate-20 rounded-lg border-4 border-green-400 px-3 py-1 font-mono text-2xl font-black text-green-400">
+        <span className="-rotate-20 rounded-lg border-4 border-green-400 bg-green-400/10 px-3 py-1 font-mono text-2xl font-black text-green-400">
           LIKE
         </span>
       </motion.div>
@@ -439,7 +460,7 @@ function ModelCard({
         className="pointer-events-none absolute inset-0 z-30 flex items-start justify-end rounded-2xl p-5"
         style={{ opacity: passOpacity }}
       >
-        <span className="rotate-20 rounded-lg border-4 border-red-400 px-3 py-1 font-mono text-2xl font-black text-red-400">
+        <span className="rotate-20 rounded-lg border-4 border-red-400 bg-red-400/10 px-3 py-1 font-mono text-2xl font-black text-red-400">
           PASS
         </span>
       </motion.div>
@@ -500,15 +521,19 @@ function LoadingScreen() {
 function MatchCard({
   model,
   onClick,
+  index,
 }: {
   model: Model;
   onClick: () => void;
+  index: number;
 }) {
   return (
     <motion.button
-      initial={{ opacity: 0, scale: 0.85, y: 20 }}
+      initial={{ opacity: 0, scale: 0.85, y: 24 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ type: "spring", stiffness: 260, damping: 20 }}
+      transition={{ type: "spring", stiffness: 260, damping: 20, delay: index * 0.12 }}
+      whileHover={{ scale: 1.03, y: -2 }}
+      whileTap={{ scale: 0.97 }}
       onClick={onClick}
       className="group overflow-hidden rounded-xl border border-zinc-700 bg-zinc-900 text-left transition-colors hover:border-zinc-500"
     >
@@ -578,8 +603,8 @@ function ResultsScreen({
           <div
             className={`grid w-full gap-4 ${matches.length === 1 ? "max-w-xs" : "grid-cols-2"}`}
           >
-            {matches.map((model) => (
-              <MatchCard key={model.id} model={model} onClick={() => onOpenChat(model)} />
+            {matches.map((model, i) => (
+              <MatchCard key={model.id} model={model} index={i} onClick={() => onOpenChat(model)} />
             ))}
           </div>
 
@@ -647,7 +672,7 @@ function ChatScreen({
   const [round, setRound] = useState(0);
   const [isTyping, setIsTyping] = useState(true);
   const [showReplies, setShowReplies] = useState(false);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   // Deliver the first model message on mount
   useEffect(() => {
@@ -661,9 +686,14 @@ function ChatScreen({
     return () => clearTimeout(timer);
   }, [script]);
 
-  // Scroll to bottom whenever messages change
+  // Scroll chat container to bottom (not the page) whenever messages change
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = scrollAreaRef.current;
+    if (el) {
+      requestAnimationFrame(() => {
+        el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+      });
+    }
   }, [messages, isTyping]);
 
   const handleReply = (replyText: string) => {
@@ -693,7 +723,7 @@ function ChatScreen({
   const isDone = round >= script.length && !isTyping;
 
   return (
-    <div className="flex h-[520px] flex-col sm:h-[560px]">
+    <div className="flex h-[min(520px,70dvh)] flex-col sm:h-[560px]">
       {/* Chat header */}
       <div
         className={`flex shrink-0 items-center gap-3 border-b border-zinc-800 bg-linear-to-r ${model.gradientFrom} ${model.gradientTo} px-4 py-3`}
@@ -716,7 +746,11 @@ function ChatScreen({
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-4 space-y-3">
+      <div
+        ref={scrollAreaRef}
+        className="flex-1 overflow-y-auto overscroll-contain px-4 py-4 space-y-3"
+        style={{ WebkitOverflowScrolling: "touch" }}
+      >
         <AnimatePresence initial={false}>
           {messages.map((msg, i) => (
             <motion.div
@@ -745,8 +779,6 @@ function ChatScreen({
         </AnimatePresence>
 
         {isTyping && <TypingIndicator emoji={model.emoji} />}
-
-        <div ref={bottomRef} />
       </div>
 
       {/* Reply area */}
@@ -763,18 +795,27 @@ function ChatScreen({
             </button>
           </div>
         ) : showReplies && currentReplies.length > 0 ? (
-          <div className="flex flex-wrap gap-2">
-            {currentReplies.map((reply) => (
-              <button
+          <motion.div
+            className="flex flex-wrap gap-2"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            {currentReplies.map((reply, i) => (
+              <motion.button
                 key={reply}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.06, duration: 0.15 }}
+                whileTap={{ scale: 0.93 }}
                 onClick={() => handleReply(reply)}
-                className="flex items-center gap-1.5 rounded-full border border-zinc-600 bg-zinc-800 px-3 py-1.5 text-sm text-zinc-200 transition-all hover:border-pink-500/60 hover:bg-pink-500/10 hover:text-pink-300 active:scale-95"
+                className="flex items-center gap-1.5 rounded-full border border-zinc-600 bg-zinc-800 px-3 py-1.5 text-sm text-zinc-200 transition-all hover:border-pink-500/60 hover:bg-pink-500/10 hover:text-pink-300"
               >
                 <Send className="h-3 w-3 opacity-60" />
                 {reply}
-              </button>
+              </motion.button>
             ))}
-          </div>
+          </motion.div>
         ) : (
           <div className="flex items-center gap-2 opacity-40">
             <div className="h-9 flex-1 rounded-full border border-zinc-700 bg-zinc-800" />
@@ -840,7 +881,7 @@ export function ModelTinder() {
   };
 
   return (
-    <div className="my-8 overflow-hidden rounded-xl border border-zinc-700 bg-zinc-950">
+    <div className="my-8 overflow-x-clip rounded-xl border border-zinc-700 bg-zinc-950">
       {/* Header — hidden during chat (chat has its own header) */}
       {phase !== "chat" && (
         <div className="flex items-center justify-between border-b border-zinc-800 px-5 py-4">
@@ -874,7 +915,7 @@ export function ModelTinder() {
 
         {phase === "swiping" && (
           <div className="flex flex-col items-center gap-6">
-            <div className="relative z-0 w-full max-w-sm overflow-hidden">
+            <div className="relative z-0 w-full max-w-sm" style={{ touchAction: "pan-y" }}>
               {/* Ghost card — sets the container height to match card content */}
               <div className="invisible pointer-events-none" aria-hidden>
                 <CardContent model={MODELS[0]} />
@@ -897,7 +938,7 @@ export function ModelTinder() {
               )}
             </div>
 
-            <div className="relative z-50 flex shrink-0 items-center gap-6">
+            <div className="relative z-10 flex shrink-0 items-center gap-6">
               <button
                 onClick={() => handleSwipe("left")}
                 disabled={isAnimating.current}
