@@ -64,6 +64,30 @@ Opus is Claude dialed up. Everything that makes Sonnet distinctive — the creat
 
 **Where it falls short.** Cost and latency. Opus is expensive and slow compared to Sonnet. For routine tasks — scaffolding, simple refactors, boilerplate — you're burning money without getting proportional value. Reserve it for the problems that actually need it.
 
+## Cursor Composer-1: the focused one
+
+Composer-1 is the IDE-native model built into Cursor's Composer panel. It knows what files you have open, what your recent diffs look like, and what your cursor is pointing at. That context is its edge — it doesn't need you to paste code into a chat window because it already has it.
+
+**Tight scope by design.** Composer-1 is optimized for targeted edits. Give it a specific task — fix this function, rename this prop across these files, implement this interface — and it executes cleanly without wandering. It's the model least likely to touch things you didn't ask about.
+
+**Fast iteration loop.** Because it's embedded in the editor, the round-trip from prompt to applied diff is fast. You see the change inline, accept or reject hunks, and move on. This tight feedback loop makes it well-suited for the kind of rapid, incremental work that makes up most of a coding day.
+
+**Context-aware without extra work.** You don't have to manually paste in the relevant code. Composer-1 picks up your open tabs, your recent edits, and your project structure automatically. For targeted changes, this removes a lot of friction.
+
+**Where it falls short.** Composer-1 is not built for multi-step autonomous tasks. If you need it to run tests, read the output, fix the failures, and repeat — that's not its mode. It's a precise instrument, not an autonomous agent.
+
+## Cursor Composer-1.5: the agentic one
+
+Composer-1.5 is a different kind of model. It doesn't just edit files — it acts. It can run terminal commands, read the output, make more edits based on what it sees, and loop until the task is done. It's the closest thing to having an AI developer who can actually execute a full task end-to-end.
+
+**Multi-step execution.** Give Composer-1.5 a task that spans multiple files and requires verification — "add this feature, make sure the tests pass, fix any type errors" — and it will work through the steps autonomously. It runs the build, reads the errors, fixes them, and reruns. This is qualitatively different from a model that just generates code.
+
+**Self-correcting.** Because it can observe the results of its own actions, Composer-1.5 can catch and fix mistakes that a non-agentic model would leave for you to discover. It sees the TypeScript error, understands it in context, and fixes it — without you having to copy-paste the error back into a prompt.
+
+**Edits across the whole codebase.** Composer-1.5 isn't limited to the files you have open. It can navigate the project, find the relevant files, and make coordinated changes across many of them. For large refactors or feature additions that touch many layers, this is a significant capability.
+
+**Where it falls short.** Autonomy has a cost. Composer-1.5 can go down wrong paths and make a lot of changes before you realize it's off track. The longer you let it run without checkpoints, the harder the diff is to review. The fix is the same as with any agentic model: short task scopes, frequent checkpoints, and explicit constraints about what it can and can't touch.
+
 ## How personality affects prompting
 
 Knowing these personalities changes how you prompt:
@@ -76,6 +100,10 @@ Knowing these personalities changes how you prompt:
 
 **For Claude Opus:** use it for the hard problems. Architecture reviews, complex debugging, design decisions with long-term implications. Pair it with explicit scope constraints to keep the depth focused where you need it.
 
-The right model isn't just the smartest one — it's the one whose personality matches the task. A careful model for production refactors. A creative model for design exploration. A balanced model for everyday shipping.
+**For Cursor Composer-1:** point it at the specific thing you want changed. It works best with a clear target — a file, a function, a prop. The more precise your instruction, the cleaner the output.
 
-<ModelPicker />
+**For Cursor Composer-1.5:** give it a complete task with a clear success condition. "Add X feature, make sure the tests pass" is better than "help me with X". Let it run, but check in at natural breakpoints — after the first pass, before it starts touching tests, before it makes architectural changes.
+
+The right model isn't just the smartest one — it's the one whose personality matches the task. A careful model for production refactors. A creative model for design exploration. A balanced model for everyday shipping. An agentic model for end-to-end task execution.
+
+<ModelTinder />

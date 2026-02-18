@@ -4,6 +4,7 @@ import rehypePrettyCode from "rehype-pretty-code";
 import { getArticle, getAllArticlePaths } from "@/lib/content";
 import { ArticleLayout } from "@/components/content/ArticleLayout";
 import { ModelPicker } from "@/components/interactive/ModelPicker";
+import { ModelTinder } from "@/components/interactive/ModelTinder";
 import { ModelMixer } from "@/components/interactive/ModelMixer";
 import { WorkflowRecipe } from "@/components/interactive/WorkflowRecipe";
 import { PromptLab } from "@/components/interactive/PromptLab";
@@ -45,6 +46,7 @@ export default async function ModelArticlePage({ params }: Props) {
     source: article.content,
     components: {
       ModelPicker,
+      ModelTinder,
       ModelMixer,
       WorkflowRecipe,
       PromptLab,
