@@ -20,12 +20,14 @@ Copy this checklist and track progress:
 
 ### Step 1: Scan posts for claims
 
-Read all `.mdx` files in `content/models/`, `content/tooling/`, and `content/workflows/`. Extract every verifiable factual claim. Focus on:
+**First, read `src/lib/modelSpecs.ts`.** This is the canonical source of truth for all model-specific data in this blog — names, pricing, context windows, tiers, and personality. Use it as the baseline when validating model-related claims. Any discrepancy between a blog post and `modelSpecs.ts` is a candidate issue.
 
-1. **Model names and versions** — specific model identifiers (o3, o1, GPT-4o mini, Haiku, Flash, Sonnet, Opus, Gemini, DeepSeek R1, etc.)
-2. **Context window sizes** — token limits (200k, 1M, etc.)
-3. **Tool names and features** — Claude Code, Codex, Cursor BugBot, Figma MCP, etc.
-4. **Pricing claims** — cost comparisons, "15x more expensive", etc.
+Then read all `.mdx` files in `content/models/`, `content/tooling/`, and `content/workflows/`. Extract every verifiable factual claim. Focus on:
+
+1. **Model names and versions** — check against the `name` and `id` fields in `MODEL_REGISTRY` in `src/lib/modelSpecs.ts`. Also check if any models in the registry have been renamed, deprecated, or superseded since the registry was last updated.
+2. **Context window sizes** — check against `contextWindowTokens` in `MODEL_REGISTRY`. Also verify these are still current via web search.
+3. **Pricing claims** — check against `inputPer1M` / `outputPer1M` in `MODEL_REGISTRY`. Pricing changes without notice; always verify against current provider pricing pages.
+4. **Tool names and features** — Claude Code, Codex, Cursor BugBot, Figma MCP, etc.
 5. **API/SDK references** — Next.js versions, `use cache`, specific package names, install commands
 6. **Capability claims** — what a model or tool can/cannot do
 7. **Product availability** — features described as available or in beta
@@ -33,6 +35,8 @@ Read all `.mdx` files in `content/models/`, `content/tooling/`, and `content/wor
 For each claim, record: the file, the exact quote, and the category.
 
 For detailed claim categories and known claims in this blog, see [claim-categories.md](claim-categories.md).
+
+> **Note on fixing model data:** If a model name, price, or context window is outdated, the fix goes in `src/lib/modelSpecs.ts` — not in the MDX files. The components that render interactive tools (ModelMixer, CostCalculator, ContextWindowViz, etc.) all pull from that registry. Only prose references in `.mdx` files need direct edits.
 
 ### Step 2: Categorize and prioritize
 
