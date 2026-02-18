@@ -15,6 +15,7 @@ export type InteractiveTool =
 export interface ArticleFrontmatter {
   title: string;
   description: string;
+  story?: string;
   category: Category;
   order: number;
   interactiveTools?: InteractiveTool[];

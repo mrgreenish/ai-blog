@@ -23,7 +23,13 @@ export function ArticleCard({ article }: ArticleCardProps) {
         <ArrowRight className="mt-0.5 h-4 w-4 shrink-0 text-zinc-600 group-hover:text-zinc-400 transition-colors" />
       </div>
 
-      <p className="mt-2 text-sm leading-relaxed text-zinc-400 line-clamp-2">
+      {frontmatter.story && (
+        <p className="mt-3 text-sm italic leading-relaxed text-zinc-300">
+          &ldquo;{frontmatter.story}&rdquo;
+        </p>
+      )}
+
+      <p className="mt-2 text-sm leading-relaxed text-zinc-500 line-clamp-2">
         {frontmatter.description}
       </p>
 
