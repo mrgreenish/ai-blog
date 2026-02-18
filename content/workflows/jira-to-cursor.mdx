@@ -24,11 +24,23 @@ Once you have a well-structured ticket, it becomes the starting context for your
 
 The ticket's acceptance criteria become the test cases. The edge cases become the guardrails. The scope definition prevents the model from going off on tangents.
 
-## Adding Figma context
+For UI tasks, grab the Figma link for the component you're implementing. In Figma, select the component or frame you want to build, right-click and choose **Copy/paste → Copy link to selection** (or press **⌘L**). Add it to your Cursor prompt as:
 
-For UI work, combining the Jira ticket with a Figma link gives the model both the functional requirements (from the ticket) and the visual requirements (from the design). The Figma MCP pulls the design data directly, so the model can implement against both specs simultaneously.
+> Figma design: https://www.figma.com/design/abc123/...?node-id=12-34
 
-The flow: ticket context + Figma MCP → plan → implementation → PR. The PR description writes itself from the ticket's acceptance criteria.
+Keep **Figma Desktop** open during your session — Cursor's Figma MCP server connects to the running desktop app to pull design tokens, component properties, and layout data directly into your prompt context.
+
+<InfoBlock title="Setting up the Figma MCP">
+
+**In Figma:** use Figma Desktop (the MCP server requires the desktop app, not the browser version). The MCP server is built into Figma Desktop — no plugin needed.
+
+**In Cursor:** go to **Settings → MCP** and add a new server. Use the command `npx figma-developer-mcp --stdio`, or connect to Figma Desktop's built-in MCP endpoint at `http://127.0.0.1:3845/sse`. Once connected, Cursor can read design tokens, component variants, and layout data from any Figma file you have open.
+
+See [Figma MCP Workflows](/tooling/figma-mcp) for the full setup and workflow details.
+
+</InfoBlock>
+
+The flow: ticket context + Figma design link + Figma MCP → plan → implementation → PR. The PR description writes itself from the ticket's acceptance criteria.
 
 ## Model strategy
 

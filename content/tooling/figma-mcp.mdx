@@ -6,7 +6,7 @@ order: 5
 interactiveTools: [workflow-recipe]
 ---
 
-The Figma MCP (Model Context Protocol server) gives AI models structured access to your Figma designs — not screenshots, but design context such as variables, component mappings, variants, and layout constraints. This moves design-to-code closer to direct implementation than screenshot-only interpretation.
+The [Figma MCP](https://developers.figma.com/docs/figma-mcp-server/) (Model Context Protocol server) gives AI models structured access to your Figma designs — not screenshots, but design context such as variables, component mappings, variants, and layout constraints. This moves design-to-code closer to direct implementation than screenshot-only interpretation.
 
 The difference matters. When you send a screenshot, the model has to infer spacing values, guess at color tokens, and interpret layout intent. When you use the Figma MCP, the model gets structured design context directly, which usually improves first-pass accuracy.
 
@@ -22,7 +22,7 @@ The MCP gives models access to:
 
 ## The design-to-code workflow
 
-With the Figma MCP connected, the workflow becomes:
+With the Figma MCP connected (see the [setup guide](https://help.figma.com/hc/en-us/articles/32132100833559-Guide-to-the-Figma-MCP-server) for Cursor and other clients), the workflow becomes:
 
 1. Share the Figma node URL or node ID in your prompt
 2. The model reads the design data directly
@@ -45,5 +45,26 @@ The Figma MCP enables a tighter design-developer loop. Instead of the designer e
 4. Developer pulls the updated design data and makes the corresponding code changes
 
 The model mediates the translation in both directions.
+
+## The reverse direction: Claude Code to Figma
+
+The MCP is usually talked about as a one-way flow — design into code. But Figma's [Claude Code to Figma](https://www.figma.com/blog/introducing-claude-code-to-figma/) capability (announced February 2026) closes the loop in the other direction: you can capture a live rendered UI from localhost, staging, or production and push it into Figma as editable frames.
+
+This matters because code-first exploration is inherently single-player. One person holds the branch, the dev server, and the context. As soon as the UI grows beyond a single screen, getting feedback means sharing screenshots, recordings, or asking someone to run a build locally — each option adds friction at exactly the moment you'd benefit from going wider.
+
+With the capture flow, each screen becomes a Figma frame you can organize, duplicate, annotate, and share alongside the rest of your design work. Teams can react to the same artifact at the same fidelity, without needing to context-switch into a new environment.
+
+You can capture multiple screens in a single session, preserving sequence and context — useful for multi-step flows where the full experience needs to be reviewed together.
+
+## The full roundtrip
+
+The two capabilities together create a complete design-developer loop:
+
+- **Figma → Code** (Figma MCP): the model reads structured design data — tokens, variants, layout constraints — and implements components with your actual values, not guessed ones
+- **Code → Figma** (Claude Code to Figma): the model captures the live implementation and pushes it onto the canvas for design review and iteration
+
+Neither direction requires manual export, screenshot interpretation, or spec handoff. The model mediates both translations.
+
+This is the same pattern Figma Make uses — prompts that generate working prototypes, then push them to the canvas for further iteration. Claude Code to Figma applies the same idea to code-first workflows.
 
 <WorkflowRecipe />

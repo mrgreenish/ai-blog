@@ -23,6 +23,7 @@ interface PipelineStep {
   description: string;
   defaultTier: Tier;
   defaultModelId: string;
+  recommendedModelId: string;
   inputTokens: number;
   outputTokens: number;
 }
@@ -42,6 +43,7 @@ const MODELS: Model[] = [
   { id: "deepseek-r1", name: "DeepSeek R1", provider: "DeepSeek", tier: "fast", inputPer1M: 0.55, outputPer1M: 2.19 },
   { id: "haiku-4.5", name: "Claude Haiku 4.5", provider: "Anthropic", tier: "fast", inputPer1M: 1.00, outputPer1M: 5.00 },
   // Balanced tier
+  { id: "composer-1", name: "Composer 1", provider: "Cursor", tier: "balanced", inputPer1M: 1.25, outputPer1M: 10.00 },
   { id: "o3", name: "o3", provider: "OpenAI", tier: "balanced", inputPer1M: 2.00, outputPer1M: 8.00 },
   { id: "gpt4o", name: "GPT-4o", provider: "OpenAI", tier: "balanced", inputPer1M: 2.50, outputPer1M: 10.00 },
   { id: "sonnet-4.6", name: "Claude Sonnet 4.6", provider: "Anthropic", tier: "balanced", inputPer1M: 3.00, outputPer1M: 15.00 },
@@ -57,30 +59,30 @@ const TEMPLATES: Template[] = [
     id: "fullstack",
     label: "Full-stack feature",
     steps: [
-      { id: "scaffold", label: "Scaffold", description: "Component structure, boilerplate, file setup", defaultTier: "fast", defaultModelId: "haiku-4.5", inputTokens: 1000, outputTokens: 2000 },
-      { id: "logic", label: "Business logic", description: "Core feature logic, edge cases, state", defaultTier: "balanced", defaultModelId: "sonnet-4.6", inputTokens: 2000, outputTokens: 3000 },
-      { id: "review", label: "Code review", description: "Architecture, patterns, security concerns", defaultTier: "reasoning", defaultModelId: "opus-4.6", inputTokens: 3000, outputTokens: 1000 },
-      { id: "tests", label: "Tests", description: "Unit tests, edge case coverage", defaultTier: "fast", defaultModelId: "haiku-4.5", inputTokens: 1500, outputTokens: 2500 },
+      { id: "scaffold", label: "Scaffold", description: "Component structure, boilerplate, file setup", defaultTier: "reasoning", defaultModelId: "opus-4.6", recommendedModelId: "opus-4.6", inputTokens: 1000, outputTokens: 2000 },
+      { id: "logic", label: "Business logic", description: "Core feature logic, edge cases, state", defaultTier: "balanced", defaultModelId: "sonnet-4.6", recommendedModelId: "sonnet-4.6", inputTokens: 2000, outputTokens: 3000 },
+      { id: "review", label: "Code review", description: "Architecture, patterns, security concerns", defaultTier: "reasoning", defaultModelId: "opus-4.6", recommendedModelId: "opus-4.6", inputTokens: 3000, outputTokens: 1000 },
+      { id: "tests", label: "Tests", description: "Unit tests, edge case coverage", defaultTier: "balanced", defaultModelId: "sonnet-4.6", recommendedModelId: "sonnet-4.6", inputTokens: 1500, outputTokens: 2500 },
     ],
   },
   {
     id: "bugfix",
     label: "Bug investigation",
     steps: [
-      { id: "reproduce", label: "Reproduce", description: "Isolate the failing case, minimal repro", defaultTier: "fast", defaultModelId: "gpt4o-mini", inputTokens: 1000, outputTokens: 1000 },
-      { id: "diagnose", label: "Diagnose", description: "Trace root cause through execution path", defaultTier: "reasoning", defaultModelId: "o3", inputTokens: 2500, outputTokens: 2000 },
-      { id: "fix", label: "Fix", description: "Implement the targeted fix", defaultTier: "balanced", defaultModelId: "sonnet-4.6", inputTokens: 2000, outputTokens: 2500 },
-      { id: "verify", label: "Verify", description: "Confirm fix, check for regressions", defaultTier: "fast", defaultModelId: "haiku-4.5", inputTokens: 1500, outputTokens: 1000 },
+      { id: "reproduce", label: "Reproduce", description: "Isolate the failing case, minimal repro", defaultTier: "fast", defaultModelId: "gpt4o-mini", recommendedModelId: "gpt4o-mini", inputTokens: 1000, outputTokens: 1000 },
+      { id: "diagnose", label: "Diagnose", description: "Trace root cause through execution path", defaultTier: "reasoning", defaultModelId: "o3", recommendedModelId: "o3", inputTokens: 2500, outputTokens: 2000 },
+      { id: "fix", label: "Fix", description: "Implement the targeted fix", defaultTier: "balanced", defaultModelId: "sonnet-4.6", recommendedModelId: "sonnet-4.6", inputTokens: 2000, outputTokens: 2500 },
+      { id: "verify", label: "Verify", description: "Confirm fix, check for regressions", defaultTier: "fast", defaultModelId: "haiku-4.5", recommendedModelId: "haiku-4.5", inputTokens: 1500, outputTokens: 1000 },
     ],
   },
   {
     id: "spec-to-pr",
     label: "Spec to PR",
     steps: [
-      { id: "plan", label: "Plan", description: "Break spec into files, decisions, approach", defaultTier: "reasoning", defaultModelId: "o3", inputTokens: 1500, outputTokens: 2000 },
-      { id: "implement", label: "Implement", description: "Write the code against the plan", defaultTier: "balanced", defaultModelId: "sonnet-4.6", inputTokens: 2000, outputTokens: 4000 },
-      { id: "review-arch", label: "Review", description: "Architecture review, catch mistakes", defaultTier: "reasoning", defaultModelId: "opus-4.6", inputTokens: 4000, outputTokens: 1500 },
-      { id: "pr-desc", label: "PR description", description: "Write PR description from spec + diff", defaultTier: "fast", defaultModelId: "gpt4o-mini", inputTokens: 2000, outputTokens: 1000 },
+      { id: "plan", label: "Plan", description: "Break spec into files, decisions, approach", defaultTier: "reasoning", defaultModelId: "opus-4.6", recommendedModelId: "opus-4.6", inputTokens: 1500, outputTokens: 2000 },
+      { id: "implement", label: "Implement", description: "Write the code against the plan", defaultTier: "balanced", defaultModelId: "sonnet-4.6", recommendedModelId: "sonnet-4.6", inputTokens: 2000, outputTokens: 4000 },
+      { id: "review-arch", label: "Review", description: "Architecture review, catch mistakes", defaultTier: "balanced", defaultModelId: "sonnet-4.6", recommendedModelId: "sonnet-4.6", inputTokens: 4000, outputTokens: 1500 },
+      { id: "pr-desc", label: "PR description", description: "Write PR description from spec + diff", defaultTier: "balanced", defaultModelId: "composer-1", recommendedModelId: "composer-1", inputTokens: 2000, outputTokens: 1000 },
     ],
   },
 ];
@@ -180,15 +182,22 @@ function StepCard({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.06, duration: 0.25 }}
-      className={`flex-1 min-w-0 rounded-lg border ${colors.border} ${colors.bg} p-3`}
+      className={`min-w-0 flex-1 rounded-lg border ${colors.border} ${colors.bg} p-2.5 sm:p-3`}
     >
-      <div className="mb-2 flex items-center justify-between gap-2">
-        <p className="truncate font-mono text-xs font-semibold text-zinc-200">{step.label}</p>
-        <TierBadge tier={tier} />
+      <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
+        <p className="font-mono text-xs font-semibold text-zinc-200">{step.label}</p>
+        <div className="ml-auto flex shrink-0 items-center gap-1">
+          {modelId === step.recommendedModelId && (
+            <span className="rounded px-1 py-0.5 font-mono text-[10px] font-medium leading-none text-pink-400 bg-pink-400/10">
+              my pick
+            </span>
+          )}
+          <TierBadge tier={tier} />
+        </div>
       </div>
-      <p className="mb-2.5 text-[11px] leading-relaxed text-zinc-500">{step.description}</p>
+      <p className="mb-2 text-[11px] leading-relaxed text-zinc-500 line-clamp-2">{step.description}</p>
       <ModelSelect stepId={step.id} value={modelId} onChange={onModelChange} />
-      <div className="mt-2 flex items-center justify-between text-[11px] text-zinc-500">
+      <div className="mt-1.5 flex items-center justify-between text-[10px] text-zinc-500">
         <span>{step.inputTokens / 1000}K in / {step.outputTokens / 1000}K out</span>
         <span className={`font-mono font-medium ${colors.text}`}>{formatCost(cost)}</span>
       </div>
@@ -212,8 +221,8 @@ function CostBar({
   const pct = maxCost > 0 ? (cost / maxCost) * 100 : 0;
 
   return (
-    <div className="flex items-center gap-3">
-      <div className="w-28 shrink-0 text-right font-mono text-xs text-zinc-400">{label}</div>
+    <div className="flex items-center gap-2 sm:gap-3">
+      <div className="w-20 shrink-0 text-right font-mono text-[11px] text-zinc-400 sm:w-28 sm:text-xs">{label}</div>
       <div className="relative h-5 flex-1 overflow-hidden rounded bg-zinc-800">
         <motion.div
           className={`absolute inset-y-0 left-0 rounded ${colorClass} ${isMixed ? "opacity-90" : "opacity-40"}`}
@@ -255,15 +264,21 @@ export function ModelMixer() {
     setTemplateId(id);
   }
 
-  const mixedCost = calcTotalCost(currentAssignments, template.steps);
-  const sonnetCost = calcTotalCost(
+  const [retries, setRetries] = useState(1);
+
+  const mixedCostBase = calcTotalCost(currentAssignments, template.steps);
+  const sonnetCostBase = calcTotalCost(
     Object.fromEntries(template.steps.map((s) => [s.id, "sonnet-4.6"])),
     template.steps
   );
-  const opusCost = calcTotalCost(
+  const opusCostBase = calcTotalCost(
     Object.fromEntries(template.steps.map((s) => [s.id, "opus-4.6"])),
     template.steps
   );
+
+  const mixedCost = mixedCostBase;
+  const sonnetCost = sonnetCostBase * retries;
+  const opusCost = opusCostBase * retries;
 
   const savingsVsSonnet = sonnetCost > 0 ? Math.round(((sonnetCost - mixedCost) / sonnetCost) * 100) : 0;
   const savingsVsOpus = opusCost > 0 ? Math.round(((opusCost - mixedCost) / opusCost) * 100) : 0;
@@ -272,11 +287,11 @@ export function ModelMixer() {
   return (
     <div className="not-prose my-8 overflow-hidden rounded-xl border border-violet-400/30 bg-zinc-900/60">
       {/* Header */}
-      <div className="flex items-center gap-3 border-b border-zinc-800 px-5 py-4">
+      <div className="flex items-center gap-3 border-b border-zinc-800 px-3 py-3 sm:px-5 sm:py-4">
         <div className="rounded-lg bg-zinc-800 p-2 text-violet-400">
           <Shuffle className="h-4 w-4" />
         </div>
-        <div>
+        <div className="min-w-0">
           <h3 className="font-mono text-sm font-semibold text-violet-400">Model Mixer</h3>
           <p className="mt-0.5 text-xs text-zinc-500">
             Combine models across a single task for cost and quality
@@ -285,13 +300,13 @@ export function ModelMixer() {
       </div>
 
       {/* Template selector */}
-      <div className="border-b border-zinc-800 px-5 py-3">
-        <div className="flex flex-wrap gap-2">
+      <div className="border-b border-zinc-800 px-3 py-2.5 sm:px-5 sm:py-3">
+        <div className="flex flex-wrap gap-1.5 sm:gap-2">
           {TEMPLATES.map((t) => (
             <button
               key={t.id}
               onClick={() => handleTemplateChange(t.id)}
-              className={`rounded-md border px-3 py-1.5 font-mono text-xs transition-colors ${
+              className={`rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors sm:px-3 sm:py-1.5 sm:text-xs ${
                 t.id === templateId
                   ? "border-violet-400/50 bg-violet-400/10 text-violet-300"
                   : "border-zinc-700 text-zinc-500 hover:border-zinc-600 hover:text-zinc-400"
@@ -304,7 +319,7 @@ export function ModelMixer() {
       </div>
 
       {/* Pipeline */}
-      <div className="px-5 py-5">
+      <div className="px-3 py-4 sm:px-5 sm:py-5">
         <AnimatePresence mode="wait">
           <motion.div
             key={templateId}
@@ -313,8 +328,8 @@ export function ModelMixer() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            {/* Desktop: horizontal row */}
-            <div className="hidden items-start gap-2 md:flex">
+            {/* Large: horizontal row */}
+            <div className="hidden items-start gap-2 lg:flex">
               {template.steps.map((step, i) => (
                 <div key={step.id} className="flex flex-1 items-start gap-2">
                   <StepCard
@@ -332,6 +347,19 @@ export function ModelMixer() {
               ))}
             </div>
 
+            {/* Medium: 2x2 grid */}
+            <div className="hidden grid-cols-2 gap-2 md:grid lg:hidden">
+              {template.steps.map((step, i) => (
+                <StepCard
+                  key={step.id}
+                  step={step}
+                  modelId={currentAssignments[step.id]}
+                  onModelChange={handleModelChange}
+                  index={i}
+                />
+              ))}
+            </div>
+
             {/* Mobile: vertical stack */}
             <div className="flex flex-col gap-2 md:hidden">
               {template.steps.map((step, i) => (
@@ -344,7 +372,7 @@ export function ModelMixer() {
                   />
                   {i < template.steps.length - 1 && (
                     <div className="flex justify-center text-zinc-700">
-                      <ArrowDown className="h-4 w-4" />
+                      <ArrowDown className="h-3.5 w-3.5" />
                     </div>
                   )}
                 </div>
@@ -355,24 +383,24 @@ export function ModelMixer() {
       </div>
 
       {/* Summary */}
-      <div className="border-t border-zinc-800 bg-zinc-900/40 px-5 py-4">
-        <p className="mb-3 font-mono text-xs font-semibold text-zinc-400">Cost per run</p>
+      <div className="border-t border-zinc-800 bg-zinc-900/40 px-3 py-3 sm:px-5 sm:py-4">
+        <p className="mb-3 font-mono text-xs font-semibold text-zinc-400">Real-world cost</p>
         <div className="space-y-2">
           <CostBar
-            label="Mixed pipeline"
+            label={retries === 1 ? "Mixed pipeline" : "Right model, first try"}
             cost={mixedCost}
             maxCost={maxCost}
             colorClass="bg-violet-400"
             isMixed
           />
           <CostBar
-            label="All Sonnet 4.6"
+            label={retries === 1 ? "All Sonnet 4.6" : `All Sonnet (${retries} attempts)`}
             cost={sonnetCost}
             maxCost={maxCost}
             colorClass="bg-blue-400"
           />
           <CostBar
-            label="All Opus 4.6"
+            label={retries === 1 ? "All Opus 4.6" : `All Opus (${retries} attempts)`}
             cost={opusCost}
             maxCost={maxCost}
             colorClass="bg-zinc-400"
@@ -395,6 +423,38 @@ export function ModelMixer() {
               <span className="font-medium text-emerald-400">{savingsVsOpus}% cheaper</span> than all-Opus
             </span>
           )}
+        </div>
+
+        {/* Retry simulator */}
+        <div className="mt-4 rounded-lg border border-zinc-700/50 bg-zinc-800/40 px-3 py-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <label htmlFor="retry-slider" className="text-[11px] font-medium text-zinc-300">
+              How many attempts does one-model-for-everything need?
+            </label>
+            <span className="font-mono text-[11px] text-violet-400">
+              {retries === 1 ? "1 attempt" : `${retries} attempts`}
+            </span>
+          </div>
+          <input
+            id="retry-slider"
+            type="range"
+            min={1}
+            max={5}
+            step={1}
+            value={retries}
+            onChange={(e) => setRetries(Number(e.target.value))}
+            className="mt-2 h-1.5 w-full cursor-pointer appearance-none rounded-full bg-zinc-700 accent-violet-400 [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-violet-400"
+          />
+          <div className="mt-1 flex justify-between font-mono text-[10px] text-zinc-600">
+            {[1, 2, 3, 4, 5].map((n) => (
+              <span key={n}>{n}</span>
+            ))}
+          </div>
+          <p className="mt-2 text-[11px] leading-relaxed text-zinc-500">
+            {retries === 1
+              ? "Slide to simulate back-and-forth. Using one model for everything often means re-prompting the steps it's not great at."
+              : `Using one model for every step? The planning or review step might need ${retries} attempts before the output is good enough. The mixed pipeline uses the right model per step — so it nails each one first time.`}
+          </p>
         </div>
       </div>
     </div>

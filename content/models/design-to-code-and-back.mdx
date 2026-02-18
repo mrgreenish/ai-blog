@@ -1,0 +1,64 @@
+---
+title: "Design to Code and Back"
+description: "The full loop: Figma MCP for design-to-code, and Claude Code to Figma for pushing live UI back onto the canvas."
+story: "You screenshot a Figma comp and ask the model to build it. The layout looks right — but every spacing value is wrong. There's a better way."
+category: models
+order: 3
+interactiveTools: [model-picker]
+---
+
+Vision capabilities in models have gotten genuinely useful in the last year, but the use cases that work well are narrower than the demos suggest. There's a clear split: vision is excellent for *describing* and *extracting* from images, and unreliable for *precise spatial reasoning* or *pixel-level accuracy*. For design-to-code work specifically, the better answer isn't better vision — it's skipping screenshots altogether.
+
+## What vision actually works for
+
+**UI review from screenshots.** Sending a screenshot of a component and asking "what accessibility issues do you see?" or "does this match the design spec?" works surprisingly well. The model can identify missing focus states, poor contrast, misaligned elements, and layout issues that are hard to catch in code review.
+
+**Extracting structure from diagrams.** Architecture diagrams, ERDs, flowcharts — if you need to turn a visual diagram into a text description or a data structure, vision models do this well. I've used this to extract database schemas from old ERD screenshots and turn whiteboard flows into structured specs.
+
+**Comparing before/after UI states.** Send two screenshots — "before" and "after" a change — and ask the model to describe what changed. Useful for visual regression review when you don't have automated tooling.
+
+## What doesn't work well
+
+**Precise measurements.** "How many pixels is this margin?" — unreliable. The model will give you a number but it's often wrong. Use actual design tools for measurements.
+
+**Reading small text.** If the screenshot has small font sizes or compressed text, accuracy drops significantly. Zoom in or use the source text instead.
+
+**Complex spatial reasoning.** "Is this element centered relative to its container?" — the model might get it right, but I wouldn't trust it for anything that matters. Verify in the browser.
+
+## The Figma MCP: design to code
+
+For design-to-code work, the Figma MCP changes the equation entirely. Instead of sending a screenshot and hoping the model can infer the design intent, you give it structured access to the actual design data: exact colors, spacing values, component variants, and layout constraints. The code output is often closer to production-ready, though it still needs engineering review.
+
+The workflow:
+
+1. Share the Figma node URL or node ID in your prompt
+2. The model reads the design data directly — tokens, variants, layout constraints
+3. Ask it to implement the component
+4. The output uses your actual token values, not guessed ones
+
+This is the best design-to-code workflow I've found for frontend development. The difference between screenshot-based and MCP-based output is significant, especially for spacing and color accuracy. See the [official Figma MCP guide](https://help.figma.com/hc/en-us/articles/32132100833559-Guide-to-the-Figma-MCP-server) for setup instructions, or the [developer docs](https://developers.figma.com/docs/figma-mcp-server/) for the full API reference.
+
+## The reverse: code to Figma
+
+The loop doesn't have to start in Figma. Figma's [Claude Code to Figma](https://www.figma.com/blog/introducing-claude-code-to-figma/) capability (announced February 2026) lets you capture a live rendered UI — from localhost, staging, or production — and import it into Figma as editable frames.
+
+The use case: you've implemented a component or a page. Instead of sharing a URL and waiting for feedback in comments, you push the rendered UI into Figma. The designer can make changes directly in Figma, and you can pull those changes back into the code via the Figma MCP.
+
+This creates a genuinely bidirectional loop:
+
+- **Figma → Code**: the MCP gives the model structured design context for implementation
+- **Code → Figma**: the capture flow pushes the live implementation back onto the canvas for design review
+
+You can capture multiple screens in a single session, preserving sequence and context — useful for multi-step flows where the full experience needs to be reviewed together.
+
+## When to use each approach
+
+| Situation | Approach |
+|---|---|
+| Implementing a new component from design | Figma MCP → code |
+| Reviewing an implementation with a designer | Code → Figma capture |
+| Checking accessibility or visual issues | Screenshot + vision |
+| Syncing design tokens to Tailwind config | Figma MCP |
+| Getting design feedback on a flow | Capture multiple screens → Figma |
+
+<ModelPicker />

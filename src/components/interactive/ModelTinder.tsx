@@ -504,7 +504,7 @@ function ModelCard({
   if (!isTop) {
     return (
       <div
-        className="absolute inset-0"
+        className="absolute left-0 right-0 top-0"
         style={{ transform: `scale(${scale}) translateY(${yOffset}px)`, zIndex: 10 - stackIndex }}
       >
         <CardContent model={model} />
@@ -514,7 +514,7 @@ function ModelCard({
 
   return (
     <motion.div
-      className="absolute inset-0 cursor-grab active:cursor-grabbing"
+      className="absolute left-0 right-0 top-0 cursor-grab active:cursor-grabbing"
       style={{ x, rotate, zIndex: 20 }}
       drag="x"
       dragConstraints={{ left: 0, right: 0 }}
@@ -546,14 +546,14 @@ function ModelCard({
 
 function CardContent({ model }: { model: Model }) {
   return (
-    <div className="flex h-full w-full flex-col overflow-hidden rounded-2xl border border-zinc-700 bg-zinc-900 shadow-2xl">
+    <div className="flex w-full flex-col overflow-hidden rounded-2xl border border-zinc-700 bg-zinc-900 shadow-2xl">
       <div
-        className={`relative shrink-0 flex h-44 items-center justify-center bg-linear-to-br ${model.gradientFrom} ${model.gradientTo} sm:h-52`}
+        className={`relative shrink-0 flex h-44 items-center justify-center bg-linear-to-br ${model.gradientFrom} ${model.gradientTo} sm:h-48`}
       >
         <span className="select-none text-7xl sm:text-8xl">{model.emoji}</span>
         <div className="absolute inset-0 bg-black/10" />
       </div>
-      <div className="overflow-y-auto overscroll-contain p-5">
+      <div className="p-5">
         <div className="mb-3 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
           <h3 className="text-xl font-bold text-white">{model.name}</h3>
           <span className={`text-sm font-medium ${model.accentColor}`}>{model.tagline}</span>
@@ -970,7 +970,11 @@ export function ModelTinder() {
 
         {phase === "swiping" && (
           <div className="flex flex-col items-center gap-6">
-            <div className="relative h-[460px] w-full max-w-sm sm:h-[480px]">
+            <div className="relative w-full max-w-sm">
+              {/* Ghost card — sets the container height to match card content */}
+              <div className="invisible pointer-events-none" aria-hidden>
+                <CardContent model={MODELS[0]} />
+              </div>
               <AnimatePresence>
                 {visibleModels.map((model, i) => (
                   <ModelCard
@@ -983,7 +987,7 @@ export function ModelTinder() {
                 ))}
               </AnimatePresence>
               {visibleModels.length === 0 && (
-                <div className="flex h-full items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900">
+                <div className="absolute inset-0 flex items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900">
                   <p className="text-sm text-zinc-500">All done!</p>
                 </div>
               )}

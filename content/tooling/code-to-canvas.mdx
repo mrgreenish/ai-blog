@@ -6,21 +6,23 @@ order: 6
 interactiveTools: [workflow-recipe]
 ---
 
-The Figma MCP is usually talked about in one direction: design to code. But the reverse flow — code to Figma — is equally powerful and less discussed. The ability to send a live rendered UI into Figma as editable frames closes the loop between implementation and design.
+The Figma MCP is usually talked about in one direction: design to code. But the reverse flow — code to Figma — is equally powerful and less discussed. Figma's [Claude Code to Figma](https://www.figma.com/blog/introducing-claude-code-to-figma/) capability (announced February 2026) lets you capture a live rendered UI from localhost, staging, or production and push it into Figma as editable frames, closing the loop between implementation and design.
 
 The use case: you've implemented a component or a page. You want a designer to review it, suggest changes, and iterate. Instead of sharing a URL and waiting for feedback in comments, you push the rendered UI into Figma as an editable frame. The designer can make changes directly in Figma, and you can pull those changes back into the code.
 
 ## How it works
 
-The Figma "Code to Canvas" flow captures a live rendered UI — from localhost, staging, or production — and imports it into Figma as editable frames. You can pair this with MCP workflows for faster design-code iteration, and the imported frames can be modified by designers using standard Figma tools.
+The Claude Code to Figma flow captures a live rendered UI — from localhost, staging, or production — and imports it into Figma as editable frames. You can pair this with MCP workflows for faster design-code iteration, and the imported frames can be modified by designers using standard Figma tools.
+
+You can capture multiple screens in a single session, preserving sequence and context — so multi-step flows make sense when reviewed together rather than as isolated screenshots.
 
 The workflow:
 
 1. Implement the UI in code
 2. Push to a preview URL (or use localhost)
-3. Use the Figma MCP to capture the rendered UI and import it as a Figma frame
+3. Capture the rendered UI via Claude Code to Figma — it imports as an editable Figma frame
 4. Designer reviews and iterates in Figma
-5. Pull the updated design context back into the coding loop via the Figma MCP
+5. Pull the updated design context back into the coding loop via the [Figma MCP](https://developers.figma.com/docs/figma-mcp-server/)
 
 ## The bidirectional loop
 

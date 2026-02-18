@@ -13,6 +13,7 @@ import { ConfigGenerator } from "@/components/interactive/ConfigGenerator";
 import { CostCalculator } from "@/components/interactive/CostCalculator";
 import { DiffViewer } from "@/components/interactive/DiffViewer";
 import { ContextWindowViz } from "@/components/interactive/ContextWindowViz";
+import { InfoBlock } from "@/components/content/InfoBlock";
 import type { Metadata } from "next";
 import type { ArticleFrontmatter } from "@/lib/types";
 
@@ -54,6 +55,7 @@ export default async function WorkflowArticlePage({ params }: Props) {
       CostCalculator,
       DiffViewer,
       ContextWindowViz,
+      InfoBlock,
     },
     options: {
       mdxOptions: {
