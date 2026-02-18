@@ -42,6 +42,11 @@ const QUESTIONS: Question[] = [
         description: "Documentation or prose",
       },
       {
+        id: "reasoning",
+        label: "Reasoning",
+        description: "Complex logic, debugging, tradeoffs",
+      },
+      {
         id: "vision",
         label: "Vision",
         description: "Images, screenshots, diagrams",
@@ -141,11 +146,13 @@ const QUESTIONS: Question[] = [
 ];
 
 type Answers = Record<string, string>;
+type Confidence = "strong" | "good" | "close";
 
 interface Recommendation {
   model: Model;
   runnerUp: Model;
   reason: string;
+  confidence: Confidence;
 }
 
 function score(modelId: string, answers: Answers): number {
@@ -159,6 +166,7 @@ function score(modelId: string, answers: Answers): number {
 
   if (modelId === "gemini-flash") {
     if (task === "coding") points += 2;
+    if (task === "reasoning") points += 1;
     if (task === "vision") points += 3;
     if (scope === "targeted") points += 3;
     if (stakes === "production") points += 3;
@@ -169,19 +177,9 @@ function score(modelId: string, answers: Answers): number {
     if (autonomy === "drive") points -= 3;
   }
 
-  if (modelId === "gpt4o") {
-    if (task === "coding") points += 3;
-    if (scope === "multifile") points += 2;
-    if (stakes === "internal") points += 3;
-    if (stakes === "prototype") points += 2;
-    if (priority === "balance") points += 4;
-    if (priority === "speed") points += 2;
-    if (autonomy === "gaps") points += 3;
-    if (autonomy === "targeted") points += 1;
-  }
-
   if (modelId === "sonnet-4.6") {
     if (task === "coding") points += 2;
+    if (task === "reasoning") points += 2;
     if (task === "writing") points += 3;
     if (task === "analysis") points += 3;
     if (scope === "multifile") points += 3;
@@ -196,6 +194,7 @@ function score(modelId: string, answers: Answers): number {
 
   if (modelId === "opus-4.6") {
     if (task === "coding") points += 3;
+    if (task === "reasoning") points += 4;
     if (task === "analysis") points += 3;
     if (task === "writing") points += 2;
     if (scope === "architecture") points += 4;
@@ -236,6 +235,29 @@ function score(modelId: string, answers: Answers): number {
     if (autonomy === "targeted") points -= 3;
   }
 
+  // ── Interaction effects ──────────────────────────────────────────────────
+  // Purely additive scoring has blind spots when dimensions interact.
+  // These adjustments handle combinations that the per-model blocks can't.
+
+  // "autonomous scope" + "drive autonomy" overlap significantly — dampen
+  // the double-counting for models that benefit from both.
+  if (scope === "autonomous" && autonomy === "drive") {
+    if (modelId === "composer-1-5") points -= 2;
+  }
+
+  // Critical stakes + autonomous scope = "I need the best model to handle
+  // a hard task end-to-end." Boost frontier, penalize mid-tier agentic.
+  if (stakes === "critical" && scope === "autonomous") {
+    if (modelId === "opus-4.6") points += 2;
+  }
+
+  // Critical + accuracy is the strongest quality signal. Double down on
+  // the model that actually reasons through logic.
+  if (stakes === "critical" && priority === "accuracy") {
+    if (modelId === "opus-4.6") points += 2;
+    if (modelId === "composer-1-5") points -= 1;
+  }
+
   return points;
 }
 
@@ -245,6 +267,9 @@ function getRecommendation(answers: Answers): Recommendation {
 
   const winner = scores[0].model;
   const runnerUp = scores[1].model;
+  const margin = scores[0].points - scores[1].points;
+  const confidence: Confidence =
+    margin >= 6 ? "strong" : margin >= 3 ? "good" : "close";
 
   const reasonKey = [answers.scope, answers.task, answers.stakes, answers.priority, answers.autonomy].find(
     (key) => key && winner.why[key]
@@ -253,7 +278,7 @@ function getRecommendation(answers: Answers): Recommendation {
     ? winner.why[reasonKey]
     : `${winner.name} is the right fit for this combination of task type, stakes, and scope.`;
 
-  return { model: winner, runnerUp, reason };
+  return { model: winner, runnerUp, reason, confidence };
 }
 
 function ProgressDots({
@@ -320,6 +345,24 @@ function QuestionStep({
   );
 }
 
+const CONFIDENCE_STYLES: Record<
+  Confidence,
+  { label: string; classes: string }
+> = {
+  strong: {
+    label: "Strong match",
+    classes: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20",
+  },
+  good: {
+    label: "Good match",
+    classes: "text-blue-400 bg-blue-400/10 border-blue-400/20",
+  },
+  close: {
+    label: "Close call",
+    classes: "text-amber-400 bg-amber-400/10 border-amber-400/20",
+  },
+};
+
 function ResultScreen({
   recommendation,
   onRestart,
@@ -327,7 +370,8 @@ function ResultScreen({
   recommendation: Recommendation;
   onRestart: () => void;
 }) {
-  const { model, runnerUp, reason } = recommendation;
+  const { model, runnerUp, reason, confidence } = recommendation;
+  const badge = CONFIDENCE_STYLES[confidence];
 
   return (
     <motion.div
@@ -348,6 +392,11 @@ function ResultScreen({
             <h3 className="text-lg font-bold text-white">{model.name}</h3>
             <span className={`text-xs font-medium ${model.accentColor}`}>
               {model.tagline}
+            </span>
+            <span
+              className={`rounded-full border px-2 py-0.5 text-[10px] font-medium ${badge.classes}`}
+            >
+              {badge.label}
             </span>
           </div>
           <p className="text-sm leading-relaxed text-zinc-300">{reason}</p>

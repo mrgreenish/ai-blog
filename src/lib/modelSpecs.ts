@@ -253,80 +253,6 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     },
   },
   {
-    id: "o3",
-    name: "o3",
-    provider: "OpenAI",
-    inputPer1M: 2.00,
-    outputPer1M: 8.00,
-    tier: "balanced",
-    contextWindowTokens: 200_000,
-    tagline: "The Reasoner",
-    emoji: "🔬",
-    gradientFrom: "from-green-600",
-    gradientTo: "to-emerald-500",
-    accentColor: "text-green-400",
-    contextBarColor: "bg-green-500",
-    costColor: "text-zinc-300",
-    why: {},
-    whenWrong: "For routine tasks where its latency and cost aren't justified.",
-    traits: [
-      "Strong multi-step reasoning",
-      "Traces execution paths carefully",
-      "Good at constraint-heavy tasks",
-    ],
-    bestFor: "Complex debugging and architecture decisions",
-    worstFor: "Fast iteration or high-volume pipelines",
-    benchmark: {
-      correctServerAction: false,
-      followedConstraints: false,
-      madeUpDocs: false,
-      hiddenBugsInRefactor: false,
-    },
-  },
-  {
-    id: "gpt4o",
-    name: "GPT-4o",
-    provider: "OpenAI",
-    inputPer1M: 2.50,
-    outputPer1M: 10.00,
-    tier: "balanced",
-    contextWindowTokens: 128_000,
-    tagline: "The Balanced One",
-    emoji: "⚡",
-    gradientFrom: "from-emerald-600",
-    gradientTo: "to-teal-500",
-    accentColor: "text-emerald-400",
-    contextBarColor: "bg-zinc-400",
-    costColor: "text-zinc-300",
-    why: {
-      coding:
-        "GPT produces the kind of code that feels like the accepted Stack Overflow answer — sensible, readable, and something your team will understand.",
-      everyday:
-        "GPT's pragmatic defaults make it ideal for the steady stream of everyday shipping tasks. It fills in reasonable gaps without overstepping.",
-      internal:
-        "For internal tools where 'good enough' is genuinely good enough, GPT's balanced approach keeps you moving without overthinking.",
-      format:
-        "GPT is the most consistent at following output format instructions. If you have structured output requirements, it delivers.",
-      balance:
-        "GPT sits in the sweet spot between speed and accuracy. It's rarely the best at either extreme, but it's reliably solid across the middle.",
-    },
-    whenWrong:
-      "When you need genuine insight or creative problem-solving. GPT optimizes for giving you what you asked for, not what you actually need. It won't surprise you with a better approach.",
-    traits: [
-      "Pragmatic defaults — Stack Overflow energy",
-      "Measured initiative — fills gaps without overstepping",
-      "Best at following output format instructions",
-    ],
-    bestFor: "Everyday shipping in team codebases",
-    worstFor: "Tasks that need genuine creative insight",
-    benchmark: {
-      correctServerAction: true,
-      followedConstraints: false,
-      madeUpDocs: false,
-      hiddenBugsInRefactor: true,
-    },
-  },
-  {
     id: "sonnet-4.6",
     name: "Claude Sonnet 4.6",
     provider: "Anthropic",
@@ -397,6 +323,8 @@ export const MODEL_REGISTRY: ModelSpec[] = [
         "Opus traces actual logic, not just patterns. For critical systems where a subtle bug has real consequences, this depth is worth the cost.",
       architecture:
         "Opus thinks in systems and abstractions. It'll identify that your current abstraction will cause problems two features from now — and explain why.",
+      reasoning:
+        "Opus doesn't pattern-match — it actually reasons. Multi-step logic, constraint satisfaction, debugging subtle interactions — this is the task type where the gap between Opus and everything else is widest.",
       hard:
         "Where other models pattern-match, Opus reasons through the problem. It catches bugs that require understanding three levels of indirection.",
       accuracy:
@@ -525,7 +453,6 @@ export function getCostCalculatorModels() {
     "haiku-4.5",
     "sonnet-4.6",
     "gpt4o-mini",
-    "gpt4o",
     "gemini-flash",
     "composer-1",
     "composer-1-5",
@@ -545,7 +472,6 @@ export function getCostCalculatorModels() {
 export function getContextWindowModels() {
   const ids = [
     "sonnet-4.6",
-    "gpt4o",
     "gemini-flash",
     "composer-1",
     "composer-1-5",
@@ -564,7 +490,6 @@ export function getContextWindowModels() {
 export function getPickerModels() {
   const ids = [
     "gemini-flash",
-    "gpt4o",
     "sonnet-4.6",
     "opus-4.6",
     "composer-1",
@@ -590,7 +515,6 @@ export function getPickerModels() {
 export function getTinderModels() {
   const ids = [
     "gemini-flash",
-    "gpt4o",
     "sonnet-4.6",
     "opus-4.6",
     "composer-1",
@@ -629,7 +553,7 @@ export const BENCHMARK_CHECKS: BenchmarkCheck[] = [
 
 /** Models shown as columns in DevBenchmark */
 export function getDevBenchmarkColumns() {
-  const ids = ["sonnet-4.6", "gpt4o", "haiku-4.5", "composer-1-5"];
+  const ids = ["sonnet-4.6", "gemini-flash", "haiku-4.5", "composer-1-5"];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
     return {
