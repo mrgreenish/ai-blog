@@ -1,15 +1,8 @@
 import { InteractivePlaceholder } from "./InteractivePlaceholder";
 import { Calculator } from "lucide-react";
+import { getCostCalculatorModels } from "@/lib/modelSpecs";
 
-const MODELS = [
-  { name: "Claude Haiku 3.5", perM_in: 0.80, perM_out: 4.00, color: "text-emerald-400" },
-  { name: "Claude Sonnet 4", perM_in: 3.00, perM_out: 15.00, color: "text-blue-400" },
-  { name: "GPT-4o mini", perM_in: 0.15, perM_out: 0.60, color: "text-zinc-300" },
-  { name: "GPT-4o", perM_in: 2.50, perM_out: 10.00, color: "text-zinc-300" },
-  { name: "Gemini Flash 2.0", perM_in: 0.10, perM_out: 0.40, color: "text-yellow-400" },
-  { name: "Cursor Composer-1", perM_in: 1.00, perM_out: 5.00, color: "text-sky-400" },
-  { name: "Cursor Composer-1.5", perM_in: 3.00, perM_out: 15.00, color: "text-fuchsia-400" },
-];
+const MODELS = getCostCalculatorModels();
 
 const EXAMPLE_TOKENS = { in: 2000, out: 500, runsPerDay: 50 };
 

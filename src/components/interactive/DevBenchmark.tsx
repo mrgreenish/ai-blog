@@ -1,12 +1,8 @@
 import { InteractivePlaceholder } from "./InteractivePlaceholder";
 import { ClipboardCheck } from "lucide-react";
+import { BENCHMARK_CHECKS, getDevBenchmarkColumns } from "@/lib/modelSpecs";
 
-const CHECKS = [
-  { check: "Correct Next.js server action?", sonnet: true, gpt4o: true, haiku: false, composer15: true },
-  { check: "Followed constraints without detours?", sonnet: true, gpt4o: false, haiku: true, composer15: true },
-  { check: "Made up docs or citations?", sonnet: false, gpt4o: false, haiku: false, composer15: false },
-  { check: "Introduced hidden bugs in refactor?", sonnet: false, gpt4o: true, haiku: true, composer15: false },
-];
+const COLUMNS = getDevBenchmarkColumns();
 
 function Pass({ val }: { val: boolean }) {
   return (
@@ -24,20 +20,22 @@ function Preview() {
           <thead>
             <tr className="border-b border-zinc-800">
               <th className="pb-2 text-left font-mono text-zinc-500 pr-4">Check</th>
-              <th className="pb-2 text-center font-mono text-blue-400 px-3">Sonnet</th>
-              <th className="pb-2 text-center font-mono text-emerald-400 px-3">GPT-4o</th>
-              <th className="pb-2 text-center font-mono text-zinc-400 px-3">Haiku</th>
-              <th className="pb-2 text-center font-mono text-fuchsia-400 px-3">Composer-1.5</th>
+              {COLUMNS.map((col) => (
+                <th key={col.id} className={`pb-2 text-center font-mono ${col.color} px-3`}>
+                  {col.label}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody className="space-y-1">
-            {CHECKS.map((c) => (
+            {BENCHMARK_CHECKS.map((c) => (
               <tr key={c.check} className="border-b border-zinc-800/50">
                 <td className="py-2 pr-4 text-zinc-400 leading-tight">{c.check}</td>
-                <td className="py-2 text-center px-3"><Pass val={c.sonnet} /></td>
-                <td className="py-2 text-center px-3"><Pass val={c.gpt4o} /></td>
-                <td className="py-2 text-center px-3"><Pass val={c.haiku} /></td>
-                <td className="py-2 text-center px-3"><Pass val={c.composer15} /></td>
+                {COLUMNS.map((col) => (
+                  <td key={col.id} className="py-2 text-center px-3">
+                    <Pass val={col.benchmark[c.key]} />
+                  </td>
+                ))}
               </tr>
             ))}
           </tbody>

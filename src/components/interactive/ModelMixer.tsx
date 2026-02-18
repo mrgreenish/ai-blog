@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { Shuffle, ChevronDown, ArrowRight, ArrowDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getMixerModels } from "@/lib/modelSpecs";
+import type { Tier } from "@/lib/modelSpecs";
 
 // --- Types ---
-
-type Tier = "fast" | "balanced" | "reasoning";
 
 interface Model {
   id: string;
@@ -36,21 +36,7 @@ interface Template {
 
 // --- Data ---
 
-const MODELS: Model[] = [
-  // Fast tier
-  { id: "gemini-flash", name: "Gemini 2.0 Flash", provider: "Google", tier: "fast", inputPer1M: 0.10, outputPer1M: 0.40 },
-  { id: "gpt4o-mini", name: "GPT-4o mini", provider: "OpenAI", tier: "fast", inputPer1M: 0.15, outputPer1M: 0.60 },
-  { id: "deepseek-r1", name: "DeepSeek R1", provider: "DeepSeek", tier: "fast", inputPer1M: 0.55, outputPer1M: 2.19 },
-  { id: "haiku-4.5", name: "Claude Haiku 4.5", provider: "Anthropic", tier: "fast", inputPer1M: 1.00, outputPer1M: 5.00 },
-  // Balanced tier
-  { id: "composer-1", name: "Composer 1", provider: "Cursor", tier: "balanced", inputPer1M: 1.25, outputPer1M: 10.00 },
-  { id: "o3", name: "o3", provider: "OpenAI", tier: "balanced", inputPer1M: 2.00, outputPer1M: 8.00 },
-  { id: "gpt4o", name: "GPT-4o", provider: "OpenAI", tier: "balanced", inputPer1M: 2.50, outputPer1M: 10.00 },
-  { id: "sonnet-4.6", name: "Claude Sonnet 4.6", provider: "Anthropic", tier: "balanced", inputPer1M: 3.00, outputPer1M: 15.00 },
-  // Reasoning tier
-  { id: "opus-4.6", name: "Claude Opus 4.6", provider: "Anthropic", tier: "reasoning", inputPer1M: 5.00, outputPer1M: 25.00 },
-  { id: "o3-pro", name: "o3-pro", provider: "OpenAI", tier: "reasoning", inputPer1M: 20.00, outputPer1M: 80.00 },
-];
+const MODELS: Model[] = getMixerModels();
 
 const MODEL_BY_ID = Object.fromEntries(MODELS.map((m) => [m.id, m]));
 

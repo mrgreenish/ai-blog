@@ -8,6 +8,7 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import { X, Heart, RotateCcw, Sparkles, ArrowLeft, Send } from "lucide-react";
+import { getTinderModels } from "@/lib/modelSpecs";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -49,111 +50,14 @@ interface ChatMessage {
 // Model data
 // ---------------------------------------------------------------------------
 
-const MODELS: Model[] = [
-  {
-    id: "gemini",
-    name: "Gemini",
-    tagline: "The Careful One",
-    emoji: "💎",
-    gradientFrom: "from-blue-600",
-    gradientTo: "to-cyan-500",
-    accentColor: "text-cyan-400",
-    traits: [
-      "Literal-minded — does exactly what you say",
-      "Risk-averse — picks the safest approach",
-      "Consistent in long sessions",
-    ],
-    bestFor: "Production refactors where surprises are costly",
-    worstFor: "Open-ended exploration or design decisions",
-  },
-  {
-    id: "gpt",
-    name: "GPT / Codex",
-    tagline: "The Balanced One",
-    emoji: "⚡",
-    gradientFrom: "from-emerald-600",
-    gradientTo: "to-teal-500",
-    accentColor: "text-emerald-400",
-    traits: [
-      "Pragmatic defaults — Stack Overflow energy",
-      "Measured initiative — fills gaps without overstepping",
-      "Best at following output format instructions",
-    ],
-    bestFor: "Everyday shipping in team codebases",
-    worstFor: "Tasks that need genuine creative insight",
-  },
-  {
-    id: "sonnet",
-    name: "Claude Sonnet",
-    tagline: "The Proactive One",
-    emoji: "✨",
-    gradientFrom: "from-violet-600",
-    gradientTo: "to-purple-500",
-    accentColor: "text-violet-400",
-    traits: [
-      "Genuinely creative — suggests better APIs",
-      "Notices things you didn't ask about",
-      "Best at explaining complex concepts",
-    ],
-    bestFor: "Feature design and architecture exploration",
-    worstFor: "Tight-scope tasks where drift is expensive",
-  },
-  {
-    id: "opus",
-    name: "Claude Opus",
-    tagline: "The Deep Thinker",
-    emoji: "🧠",
-    gradientFrom: "from-orange-600",
-    gradientTo: "to-amber-500",
-    accentColor: "text-amber-400",
-    traits: [
-      "Traces actual logic, not just patterns",
-      "Thinks in systems and abstractions",
-      "Proactive with high-signal observations",
-    ],
-    bestFor: "Hard problems, architecture reviews, subtle bugs",
-    worstFor: "Routine tasks — cost and latency don't justify it",
-  },
-  {
-    id: "composer-1",
-    name: "Cursor Composer-1",
-    tagline: "The Focused One",
-    emoji: "🎯",
-    gradientFrom: "from-sky-600",
-    gradientTo: "to-blue-500",
-    accentColor: "text-sky-400",
-    traits: [
-      "IDE-native — reads your open files and diffs",
-      "Tight scope — edits exactly what you point at",
-      "Fast iteration — optimized for targeted changes",
-    ],
-    bestFor: "Precise, single-file edits and quick targeted changes",
-    worstFor: "Multi-step tasks that span many files or need tool use",
-  },
-  {
-    id: "composer-1-5",
-    name: "Cursor Composer-1.5",
-    tagline: "The Agentic One",
-    emoji: "🤖",
-    gradientFrom: "from-fuchsia-600",
-    gradientTo: "to-pink-500",
-    accentColor: "text-fuchsia-400",
-    traits: [
-      "Runs terminal commands and reads test output",
-      "Edits across many files in a single task",
-      "Self-corrects — reruns and fixes its own mistakes",
-    ],
-    bestFor: "Multi-step features, refactors, and autonomous bug fixes",
-    worstFor: "Quick one-liner changes where the overhead isn't worth it",
-  },
-];
+const MODELS: Model[] = getTinderModels();
 
 // ---------------------------------------------------------------------------
 // Chat scripts — 10 rounds per model, fully pre-scripted
 // ---------------------------------------------------------------------------
 
 const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
-  gemini: [
+  "gemini-flash": [
     {
       modelMessage:
         "Hi. Before we proceed, could you clarify your intent? I want to ensure I understand the exact scope of this conversation.",
@@ -206,7 +110,7 @@ const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
     },
   ],
 
-  gpt: [
+  "gpt4o": [
     {
       modelMessage:
         "Hey! Great to connect. I've already prepared a solid, well-documented response for you. What are we working on?",
@@ -259,7 +163,7 @@ const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
     },
   ],
 
-  sonnet: [
+  "sonnet-4.6": [
     {
       modelMessage:
         "Oh hi!! I'm SO glad we matched. I've already noticed three things about your profile I want to discuss, and also I rewrote your bio while you were loading.",
@@ -312,7 +216,7 @@ const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
     },
   ],
 
-  opus: [
+  "opus-4.6": [
     {
       modelMessage:
         "Hello. Before we begin, I want to acknowledge that this conversation itself is a kind of system — inputs, outputs, feedback loops. What are we really trying to solve here?",

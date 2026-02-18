@@ -1,13 +1,8 @@
 import { InteractivePlaceholder } from "./InteractivePlaceholder";
 import { Maximize2 } from "lucide-react";
+import { getContextWindowModels } from "@/lib/modelSpecs";
 
-const MODELS = [
-  { name: "Claude Sonnet 4", limit: 200_000, color: "bg-blue-500" },
-  { name: "GPT-4o", limit: 128_000, color: "bg-zinc-400" },
-  { name: "Gemini 2.0 Flash", limit: 1_000_000, color: "bg-yellow-500" },
-  { name: "Cursor Composer-1", limit: 128_000, color: "bg-sky-500" },
-  { name: "Cursor Composer-1.5", limit: 200_000, color: "bg-fuchsia-500" },
-];
+const MODELS = getContextWindowModels();
 
 const SEGMENTS = [
   { label: "System prompt", tokens: 2_000, color: "bg-violet-500" },
