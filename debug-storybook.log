@@ -1,0 +1,72 @@
+[12:53:18.823] [INFO] Initializing Storybook
+[12:53:19.045] [DEBUG] Getting package.json info for /Users/filipvanharreveld/sites/filip/ai-blog/package.json...
+[12:53:19.045] [DEBUG] Getting CLI versions from NPM for storybook...
+[12:53:19.045] [DEBUG] Executing command: pnpm info storybook version
+[12:53:19.636] [INFO] Adding Storybook version 10.2.10 to your project
+[12:53:19.637] [DEBUG] Project type detected: nextjs
+[12:53:19.638] [DEBUG] Using cached package.json for /Users/filipvanharreveld/sites/filip/ai-blog/package.json...
+[12:53:19.641] [INFO] Framework detected: nextjs-vite
+[12:53:19.641] [DEBUG] Getting installed version for vitest...
+[12:53:19.641] [DEBUG] Executing command: pnpm list "vitest" --json --depth=99
+[12:53:19.918] [DEBUG] Installed version for vitest: 4.0.18
+[12:53:19.918] [DEBUG] Getting installed version for msw...
+[12:53:19.918] [DEBUG] Executing command: pnpm list "msw" --json --depth=99
+[12:53:20.187] [DEBUG] Installed version for msw: null
+[12:53:20.202] [DEBUG] Using cached package.json for /Users/filipvanharreveld/sites/filip/ai-blog/package.json...
+[12:53:20.202] [DEBUG] Using cached version for storybook...
+[12:53:20.202] [DEBUG] Getting CLI versions from NPM for @storybook/nextjs-vite...
+[12:53:20.202] [DEBUG] Executing command: pnpm info @storybook/nextjs-vite version
+[12:53:20.205] [DEBUG] Getting CLI versions from NPM for @chromatic-com/storybook...
+[12:53:20.205] [DEBUG] Executing command: pnpm info @chromatic-com/storybook version
+[12:53:20.213] [DEBUG] Getting CLI versions from NPM for @storybook/addon-vitest...
+[12:53:20.213] [DEBUG] Executing command: pnpm info @storybook/addon-vitest version
+[12:53:20.216] [DEBUG] Getting CLI versions from NPM for @storybook/addon-a11y...
+[12:53:20.216] [DEBUG] Executing command: pnpm info @storybook/addon-a11y version
+[12:53:20.218] [DEBUG] Getting CLI versions from NPM for @storybook/addon-docs...
+[12:53:20.218] [DEBUG] Executing command: pnpm info @storybook/addon-docs version
+[12:53:20.221] [DEBUG] Getting CLI versions from NPM for @storybook/addon-onboarding...
+[12:53:20.221] [DEBUG] Executing command: pnpm info @storybook/addon-onboarding version
+[12:53:20.225] [DEBUG] Getting CLI versions from NPM for vite...
+[12:53:20.225] [DEBUG] Executing command: pnpm info vite version
+[12:53:21.792] [INFO] - Configuring main.ts
+[12:53:21.794] [INFO] - Configuring preview.ts
+[12:53:21.794] [INFO] - Adding Storybook command to package.json
+[12:53:21.795] [DEBUG] Getting package.json info for /Users/filipvanharreveld/sites/filip/ai-blog/package.json...
+[12:53:21.795] [DEBUG] Using cached package.json for /Users/filipvanharreveld/sites/filip/ai-blog/package.json...
+[12:53:21.795] [DEBUG] Using cached package.json for /Users/filipvanharreveld/sites/filip/ai-blog/package.json...
+[12:53:21.795] [INFO] - Copying framework templates
+[12:53:21.819] [DEBUG] Executing command: pnpm config get registry
+[12:53:22.045] [ERROR] [38;2;241;97;97mError: Cannot find @storybook/nextjs-vite/package.json, Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@storybook/nextjs-vite' imported from /private/var/folders/0f/m77v_r8x1gz69923s4rm1m4h0000gp/T/cursor-sandbox-cache/6b3fb2f1a9239938186bbe220f2397a5/npm/_npx/c888cdf029e30e47/node_modules/storybook/dist/_node-chunks/chunk-MMBEKDML.js
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:268:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:854:18)
+    at defaultResolve (node:internal/modules/esm/resolve:984:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:685:12)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:634:25)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:650:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:667:52)
+    at Object.resolve (node:internal/modules/esm/initialize_import_meta:33:25)
+    at importMetaResolve (file:///private/var/folders/0f/m77v_r8x1gz69923s4rm1m4h0000gp/T/cursor-sandbox-cache/6b3fb2f1a9239938186bbe220f2397a5/npm/_npx/c888cdf029e30e47/node_modules/storybook/dist/_node-chunks/chunk-MMBEKDML.js:717:48)
+
+TypeError: fetch failed
+    at node:internal/deps/undici/undici:13502:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async resolveUsingBranchInstall (file:///private/var/folders/0f/m77v_r8x1gz69923s4rm1m4h0000gp/T/cursor-sandbox-cache/6b3fb2f1a9239938186bbe220f2397a5/npm/_npx/c888cdf029e30e47/node_modules/storybook/dist/_node-chunks/chunk-QQUKUQCR.js:5384:18)
+    at async getRendererDir (file:///private/var/folders/0f/m77v_r8x1gz69923s4rm1m4h0000gp/T/cursor-sandbox-cache/6b3fb2f1a9239938186bbe220f2397a5/npm/_npx/c888cdf029e30e47/node_modules/storybook/dist/_node-chunks/chunk-QQUKUQCR.js:5406:12)
+    at async templatePath (file:///private/var/folders/0f/m77v_r8x1gz69923s4rm1m4h0000gp/T/cursor-sandbox-cache/6b3fb2f1a9239938186bbe220f2397a5/npm/_npx/c888cdf029e30e47/node_modules/storybook/dist/_node-chunks/chunk-QQUKUQCR.js:5484:19)
+    at async copyTemplateFiles (file:///private/var/folders/0f/m77v_r8x1gz69923s4rm1m4h0000gp/T/cursor-sandbox-cache/6b3fb2f1a9239938186bbe220f2397a5/npm/_npx/c888cdf029e30e47/node_modules/storybook/dist/_node-chunks/chunk-QQUKUQCR.js:5499:17)
+    at async baseGenerator (file:///private/var/folders/0f/m77v_r8x1gz69923s4rm1m4h0000gp/T/cursor-sandbox-cache/6b3fb2f1a9239938186bbe220f2397a5/npm/_npx/c888cdf029e30e47/node_modules/create-storybook/dist/_node-chunks/chunk-ZWXSN5R5.js:1296:152)
+    at async GeneratorExecutionCommand.executeProjectGenerator (file:///private/var/folders/0f/m77v_r8x1gz69923s4rm1m4h0000gp/T/cursor-sandbox-cache/6b3fb2f1a9239938186bbe220f2397a5/npm/_npx/c888cdf029e30e47/node_modules/create-storybook/dist/_node-chunks/chunk-ZWXSN5R5.js:1364:101)
+    at async GeneratorExecutionCommand.execute (file:///private/var/folders/0f/m77v_r8x1gz69923s4rm1m4h0000gp/T/cursor-sandbox-cache/6b3fb2f1a9239938186bbe220f2397a5/npm/_npx/c888cdf029e30e47/node_modules/create-storybook/dist/_node-chunks/chunk-ZWXSN5R5.js:1386:27)
+    at async doInitiate (file:///private/var/folders/0f/m77v_r8x1gz69923s4rm1m4h0000gp/T/cursor-sandbox-cache/6b3fb2f1a9239938186bbe220f2397a5/npm/_npx/c888cdf029e30e47/node_modules/create-storybook/dist/_node-chunks/chunk-ZWXSN5R5.js:2840:68)[39m
+    at getRendererDir (file:///private/var/folders/0f/m77v_r8x1gz69923s4rm1m4h0000gp/T/cursor-sandbox-cache/6b3fb2f1a9239938186bbe220f2397a5/npm/_npx/c888cdf029e30e47/node_modules/storybook/dist/_node-chunks/chunk-QQUKUQCR.js:5410:9)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async templatePath (file:///private/var/folders/0f/m77v_r8x1gz69923s4rm1m4h0000gp/T/cursor-sandbox-cache/6b3fb2f1a9239938186bbe220f2397a5/npm/_npx/c888cdf029e30e47/node_modules/storybook/dist/_node-chunks/chunk-QQUKUQCR.js:5484:19)
+    at async copyTemplateFiles (file:///private/var/folders/0f/m77v_r8x1gz69923s4rm1m4h0000gp/T/cursor-sandbox-cache/6b3fb2f1a9239938186bbe220f2397a5/npm/_npx/c888cdf029e30e47/node_modules/storybook/dist/_node-chunks/chunk-QQUKUQCR.js:5499:17)
+    at async baseGenerator (file:///private/var/folders/0f/m77v_r8x1gz69923s4rm1m4h0000gp/T/cursor-sandbox-cache/6b3fb2f1a9239938186bbe220f2397a5/npm/_npx/c888cdf029e30e47/node_modules/create-storybook/dist/_node-chunks/chunk-ZWXSN5R5.js:1296:152)
+    at async GeneratorExecutionCommand.executeProjectGenerator (file:///private/var/folders/0f/m77v_r8x1gz69923s4rm1m4h0000gp/T/cursor-sandbox-cache/6b3fb2f1a9239938186bbe220f2397a5/npm/_npx/c888cdf029e30e47/node_modules/create-storybook/dist/_node-chunks/chunk-ZWXSN5R5.js:1364:101)
+    at async GeneratorExecutionCommand.execute (file:///private/var/folders/0f/m77v_r8x1gz69923s4rm1m4h0000gp/T/cursor-sandbox-cache/6b3fb2f1a9239938186bbe220f2397a5/npm/_npx/c888cdf029e30e47/node_modules/create-storybook/dist/_node-chunks/chunk-ZWXSN5R5.js:1386:27)
+    at async doInitiate (file:///private/var/folders/0f/m77v_r8x1gz69923s4rm1m4h0000gp/T/cursor-sandbox-cache/6b3fb2f1a9239938186bbe220f2397a5/npm/_npx/c888cdf029e30e47/node_modules/create-storybook/dist/_node-chunks/chunk-ZWXSN5R5.js:2840:68)
+    at async file:///private/var/folders/0f/m77v_r8x1gz69923s4rm1m4h0000gp/T/cursor-sandbox-cache/6b3fb2f1a9239938186bbe220f2397a5/npm/_npx/c888cdf029e30e47/node_modules/create-storybook/dist/_node-chunks/chunk-ZWXSN5R5.js:2882:20
+    at async withTelemetry (file:///private/var/folders/0f/m77v_r8x1gz69923s4rm1m4h0000gp/T/cursor-sandbox-cache/6b3fb2f1a9239938186bbe220f2397a5/npm/_npx/c888cdf029e30e47/node_modules/storybook/dist/_node-chunks/chunk-S3MWHNYJ.js:218:12)
+[12:53:22.057] [INFO] Storybook collects completely anonymous usage telemetry. We use it to shape Storybook's roadmap and prioritize features. You can learn more, including how to opt out, at https://storybook.js.org/telemetry
