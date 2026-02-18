@@ -1,0 +1,33 @@
+---
+title: "Vision Tasks"
+description: "Using multimodal models for screenshots, diagrams, UI reviews, and design feedback. What works, what doesn't, and when to skip it."
+category: models
+order: 3
+interactiveTools: [model-picker]
+---
+
+Vision capabilities in models have gotten genuinely useful in the last year, but the use cases that work well are narrower than the demos suggest. I've found a clear split: vision is excellent for *describing* and *extracting* from images, and unreliable for *precise spatial reasoning* or *pixel-level accuracy*.
+
+## What actually works
+
+**UI review from screenshots.** Sending a screenshot of a component and asking "what accessibility issues do you see?" or "does this match the design spec?" works surprisingly well. The model can identify missing focus states, poor contrast, misaligned elements, and layout issues that are hard to catch in code review.
+
+**Extracting structure from diagrams.** Architecture diagrams, ERDs, flowcharts — if you need to turn a visual diagram into a text description or a data structure, vision models do this well. I've used this to extract database schemas from old ERD screenshots and turn whiteboard flows into structured specs.
+
+**Design-to-code with Figma MCP.** This is the best vision workflow I've found for frontend development. Instead of screenshotting and sending to a model, the Figma MCP gives the model structured access to design tokens, component properties, and layout data. The output is dramatically more accurate than screenshot-based approaches.
+
+**Comparing before/after UI states.** Send two screenshots — "before" and "after" a change — and ask the model to describe what changed. Useful for visual regression review when you don't have automated tooling.
+
+## What doesn't work well
+
+**Precise measurements.** "How many pixels is this margin?" — unreliable. The model will give you a number but it's often wrong. Use actual design tools for measurements.
+
+**Reading small text.** If the screenshot has small font sizes or compressed text, accuracy drops significantly. Zoom in or use the source text instead.
+
+**Complex spatial reasoning.** "Is this element centered relative to its container?" — the model might get it right, but I wouldn't trust it for anything that matters. Verify in the browser.
+
+## The Figma MCP advantage
+
+For design-to-code work specifically, the Figma MCP changes the equation entirely. Instead of sending a screenshot and hoping the model can infer the design intent, you give it structured access to the actual design data: exact colors, spacing values, component variants, and layout constraints. The code output is much closer to production-ready.
+
+<ModelPicker />

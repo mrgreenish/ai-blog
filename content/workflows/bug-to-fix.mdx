@@ -1,0 +1,37 @@
+---
+title: "Bug Report → Minimal Repro → Fix → Regression Tests"
+description: "The AI-assisted debugging flow that actually works. The key is minimal reproduction — everything else follows from that."
+category: workflows
+order: 2
+interactiveTools: [workflow-recipe]
+---
+
+Debugging with AI assistance has a clear failure mode: you paste a stack trace and ask "what's wrong?" and get a plausible-sounding but wrong answer. The model doesn't have enough context to diagnose the real issue, so it pattern-matches to the most common cause of that error.
+
+The fix is the same as good debugging practice in general: create a minimal reproduction first. Once you have a minimal repro, the model has enough context to actually help.
+
+## The minimal repro step
+
+This is the step most people skip, and it's the most important one. A minimal repro is the smallest amount of code that demonstrates the bug. Creating it forces you to understand the bug well enough to isolate it — and often, you find the bug yourself in the process.
+
+When you do need model help, a minimal repro gives it the right context. "Here's a 10-line example that reproduces the bug" is dramatically more useful than "here's my 500-line component that has a bug somewhere."
+
+## The debugging flow
+
+**Step 1: Reproduce.** Can you reliably reproduce the bug? If not, start there. A bug you can't reproduce is much harder to fix.
+
+**Step 2: Isolate.** Strip away everything that isn't necessary to reproduce the bug. Remove dependencies, simplify data, reduce to the smallest case.
+
+**Step 3: Diagnose.** With the minimal repro in hand, ask the model to explain what's happening and why. "Here's a minimal example that demonstrates the bug. What's causing it?"
+
+**Step 4: Fix.** Implement the fix. Keep it narrow — fix the specific bug, don't refactor adjacent code.
+
+**Step 5: Regression test.** Write a test that would have caught this bug. "Write a test that verifies this specific behavior." This is the most valuable step — it prevents the bug from coming back.
+
+## What I've learned about AI-assisted debugging
+
+Models are good at pattern recognition — they've seen most common bugs before. They're less good at reasoning about your specific system's behavior. The more context you give them (the minimal repro, the expected vs actual behavior, the relevant code), the better they do.
+
+The failure mode to watch for: the model gives you a fix that addresses the symptom but not the cause. Always ask "why does this fix work?" If the explanation doesn't make sense, the fix might be wrong.
+
+<WorkflowRecipe />

@@ -1,92 +1,51 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 @theme {
-  /* ─── Typography ─────────────────────────────────────────── */
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains-mono), ui-monospace, "Cascadia Code", monospace;
-
-  /* ─── Accent scale (indigo) ──────────────────────────────── */
-  --color-accent-50:  #eef2ff;
-  --color-accent-100: #e0e7ff;
-  --color-accent-200: #c7d2fe;
-  --color-accent-300: #a5b4fc;
-  --color-accent-400: #818cf8;
-  --color-accent-500: #6366f1;
-  --color-accent-600: #4f46e5;
-  --color-accent-700: #4338ca;
-  --color-accent-800: #3730a3;
-  --color-accent-900: #312e81;
-  --color-accent-950: #1e1b4b;
-
-  /* ─── Semantic surfaces (light defaults) ─────────────────── */
-  --color-bg:          #fafafa;
-  --color-bg-alt:      #f4f4f5;
-  --color-bg-elevated: #ffffff;
-  --color-bg-invert:   #09090b;
-
-  /* ─── Semantic text ──────────────────────────────────────── */
-  --color-fg:           #09090b;
-  --color-fg-secondary: #52525b;
-  --color-fg-muted:     #a1a1aa;
-
-  /* ─── Semantic borders ───────────────────────────────────── */
-  --color-edge:        #e4e4e7;
-  --color-edge-strong: #d4d4d8;
-
-  /* ─── Content widths ─────────────────────────────────────── */
-  --width-content:      42rem;
-  --width-content-wide: 64rem;
-
-  /* ─── Radii ──────────────────────────────────────────────── */
-  --radius-sm:   0.25rem;
-  --radius-md:   0.375rem;
-  --radius-lg:   0.5rem;
-  --radius-xl:   0.75rem;
-  --radius-2xl:  1rem;
-  --radius-full: 9999px;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
 }
 
-/* ─── Dark mode token overrides ──────────────────────────────── */
-.dark {
-  --color-bg:          #09090b;
-  --color-bg-alt:      #18181b;
-  --color-bg-elevated: #1c1c1f;
-  --color-bg-invert:   #fafafa;
-
-  --color-fg:           #fafafa;
-  --color-fg-secondary: #a1a1aa;
-  --color-fg-muted:     #71717a;
-
-  --color-edge:        #27272a;
-  --color-edge-strong: #3f3f46;
+/* Prose overrides for dark theme */
+.prose {
+  --tw-prose-body: var(--color-zinc-300);
+  --tw-prose-headings: var(--color-zinc-100);
+  --tw-prose-lead: var(--color-zinc-400);
+  --tw-prose-links: var(--color-blue-400);
+  --tw-prose-bold: var(--color-zinc-100);
+  --tw-prose-counters: var(--color-zinc-400);
+  --tw-prose-bullets: var(--color-zinc-600);
+  --tw-prose-hr: var(--color-zinc-800);
+  --tw-prose-quotes: var(--color-zinc-300);
+  --tw-prose-quote-borders: var(--color-zinc-700);
+  --tw-prose-captions: var(--color-zinc-500);
+  --tw-prose-code: var(--color-zinc-200);
+  --tw-prose-pre-code: var(--color-zinc-200);
+  --tw-prose-pre-bg: var(--color-zinc-900);
+  --tw-prose-th-borders: var(--color-zinc-700);
+  --tw-prose-td-borders: var(--color-zinc-800);
 }
 
-/* ─── Base defaults ──────────────────────────────────────────── */
-@layer base {
-  html {
-    color-scheme: light;
-  }
+/* Code block styling from rehype-pretty-code */
+[data-rehype-pretty-code-figure] pre {
+  border: 1px solid var(--color-zinc-800);
+  border-radius: 0.5rem;
+  overflow-x: auto;
+}
 
-  html.dark {
-    color-scheme: dark;
-  }
+[data-rehype-pretty-code-figure] code {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
 
-  body {
-    background-color: var(--color-bg);
-    color: var(--color-fg);
-    font-family: var(--font-sans);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  code,
-  kbd,
-  pre,
-  samp {
-    font-family: var(--font-mono);
-  }
-
-  * {
-    border-color: var(--color-edge);
-  }
+/* Inline code */
+:not(pre) > code {
+  background-color: var(--color-zinc-800);
+  border: 1px solid var(--color-zinc-700);
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.375rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125em;
+  color: var(--color-zinc-200);
 }

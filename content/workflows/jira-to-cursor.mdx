@@ -1,0 +1,39 @@
+---
+title: "Jira Ticket → Cursor → PR"
+description: "How I use AI to generate Jira tickets, then use those tickets as structured context in Cursor — combined with Figma MCP for design context."
+category: workflows
+order: 4
+interactiveTools: [workflow-recipe, model-mixer]
+---
+
+At iO, we use an internal AI tool to generate first-draft Jira tickets from a feature description. The tickets include scope, acceptance criteria, edge cases, and analytics requirements. This sounds like a small thing, but it changes the entire development workflow — because a well-structured ticket is excellent context for Cursor.
+
+## The ticket generation step
+
+A good AI-generated ticket has:
+- **Scope**: what's in, what's explicitly out
+- **Acceptance criteria**: specific, testable conditions
+- **Edge cases**: the scenarios that are easy to miss
+- **Analytics**: what events to track, what properties to include
+
+The key is that these are generated from a brief description, not written from scratch. The model fills in the structure and forces you to think about edge cases you might have skipped.
+
+## Using the ticket as Cursor context
+
+Once you have a well-structured ticket, it becomes the starting context for your Cursor session. Paste the ticket into the conversation, add the relevant code files, and the model has everything it needs to understand the task.
+
+The ticket's acceptance criteria become the test cases. The edge cases become the guardrails. The scope definition prevents the model from going off on tangents.
+
+## Adding Figma context
+
+For UI work, combining the Jira ticket with a Figma link gives the model both the functional requirements (from the ticket) and the visual requirements (from the design). The Figma MCP pulls the design data directly, so the model can implement against both specs simultaneously.
+
+The flow: ticket context + Figma MCP → plan → implementation → PR. The PR description writes itself from the ticket's acceptance criteria.
+
+## Model strategy
+
+Ticket generation benefits from a capable model — you want it to think carefully about edge cases and acceptance criteria. Implementation can use a faster model once the context is set. Final review benefits from a reasoning model.
+
+<ModelMixer />
+
+<WorkflowRecipe />

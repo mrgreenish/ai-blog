@@ -1,0 +1,49 @@
+---
+title: "Figma MCP Workflows"
+description: "Design context in the coding loop. How the Figma MCP changes design-to-code from interpretation to direct translation."
+category: tooling
+order: 5
+interactiveTools: [workflow-recipe]
+---
+
+The Figma MCP (Model Context Protocol server) gives AI models structured access to your Figma designs — not screenshots, but actual design data: exact values, component properties, variants, and layout constraints. This changes design-to-code from a translation problem to a transcription problem.
+
+The difference matters. When you send a screenshot, the model has to infer spacing values, guess at color tokens, and interpret layout intent. When you use the Figma MCP, the model has the exact values. The output is dramatically more accurate.
+
+## What the Figma MCP provides
+
+The MCP gives models access to:
+
+- **Design tokens**: exact color values, spacing, typography, shadows — mapped to your token names
+- **Component properties**: all the props a component accepts, their types, and their default values
+- **Variants**: all the variant combinations defined in the component
+- **Layout data**: auto-layout settings, constraints, padding, gap values
+- **Asset exports**: icons, images, and other exportable assets
+
+## The design-to-code workflow
+
+With the Figma MCP connected, the workflow becomes:
+
+1. Share the Figma node URL or node ID in your prompt
+2. The model reads the design data directly
+3. Ask it to implement the component
+4. The output uses your actual token values, not guessed ones
+
+The model can also answer questions about the design: "What's the hover state for this button?" "What variants does this card component have?" "What's the spacing between these elements?"
+
+## Design tokens to Tailwind config
+
+One of the most useful applications: mapping Figma variables to your Tailwind config. Give the model access to your Figma variables and your `tailwind.config.ts`, and ask it to keep them in sync. When a designer updates a color token in Figma, the model can update the Tailwind config to match.
+
+## Iterating with designers
+
+The Figma MCP enables a tighter design-developer loop. Instead of the designer exporting specs and the developer interpreting them, you can:
+
+1. Developer implements from Figma data
+2. Designer reviews the implementation in the browser
+3. Designer makes adjustments in Figma
+4. Developer pulls the updated design data and makes the corresponding code changes
+
+The model mediates the translation in both directions.
+
+<WorkflowRecipe />

@@ -1,0 +1,41 @@
+---
+title: "Diff Review Loops"
+description: "Iterating on AI-generated diffs effectively. The review patterns that catch real issues and the habits that prevent you from shipping bugs."
+category: tooling
+order: 2
+interactiveTools: [dev-benchmark, diff-viewer]
+---
+
+The most dangerous moment in AI-assisted development is when you're looking at a diff that looks correct. The code is clean, the logic seems right, the tests pass. You approve it. Two days later, there's a bug in production.
+
+The issue: AI-generated code often has a specific failure mode — it's correct for the happy path and wrong for the edge cases. The code looks right because the structure is right; the bug is in the behavior.
+
+## The diff review mindset
+
+Reviewing an AI-generated diff requires a different mindset than reviewing a human-written diff. With human-written code, you're checking for mistakes. With AI-generated code, you're checking for *plausible-looking mistakes* — code that looks right but isn't.
+
+The questions I ask when reviewing an AI diff:
+
+- **What edge cases does this not handle?** The model tends to handle the cases it was asked about and miss the ones it wasn't.
+- **Does this change the behavior in ways that aren't visible in the diff?** Changing a function's return type, modifying shared state, altering execution order.
+- **Are the tests testing the right things?** AI-generated tests often test the happy path and miss the edge cases.
+- **Does this introduce any implicit dependencies?** New imports, global state, environment variables.
+
+## The "ask the model to break it" technique
+
+One of the most useful review techniques: after the model generates code, ask it to try to break it. "What inputs would cause this to fail? What edge cases does this miss?"
+
+This works because the model is in a different mode — it's looking for problems rather than generating solutions. It often finds issues that it missed during generation.
+
+## Patterns that indicate risky diffs
+
+Some patterns in AI-generated diffs that I've learned to scrutinize more carefully:
+
+- **Simplified conditionals.** The model often simplifies complex conditions. Sometimes this is correct; sometimes it removes an edge case handler.
+- **Changed function signatures.** Even small signature changes can break callers in non-obvious ways.
+- **New async/await patterns.** Async code is where subtle bugs hide. Any change to async patterns deserves extra attention.
+- **Modified error handling.** The model tends to add or remove error handling in ways that change behavior silently.
+
+<DiffViewer />
+
+<DevBenchmark />

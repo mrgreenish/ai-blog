@@ -1,0 +1,39 @@
+---
+title: "Shipping from Your Phone"
+description: "Using Claude on mobile for quick PRs, small fixes, and code review when you're away from your desk. What actually works and what doesn't."
+category: workflows
+order: 6
+interactiveTools: [workflow-recipe]
+---
+
+I've shipped real fixes from my phone. Not often, and not for complex work — but for the right category of tasks, mobile AI assistance is genuinely useful. Knowing which tasks fall into that category saves you from frustrating attempts to do things that just don't work well on mobile.
+
+## What works on mobile
+
+**Reviewing diffs and leaving feedback.** GitHub Mobile + Claude is a solid combination for PR review. Paste a diff, ask Claude to summarize the changes and flag anything suspicious. You can leave meaningful review comments without needing your laptop.
+
+**Writing small, well-defined fixes.** A one-line bug fix, a missing null check, a typo in an error message — these are easy to describe precisely and easy to verify. Ask Claude to write the fix, copy it into GitHub's edit interface, commit directly to a branch.
+
+**Drafting PR descriptions.** Paste the diff or describe the changes, ask Claude to write a PR description. Works well on mobile because you're not writing code, just text.
+
+**Quick bug triage.** Someone reports a bug in Slack. You're not at your desk. Paste the stack trace and the relevant code into Claude, get a diagnosis and a suggested fix. You can't implement it right now, but you can respond with a clear explanation and a plan.
+
+**Responding to review comments.** A reviewer asks a question about your code. Use Claude to help you draft a clear technical response.
+
+## What doesn't work well on mobile
+
+**Multi-file changes.** You can't easily navigate a codebase on mobile, so anything that requires understanding how multiple files relate to each other is hard. The model can help, but you can't easily verify the output.
+
+**Large refactors.** Too much context, too many files, too hard to review the output carefully. Save these for your desk.
+
+**Anything requiring running the code.** You can't test on mobile. If the fix requires verification, wait until you can run it.
+
+## Prompt patterns for mobile
+
+The key difference in mobile prompting: be more explicit than you would be at your desk. At your desk, you can easily reference files and add context. On mobile, you need to include everything in the prompt.
+
+Good mobile prompt pattern: "I have a bug in [specific function]. Here's the function: [paste]. The bug is: [describe]. The expected behavior is: [describe]. Write a fix."
+
+Bad mobile prompt pattern: "There's a bug in the auth system, can you help?" — too vague, requires back-and-forth that's painful on mobile.
+
+<WorkflowRecipe />

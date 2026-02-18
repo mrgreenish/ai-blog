@@ -1,0 +1,58 @@
+---
+title: "AI-Powered Code Review"
+description: "Using Cursor BugBot and Codex on GitHub as reviewers in your PR pipeline. What AI catches that humans miss, and what it gets wrong."
+category: workflows
+order: 5
+interactiveTools: [workflow-recipe, failure-gallery, diff-viewer]
+---
+
+AI code review has gone from a novelty to a genuine part of my PR workflow. Not as a replacement for human review — as a first pass that catches the mechanical issues before a human reviewer has to spend time on them.
+
+The two tools I use: **Cursor BugBot** for pre-merge review inside the IDE, and **Codex on GitHub** as a PR reviewer that runs automatically on every pull request.
+
+## Cursor BugBot
+
+BugBot runs inside Cursor and reviews your changes before you even open a PR. It's particularly good at:
+
+- Catching TypeScript type errors that the compiler misses (logic errors that are type-safe but wrong)
+- Identifying missing null checks and undefined access patterns
+- Spotting inconsistencies between the implementation and the surrounding code style
+- Flagging potential performance issues (unnecessary re-renders, missing memoization, N+1 queries)
+
+The workflow: make your changes, run BugBot, fix the issues it finds, then open the PR. By the time a human reviewer sees the code, the mechanical issues are already resolved.
+
+## Codex on GitHub
+
+Codex as a GitHub reviewer runs on every PR and posts review comments automatically. It's useful for:
+
+- Checking that the implementation matches the PR description
+- Identifying missing test coverage for the changed code
+- Catching security issues (exposed secrets, SQL injection patterns, missing auth checks)
+- Verifying that error handling is consistent with the rest of the codebase
+
+The key difference from BugBot: Codex has the full repository context, not just the changed files. This lets it catch issues like "this function is now inconsistent with how similar functions work elsewhere in the codebase."
+
+## What AI review actually catches
+
+The most valuable catches I've seen from AI review:
+
+- **Off-by-one errors in pagination** — the kind that only show up when you're on the last page
+- **Missing edge cases in input validation** — empty strings, null values, negative numbers
+- **Race conditions in async code** — especially in React useEffect cleanup
+- **Subtle breaking changes** — changing a function signature in a way that's technically backward compatible but breaks callers
+
+## What it gets wrong
+
+AI review produces false positives. The most common ones:
+
+- Flagging intentional patterns as bugs (the model doesn't have enough context to know it's intentional)
+- Suggesting refactors that aren't in scope for the PR
+- Missing bugs that require understanding the business logic (the model doesn't know what the code is *supposed* to do)
+
+The right mental model: AI review is a fast, cheap first pass. It catches a specific category of mechanical bugs well. It's not a substitute for a human reviewer who understands the product.
+
+<DiffViewer />
+
+<WorkflowRecipe />
+
+<FailureGallery />

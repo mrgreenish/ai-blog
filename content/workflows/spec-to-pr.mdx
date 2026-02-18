@@ -1,0 +1,39 @@
+---
+title: "Spec → Plan → Code → Review → Tests → PR"
+description: "The full AI-assisted development flow I run for most features. Not theoretical — this is the actual sequence with the actual prompts."
+category: workflows
+order: 1
+interactiveTools: [workflow-recipe, model-mixer]
+---
+
+This is the workflow I run for most non-trivial features. It's not the fastest path to working code — it's the path that produces code I'm comfortable shipping. The extra steps (planning, review, explicit test generation) catch the category of bugs that are hardest to find in code review.
+
+## The full flow
+
+**Step 1: Spec.** Write a clear description of what you're building. Not a user story — a developer spec. Inputs, outputs, edge cases, constraints. The more specific, the better the plan.
+
+**Step 2: Plan.** Ask the model to produce a plan before writing any code. "Given this spec, what files will you create or modify, and what are the key implementation decisions?" Review the plan. This is where you catch misunderstandings before they become code.
+
+**Step 3: Code.** Implement against the plan. Keep the scope tight — one feature, one PR. If the model starts touching things outside the scope, pull it back.
+
+**Step 4: Review.** Ask the model to review its own code. "What edge cases might this miss? What would break this?" This sounds redundant but it works — the model often catches things in review mode that it missed in generation mode.
+
+**Step 5: Tests.** Generate tests explicitly, not as an afterthought. "Write tests for the edge cases you identified in the review." This produces better tests than "add tests to this code."
+
+**Step 6: PR description.** Ask the model to write the PR description from the spec and the diff. It produces better descriptions than most humans write because it has the full context.
+
+## Why the plan step matters
+
+The most common failure mode I've seen: skipping the plan and going straight to code. The model produces something that works for the happy path but misses the constraints you had in mind. You then spend time correcting the code instead of reviewing a plan — which is much slower.
+
+The plan step also surfaces ambiguities in your spec. If the model asks a clarifying question during planning, that's a question you would have had to answer anyway — better to answer it before the code is written.
+
+## Model strategy for this workflow
+
+Different steps benefit from different models. Planning and review are where reasoning models earn their cost. Code generation and test writing are where fast models are often sufficient.
+
+<ModelMixer />
+
+## The full recipe
+
+<WorkflowRecipe />

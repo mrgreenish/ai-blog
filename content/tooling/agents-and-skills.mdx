@@ -1,0 +1,61 @@
+---
+title: "Agents and Skills"
+description: "The emerging skills ecosystem: how reusable agent skills encode domain knowledge, and why they're more powerful than one-off prompt engineering."
+category: tooling
+order: 4
+interactiveTools: [config-generator, prompt-lab, workflow-recipe]
+---
+
+One of the most underrated developments in AI tooling: the emergence of reusable "skills" — packages of domain knowledge that agents can apply automatically. Instead of writing the same instructions in every prompt, you encode them once as a skill and the agent applies them whenever relevant.
+
+The concept is simple but the implications are significant. Skills turn one-off prompt engineering into versioned, shareable, team-wide knowledge.
+
+## What skills actually are
+
+A skill is a markdown file (or set of files) that contains instructions, context, and conventions for a specific domain. When an agent is working on a task in that domain, it reads the relevant skill and applies the knowledge.
+
+The difference from a system prompt: skills are composable and domain-specific. You might have a skill for Next.js best practices, a skill for your team's coding conventions, and a skill for your company's API patterns. The agent applies whichever skills are relevant to the current task.
+
+## vercel-labs/next-skills
+
+The best public example of this pattern: [vercel-labs/next-skills](https://github.com/vercel-labs/next-skills). It's a collection of skills for Next.js development:
+
+**`next-best-practices`** is a background skill — it's automatically applied whenever you're working on a Next.js project. It covers:
+- File conventions and project structure
+- Server/Client component boundaries (the most common source of Next.js bugs)
+- Data fetching and mutation patterns
+- Next.js 15+ async APIs
+- Hydration error debugging
+
+**`next-upgrade`** is an on-demand skill — you invoke it with `/next-upgrade` when you need to upgrade between Next.js versions. It applies the official migration guide automatically.
+
+**`next-cache-components`** covers the new Cache Components API in Next.js 16 — `'use cache'`, cache profiles, `cacheLife()`, `cacheTag()`.
+
+Install them with:
+
+```bash
+npx skills add vercel-labs/next-skills --skill next-best-practices
+```
+
+## Writing your own skills
+
+The real power is writing skills for your specific project. A custom skill for your codebase might include:
+
+- Your naming conventions (how you name files, functions, components)
+- Your patterns (how you handle auth, how you structure API routes, how you write tests)
+- Your guardrails (what not to do, what to ask before doing)
+- Context about the codebase (what's legacy, what's being migrated, what's in flux)
+
+Skills compose with `CLAUDE.md`, `AGENTS.md`, and `.cursorrules`. Think of them as layers: the skill provides domain knowledge, the project config provides project-specific context, and the task prompt provides the specific request.
+
+## Skills as team knowledge
+
+The most compelling use case for teams: encoding your team's conventions as skills. Instead of every developer writing the same instructions in their prompts, you write them once as a skill and everyone benefits.
+
+When a convention changes, you update the skill. When a new developer joins, they get the team's accumulated knowledge automatically. When you find a new pattern that works well, you add it to the skill.
+
+<ConfigGenerator />
+
+<WorkflowRecipe />
+
+<PromptLab />

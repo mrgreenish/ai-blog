@@ -1,0 +1,49 @@
+---
+title: "Code to Canvas: Claude Code → Figma"
+description: "Sending live rendered UI into Figma as editable frames, then iterating with designers and pulling design context back into the coding loop."
+category: tooling
+order: 6
+interactiveTools: [workflow-recipe]
+---
+
+The Figma MCP is usually talked about in one direction: design to code. But the reverse flow — code to Figma — is equally powerful and less discussed. The ability to send a live rendered UI into Figma as editable frames closes the loop between implementation and design.
+
+The use case: you've implemented a component or a page. You want a designer to review it, suggest changes, and iterate. Instead of sharing a URL and waiting for feedback in comments, you push the rendered UI into Figma as an editable frame. The designer can make changes directly in Figma, and you can pull those changes back into the code.
+
+## How it works
+
+The Figma "Code to Canvas" feature (available through the Figma MCP and the Figma desktop app) captures a live rendered UI — from localhost, staging, or production — and imports it into Figma as editable frames. The frames preserve the visual appearance and can be modified by designers using standard Figma tools.
+
+The workflow:
+
+1. Implement the UI in code
+2. Push to a preview URL (or use localhost)
+3. Use the Figma MCP to capture the rendered UI and import it as a Figma frame
+4. Designer reviews and iterates in Figma
+5. Pull the updated design context back into the coding loop via the Figma MCP
+
+## The bidirectional loop
+
+This creates a genuinely bidirectional design-developer workflow:
+
+- **Code → Figma**: implementation becomes the source of truth for the current state
+- **Figma → Code**: designer changes become the spec for the next iteration
+
+The model mediates both directions. It can capture the current implementation, describe what changed in the designer's Figma edits, and implement those changes in code.
+
+## When this is most useful
+
+The Code to Canvas flow is most valuable when:
+
+- You're building something new and want designer input before finalizing
+- The implementation has diverged from the original design and you need to reconcile
+- You're doing a design review and want to capture the current state accurately
+- You're working with a designer who prefers to iterate in Figma rather than in the browser
+
+## Practical notes
+
+The captured frames are static — they capture the visual appearance, not the interactive behavior. For interactive review, sharing a URL is still better. The Figma frame is for visual and layout review.
+
+The quality of the capture depends on the rendering environment. Complex CSS (especially animations and transitions) may not capture perfectly. Static layouts capture very accurately.
+
+<WorkflowRecipe />

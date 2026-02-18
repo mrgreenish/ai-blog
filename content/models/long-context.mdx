@@ -1,0 +1,37 @@
+---
+title: "Long Context and Docs Analysis"
+description: "Handling large codebases, docs analysis, and when stuffing context beats RAG. The 200k window changes what's practical."
+category: models
+order: 4
+interactiveTools: [model-picker, context-window-viz]
+---
+
+The jump to 200k context windows (Claude) and 1M tokens (Gemini) has changed what's practical for developer workflows. Tasks that required RAG pipelines a year ago can now be done by just... sending everything. But "can" doesn't mean "should" — there are real tradeoffs.
+
+## When to stuff context vs use RAG
+
+The honest answer: if your content fits comfortably in the context window (under 50% full), just send it. The overhead of building a RAG pipeline — chunking, embedding, retrieval, re-ranking — is only worth it when you're dealing with content that genuinely exceeds the window, or when you need real-time updates to the knowledge base.
+
+For a typical Next.js codebase (50-100 files, ~40k tokens), you can send the whole thing. For a large monorepo or a full documentation site, you need to be more selective.
+
+## The "lost in the middle" problem
+
+Large context windows have a known weakness: models perform worse on information in the middle of a long context compared to the beginning and end. This matters for codebase analysis — if the relevant file is buried in the middle of a large context dump, the model may not give it proper attention.
+
+Practical mitigation: put the most important context (the specific file you're working on, the types it depends on, the tests) at the beginning and end of your prompt. Put the broader context (other files, docs) in the middle.
+
+## Docs analysis that actually works
+
+The best use of long context I've found: sending a library's full documentation and asking specific questions. "Given the full Next.js 15 docs, what's the correct way to handle cookies in a server action?" This avoids hallucinated APIs because the model has the actual source material.
+
+The failure mode: asking the model to summarize or synthesize across a very long document. It tends to miss things or produce generic summaries. Better to ask specific questions than open-ended ones.
+
+## How full is your context window?
+
+Before you start a long-context task, it's worth knowing how much of the window you're actually using. Different content types have very different token densities.
+
+<ContextWindowViz />
+
+## Which model for long-context tasks?
+
+<ModelPicker />

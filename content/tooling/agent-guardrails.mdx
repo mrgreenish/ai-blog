@@ -1,0 +1,44 @@
+---
+title: "Agent Guardrails"
+description: "Keeping AI agents on track. The guardrails that prevent the most common failure modes and the habits that make agent-assisted development reliable."
+category: tooling
+order: 3
+interactiveTools: [failure-gallery, diff-viewer]
+---
+
+The more capable AI agents become, the more important guardrails are. A capable agent that goes off-track can make a lot of changes before you notice. A well-guardrailed agent stays in scope and produces output you can trust.
+
+I've learned most of my guardrails the hard way — by watching an agent do something I didn't want it to do and then figuring out how to prevent it.
+
+## The core guardrails
+
+**Scope constraints.** The most important guardrail: tell the agent what's out of scope, not just what's in scope. "Do not modify files outside the `src/components` directory." "Do not change the public API of any existing function." "Do not add new dependencies without asking first."
+
+**No deletions without confirmation.** Agents are good at adding code and bad at knowing when deletion is safe. "Do not delete any files or remove any exports without explicit confirmation" has saved me multiple times.
+
+**Stay in the current task.** Agents tend to notice adjacent issues and "helpfully" fix them. This is usually not helpful — it makes diffs larger, harder to review, and more likely to introduce unintended changes. "Do not fix issues you notice that are outside the scope of this task."
+
+**Ask before refactoring.** Refactoring is a separate task from implementing a feature. "If you think a refactor would improve the code, describe it and ask before doing it."
+
+## The CLAUDE.md approach
+
+The most scalable way to apply guardrails: put them in `CLAUDE.md` (or `.cursorrules`, or `AGENTS.md`). These files give the agent persistent context that applies to every task, not just the one you're working on.
+
+A good `CLAUDE.md` includes:
+- Project conventions (naming, file structure, patterns to follow)
+- Explicit guardrails (what not to do)
+- Context about the codebase (what's important, what's legacy, what's in flux)
+
+## When guardrails fail
+
+Guardrails reduce the frequency of failures; they don't eliminate them. The failure modes that guardrails don't prevent:
+
+- **Plausible-looking wrong code.** The agent stays in scope and follows the conventions but produces code that's logically incorrect.
+- **Subtle behavior changes.** The agent makes a change that's technically within scope but changes behavior in a non-obvious way.
+- **Context drift.** In a long session, the agent's understanding of the task can drift from your original intent.
+
+The mitigation: review every diff carefully, even when the agent followed all the guardrails.
+
+<FailureGallery />
+
+<DiffViewer />

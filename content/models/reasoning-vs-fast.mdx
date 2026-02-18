@@ -1,0 +1,48 @@
+---
+title: "Reasoning vs Fast Models"
+description: "When to reach for o3/R1 vs Haiku/Flash — from real shipping experience. The answer is less obvious than the benchmarks suggest."
+category: models
+order: 1
+interactiveTools: [model-picker, model-mixer, cost-calculator]
+---
+
+The first time I used o3 for a coding task, I was impressed — then I checked the latency and the bill. It took 40 seconds and cost 15× more than Sonnet for a task where Sonnet would have been fine. That's when I started keeping notes on *when* the expensive reasoning models actually earn their cost.
+
+The short version: reasoning models (o3, o1, DeepSeek R1) win when the task has a large solution space that requires backtracking, when the constraints are complex and interdependent, or when being wrong has real consequences. Fast models (Haiku, Flash, GPT-4o mini) win when the task is well-defined, the output format is constrained, or you're running it in a loop.
+
+## When reasoning models actually earn it
+
+The clearest signal I've found: if you can describe the task in one sentence and the expected output is obvious, you don't need a reasoning model. But if you're asking "design the data model for this feature given these constraints" or "find the bug in this async code that only fails under load" — that's where o3 earns its cost.
+
+Specific cases where I've seen reasoning models outperform:
+
+- **Architecture decisions with real tradeoffs.** When I asked Sonnet to choose between three caching strategies for a Next.js app, it picked the most common one. When I asked o3, it identified that my specific access pattern made the "common" choice wrong and explained why.
+- **Debugging subtle async bugs.** Race conditions, stale closures, and timing-dependent failures. Fast models often give confident wrong answers. o3 tends to trace the execution path more carefully.
+- **Complex refactors with many constraints.** "Refactor this without changing the public API, keeping backward compatibility, and not touching the test files" — the more constraints, the more reasoning models pull ahead.
+
+## When fast models win
+
+Fast models are underrated for production use. I use Haiku or Flash for:
+
+- Generating boilerplate (component scaffolding, test stubs, migration files)
+- Extracting structured data from text (JSON extraction, classification)
+- First-pass code review where I want a quick scan, not deep analysis
+- Any task running in a loop or pipeline where latency compounds
+
+The key insight: fast models are often *better* at constrained tasks because they don't overthink them. Ask Haiku to "convert this array of objects to CSV" and it just does it. Ask o3 and it might ask clarifying questions or add error handling you didn't want.
+
+## The model mixer approach
+
+The most effective pattern I've found isn't "pick one model" — it's using different models for different steps in the same task. Cheap model for scaffolding, capable model for the hard parts, best model for the final review.
+
+<ModelMixer />
+
+## Pick the right model for your task
+
+<ModelPicker />
+
+## What does it actually cost?
+
+The cost difference between models is significant enough to matter at scale. Here's a real comparison for a typical coding task.
+
+<CostCalculator />

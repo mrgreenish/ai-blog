@@ -13,7 +13,10 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "gray-matter": "4.0.3",
+    "lucide-react": "0.574.0",
     "next": "^15.1.0",
+    "next-mdx-remote": "6.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -27,6 +30,7 @@
     "@storybook/react-vite": "8.6.17",
     "@storybook/test": "8.6.17",
     "@tailwindcss/postcss": "4.1.18",
+    "@tailwindcss/typography": "0.5.19",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "16.3.2",
     "@testing-library/user-event": "14.6.1",
@@ -39,6 +43,8 @@
     "eslint-config-next": "^15.1.0",
     "jsdom": "28.1.0",
     "postcss": "^8",
+    "rehype-pretty-code": "0.14.1",
+    "shiki": "3.22.0",
     "storybook": "8.6.17",
     "tailwindcss": "^4.0.0",
     "typescript": "^5",

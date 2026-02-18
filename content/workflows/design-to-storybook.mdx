@@ -1,0 +1,31 @@
+---
+title: "Design Token → Component → Storybook"
+description: "The design-to-code workflow with Figma MCP. From design tokens to production component to documented Storybook stories."
+category: workflows
+order: 3
+interactiveTools: [workflow-recipe]
+---
+
+The traditional design-to-code workflow is slow and lossy: designer exports specs, developer interprets them, implementation drifts from design, designer reviews and finds issues, repeat. AI tooling — specifically the Figma MCP — can compress this loop significantly.
+
+The key change: instead of the developer interpreting design specs, the model reads the actual design data directly. Exact colors, spacing values, component variants, and layout constraints come from the source of truth rather than a screenshot or a Zeplin export.
+
+## The workflow
+
+**Step 1: Design tokens.** Start with the design system tokens. Ask the model to map Figma variables to your Tailwind config or CSS custom properties. This creates a shared language between design and code.
+
+**Step 2: Component spec.** Use the Figma MCP to pull the component's properties, variants, and constraints. Ask the model to generate a TypeScript interface from the Figma component properties.
+
+**Step 3: Implementation.** Implement the component against the spec. The model has the design data, so it can make accurate decisions about spacing, color, and layout without you translating from a screenshot.
+
+**Step 4: Storybook stories.** Generate stories for each variant. "Given this component and its props, generate Storybook stories for each variant defined in the Figma component." The stories document the component and make it easy to verify against the design.
+
+**Step 5: Visual review.** Use the Storybook output to do a visual review against the Figma design. The Figma MCP makes it easy to pull the design back into the loop for comparison.
+
+## What makes this better than the old way
+
+The biggest improvement: the model can generate accurate code for spacing and color because it has the actual values, not a screenshot. "The gap between these elements is 12px" is information the model has from the design data — it doesn't have to guess from a screenshot.
+
+The second improvement: Storybook story generation from Figma variants is genuinely useful. A component with 4 variants, 3 sizes, and 2 states has 24 combinations. Generating stories for all of them manually is tedious. The model does it in one shot.
+
+<WorkflowRecipe />
