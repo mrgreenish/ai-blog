@@ -1,5 +1,3 @@
-"use client";
-
 import { type LucideIcon, FlaskConical } from "lucide-react";
 
 interface InteractivePlaceholderProps {

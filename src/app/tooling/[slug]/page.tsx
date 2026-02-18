@@ -1,10 +1,20 @@
 import { notFound } from "next/navigation";
-import { serialize } from "next-mdx-remote/serialize";
+import { compileMDX } from "next-mdx-remote/rsc";
 import rehypePrettyCode from "rehype-pretty-code";
 import { getArticle, getAllArticlePaths } from "@/lib/content";
 import { ArticleLayout } from "@/components/content/ArticleLayout";
-import { MdxRenderer } from "@/components/content/MdxRenderer";
+import { ModelPicker } from "@/components/interactive/ModelPicker";
+import { ModelMixer } from "@/components/interactive/ModelMixer";
+import { WorkflowRecipe } from "@/components/interactive/WorkflowRecipe";
+import { PromptLab } from "@/components/interactive/PromptLab";
+import { FailureGallery } from "@/components/interactive/FailureGallery";
+import { DevBenchmark } from "@/components/interactive/DevBenchmark";
+import { ConfigGenerator } from "@/components/interactive/ConfigGenerator";
+import { CostCalculator } from "@/components/interactive/CostCalculator";
+import { DiffViewer } from "@/components/interactive/DiffViewer";
+import { ContextWindowViz } from "@/components/interactive/ContextWindowViz";
 import type { Metadata } from "next";
+import type { ArticleFrontmatter } from "@/lib/types";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -31,15 +41,30 @@ export default async function ToolingArticlePage({ params }: Props) {
   const article = getArticle("tooling", slug);
   if (!article) notFound();
 
-  const mdxSource = await serialize(article.content, {
-    mdxOptions: {
-      rehypePlugins: [[rehypePrettyCode as never, { theme: "github-dark-dimmed" }]],
+  const { content } = await compileMDX<ArticleFrontmatter>({
+    source: article.content,
+    components: {
+      ModelPicker,
+      ModelMixer,
+      WorkflowRecipe,
+      PromptLab,
+      FailureGallery,
+      DevBenchmark,
+      ConfigGenerator,
+      CostCalculator,
+      DiffViewer,
+      ContextWindowViz,
+    },
+    options: {
+      mdxOptions: {
+        rehypePlugins: [[rehypePrettyCode as never, { theme: "github-dark-dimmed" }]],
+      },
     },
   });
 
   return (
     <ArticleLayout frontmatter={article.frontmatter} category="tooling">
-      <MdxRenderer source={mdxSource} />
+      <div className="prose prose-zinc max-w-none">{content}</div>
     </ArticleLayout>
   );
 }
