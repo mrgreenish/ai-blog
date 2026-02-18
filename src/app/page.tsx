@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Compass, Shuffle, ChefHat, Beaker, AlertTriangle, ClipboardCheck, Settings2, Calculator, GitCompare, Maximize2 } from "lucide-react";
+import { ArrowRight, Compass, Calculator, Beaker, Terminal } from "lucide-react";
 import { CATEGORY_META } from "@/lib/types";
 
 const SECTION_ARTICLES = {
@@ -8,83 +8,36 @@ const SECTION_ARTICLES = {
   tooling: 6,
 };
 
-const TOOLS = [
+const JOURNEY = [
   {
-    icon: Compass,
-    name: "Model Picker",
-    desc: "Decision wizard based on real usage",
-    color: "text-blue-400",
-    bg: "bg-blue-400/10 border-blue-400/20",
+    step: 1,
+    cat: "models" as const,
+    tagline: "Which model for what? I tested them so you don't have to.",
   },
   {
-    icon: Shuffle,
-    name: "Model Mixer",
-    desc: "Chain models across a single task",
-    color: "text-violet-400",
-    bg: "bg-violet-400/10 border-violet-400/20",
+    step: 2,
+    cat: "workflows" as const,
+    tagline: "From spec to PR, bug to fix — copy-paste flows that actually work.",
   },
   {
-    icon: ChefHat,
-    name: "Workflow Recipe",
-    desc: "Copy-pasteable developer flows",
-    color: "text-emerald-400",
-    bg: "bg-emerald-400/10 border-emerald-400/20",
+    step: 3,
+    cat: "tooling" as const,
+    tagline: "Cursor, Claude Code, MCP — how to configure everything.",
   },
-  {
-    icon: Beaker,
-    name: "Prompt Lab",
-    desc: "Side-by-side model comparisons",
-    color: "text-amber-400",
-    bg: "bg-amber-400/10 border-amber-400/20",
-  },
-  {
-    icon: AlertTriangle,
-    name: "Failure Gallery",
-    desc: "Real failure modes and exact fixes",
-    color: "text-red-400",
-    bg: "bg-red-400/10 border-red-400/20",
-  },
-  {
-    icon: ClipboardCheck,
-    name: "Dev Benchmark",
-    desc: "Checks that matter when shipping",
-    color: "text-cyan-400",
-    bg: "bg-cyan-400/10 border-cyan-400/20",
-  },
-  {
-    icon: Settings2,
-    name: "Config Generator",
-    desc: "Generate .cursorrules, CLAUDE.md",
-    color: "text-orange-400",
-    bg: "bg-orange-400/10 border-orange-400/20",
-  },
-  {
-    icon: Calculator,
-    name: "Cost Calculator",
-    desc: "Real cost comparison across providers",
-    color: "text-emerald-400",
-    bg: "bg-emerald-400/10 border-emerald-400/20",
-  },
-  {
-    icon: GitCompare,
-    name: "Diff Viewer",
-    desc: "Annotated before/after code diffs",
-    color: "text-pink-400",
-    bg: "bg-pink-400/10 border-pink-400/20",
-  },
-  {
-    icon: Maximize2,
-    name: "Context Window Viz",
-    desc: "Will your content fit? Visualized.",
-    color: "text-sky-400",
-    bg: "bg-sky-400/10 border-sky-400/20",
-  },
+];
+
+const FEATURED_TOOLS = [
+  { icon: Compass, name: "Model Picker" },
+  { icon: Calculator, name: "Cost Calculator" },
+  { icon: Beaker, name: "Prompt Lab" },
+  { icon: Terminal, name: "Config Generator" },
 ];
 
 export default function Home() {
   return (
     <div className="mx-auto max-w-5xl px-6 py-16">
-      {/* Hero */}
+
+      {/* Hook */}
       <section className="mb-20">
         <div className="mb-4 font-mono text-sm text-zinc-500">
           developer field notes
@@ -96,96 +49,107 @@ export default function Home() {
           It&apos;s my developer field notes: what actually worked, what broke, what
           surprised me, and what I&apos;d do differently next time.
         </p>
-
-        <div className="mt-8 rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
-          <p className="text-sm font-semibold text-zinc-300 mb-3">My rule:</p>
-          <p className="text-sm leading-relaxed text-zinc-400">
-            Every article ships with at least one interactive thing, because
-            &ldquo;read-only&rdquo; AI content gets stale fast. Interactive bits turn my
-            learnings into something you can reuse — and something I can keep
-            updating as tools change.
-          </p>
-          <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3 text-sm text-zinc-500">
-            {[
-              "Opinionated, not neutral",
-              "Measurable, not vibes",
-              "Grounded in shipping real stuff",
-            ].map((p) => (
-              <div key={p} className="flex items-center gap-2">
-                <span className="h-1 w-1 rounded-full bg-blue-400" />
-                {p}
-              </div>
-            ))}
-          </div>
-        </div>
       </section>
 
-      {/* Sections */}
+      {/* Journey */}
       <section className="mb-20">
-        <h2 className="mb-6 font-mono text-sm font-semibold uppercase tracking-wider text-zinc-500">
-          Content
-        </h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {(["models", "workflows", "tooling"] as const).map((cat) => {
+        <p className="mb-8 text-sm text-zinc-500">
+          Here&apos;s how most people move through it:
+        </p>
+
+        <div className="flex flex-col gap-0">
+          {JOURNEY.map(({ step, cat, tagline }, i) => {
             const meta = CATEGORY_META[cat];
             const count = SECTION_ARTICLES[cat];
-            return (
-              <Link
-                key={cat}
-                href={`/${cat}`}
-                className="group rounded-xl border border-zinc-800 bg-zinc-900/50 p-5 hover:border-zinc-700 hover:bg-zinc-900 transition-all"
-              >
-                <div className="flex items-start justify-between">
-                  <h3 className={`font-mono text-lg font-bold ${meta.accent}`}>
-                    {meta.label}
-                  </h3>
-                  <ArrowRight className="h-4 w-4 text-zinc-600 group-hover:text-zinc-400 transition-colors mt-0.5" />
-                </div>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-400">
-                  {meta.description}
-                </p>
-                <p className="mt-4 font-mono text-xs text-zinc-600">
-                  {count} articles
-                </p>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
+            const isLast = i === JOURNEY.length - 1;
 
-      {/* Interactive tools teaser */}
-      <section>
-        <div className="mb-6">
-          <h2 className="font-mono text-sm font-semibold uppercase tracking-wider text-zinc-500">
-            Interactive Tools
-          </h2>
-          <p className="mt-2 text-sm text-zinc-500">
-            10 tools embedded throughout the articles — each one a placeholder
-            for something being built. They explain what&apos;s coming and why.
-          </p>
-        </div>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {TOOLS.map((tool) => {
-            const Icon = tool.icon;
             return (
-              <div
-                key={tool.name}
-                className={`flex items-start gap-3 rounded-lg border p-3 ${tool.bg}`}
-              >
-                <div className={`mt-0.5 shrink-0 ${tool.color}`}>
-                  <Icon className="h-4 w-4" />
+              <div key={cat} className="flex gap-5">
+                {/* Step indicator + connector */}
+                <div className="flex flex-col items-center">
+                  <div
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-xs font-mono font-bold ${meta.accentBg} ${meta.accent}`}
+                  >
+                    {step}
+                  </div>
+                  {!isLast && (
+                    <div className="mt-1 w-px flex-1 bg-zinc-800" style={{ minHeight: "2rem" }} />
+                  )}
                 </div>
-                <div>
-                  <p className={`text-sm font-semibold ${tool.color}`}>
-                    {tool.name}
-                  </p>
-                  <p className="mt-0.5 text-xs text-zinc-500">{tool.desc}</p>
+
+                {/* Card */}
+                <div className={`${isLast ? "mb-0" : "mb-4"} flex-1`}>
+                  <Link
+                    href={`/${cat}`}
+                    className="group flex items-start justify-between rounded-xl border border-zinc-800 bg-zinc-900/50 p-5 hover:border-zinc-700 hover:bg-zinc-900 transition-all"
+                  >
+                    <div>
+                      <h2 className={`font-mono text-base font-bold ${meta.accent}`}>
+                        {meta.label}
+                      </h2>
+                      <p className="mt-1.5 text-sm leading-relaxed text-zinc-400">
+                        {tagline}
+                      </p>
+                      <p className="mt-3 font-mono text-xs text-zinc-600">
+                        {count} articles
+                      </p>
+                    </div>
+                    <ArrowRight className="ml-4 mt-0.5 h-4 w-4 shrink-0 text-zinc-600 group-hover:text-zinc-400 transition-colors" />
+                  </Link>
                 </div>
               </div>
             );
           })}
         </div>
       </section>
+
+      {/* Interactive tools callout */}
+      <section className="mb-20 rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
+        <p className="text-sm font-semibold text-zinc-300">
+          Every article ships with at least one interactive tool.
+        </p>
+        <p className="mt-1.5 text-sm leading-relaxed text-zinc-500">
+          Model pickers, cost calculators, prompt labs, workflow recipes — built to stay
+          useful as things change, not just read once and forget.
+        </p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {FEATURED_TOOLS.map(({ icon: Icon, name }) => (
+            <span
+              key={name}
+              className="flex items-center gap-1.5 rounded-md border border-zinc-700 bg-zinc-800 px-2.5 py-1 text-xs text-zinc-400"
+            >
+              <Icon className="h-3 w-3" />
+              {name}
+            </span>
+          ))}
+          <span className="flex items-center rounded-md border border-zinc-800 px-2.5 py-1 text-xs text-zinc-600">
+            +6 more
+          </span>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section>
+        <Link
+          href="/models"
+          className="inline-flex items-center gap-2 rounded-lg bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-400 transition-colors"
+        >
+          Start with Models
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+        <p className="mt-3 text-xs text-zinc-600">
+          Or jump straight to{" "}
+          <Link href="/workflows" className="text-zinc-500 hover:text-zinc-300 transition-colors underline underline-offset-2">
+            Workflows
+          </Link>{" "}
+          or{" "}
+          <Link href="/tooling" className="text-zinc-500 hover:text-zinc-300 transition-colors underline underline-offset-2">
+            Tooling
+          </Link>
+          .
+        </p>
+      </section>
+
     </div>
   );
 }
