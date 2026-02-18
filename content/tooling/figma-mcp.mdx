@@ -6,16 +6,16 @@ order: 5
 interactiveTools: [workflow-recipe]
 ---
 
-The Figma MCP (Model Context Protocol server) gives AI models structured access to your Figma designs — not screenshots, but actual design data: exact values, component properties, variants, and layout constraints. This changes design-to-code from a translation problem to a transcription problem.
+The Figma MCP (Model Context Protocol server) gives AI models structured access to your Figma designs — not screenshots, but design context such as variables, component mappings, variants, and layout constraints. This moves design-to-code closer to direct implementation than screenshot-only interpretation.
 
-The difference matters. When you send a screenshot, the model has to infer spacing values, guess at color tokens, and interpret layout intent. When you use the Figma MCP, the model has the exact values. The output is dramatically more accurate.
+The difference matters. When you send a screenshot, the model has to infer spacing values, guess at color tokens, and interpret layout intent. When you use the Figma MCP, the model gets structured design context directly, which usually improves first-pass accuracy.
 
 ## What the Figma MCP provides
 
 The MCP gives models access to:
 
 - **Design tokens**: exact color values, spacing, typography, shadows — mapped to your token names
-- **Component properties**: all the props a component accepts, their types, and their default values
+- **Component properties**: component mappings and variant/property metadata (detail level depends on component setup)
 - **Variants**: all the variant combinations defined in the component
 - **Layout data**: auto-layout settings, constraints, padding, gap values
 - **Asset exports**: icons, images, and other exportable assets

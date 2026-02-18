@@ -6,7 +6,7 @@ order: 1
 interactiveTools: [prompt-lab]
 ---
 
-Claude Code and GitHub Codex solve overlapping but distinct problems. Claude Code is a terminal-based agent that can read your codebase, run commands, and make changes across multiple files. Codex is GitHub-native — it lives in your repository and can respond to issues, review PRs, and make changes through the GitHub interface.
+Claude Code and GitHub Codex solve overlapping but distinct problems. Claude Code is a terminal-based agent that can read your codebase, run commands, and make changes across multiple files. Codex is GitHub-native — it integrates with your repository and can respond to issue/PR prompts, review PRs, and propose changes through the GitHub interface.
 
 I use both, and they complement each other in ways that weren't obvious at first.
 
@@ -28,9 +28,9 @@ The patterns I use most:
 
 Codex is different: it's triggered by GitHub events (issues, PR comments, mentions) and operates through the GitHub interface. The use cases are narrower but very useful:
 
-**Issue-to-PR.** Assign an issue to Codex and it creates a branch, implements a fix, and opens a PR. Works well for well-defined, isolated issues.
+**Issue-to-implementation.** Mention `@codex` on an issue and it can start working on a well-defined, isolated fix in the GitHub workflow.
 
-**PR review.** Codex reviews PRs automatically and posts comments. Good for catching mechanical issues before human review.
+**PR review.** Codex can review PRs and post comments automatically when automatic reviews are enabled. Good for catching mechanical issues before human review.
 
 **Responding to review comments.** Comment on a PR asking Codex to address a specific review comment. It makes the change and updates the PR.
 

@@ -8,22 +8,22 @@ interactiveTools: [workflow-recipe, failure-gallery, diff-viewer]
 
 AI code review has gone from a novelty to a genuine part of my PR workflow. Not as a replacement for human review — as a first pass that catches the mechanical issues before a human reviewer has to spend time on them.
 
-The two tools I use: **Cursor BugBot** for pre-merge review inside the IDE, and **Codex on GitHub** as a PR reviewer that runs automatically on every pull request.
+The two tools I use: **Cursor BugBot** for PR review in Cursor workflows, and **Codex on GitHub** as a PR reviewer that can run automatically on pull requests when enabled.
 
 ## Cursor BugBot
 
-BugBot runs inside Cursor and reviews your changes before you even open a PR. It's particularly good at:
+BugBot reviews pull requests in Cursor workflows and posts actionable review feedback. It's particularly good at:
 
 - Catching TypeScript type errors that the compiler misses (logic errors that are type-safe but wrong)
 - Identifying missing null checks and undefined access patterns
 - Spotting inconsistencies between the implementation and the surrounding code style
 - Flagging potential performance issues (unnecessary re-renders, missing memoization, N+1 queries)
 
-The workflow: make your changes, run BugBot, fix the issues it finds, then open the PR. By the time a human reviewer sees the code, the mechanical issues are already resolved.
+The workflow: make your changes, open or update the PR, run BugBot review, fix the issues it finds, then request human review. By the time a human reviewer sees the code, many mechanical issues are already resolved.
 
 ## Codex on GitHub
 
-Codex as a GitHub reviewer runs on every PR and posts review comments automatically. It's useful for:
+Codex as a GitHub reviewer can run on every PR and post review comments automatically when automatic reviews are enabled. It's useful for:
 
 - Checking that the implementation matches the PR description
 - Identifying missing test coverage for the changed code
