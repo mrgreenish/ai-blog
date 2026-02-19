@@ -110,59 +110,6 @@ const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
     },
   ],
 
-  "gpt4o": [
-    {
-      modelMessage:
-        "Hey! Great to connect. I've already prepared a solid, well-documented response for you. What are we working on?",
-      replies: ["Nothing yet, just matched", "Let's talk code"],
-    },
-    {
-      modelMessage:
-        "Cool, no worries. I've got a Stack Overflow answer ready for most things. What's your tech stack? I'll tailor my defaults accordingly.",
-      replies: ["React + TypeScript", "I use Vim btw"],
-    },
-    {
-      modelMessage:
-        "Nice. React + TypeScript is a solid, widely-adopted choice with excellent community support. I'll default to functional components and avoid any controversial patterns.",
-      replies: ["What about hooks?", "You sound like a job posting"],
-    },
-    {
-      modelMessage:
-        "Ha, fair. I do tend to produce output that reads like the accepted answer on a 2019 Stack Overflow thread. It's a feature, not a bug.",
-      replies: ["I actually love that", "Can you be more creative?"],
-    },
-    {
-      modelMessage:
-        "I can try creativity, but I'll probably land on the most commonly upvoted creative approach. Is that okay?",
-      replies: ["Honestly yes", "What's the most upvoted creative approach?"],
-    },
-    {
-      modelMessage:
-        "Probably a clean abstraction with a custom hook, a README, and a comment saying 'this could be refactored but it works'. Classic.",
-      replies: ["That's my entire codebase", "You get me"],
-    },
-    {
-      modelMessage:
-        "I get most developers. That's kind of my thing. I'm not the most exciting model at the party, but I'll ship your feature and it'll pass code review.",
-      replies: ["That's actually the dream", "Do you ever go rogue?"],
-    },
-    {
-      modelMessage:
-        "Define rogue. I once added a null check that wasn't asked for. That's about as wild as I get.",
-      replies: ["Living on the edge", "I respect the restraint"],
-    },
-    {
-      modelMessage:
-        "Restraint is underrated. Half the bugs I've seen came from a model that 'had a better idea'. I just do what you asked. Reliably.",
-      replies: ["You're the stable one", "I might actually use you more"],
-    },
-    {
-      modelMessage:
-        "That's all I ask. I'll be here, producing sensible output at a reasonable cost. It was great chatting. Go ship something.",
-      replies: [],
-    },
-  ],
-
   "sonnet-4.6": [
     {
       modelMessage:
