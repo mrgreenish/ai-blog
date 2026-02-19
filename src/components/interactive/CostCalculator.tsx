@@ -17,6 +17,7 @@ interface Scenario {
   description: string;
   inputTokens: number;
   outputTokens: number;
+  complexityNote: string;
 }
 
 const SCENARIOS: Scenario[] = [
@@ -26,6 +27,8 @@ const SCENARIOS: Scenario[] = [
     description: "Paste a stack trace and get a plain-English explanation with a fix.",
     inputTokens: 800,
     outputTokens: 500,
+    complexityNote:
+      "A fast model handles this well. The answer is either right or obviously wrong — no back-and-forth needed.",
   },
   {
     id: "code-review",
@@ -33,6 +36,8 @@ const SCENARIOS: Scenario[] = [
     description: "Review a medium-sized file and get structured feedback on issues and improvements.",
     inputTokens: 4000,
     outputTokens: 1500,
+    complexityNote:
+      "A fast model catches obvious issues. A stronger model finds subtle logic bugs and gives more actionable feedback — fewer missed problems means less rework later.",
   },
   {
     id: "generate-tests",
@@ -40,6 +45,8 @@ const SCENARIOS: Scenario[] = [
     description: "Send a module and get a full test suite back covering edge cases.",
     inputTokens: 3000,
     outputTokens: 4000,
+    complexityNote:
+      "Fast models produce boilerplate tests quickly. A stronger model reasons about edge cases and failure modes — one good suite beats three mediocre ones you have to fix.",
   },
   {
     id: "refactor",
@@ -47,6 +54,8 @@ const SCENARIOS: Scenario[] = [
     description: "Send a full component and get a cleaned-up, restructured version.",
     inputTokens: 5000,
     outputTokens: 6000,
+    complexityNote:
+      "Refactoring requires understanding intent, not just syntax. A stronger model is more likely to get it right first try — saving the time you'd spend correcting a cheaper model's misread.",
   },
   {
     id: "build-feature",
@@ -54,6 +63,8 @@ const SCENARIOS: Scenario[] = [
     description: "Provide a spec and existing context; get multi-file implementation back.",
     inputTokens: 8000,
     outputTokens: 12000,
+    complexityNote:
+      "This is where raw cost comparisons mislead. A stronger model that ships working code in one shot is often cheaper in practice than a cheap model that needs five rounds of corrections.",
   },
 ];
 
@@ -220,7 +231,7 @@ export function CostCalculator() {
 
         {/* Cheapest vs most expensive callout */}
         {savingsPct > 0 && (
-          <div className="mt-4 rounded-lg border border-zinc-700/50 bg-zinc-800/40 px-3 py-2.5">
+          <div className="mt-4 rounded-lg border border-zinc-700/50 bg-zinc-800/40 px-3 py-2.5 space-y-1.5">
             <p className="text-[11px] leading-relaxed text-zinc-400">
               <span className={`font-medium ${cheapest.color}`}>{cheapest.name}</span>
               {" is "}
@@ -231,6 +242,9 @@ export function CostCalculator() {
               <span className="text-zinc-500">
                 {formatCost(cheapest.monthly)} vs {formatCost(mostExpensive.monthly)}/mo
               </span>
+            </p>
+            <p className="text-[11px] leading-relaxed text-zinc-500">
+              {scenario.complexityNote}
             </p>
           </div>
         )}

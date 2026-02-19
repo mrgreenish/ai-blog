@@ -1,14 +1,13 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import {
-  motion,
-  useMotionValue,
-  useTransform,
-  AnimatePresence,
-} from "framer-motion";
+import gsap from "gsap";
+import { Draggable } from "gsap/Draggable";
+import { useGSAP } from "@gsap/react";
 import { X, Heart, RotateCcw, Sparkles, ArrowLeft, Send } from "lucide-react";
 import { getTinderModels } from "@/lib/modelSpecs";
+
+gsap.registerPlugin(useGSAP, Draggable);
 
 // ---------------------------------------------------------------------------
 // Types
@@ -338,81 +337,127 @@ function ModelCard({
   isTop: boolean;
   stackIndex: number;
 }) {
-  const x = useMotionValue(0);
-  const rotate = useTransform(x, [-200, 200], [-14, 14]);
-  const likeOpacity = useTransform(x, [20, 80], [0, 1]);
-  const passOpacity = useTransform(x, [-80, -20], [1, 0]);
-  // Subtle green/red tint behind the card as user swipes
-  const likeBg = useTransform(x, [0, 120], ["rgba(34,197,94,0)", "rgba(34,197,94,0.08)"]);
-  const passBg = useTransform(x, [-120, 0], ["rgba(239,68,68,0.08)", "rgba(239,68,68,0)"]);
-
-  const handleDragEnd = () => {
-    const xVal = x.get();
-    // Lower threshold for easier mobile swiping
-    if (xVal > 80) onSwipe("right");
-    else if (xVal < -80) onSwipe("left");
-  };
+  const cardRef = useRef<HTMLDivElement>(null);
+  const draggableRef = useRef<Draggable[]>([]);
 
   const scale = 1 - stackIndex * 0.04;
   const yOffset = stackIndex * 10;
 
-  if (!isTop) {
-    return (
-      <motion.div
-        className="absolute left-0 right-0 top-0"
-        animate={{ scale, y: yOffset }}
-        transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        style={{ zIndex: 10 - stackIndex }}
-      >
-        <CardContent model={model} />
-      </motion.div>
-    );
-  }
+  useGSAP(
+    () => {
+      if (!cardRef.current) return;
+
+      // Settle background cards into their stack position
+      if (!isTop) {
+        gsap.to(cardRef.current, {
+          scale,
+          y: yOffset,
+          duration: 0.45,
+          ease: "elastic.out(1, 0.5)",
+        });
+        return;
+      }
+
+      // Elastic pop-in for the new top card
+      gsap.from(cardRef.current, {
+        scale: 0.92,
+        duration: 0.65,
+        ease: "elastic.out(1.1, 0.4)",
+      });
+
+      // Set up Draggable for swipe gesture
+      draggableRef.current = Draggable.create(cardRef.current, {
+        type: "x",
+        inertia: false,
+        onDrag() {
+          const progress = this.x / 160;
+          const rotation = progress * 14;
+          gsap.set(cardRef.current, { rotation });
+
+          // LIKE / PASS label opacity
+          gsap.set(".swipe-label-like", { opacity: Math.max(0, Math.min(1, (this.x - 20) / 60)) });
+          gsap.set(".swipe-label-pass", { opacity: Math.max(0, Math.min(1, (-this.x - 20) / 60)) });
+
+          // Subtle tint
+          const likeAlpha = Math.max(0, Math.min(0.08, (this.x / 120) * 0.08));
+          const passAlpha = Math.max(0, Math.min(0.08, (-this.x / 120) * 0.08));
+          gsap.set(".swipe-tint-like", { backgroundColor: `rgba(34,197,94,${likeAlpha})` });
+          gsap.set(".swipe-tint-pass", { backgroundColor: `rgba(239,68,68,${passAlpha})` });
+        },
+        onDragEnd() {
+          if (this.x > 80) {
+            gsap.to(cardRef.current, {
+              x: 500,
+              rotation: 20,
+              opacity: 0,
+              duration: 0.3,
+              ease: "power2.in",
+              onComplete: () => onSwipe("right"),
+            });
+          } else if (this.x < -80) {
+            gsap.to(cardRef.current, {
+              x: -500,
+              rotation: -20,
+              opacity: 0,
+              duration: 0.3,
+              ease: "power2.in",
+              onComplete: () => onSwipe("left"),
+            });
+          } else {
+            // Snap back with elastic feel
+            gsap.to(cardRef.current, {
+              x: 0,
+              rotation: 0,
+              duration: 0.6,
+              ease: "elastic.out(1, 0.4)",
+            });
+            gsap.to([".swipe-label-like", ".swipe-label-pass"], { opacity: 0, duration: 0.2 });
+            gsap.to([".swipe-tint-like", ".swipe-tint-pass"], {
+              backgroundColor: "rgba(0,0,0,0)",
+              duration: 0.2,
+            });
+          }
+        },
+      });
+    },
+    { dependencies: [isTop, stackIndex], scope: cardRef }
+  );
+
+  // Kill draggable when card is no longer top or unmounts
+  useEffect(() => {
+    return () => {
+      draggableRef.current.forEach((d) => d.kill());
+    };
+  }, []);
 
   return (
-    <motion.div
-      className="absolute left-0 right-0 top-0 cursor-grab active:cursor-grabbing"
-      style={{ x, rotate, zIndex: 20, touchAction: "none" }}
-      drag="x"
-      dragConstraints={{ left: 0, right: 0 }}
-      dragElastic={0.7}
-      onDragEnd={handleDragEnd}
-      initial={{ scale: 0.95, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      exit={{
-        x: x.get() > 0 ? 400 : -400,
-        rotate: x.get() > 0 ? 20 : -20,
-        opacity: 0,
-        transition: { duration: 0.3, ease: "easeIn" },
+    <div
+      ref={cardRef}
+      className="absolute left-0 right-0 top-0"
+      style={{
+        zIndex: isTop ? 20 : 10 - stackIndex,
+        touchAction: isTop ? "none" : "auto",
+        cursor: isTop ? "grab" : "default",
       }}
     >
-      {/* Swipe tint overlays */}
-      <motion.div
-        className="pointer-events-none absolute inset-0 z-20 rounded-2xl"
-        style={{ background: likeBg }}
-      />
-      <motion.div
-        className="pointer-events-none absolute inset-0 z-20 rounded-2xl"
-        style={{ background: passBg }}
-      />
-      <motion.div
-        className="pointer-events-none absolute inset-0 z-30 flex items-start justify-start rounded-2xl p-5"
-        style={{ opacity: likeOpacity }}
-      >
-        <span className="-rotate-20 rounded-lg border-4 border-green-400 bg-green-400/10 px-3 py-1 font-mono text-2xl font-black text-green-400">
-          LIKE
-        </span>
-      </motion.div>
-      <motion.div
-        className="pointer-events-none absolute inset-0 z-30 flex items-start justify-end rounded-2xl p-5"
-        style={{ opacity: passOpacity }}
-      >
-        <span className="rotate-20 rounded-lg border-4 border-red-400 bg-red-400/10 px-3 py-1 font-mono text-2xl font-black text-red-400">
-          PASS
-        </span>
-      </motion.div>
+      {isTop && (
+        <>
+          <div className="swipe-tint-like pointer-events-none absolute inset-0 z-20 rounded-2xl" />
+          <div className="swipe-tint-pass pointer-events-none absolute inset-0 z-20 rounded-2xl" />
+          <div className="swipe-label-like pointer-events-none absolute inset-0 z-30 flex items-start justify-start rounded-2xl p-5 opacity-0">
+            <span className="-rotate-12 rounded-lg border-4 border-green-400 bg-green-400/10 px-3 py-1 font-mono text-2xl font-black text-green-400">
+              LIKE
+            </span>
+          </div>
+          <div className="swipe-label-pass pointer-events-none absolute inset-0 z-30 flex items-start justify-end rounded-2xl p-5 opacity-0">
+            <span className="rotate-12 rounded-lg border-4 border-red-400 bg-red-400/10 px-3 py-1 font-mono text-2xl font-black text-red-400">
+              PASS
+            </span>
+          </div>
+        </>
+      )}
       <CardContent model={model} />
-    </motion.div>
+    </div>
   );
 }
 
@@ -452,15 +497,38 @@ function CardContent({ model }: { model: Model }) {
 // ---------------------------------------------------------------------------
 
 function LoadingScreen() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const tl = gsap.timeline({ repeat: -1 });
+      tl.to(".loading-icon", { rotation: 360, duration: 1, ease: "none" })
+        .to(".loading-icon", { scale: 1.3, duration: 0.18, ease: "elastic.out(1.5, 0.4)" }, "-=0.18")
+        .to(".loading-icon", { scale: 1, duration: 0.35, ease: "elastic.out(1, 0.4)" });
+
+      gsap.from(".loading-text", { opacity: 0, y: 10, duration: 0.5, ease: "elastic.out(1, 0.6)", delay: 0.2 });
+
+      gsap.to(".loading-dot", {
+        y: -5,
+        stagger: { each: 0.15, repeat: -1, yoyo: true },
+        ease: "elastic.out(1.5, 0.3)",
+        duration: 0.4,
+      });
+    },
+    { scope: containerRef }
+  );
+
   return (
-    <div className="flex flex-col items-center justify-center gap-4 py-16">
-      <motion.div
-        animate={{ rotate: 360 }}
-        transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
-      >
+    <div ref={containerRef} className="flex flex-col items-center justify-center gap-4 py-16">
+      <div className="loading-icon">
         <Sparkles className="h-10 w-10 text-violet-400" />
-      </motion.div>
-      <p className="font-mono text-sm text-zinc-400">Finding your matches...</p>
+      </div>
+      <div className="loading-text flex items-center gap-1.5 font-mono text-sm text-zinc-400">
+        <span>Finding your matches</span>
+        <span className="loading-dot inline-block h-1 w-1 rounded-full bg-zinc-400" />
+        <span className="loading-dot inline-block h-1 w-1 rounded-full bg-zinc-400" />
+        <span className="loading-dot inline-block h-1 w-1 rounded-full bg-zinc-400" />
+      </div>
     </div>
   );
 }
@@ -474,14 +542,44 @@ function MatchCard({
   onClick: () => void;
   index: number;
 }) {
+  const cardRef = useRef<HTMLButtonElement>(null);
+
+  const { contextSafe } = useGSAP(
+    () => {
+      gsap.from(cardRef.current, {
+        opacity: 0,
+        scale: 0.6,
+        y: 30,
+        rotation: index % 2 === 0 ? -6 : 6,
+        duration: 0.7,
+        delay: index * 0.13,
+        ease: "elastic.out(1, 0.45)",
+      });
+    },
+    { scope: cardRef }
+  );
+
+  const handleMouseEnter = contextSafe(() => {
+    gsap.to(cardRef.current, { scale: 1.05, y: -4, duration: 0.35, ease: "elastic.out(1.2, 0.5)" });
+  });
+  const handleMouseLeave = contextSafe(() => {
+    gsap.to(cardRef.current, { scale: 1, y: 0, duration: 0.4, ease: "elastic.out(1, 0.5)" });
+  });
+  const handleMouseDown = contextSafe(() => {
+    gsap.to(cardRef.current, { scale: 0.95, duration: 0.1, ease: "power2.out" });
+  });
+  const handleMouseUp = contextSafe(() => {
+    gsap.to(cardRef.current, { scale: 1.05, duration: 0.3, ease: "elastic.out(1.5, 0.4)" });
+  });
+
   return (
-    <motion.button
-      initial={{ opacity: 0, scale: 0.85, y: 24 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ type: "spring", stiffness: 260, damping: 20, delay: index * 0.12 }}
-      whileHover={{ scale: 1.03, y: -2 }}
-      whileTap={{ scale: 0.97 }}
+    <button
+      ref={cardRef}
       onClick={onClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
       className="group overflow-hidden rounded-xl border border-zinc-700 bg-zinc-900 text-left transition-colors hover:border-zinc-500"
     >
       <div
@@ -496,7 +594,7 @@ function MatchCard({
           Tap to chat →
         </p>
       </div>
-    </motion.button>
+    </button>
   );
 }
 
@@ -509,6 +607,7 @@ function ResultsScreen({
   onRestart: () => void;
   onOpenChat: (model: Model) => void;
 }) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const liked = results.filter((r) => r.direction === "right");
   const likedModels = MODELS.filter((m) => liked.some((r) => r.modelId === m.id));
 
@@ -520,27 +619,61 @@ function ResultsScreen({
     return candidates;
   })();
 
+  useGSAP(
+    () => {
+      gsap.from(containerRef.current, { opacity: 0, duration: 0.3, ease: "power2.out" });
+
+      gsap.from(".match-badge", {
+        scale: 0,
+        rotation: -15,
+        opacity: 0,
+        duration: 0.8,
+        delay: 0.1,
+        ease: "elastic.out(1.2, 0.4)",
+      });
+
+      // Pulse the heart icon after badge lands
+      gsap.to(".match-heart", {
+        scale: 1.4,
+        duration: 0.2,
+        delay: 0.7,
+        ease: "power2.out",
+        yoyo: true,
+        repeat: 3,
+      });
+
+      gsap.from(".match-subtitle", {
+        opacity: 0,
+        y: 8,
+        duration: 0.5,
+        delay: 0.4,
+        ease: "elastic.out(1, 0.6)",
+      });
+
+      gsap.from(".restart-btn", {
+        opacity: 0,
+        y: 12,
+        scale: 0.9,
+        duration: 0.5,
+        delay: 0.3,
+        ease: "elastic.out(1, 0.5)",
+      });
+    },
+    { scope: containerRef }
+  );
+
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="flex flex-col items-center gap-6 py-6"
-    >
+    <div ref={containerRef} className="flex flex-col items-center gap-6 py-6">
       {matches.length > 0 ? (
         <>
           <div className="text-center">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 300, damping: 15, delay: 0.1 }}
-              className="mb-3 inline-flex items-center gap-2 rounded-full border border-pink-500/30 bg-pink-500/10 px-4 py-1.5"
-            >
-              <Heart className="h-4 w-4 fill-pink-400 text-pink-400" />
+            <div className="match-badge mb-3 inline-flex items-center gap-2 rounded-full border border-pink-500/30 bg-pink-500/10 px-4 py-1.5">
+              <Heart className="match-heart h-4 w-4 fill-pink-400 text-pink-400" />
               <span className="font-mono text-sm font-semibold text-pink-400">
                 {matches.length === 1 ? "It's a match!" : `${matches.length} matches!`}
               </span>
-            </motion.div>
-            <p className="text-sm text-zinc-400">
+            </div>
+            <p className="match-subtitle text-sm text-zinc-400">
               {matches.length === 1
                 ? "One model is ready to work with you."
                 : "These models are ready to work with you."}
@@ -574,12 +707,12 @@ function ResultsScreen({
 
       <button
         onClick={onRestart}
-        className="flex items-center gap-2 rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-600 hover:text-white"
+        className="restart-btn flex items-center gap-2 rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-600 hover:text-white"
       >
         <RotateCcw className="h-4 w-4" />
         Try again
       </button>
-    </motion.div>
+    </div>
   );
 }
 
@@ -588,19 +721,36 @@ function ResultsScreen({
 // ---------------------------------------------------------------------------
 
 function TypingIndicator({ emoji }: { emoji: string }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      gsap.from(containerRef.current, {
+        opacity: 0,
+        x: -12,
+        scale: 0.9,
+        duration: 0.4,
+        ease: "elastic.out(1, 0.5)",
+      });
+
+      gsap.to(".typing-dot", {
+        y: -6,
+        stagger: { each: 0.13, repeat: -1, yoyo: true },
+        ease: "elastic.out(1.5, 0.3)",
+        duration: 0.35,
+      });
+    },
+    { scope: containerRef }
+  );
+
   return (
-    <div className="flex items-end gap-2">
+    <div ref={containerRef} className="flex items-end gap-2">
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-zinc-800 text-base">
         {emoji}
       </div>
       <div className="flex items-center gap-1 rounded-2xl rounded-bl-sm bg-zinc-800 px-4 py-3">
         {[0, 1, 2].map((i) => (
-          <motion.span
-            key={i}
-            className="block h-1.5 w-1.5 rounded-full bg-zinc-400"
-            animate={{ y: [0, -4, 0] }}
-            transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.15 }}
-          />
+          <span key={i} className="typing-dot block h-1.5 w-1.5 rounded-full bg-zinc-400" />
         ))}
       </div>
     </div>
@@ -620,6 +770,7 @@ function ChatScreen({
   const [isTyping, setIsTyping] = useState(true);
   const [showReplies, setShowReplies] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const repliesRef = useRef<HTMLDivElement>(null);
 
   // Deliver the first model message on mount
   useEffect(() => {
@@ -633,7 +784,7 @@ function ChatScreen({
     return () => clearTimeout(timer);
   }, [script]);
 
-  // Scroll chat container to bottom (not the page) whenever messages change
+  // Scroll to bottom whenever messages change
   useEffect(() => {
     const el = scrollAreaRef.current;
     if (el) {
@@ -643,12 +794,46 @@ function ChatScreen({
     }
   }, [messages, isTyping]);
 
+  // Elastic slide-in for the latest message bubble
+  useGSAP(
+    () => {
+      if (messages.length === 0) return;
+      const lastMsg = messages[messages.length - 1];
+      const bubbles = scrollAreaRef.current?.querySelectorAll(".chat-bubble");
+      if (!bubbles?.length) return;
+      const lastBubble = bubbles[bubbles.length - 1];
+      gsap.from(lastBubble, {
+        opacity: 0,
+        x: lastMsg.from === "user" ? 30 : -30,
+        scale: 0.85,
+        duration: 0.55,
+        ease: "elastic.out(1, 0.5)",
+      });
+    },
+    { dependencies: [messages] }
+  );
+
+  // Elastic pop-in for reply buttons — scoped to repliesRef wrapper
+  useGSAP(
+    () => {
+      if (!showReplies) return;
+      gsap.from(".reply-btn", {
+        opacity: 0,
+        scale: 0.5,
+        y: 10,
+        stagger: 0.07,
+        duration: 0.5,
+        ease: "elastic.out(1.1, 0.45)",
+      });
+    },
+    { scope: repliesRef, dependencies: [showReplies, round] }
+  );
+
   const handleReply = (replyText: string) => {
     if (!showReplies) return;
     setShowReplies(false);
 
-    const userMsg: ChatMessage = { from: "user", text: replyText };
-    setMessages((prev) => [...prev, userMsg]);
+    setMessages((prev) => [...prev, { from: "user", text: replyText }]);
 
     const nextRound = round + 1;
     setRound(nextRound);
@@ -695,35 +880,30 @@ function ChatScreen({
       {/* Messages */}
       <div
         ref={scrollAreaRef}
-        className="flex-1 overflow-y-auto overscroll-contain px-4 py-4 space-y-3"
+        className="flex-1 overflow-y-auto overscroll-contain space-y-3 px-4 py-4"
         style={{ WebkitOverflowScrolling: "touch" }}
       >
-        <AnimatePresence initial={false}>
-          {messages.map((msg, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25 }}
-              className={`flex items-end gap-2 ${msg.from === "user" ? "flex-row-reverse" : "flex-row"}`}
-            >
-              {msg.from === "model" && (
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-zinc-800 text-base">
-                  {model.emoji}
-                </div>
-              )}
-              <div
-                className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
-                  msg.from === "model"
-                    ? "rounded-bl-sm bg-zinc-800 text-zinc-100"
-                    : "rounded-br-sm bg-pink-500 text-white"
-                }`}
-              >
-                {msg.text}
+        {messages.map((msg, i) => (
+          <div
+            key={i}
+            className={`chat-bubble flex items-end gap-2 ${msg.from === "user" ? "flex-row-reverse" : "flex-row"}`}
+          >
+            {msg.from === "model" && (
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-zinc-800 text-base">
+                {model.emoji}
               </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
+            )}
+            <div
+              className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
+                msg.from === "model"
+                  ? "rounded-bl-sm bg-zinc-800 text-zinc-100"
+                  : "rounded-br-sm bg-pink-500 text-white"
+              }`}
+            >
+              {msg.text}
+            </div>
+          </div>
+        ))}
 
         {isTyping && <TypingIndicator emoji={model.emoji} />}
       </div>
@@ -742,27 +922,18 @@ function ChatScreen({
             </button>
           </div>
         ) : showReplies && currentReplies.length > 0 ? (
-          <motion.div
-            className="flex flex-wrap gap-2"
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            {currentReplies.map((reply, i) => (
-              <motion.button
+          <div ref={repliesRef} className="flex flex-wrap gap-2">
+            {currentReplies.map((reply) => (
+              <button
                 key={reply}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: i * 0.06, duration: 0.15 }}
-                whileTap={{ scale: 0.93 }}
                 onClick={() => handleReply(reply)}
-                className="flex items-center gap-1.5 rounded-full border border-zinc-600 bg-zinc-800 px-3 py-1.5 text-sm text-zinc-200 transition-all hover:border-pink-500/60 hover:bg-pink-500/10 hover:text-pink-300"
+                className="reply-btn flex items-center gap-1.5 rounded-full border border-zinc-600 bg-zinc-800 px-3 py-1.5 text-sm text-zinc-200 transition-all hover:border-pink-500/60 hover:bg-pink-500/10 hover:text-pink-300 active:scale-95"
               >
                 <Send className="h-3 w-3 opacity-60" />
                 {reply}
-              </motion.button>
+              </button>
             ))}
-          </motion.div>
+          </div>
         ) : (
           <div className="flex items-center gap-2 opacity-40">
             <div className="h-9 flex-1 rounded-full border border-zinc-700 bg-zinc-800" />
@@ -786,16 +957,28 @@ export function ModelTinder() {
   const [phase, setPhase] = useState<Phase>("swiping");
   const isAnimating = useRef(false);
   const [chatModel, setChatModel] = useState<Model | null>(null);
+  const swipeControlsRef = useRef<HTMLDivElement>(null);
 
   const visibleModels = MODELS.slice(currentIndex, currentIndex + 3);
+
+  const { contextSafe } = useGSAP({ scope: swipeControlsRef });
 
   const handleSwipe = (direction: SwipeDirection) => {
     if (isAnimating.current) return;
     isAnimating.current = true;
 
+    // Elastic punch on the tapped button — contextSafe so it's tracked for cleanup
+    const animateBtn = contextSafe((btnClass: string) => {
+      gsap.timeline()
+        .to(btnClass, { scale: 0.8, duration: 0.1, ease: "power2.out" })
+        .to(btnClass, { scale: 1.2, duration: 0.25, ease: "elastic.out(1.5, 0.4)" })
+        .to(btnClass, { scale: 1, duration: 0.3, ease: "elastic.out(1, 0.5)" });
+    });
+
+    animateBtn(direction === "right" ? ".btn-like" : ".btn-pass");
+
     const model = MODELS[currentIndex];
-    const newResults = [...results, { modelId: model.id, direction }];
-    setResults(newResults);
+    setResults((prev) => [...prev, { modelId: model.id, direction }]);
 
     setTimeout(() => {
       const nextIndex = currentIndex + 1;
@@ -863,21 +1046,19 @@ export function ModelTinder() {
         {phase === "swiping" && (
           <div className="flex flex-col items-center gap-6">
             <div className="relative z-0 w-full max-w-sm" style={{ touchAction: "pan-y" }}>
-              {/* Ghost card — sets the container height to match card content */}
+              {/* Ghost card — sets the container height */}
               <div className="invisible pointer-events-none" aria-hidden>
                 <CardContent model={MODELS[0]} />
               </div>
-              <AnimatePresence>
-                {visibleModels.map((model, i) => (
-                  <ModelCard
-                    key={model.id}
-                    model={model}
-                    onSwipe={handleSwipe}
-                    isTop={i === 0}
-                    stackIndex={i}
-                  />
-                ))}
-              </AnimatePresence>
+              {visibleModels.map((model, i) => (
+                <ModelCard
+                  key={model.id}
+                  model={model}
+                  onSwipe={handleSwipe}
+                  isTop={i === 0}
+                  stackIndex={i}
+                />
+              ))}
               {visibleModels.length === 0 && (
                 <div className="absolute inset-0 flex items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900">
                   <p className="text-sm text-zinc-500">All done!</p>
@@ -885,11 +1066,11 @@ export function ModelTinder() {
               )}
             </div>
 
-            <div className="relative z-10 flex shrink-0 items-center gap-6">
+            <div ref={swipeControlsRef} className="relative z-10 flex shrink-0 items-center gap-6">
               <button
                 onClick={() => handleSwipe("left")}
                 disabled={isAnimating.current}
-                className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-red-500/40 bg-zinc-900 text-red-400 shadow-lg transition-all hover:border-red-500 hover:bg-red-500/10 hover:scale-110 active:scale-95 disabled:opacity-40"
+                className="btn-pass flex h-14 w-14 items-center justify-center rounded-full border-2 border-red-500/40 bg-zinc-900 text-red-400 shadow-lg transition-colors hover:border-red-500 hover:bg-red-500/10 disabled:opacity-40"
                 aria-label="Pass"
               >
                 <X className="h-6 w-6" />
@@ -898,7 +1079,7 @@ export function ModelTinder() {
               <button
                 onClick={() => handleSwipe("right")}
                 disabled={isAnimating.current}
-                className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-green-500/40 bg-zinc-900 text-green-400 shadow-lg transition-all hover:border-green-500 hover:bg-green-500/10 hover:scale-110 active:scale-95 disabled:opacity-40"
+                className="btn-like flex h-14 w-14 items-center justify-center rounded-full border-2 border-green-500/40 bg-zinc-900 text-green-400 shadow-lg transition-colors hover:border-green-500 hover:bg-green-500/10 disabled:opacity-40"
                 aria-label="Like"
               >
                 <Heart className="h-6 w-6" />
