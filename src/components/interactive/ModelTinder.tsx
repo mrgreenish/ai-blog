@@ -328,14 +328,18 @@ const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
 
 function ModelCard({
   model,
-  onSwipe,
   isTop,
   stackIndex,
+  exitDirection,
+  onDragSwipe,
+  onExitComplete,
 }: {
   model: Model;
-  onSwipe: (direction: SwipeDirection) => void;
   isTop: boolean;
   stackIndex: number;
+  exitDirection: SwipeDirection | null;
+  onDragSwipe: (direction: SwipeDirection) => void;
+  onExitComplete: () => void;
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const draggableRef = useRef<Draggable[]>([]);
@@ -343,42 +347,39 @@ function ModelCard({
   const scale = 1 - stackIndex * 0.04;
   const yOffset = stackIndex * 10;
 
+  // Settle background cards into their stack position
   useGSAP(
     () => {
-      if (!cardRef.current) return;
+      if (!cardRef.current || isTop) return;
+      gsap.to(cardRef.current, {
+        scale,
+        y: yOffset,
+        duration: 0.45,
+        ease: "elastic.out(1, 0.5)",
+      });
+    },
+    { dependencies: [isTop, stackIndex, scale, yOffset], scope: cardRef }
+  );
 
-      // Settle background cards into their stack position
-      if (!isTop) {
-        gsap.to(cardRef.current, {
-          scale,
-          y: yOffset,
-          duration: 0.45,
-          ease: "elastic.out(1, 0.5)",
-        });
-        return;
-      }
+  // Elastic pop-in + Draggable setup for the top card
+  useGSAP(
+    () => {
+      if (!cardRef.current || !isTop) return;
 
-      // Elastic pop-in for the new top card
       gsap.from(cardRef.current, {
         scale: 0.92,
         duration: 0.65,
         ease: "elastic.out(1.1, 0.4)",
       });
 
-      // Set up Draggable for swipe gesture
       draggableRef.current = Draggable.create(cardRef.current, {
         type: "x",
         inertia: false,
         onDrag() {
-          const progress = this.x / 160;
-          const rotation = progress * 14;
+          const rotation = (this.x / 160) * 14;
           gsap.set(cardRef.current, { rotation });
-
-          // LIKE / PASS label opacity
           gsap.set(".swipe-label-like", { opacity: Math.max(0, Math.min(1, (this.x - 20) / 60)) });
           gsap.set(".swipe-label-pass", { opacity: Math.max(0, Math.min(1, (-this.x - 20) / 60)) });
-
-          // Subtle tint
           const likeAlpha = Math.max(0, Math.min(0.08, (this.x / 120) * 0.08));
           const passAlpha = Math.max(0, Math.min(0.08, (-this.x / 120) * 0.08));
           gsap.set(".swipe-tint-like", { backgroundColor: `rgba(34,197,94,${likeAlpha})` });
@@ -386,44 +387,43 @@ function ModelCard({
         },
         onDragEnd() {
           if (this.x > 80) {
-            gsap.to(cardRef.current, {
-              x: 500,
-              rotation: 20,
-              opacity: 0,
-              duration: 0.3,
-              ease: "power2.in",
-              onComplete: () => onSwipe("right"),
-            });
+            onDragSwipe("right");
           } else if (this.x < -80) {
-            gsap.to(cardRef.current, {
-              x: -500,
-              rotation: -20,
-              opacity: 0,
-              duration: 0.3,
-              ease: "power2.in",
-              onComplete: () => onSwipe("left"),
-            });
+            onDragSwipe("left");
           } else {
-            // Snap back with elastic feel
-            gsap.to(cardRef.current, {
-              x: 0,
-              rotation: 0,
-              duration: 0.6,
-              ease: "elastic.out(1, 0.4)",
-            });
+            // Snap back elastically
+            gsap.to(cardRef.current, { x: 0, rotation: 0, duration: 0.6, ease: "elastic.out(1, 0.4)" });
             gsap.to([".swipe-label-like", ".swipe-label-pass"], { opacity: 0, duration: 0.2 });
-            gsap.to([".swipe-tint-like", ".swipe-tint-pass"], {
-              backgroundColor: "rgba(0,0,0,0)",
-              duration: 0.2,
-            });
+            gsap.to([".swipe-tint-like", ".swipe-tint-pass"], { backgroundColor: "rgba(0,0,0,0)", duration: 0.2 });
           }
         },
       });
     },
-    { dependencies: [isTop, stackIndex], scope: cardRef }
+    { dependencies: [isTop], scope: cardRef }
   );
 
-  // Kill draggable when card is no longer top or unmounts
+  // Fly-off animation triggered by exitDirection prop (button press or drag threshold)
+  useGSAP(
+    () => {
+      if (!exitDirection || !cardRef.current) return;
+      // Disable draggable immediately so it can't interfere
+      draggableRef.current.forEach((d) => d.disable());
+      const xTarget = exitDirection === "right" ? 520 : -520;
+      const rotation = exitDirection === "right" ? 22 : -22;
+      gsap.to(cardRef.current, {
+        x: xTarget,
+        rotation,
+        opacity: 0,
+        duration: 0.38,
+        ease: "power2.in",
+        onComplete: onExitComplete,
+      });
+      gsap.to([".swipe-label-like", ".swipe-label-pass"], { opacity: 0, duration: 0.15 });
+    },
+    { dependencies: [exitDirection], scope: cardRef }
+  );
+
+  // Kill draggable on unmount
   useEffect(() => {
     return () => {
       draggableRef.current.forEach((d) => d.kill());
@@ -955,6 +955,7 @@ export function ModelTinder() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [results, setResults] = useState<SwipeResult[]>([]);
   const [phase, setPhase] = useState<Phase>("swiping");
+  const [swipingDirection, setSwipingDirection] = useState<SwipeDirection | null>(null);
   const isAnimating = useRef(false);
   const [chatModel, setChatModel] = useState<Model | null>(null);
   const swipeControlsRef = useRef<HTMLDivElement>(null);
@@ -963,33 +964,40 @@ export function ModelTinder() {
 
   const { contextSafe } = useGSAP({ scope: swipeControlsRef });
 
+  // Called by button press OR drag threshold — just sets the exit direction.
+  // ModelCard animates the fly-off, then calls onExitComplete.
   const handleSwipe = (direction: SwipeDirection) => {
     if (isAnimating.current) return;
     isAnimating.current = true;
 
-    // Elastic punch on the tapped button — contextSafe so it's tracked for cleanup
+    // Record the result immediately
+    const model = MODELS[currentIndex];
+    setResults((prev) => [...prev, { modelId: model.id, direction }]);
+
+    // Elastic punch on the tapped button
     const animateBtn = contextSafe((btnClass: string) => {
       gsap.timeline()
         .to(btnClass, { scale: 0.8, duration: 0.1, ease: "power2.out" })
         .to(btnClass, { scale: 1.2, duration: 0.25, ease: "elastic.out(1.5, 0.4)" })
         .to(btnClass, { scale: 1, duration: 0.3, ease: "elastic.out(1, 0.5)" });
     });
-
     animateBtn(direction === "right" ? ".btn-like" : ".btn-pass");
 
-    const model = MODELS[currentIndex];
-    setResults((prev) => [...prev, { modelId: model.id, direction }]);
+    // Signal ModelCard to animate out
+    setSwipingDirection(direction);
+  };
 
-    setTimeout(() => {
-      const nextIndex = currentIndex + 1;
-      setCurrentIndex(nextIndex);
-      isAnimating.current = false;
+  // Called by ModelCard once its fly-off animation completes
+  const handleExitComplete = () => {
+    setSwipingDirection(null);
+    const nextIndex = currentIndex + 1;
+    setCurrentIndex(nextIndex);
+    isAnimating.current = false;
 
-      if (nextIndex >= MODELS.length) {
-        setPhase("loading");
-        setTimeout(() => setPhase("results"), 1600);
-      }
-    }, 350);
+    if (nextIndex >= MODELS.length) {
+      setPhase("loading");
+      setTimeout(() => setPhase("results"), 1600);
+    }
   };
 
   const handleRestart = () => {
@@ -1045,6 +1053,7 @@ export function ModelTinder() {
 
         {phase === "swiping" && (
           <div className="flex flex-col items-center gap-6">
+            {/* Card stack — z-0 so controls always render above */}
             <div className="relative z-0 w-full max-w-sm" style={{ touchAction: "pan-y" }}>
               {/* Ghost card — sets the container height */}
               <div className="invisible pointer-events-none" aria-hidden>
@@ -1054,9 +1063,11 @@ export function ModelTinder() {
                 <ModelCard
                   key={model.id}
                   model={model}
-                  onSwipe={handleSwipe}
                   isTop={i === 0}
                   stackIndex={i}
+                  exitDirection={i === 0 ? swipingDirection : null}
+                  onDragSwipe={handleSwipe}
+                  onExitComplete={handleExitComplete}
                 />
               ))}
               {visibleModels.length === 0 && (
@@ -1066,7 +1077,8 @@ export function ModelTinder() {
               )}
             </div>
 
-            <div ref={swipeControlsRef} className="relative z-10 flex shrink-0 items-center gap-6">
+            {/* Controls — z-20 so they always sit above the card stack */}
+            <div ref={swipeControlsRef} className="relative z-20 flex shrink-0 items-center gap-6">
               <button
                 onClick={() => handleSwipe("left")}
                 disabled={isAnimating.current}
@@ -1085,10 +1097,6 @@ export function ModelTinder() {
                 <Heart className="h-6 w-6" />
               </button>
             </div>
-
-            <p className="text-center text-xs text-zinc-600">
-              Drag the card left to pass · right to like
-            </p>
           </div>
         )}
       </div>
