@@ -43,7 +43,7 @@ export const CATEGORY_META: Record<
   models: {
     label: "Models",
     description:
-      "When to reach for which model — from real shipping experience. Reasoning vs fast, coding vs vision, long context vs RAG.",
+      "When to reach for which model — from real shipping experience. Reasoning vs fast, model personalities, design to code.",
     accent: "text-blue-400",
     accentBg: "bg-blue-400/10 border-blue-400/20",
   },

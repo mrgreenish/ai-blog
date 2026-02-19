@@ -37,18 +37,113 @@ export default function Home() {
   return (
     <div className="mx-auto max-w-5xl px-6 py-16">
 
-      {/* Hook */}
-      <section className="mb-20">
+      {/* Intro */}
+      <section className="mb-20 max-w-3xl">
         <div className="mb-4 font-mono text-sm text-zinc-500">
           developer field notes
         </div>
         <h1 className="text-4xl font-bold leading-tight text-zinc-50 sm:text-5xl">
-          This isn&apos;t an AI news blog.
+          Working With AI as a Developer
         </h1>
-        <p className="mt-4 max-w-2xl text-xl leading-relaxed text-zinc-400">
-          It&apos;s my developer field notes: what actually worked, what broke, what
-          surprised me, and what I&apos;d do differently next time.
-        </p>
+
+        <div className="mt-8 space-y-6 text-base leading-relaxed text-zinc-400">
+          <p>
+            Over the past year I&apos;ve been using AI inside real projects — not as a
+            toy, but inside specs, tickets and production code.
+          </p>
+          <p>
+            I started experimenting out of curiosity. Very quickly it turned into
+            testing what actually works, what doesn&apos;t, and what fails in subtle
+            ways you only notice later.
+          </p>
+          <p className="text-zinc-300">
+            This isn&apos;t theory. It&apos;s just what I&apos;ve learned while building.
+          </p>
+        </div>
+
+        <h2 className="mt-12 text-lg font-semibold text-zinc-200">
+          The vibe
+        </h2>
+        <div className="mt-4 space-y-4 text-base leading-relaxed text-zinc-400">
+          <p>
+            If you squint, this whole era feels like the early internet — the
+            1980s kind. Everyone experimenting. Nothing standardised. Half the
+            tools built in a weekend. That same sense that the ground is shifting
+            and anyone paying attention could end up ahead.
+          </p>
+          <p>
+            But faster. Wildly faster. And with a frequency the early internet
+            never had — a low, persistent hum
+            of <span className="italic text-zinc-300">are we building something
+            we don&apos;t fully control?</span>
+          </p>
+          <p>
+            Excitement and unease in the same breath. That&apos;s the backdrop.
+            And honestly, it makes the work more interesting, not less.
+          </p>
+        </div>
+
+        <h2 className="mt-12 text-lg font-semibold text-zinc-200">
+          The main question
+        </h2>
+        <div className="mt-4 space-y-4 text-base leading-relaxed text-zinc-400">
+          <p className="text-zinc-300 italic">
+            Which model should I use for this task?
+          </p>
+          <p>
+            That question matters more than most people think.
+          </p>
+          <p>
+            Models behave differently. Some are structured but stiff. Some are
+            creative but drift. Some reason deeply. Others are fast but shallow.
+          </p>
+          <p>
+            Picking the right one changes the whole workflow.
+          </p>
+        </div>
+
+        <h2 className="mt-12 text-lg font-semibold text-zinc-200">
+          And it keeps changing
+        </h2>
+        <div className="mt-4 space-y-4 text-base leading-relaxed text-zinc-400">
+          <p>
+            The tricky part is that everything moves fast.
+          </p>
+          <p>
+            New versions drop. Context windows grow. Behaviour shifts. Guardrails
+            change. What worked a few months ago can feel different today.
+          </p>
+          <p>
+            So model choice isn&apos;t a one-time decision. It&apos;s constant
+            recalibration.
+          </p>
+        </div>
+
+        <h2 className="mt-12 text-lg font-semibold text-zinc-200">
+          Staying in control
+        </h2>
+        <div className="mt-4 space-y-4 text-base leading-relaxed text-zinc-400">
+          <p>
+            When models drift away from the original plan or start inventing
+            structure, you need ways to pull them back.
+          </p>
+          <p>
+            Reviewing and steering output is part of the job.
+          </p>
+        </div>
+
+        <h2 className="mt-12 text-lg font-semibold text-zinc-200">
+          From experiments to workflows
+        </h2>
+        <div className="mt-4 space-y-4 text-base leading-relaxed text-zinc-400">
+          <p>
+            I&apos;ve been building small repeatable workflows — from spec to
+            implementation — so AI supports focus instead of creating noise.
+          </p>
+          <p className="text-zinc-300">
+            That&apos;s what this is about.
+          </p>
+        </div>
       </section>
 
       {/* Journey */}

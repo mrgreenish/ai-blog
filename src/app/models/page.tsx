@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Models",
   description:
-    "When to reach for which model — from real shipping experience. Reasoning vs fast, coding vs vision, long context vs RAG.",
+    "When to reach for which model — from real shipping experience. Reasoning vs fast, model personalities, design to code.",
 };
 
 export default function ModelsPage() {

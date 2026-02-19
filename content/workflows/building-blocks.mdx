@@ -1,0 +1,113 @@
+---
+title: "Building Blocks First"
+description: "Why starting from atoms — small, typed, single-purpose components — changes how AI writes code. Structure before features, every time."
+category: workflows
+order: 9
+interactiveTools: [workflow-recipe]
+---
+
+When we start a project, we don't start with pages. We start with atoms.
+
+Small, clear, single-purpose building blocks. A button. A heading. A card. Then molecules — a form field with label and validation. Then organisms — a complete form, a navigation bar. Every piece has a clear role, a clear API, and clear rules.
+
+This isn't just a preference for tidiness. It changes how AI-assisted development works in practice.
+
+## Why structure changes AI behavior
+
+If the codebase is messy, AI has to guess. If naming is inconsistent, if there are three different button implementations, if spacing is hardcoded in random places — the model improvises. And improvisation in production systems usually means inconsistency.
+
+But when the codebase is atomic — clear naming, defined variants, shared tokens, typed props, strict component boundaries — the AI doesn't guess. It composes. It sees the vocabulary of the system and reuses existing blocks instead of inventing new ones.
+
+I've seen this firsthand: the same model, the same prompt, produces noticeably better output when the codebase it's working in has clear patterns to follow. It's not smarter — it's less confused.
+
+## What "atomic" looks like in practice
+
+This is the hierarchy I work with:
+
+**Atoms.** The smallest units. A button, a badge, a text input. Each has typed props, defined variants (size, color, state), and no business logic. These are the design system's vocabulary.
+
+**Molecules.** Combinations of atoms that form a useful unit. A search input (text input + icon + clear button). A form field (label + input + error message). Still generic, still reusable.
+
+**Organisms.** Larger compositions that start to carry context. A header with navigation, a product card with image and price and action button. These combine molecules and atoms into recognizable UI sections.
+
+**Templates and pages.** Layouts that arrange organisms. By the time you're here, you're mostly composing — not building new primitives.
+
+The key: each layer only uses pieces from the layers below it. A molecule never reaches into page-level logic. An organism never reimplements what an atom already provides.
+
+## The rules that make it work
+
+Atomic structure alone isn't enough. The AI benefits from explicit rules that govern how blocks are used. These are the ones I enforce:
+
+**One component, one job.** If a component does two unrelated things, split it. The model is better at composing two focused components than understanding one that has hidden modes.
+
+**Typed props, always.** TypeScript interfaces for every component's props. This gives the model — and your future self — a contract to work against. No guessing what a component accepts.
+
+**Variants over conditionals.** Instead of `if (type === 'primary') ... else if (type === 'secondary')` scattered through a render function, define explicit variants. Tailwind's `cva` or similar patterns work well here. The model can see all variants at a glance.
+
+**Shared tokens.** Colors, spacing, font sizes — all from a single source. Tailwind config, CSS custom properties, whatever fits your stack. When the model reaches for a color value, there's only one right answer.
+
+**Naming that describes function.** `PriceBadge`, not `Badge2`. `SearchInput`, not `InputWithIcon`. Clear names help the model pick the right component without you having to specify it.
+
+## Teaching AI the rules: skills and project rules
+
+Building blocks give the AI something to work with. But it still needs to know *how* to work with them. That's where Cursor project rules and skills come in — they're the instructions layer on top of the component layer.
+
+**Project rules** (`.cursor/rules/`) are persistent instructions that apply every time the model works in your codebase. They're the place to encode the conventions that live in your head: "always use the `Button` component from `@/components/ui`, never create a new one," "spacing uses Tailwind's scale, never arbitrary values," "every new component gets a Storybook story." Without these rules, you repeat yourself in every prompt. With them, the model follows your conventions by default.
+
+The rules I find most valuable:
+
+- **Component usage rules.** Which components exist, when to use them, and what not to reinvent. This prevents the model from creating a one-off card when `ProductCard` already exists.
+- **File and naming conventions.** Where new components go, how they're named, how files are structured. The model follows whatever pattern it sees — make sure it sees the right one.
+- **Tech stack constraints.** "Use server components by default," "data fetching goes through `@/lib/api`," "no `useEffect` for data loading." These catch the most common drift.
+
+**Skills** (`.cursor/skills/`) go further. A skill is a reusable instruction set for a specific type of task — creating a new component, implementing a Figma design, setting up a new page. Where rules say "follow these conventions," skills say "here's the full workflow for this type of work."
+
+A well-written skill for component creation might include: check existing atoms first, use the project's `cva` variant pattern, add TypeScript props interface, create a Storybook story, register in the component index. The model follows the full recipe every time, so output is consistent regardless of how you phrased the prompt.
+
+### Example: a Prepr CMS content block skill
+
+Say you're working with Prepr as your headless CMS and you need to keep creating new content blocks — a hero, a feature grid, a testimonial slider. Every block follows the same pattern: a Prepr content model maps to a TypeScript type, which maps to a React component, which gets a Storybook story. Without a skill, you explain this chain every time. With a skill, the model knows the full recipe.
+
+A `prepr-content-block` skill might look like:
+
+1. **Check the Prepr model.** Read the content model definition (fields, field types, validations) from the project's schema or API. Understand what data the component will receive.
+2. **Generate the TypeScript type.** Map Prepr field types to TypeScript — `Text` becomes `string`, `Asset` becomes `Image`, `ContentItems` becomes the referenced model's type. Put the type in `@/lib/types/prepr.ts` alongside existing model types.
+3. **Build the component.** Create the component in `@/components/blocks/`. Use only existing atoms and molecules from `@/components/ui/`. Respect the typed props — the component's props interface extends or matches the generated Prepr type. No data fetching in the component itself — it receives resolved data as props.
+4. **Register in the block resolver.** Add the new block to the switch/map that resolves Prepr `__typename` values to React components, so the CMS page builder picks it up automatically.
+5. **Write Storybook stories.** Generate stories for each meaningful state: default content, long text, missing optional fields, multiple items (if it's a list block). Use realistic mock data that matches Prepr's field constraints, not placeholder `Lorem ipsum`.
+
+The result: you say "create a testimonial block for the Prepr testimonial model" and the model produces a type, a component, a resolver registration, and a full set of stories — all following the same structure as every other block in the codebase.
+
+### Example: a Storybook story skill
+
+Story generation is another task that benefits from a dedicated skill, because "good" stories vary by project. A generic "write Storybook stories" prompt produces generic output. A skill encodes your project's specific patterns:
+
+1. **Read the component's props interface.** Identify all props, their types, required vs. optional, and any variant unions.
+2. **Generate the default story.** Use the component with only required props and sensible defaults. This is the story designers and developers see first — it should represent the most common usage.
+3. **Generate variant stories.** One story per variant value (size, color, state). Name them clearly: `Primary`, `Secondary`, `Small`, `Disabled` — not `Story1`, `Story2`.
+4. **Generate edge case stories.** Long text, empty content, missing optional image, maximum number of items. These are the stories that catch layout bugs before they reach production.
+5. **Use the project's story format.** CSF3 with `satisfies Meta<typeof Component>`. Args-based, not render-function-based. Autodocs enabled. Follow the decorator and parameter conventions already in the project.
+
+Without this skill, the model writes stories that work but don't match your conventions. With it, every new component gets a consistent, thorough story file — and you didn't have to describe the format.
+
+The pattern is the same as with building blocks themselves: every rule you write and every skill you define reduces the surface area for inconsistency. You're not just structuring the code — you're structuring the AI's behavior.
+
+## How AI benefits from the building blocks
+
+Every new atom increases the probability that the next feature can be assembled instead of built from scratch. Every new molecule reduces ambiguity about how atoms combine. Every rule you enforce narrows the space of "valid" output the model can produce.
+
+In practice, this means:
+
+- **Less correction.** When the model has clear blocks to compose, its first output is closer to what you want. Fewer rounds of "no, use the existing card component."
+- **Consistent output.** The model's code looks like the rest of the codebase because it's following the same patterns. New components feel like they belong.
+- **Faster features.** A new page that's mostly composition of existing blocks is fast to build — for you or for the model. The creative work happened when you designed the atoms.
+
+## The flywheel
+
+Over time, this compounds. Each new building block makes the next feature cheaper to build. Each new rule makes AI output more predictable. The codebase gets easier to work with for both humans and models.
+
+This isn't about asking AI to be creative in chaos. It's about giving it a structured system to work within. The more defined that system is, the more useful the AI becomes — not through better prompts, but through better architecture.
+
+The system becomes smarter because the structure becomes clearer. And once that flywheel starts turning, every new block makes the next one easier.
+
+<WorkflowRecipe />

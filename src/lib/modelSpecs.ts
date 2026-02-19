@@ -346,45 +346,13 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       hiddenBugsInRefactor: false,
     },
   },
-  {
-    id: "o3-pro",
-    name: "o3-pro",
-    provider: "OpenAI",
-    inputPer1M: 20.00,
-    outputPer1M: 80.00,
-    tier: "reasoning",
-    contextWindowTokens: 200_000,
-    tagline: "The Heavy Reasoner",
-    emoji: "🏋️",
-    gradientFrom: "from-indigo-600",
-    gradientTo: "to-violet-500",
-    accentColor: "text-indigo-400",
-    contextBarColor: "bg-indigo-500",
-    costColor: "text-zinc-300",
-    why: {},
-    whenWrong: "For anything that doesn't require maximum reasoning depth — the cost is hard to justify.",
-    traits: [
-      "Maximum reasoning depth",
-      "Thorough exploration of solution space",
-      "Highest accuracy on hard problems",
-    ],
-    bestFor: "The hardest problems where cost is secondary to correctness",
-    worstFor: "Any task that doesn't require maximum depth",
-    benchmark: {
-      correctServerAction: false,
-      followedConstraints: false,
-      madeUpDocs: false,
-      hiddenBugsInRefactor: false,
-    },
-  },
-
   // ── Cursor agentic ─────────────────────────────────────────────────────────
   {
     id: "composer-1-5",
-    name: "Cursor Composer-1.5",
+    name: "Composer 1.5",
     provider: "Cursor",
-    inputPer1M: 3.00,
-    outputPer1M: 15.00,
+    inputPer1M: 3.50,
+    outputPer1M: 17.50,
     tier: "balanced",
     contextWindowTokens: 200_000,
     tagline: "The Agentic One",
@@ -396,18 +364,20 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     costColor: "text-fuchsia-400",
     why: {
       autonomous:
-        "Composer-1.5 can run terminal commands, read the output, make more edits, and loop until the task is done. It's the closest thing to a developer who can actually execute end-to-end.",
+        "Composer 1.5 runs terminal commands, reads the output, makes more edits, and loops until the task is done. It's the closest thing to a developer who can actually execute end-to-end.",
       multifile:
         "It navigates the project, finds the relevant files, and makes coordinated changes across many of them — without you having to specify each one.",
       selfcorrect:
         "It sees the TypeScript error, understands it in context, and fixes it — without you having to copy-paste the error back into a prompt.",
+      hardproblems:
+        "Composer 1.5 is a thinking model — it reasons deeply on hard problems and adapts how much thinking it does based on difficulty. On easy tasks it's fast; on hard ones it works until it finds a satisfying answer.",
     },
     whenWrong:
-      "When you need tight control. Composer-1.5 can go down wrong paths and make a lot of changes before you realize it's off track. Short task scopes and frequent checkpoints are essential.",
+      "When you need tight control. Composer 1.5 can go down wrong paths and make a lot of changes before you realize it's off track. Short task scopes and frequent checkpoints are essential.",
     traits: [
-      "Runs terminal commands and reads test output",
-      "Edits across many files in a single task",
-      "Self-corrects — reruns and fixes its own mistakes",
+      "Thinking model — reasons deeply on hard problems, fast on easy ones",
+      "Self-summarizes to continue when context overflows",
+      "Edits across many files with tool use and self-correction",
     ],
     bestFor: "Multi-step features, refactors, and autonomous bug fixes",
     worstFor: "Quick one-liner changes where the overhead isn't worth it",
@@ -446,21 +416,42 @@ export function getMixerModels() {
   }));
 }
 
+// ---------------------------------------------------------------------------
+// Pricing metadata — single source of truth for data attribution
+// Prices verified against official API pricing pages on 2026-02-19
+// ---------------------------------------------------------------------------
+
+export const PRICING_META = {
+  verifiedDate: "2026-02-19",
+  source: "Official API pricing pages",
+  urls: {
+    Anthropic: "https://docs.anthropic.com/en/docs/about-claude/pricing",
+    OpenAI: "https://openai.com/api/pricing",
+    Google: "https://ai.google.dev/gemini-api/docs/pricing",
+    DeepSeek: "https://api-docs.deepseek.com/quick_start/pricing",
+    Cursor: "https://www.cursor.com/pricing",
+  },
+} as const;
+
 /** Models shown in CostCalculator */
 export function getCostCalculatorModels() {
   // Only include models that are meaningful for cost comparison in the blog
   const ids = [
-    "haiku-4.5",
-    "sonnet-4.6",
-    "gpt4o-mini",
     "gemini-flash",
+    "gpt4o-mini",
+    "deepseek-r1",
+    "haiku-4.5",
     "composer-1",
+    "sonnet-4.6",
     "composer-1-5",
+    "opus-4.6",
   ];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
     return {
+      id: m.id,
       name: m.name,
+      provider: m.provider,
       perM_in: m.inputPer1M,
       perM_out: m.outputPer1M,
       color: m.costColor,
