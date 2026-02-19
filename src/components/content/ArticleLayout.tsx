@@ -3,6 +3,7 @@ import { ChevronRight, ArrowLeft, ArrowRight } from "lucide-react";
 import type { ArticleFrontmatter, Category } from "@/lib/types";
 import { CATEGORY_META } from "@/lib/types";
 import type { ArticleMeta } from "@/lib/types";
+import { ScrollToMatchButton } from "./ScrollToMatchButton";
 
 interface ArticleLayoutProps {
   frontmatter: ArticleFrontmatter;
@@ -49,7 +50,7 @@ export function ArticleLayout({ frontmatter, category, children, nextArticle }: 
         </p>
 
         {frontmatter.interactiveTools && frontmatter.interactiveTools.length > 0 && (
-          <div className="mt-5 flex flex-wrap gap-1.5">
+          <div className="mt-5 flex flex-wrap items-center gap-1.5">
             <span className="text-xs text-zinc-600 self-center mr-1">includes:</span>
             {frontmatter.interactiveTools.map((tool) => (
               <span
@@ -59,6 +60,9 @@ export function ArticleLayout({ frontmatter, category, children, nextArticle }: 
                 {tool}
               </span>
             ))}
+            {frontmatter.interactiveTools.includes("model-tinder") && (
+              <ScrollToMatchButton />
+            )}
           </div>
         )}
       </header>

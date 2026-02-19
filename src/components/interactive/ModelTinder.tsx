@@ -343,6 +343,7 @@ function ModelCard({
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const draggableRef = useRef<Draggable[]>([]);
+  const dragPosRef = useRef({ x: 0, rotation: 0 });
 
   const scale = 1 - stackIndex * 0.04;
   const yOffset = stackIndex * 10;
@@ -387,8 +388,10 @@ function ModelCard({
         },
         onDragEnd() {
           if (this.x > 80) {
+            dragPosRef.current = { x: this.x, rotation: (this.x / 160) * 14 };
             onDragSwipe("right");
           } else if (this.x < -80) {
+            dragPosRef.current = { x: this.x, rotation: (this.x / 160) * 14 };
             onDragSwipe("left");
           } else {
             // Snap back elastically
@@ -406,18 +409,16 @@ function ModelCard({
   useGSAP(
     () => {
       if (!exitDirection || !cardRef.current) return;
-      // Disable draggable immediately so it can't interfere
       draggableRef.current.forEach((d) => d.disable());
       const xTarget = exitDirection === "right" ? 520 : -520;
-      const rotation = exitDirection === "right" ? 22 : -22;
-      gsap.to(cardRef.current, {
-        x: xTarget,
-        rotation,
-        opacity: 0,
-        duration: 0.38,
-        ease: "power2.in",
-        onComplete: onExitComplete,
-      });
+      const rot = exitDirection === "right" ? 22 : -22;
+      const { x: startX, rotation: startRot } = dragPosRef.current;
+      gsap.fromTo(
+        cardRef.current,
+        { x: startX, rotation: startRot },
+        { x: xTarget, rotation: rot, opacity: 0, duration: 0.38, ease: "power2.in", onComplete: onExitComplete },
+      );
+      dragPosRef.current = { x: 0, rotation: 0 };
       gsap.to([".swipe-label-like", ".swipe-label-pass"], { opacity: 0, duration: 0.15 });
     },
     { dependencies: [exitDirection], scope: cardRef }
@@ -1019,7 +1020,7 @@ export function ModelTinder() {
   };
 
   return (
-    <div className="my-8 overflow-x-clip rounded-xl border border-zinc-700 bg-zinc-950">
+    <div id="model-match" className="my-8 overflow-x-clip rounded-xl border border-zinc-700 bg-zinc-950">
       {/* Header — hidden during chat (chat has its own header) */}
       {phase !== "chat" && (
         <div className="flex items-center justify-between border-b border-zinc-800 px-5 py-4">

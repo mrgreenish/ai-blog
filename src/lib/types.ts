@@ -2,6 +2,7 @@ export type Category = "models" | "workflows" | "tooling";
 
 export type InteractiveTool =
   | "model-picker"
+  | "model-tinder"
   | "model-mixer"
   | "workflow-recipe"
   | "prompt-lab"

@@ -4,12 +4,14 @@ description: "Every model has a personality. Gemini plays it safe, GPT balances 
 story: "You ask two models the same vague question. One asks for clarification. The other rewrites half your app. Same prompt, wildly different instincts."
 category: models
 order: 5
-interactiveTools: [model-picker]
+interactiveTools: [model-tinder, model-picker]
 ---
 
 Benchmarks tell you what a model *can* do. Personality tells you what it *will* do when you don't spell out every detail. After months of shipping with these models daily, their personalities are as predictable as coworkers.
 
 This matters more than you'd think. Two models with identical benchmark scores can produce wildly different results for the same task — not because one is smarter, but because one interprets ambiguity differently, takes more initiative, or defaults to a different level of caution.
+
+<ModelTinder />
 
 ## Gemini: the careful one
 
@@ -69,9 +71,11 @@ Opus is Claude dialed up. Everything that makes Sonnet distinctive — the creat
 
 Composer-1 is the IDE-native model built into Cursor's Composer panel. It knows what files you have open, what your recent diffs look like, and what your cursor is pointing at. That context is its edge — it doesn't need you to paste code into a chat window because it already has it.
 
+**Genuinely fast.** Composer-1 is noticeably quicker than most models — responses come back in seconds, not tens of seconds. That speed isn't just a convenience. It's the difference between staying in flow and losing your train of thought. When the model keeps up with how fast you're thinking, you stay in the zone. You don't context-switch, you don't check your phone, you don't lose the thread of what you were doing. For the kind of rapid, incremental work that makes up most of a coding day, this matters more than raw capability.
+
 **Tight scope by design.** Composer-1 is optimized for targeted edits. Give it a specific task — fix this function, rename this prop across these files, implement this interface — and it executes cleanly without wandering. It's the model least likely to touch things you didn't ask about.
 
-**Fast iteration loop.** Because it's embedded in the editor, the round-trip from prompt to applied diff is fast. You see the change inline, accept or reject hunks, and move on. This tight feedback loop makes it well-suited for the kind of rapid, incremental work that makes up most of a coding day.
+**Fast iteration loop.** Because it's embedded in the editor, the round-trip from prompt to applied diff is fast. You see the change inline, accept or reject hunks, and move on. This tight feedback loop compounds: each small task takes seconds, so you can chain ten of them in the time another model takes to respond once.
 
 **Context-aware without extra work.** You don't have to manually paste in the relevant code. Composer-1 picks up your open tabs, your recent edits, and your project structure automatically. For targeted changes, this removes a lot of friction.
 
@@ -101,10 +105,8 @@ Knowing these personalities changes how you prompt:
 
 **For Claude Opus:** use it for the hard problems. Architecture reviews, complex debugging, design decisions with long-term implications. Pair it with explicit scope constraints to keep the depth focused where you need it.
 
-**For Cursor Composer-1:** point it at the specific thing you want changed. It works best with a clear target — a file, a function, a prop. The more precise your instruction, the cleaner the output.
+**For Cursor Composer-1:** point it at the specific thing you want changed and keep the tasks small. Its speed is the feature — short, precise prompts that come back in seconds are what keep you in flow. Don't fight its nature by giving it big open-ended tasks; save those for Opus or Composer-1.5.
 
 **For Cursor Composer-1.5:** give it a complete task with a clear success condition. "Add X feature, make sure the tests pass" is better than "help me with X". Let it run, but check in at natural breakpoints — after the first pass, before it starts touching tests, before it makes architectural changes.
 
 The right model isn't just the smartest one — it's the one whose personality matches the task. A careful model for production refactors. A creative model for design exploration. A balanced model for everyday shipping. An agentic model for end-to-end task execution.
-
-<ModelTinder />
