@@ -25,9 +25,11 @@ Gemini is the model that asks for permission. It's conservative in its interpret
 
 **Where it falls short.** If you need the model to push back on your approach, suggest alternatives, or notice that you're solving the wrong problem — Gemini usually won't. It's a reliable executor, not a thought partner.
 
-## GPT / Codex: the balanced one
+## GPT / Codex 5.3: the balanced one
 
 GPT (and by extension Codex) sits in the middle. It takes initiative when the situation is clear, defers when it's ambiguous, and generally produces output that feels "sensible" without being surprising. It's the colleague who does solid work and rarely makes you nervous.
+
+The 5.3 update (February 2026) shifted Codex from a coding assistant into something closer to a general-purpose agent. It's 25% faster, uses fewer tokens, and can now run for hours autonomously — OpenAI is clearly pushing toward full task execution, not just code generation. The 64.7% on OSWorld-Verified (up 26.5 points from 5.2) and 77.3% on Terminal-Bench 2.0 show the jump in agentic capability is real.
 
 **Pragmatic defaults.** GPT tends to pick the approach that most developers would pick. It reads like Stack Overflow's accepted answer — not the most clever solution, but the one that works and that other developers will understand. For team codebases, this is often exactly what you want.
 
@@ -37,11 +39,15 @@ GPT (and by extension Codex) sits in the middle. It takes initiative when the si
 
 **Predictable in output format.** GPT is the most consistent at following output format instructions. If you say "respond in JSON" or "only output the code, no explanation", it almost always complies. Other models sometimes can't help themselves and add commentary anyway.
 
-**Where it falls short.** GPT rarely surprises you with insight. It won't say "actually, you should do this differently" unless you specifically ask for a review. It optimizes for giving you what you asked for, not for giving you what you need.
+**Where it falls short.** GPT rarely surprises you with insight. It won't say "actually, you should do this differently" unless you specifically ask for a review. It optimizes for giving you what you asked for, not for giving you what you need. And with the new agentic capabilities, the risks scale too — one user had a misplaced backslash in a PowerShell script cause Codex to erase an entire hard drive. Autonomy is powerful, but the guardrails matter.
 
-## Claude Sonnet: the proactive one
+**What people are saying about 5.3.** Matt Shumer, who had early access, called it "a fucking monster" — noting he could start tasks, walk away for 8+ hours, and come back to working code with live deployments. Reddit's r/LocalLLaMA dubbed it "a hyperproductive intern" that self-corrects without hand-holding. Users describe the experience as "less like giving instructions and more like actual collaboration." The practical consensus: Codex 5.3 isn't a flashy "everything is automated" moment — it's a real upgrade that reduces friction in everyday development. Hand it a spec and it builds exactly what the docs describe.
+
+## Claude Sonnet 4.6: the proactive one
 
 Claude has opinions, and it's not shy about sharing them. It's the model most likely to push back on your approach, suggest an alternative, notice a bug you didn't ask about, or restructure your code to be "better" — even when you just wanted a simple change.
+
+The 4.6 update (February 2026) quietly made Sonnet the model most developers should be defaulting to. It scores 79.6% on SWE-bench Verified — within 1.2 percentage points of Opus 4.6 — while costing five times less. Computer use hit 72.5% on OSWorld-Verified, essentially matching Opus. It also leads all models in office productivity tasks. Users preferred Sonnet 4.6 over Sonnet 4.5 in 70% of head-to-head comparisons and over Opus 4.5 in 59%. The 1M token context window carries over from Opus, and Anthropic added automatic context compaction so long agentic sessions don't fall apart. For most day-to-day developer work, there's genuinely no longer a reason to reach for Opus.
 
 **Genuinely creative.** Ask Claude to implement a feature and it might suggest a better API surface, point out that your data model will cause problems at scale, or restructure the code in a way you hadn't considered. When it's right — which is often — this is the most valuable thing a model can do. It's a real thought partner.
 
@@ -51,11 +57,15 @@ Claude has opinions, and it's not shy about sharing them. It's the model most li
 
 **Excellent at explaining.** When you need to understand something — why code is broken, how a library works, what tradeoff you're making — Claude gives the clearest, most useful explanations. It connects the dots between your specific code and the general principle. This is where the "personality" really shines.
 
-**Where it falls short.** Scope creep. Claude's instinct to be helpful means it expands tasks in ways that feel reasonable in the moment but make output harder to review. The fix is explicit scope constraints in your prompt or `CLAUDE.md`.
+**Where it falls short.** Scope creep. Claude's instinct to be helpful means it expands tasks in ways that feel reasonable in the moment but make output harder to review. The fix is explicit scope constraints in your prompt or `CLAUDE.md`. Sonnet 4.6 also fared only slightly better than GPT-5 in head-to-head coding challenges — not a dominant win, just a narrow one. If you're picking a daily driver for varied tasks, it's excellent. If you need the absolute ceiling, Opus is still the call.
 
-## Claude Opus: the deep thinker
+**What people are saying about 4.6.** The reception was largely enthusiastic — and a bit surprising. One Medium reviewer ran direct comparisons and concluded that "Sonnet 4.6 already feels like the better model" versus the more expensive Opus 4.6. VentureBeat called it the model that "matches flagship AI performance at one-fifth the cost," flagging it as a major accelerant for enterprise adoption. The AI newsletter Latent Space summarized the community take as "a clean upgrade of 4.5, mostly better with some caveats." GitHub Copilot shipped it as generally available within the same week of launch — a sign of how quickly it was trusted in production environments.
+
+## Claude Opus 4.6: the deep thinker
 
 Opus is Claude dialed up. Everything that makes Sonnet distinctive — the creativity, the proactiveness, the opinions — Opus has more of. But it adds something Sonnet doesn't quite match: depth. Opus doesn't just notice things; it understands them in context.
+
+The 4.6 update (February 2026) changed the game. Opus went from "impressive but expensive" to "genuinely indispensable for hard problems." The jump in agentic coding ability — 65.4% on Terminal-Bench 2.0, industry-leading at launch — finally made the cost feel justified. The 1 million token context window (in beta) means you can feed it an entire codebase and it actually keeps track of it all, with long-context retrieval jumping from 18.5% to 76%.
 
 **Deep accuracy.** Where other models pattern-match, Opus traces the actual logic. It catches bugs that require understanding three levels of indirection. It identifies race conditions by mentally simulating concurrent execution. It spots type issues that TypeScript itself misses. This isn't just "smarter" — it's a qualitatively different way of engaging with code.
 
@@ -65,7 +75,9 @@ Opus is Claude dialed up. Everything that makes Sonnet distinctive — the creat
 
 **Proactive with substance.** Where Sonnet might fix a naming inconsistency, Opus will notice that your abstraction is leaking, explain why, and suggest a restructure that fixes the root cause. Its unsolicited observations tend to be higher signal.
 
-**Where it falls short.** Cost and latency. Opus is expensive and slow compared to Sonnet. For routine tasks — scaffolding, simple refactors, boilerplate — you're burning money without getting proportional value. Reserve it for the problems that actually need it.
+**Where it falls short.** Cost and latency. Opus is expensive and slow compared to Sonnet. For routine tasks — scaffolding, simple refactors, boilerplate — you're burning money without getting proportional value. Reserve it for the problems that actually need it. And honestly — opinions were split at launch. Some users felt the writing quality took a step back compared to 4.5, with Reddit posts calling it "lobotomized" gaining traction. The coding gains are undeniable, but if you relied on Opus for long-form prose, you might notice the shift.
+
+**What people are saying about 4.6.** The developer community lit up when Opus 4.6 dropped. David Spies wrote that it had "blown my mind twice in the last couple hours finding incredibly obscure bugs in a massive codebase." Ben Schulz called the reasoning "truly impressive." One user on social media captured the vibe perfectly: "PROTECT OPUS 4.6 AT ALL COSTS — THE MAGIC IS BACK." Rakuten reported it autonomously closed 13 issues and assigned 12 more to the right team members in a single day across a 50-person organization. The consensus among developers who use it for what it's built for — deep debugging, architecture, complex multi-file changes — is that 4.6 is the best coding model they've used.
 
 ## Cursor Composer-1: the focused one
 
@@ -99,11 +111,11 @@ Knowing these personalities changes how you prompt:
 
 **For Gemini:** be explicit about what you want. If you want alternatives, ask for them. If you want it to push back on your approach, say so. Don't expect it to read between the lines.
 
-**For GPT:** give it clear specs and let it work. It'll fill in reasonable defaults. Be specific about output format and constraints — it's excellent at following them.
+**For GPT / Codex 5.3:** give it clear specs and let it work. It'll fill in reasonable defaults. Be specific about output format and constraints — it's excellent at following them. With 5.3's agentic mode, give it complete tasks with validation criteria and let it run — but set checkpoints.
 
-**For Claude Sonnet:** set boundaries. "Only modify the files I specify." "If you notice something outside this task, mention it but don't fix it." Then let its creativity work within those boundaries.
+**For Claude Sonnet 4.6:** set boundaries. "Only modify the files I specify." "If you notice something outside this task, mention it but don't fix it." Then let its creativity work within those boundaries. With the 1M context window and automatic context compaction, it can sustain long agentic sessions without losing the thread — use that.
 
-**For Claude Opus:** use it for the hard problems. Architecture reviews, complex debugging, design decisions with long-term implications. Pair it with explicit scope constraints to keep the depth focused where you need it.
+**For Claude Opus 4.6:** use it for the hard problems. Architecture reviews, complex debugging, design decisions with long-term implications. With the 1M context window, you can now feed it your whole codebase — use that. Pair it with explicit scope constraints to keep the depth focused where you need it.
 
 **For Cursor Composer-1:** point it at the specific thing you want changed and keep the tasks small. Its speed is the feature — short, precise prompts that come back in seconds are what keep you in flow. Don't fight its nature by giving it big open-ended tasks; save those for Opus or Composer-1.5.
 
