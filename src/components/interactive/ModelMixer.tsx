@@ -1,8 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Shuffle, ChevronDown, ArrowRight, ArrowDown } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(useGSAP);
 import { getMixerModels } from "@/lib/modelSpecs";
 import type { Tier } from "@/lib/modelSpecs";
 
@@ -152,11 +156,13 @@ function StepCard({
   modelId,
   onModelChange,
   index,
+  className,
 }: {
   step: PipelineStep;
   modelId: string;
   onModelChange: (stepId: string, modelId: string) => void;
   index: number;
+  className?: string;
 }) {
   const model = MODEL_BY_ID[modelId];
   const cost = model ? calcStepCost(model, step) : 0;
@@ -164,11 +170,8 @@ function StepCard({
   const colors = TIER_COLORS[tier];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.06, duration: 0.25 }}
-      className={`min-w-0 flex-1 rounded-lg border ${colors.border} ${colors.bg} p-2.5 sm:p-3`}
+    <div
+      className={`min-w-0 flex-1 rounded-lg border ${colors.border} ${colors.bg} p-2.5 sm:p-3 ${className || ""}`}
     >
       <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
         <p className="font-mono text-xs font-semibold text-zinc-200">{step.label}</p>
@@ -227,6 +230,7 @@ function CostBar({
 // --- Main component ---
 
 export function ModelMixer() {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [templateId, setTemplateId] = useState<string>(TEMPLATES[0].id);
   const [assignments, setAssignments] = useState<Record<string, Record<string, string>>>(() => {
     const init: Record<string, Record<string, string>> = {};
@@ -238,6 +242,24 @@ export function ModelMixer() {
 
   const template = TEMPLATES.find((t) => t.id === templateId) ?? TEMPLATES[0];
   const currentAssignments = assignments[templateId];
+
+  useGSAP(
+    () => {
+      gsap.fromTo(
+        ".step-card",
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.4,
+          stagger: 0.08,
+          ease: "power2.out",
+          clearProps: "all",
+        }
+      );
+    },
+    { scope: containerRef, dependencies: [templateId] }
+  );
 
   function handleModelChange(stepId: string, modelId: string) {
     setAssignments((prev) => ({
@@ -305,15 +327,8 @@ export function ModelMixer() {
       </div>
 
       {/* Pipeline */}
-      <div className="px-3 py-4 sm:px-5 sm:py-5">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={templateId}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
+      <div className="px-3 py-4 sm:px-5 sm:py-5" ref={containerRef}>
+        <div key={templateId}>
             {/* Large: horizontal row */}
             <div className="hidden items-start gap-2 lg:flex">
               {template.steps.map((step, i) => (
@@ -323,6 +338,7 @@ export function ModelMixer() {
                     modelId={currentAssignments[step.id]}
                     onModelChange={handleModelChange}
                     index={i}
+                    className="step-card"
                   />
                   {i < template.steps.length - 1 && (
                     <div className="mt-6 shrink-0 text-zinc-700">
@@ -342,6 +358,7 @@ export function ModelMixer() {
                   modelId={currentAssignments[step.id]}
                   onModelChange={handleModelChange}
                   index={i}
+                  className="step-card"
                 />
               ))}
             </div>
@@ -355,6 +372,7 @@ export function ModelMixer() {
                     modelId={currentAssignments[step.id]}
                     onModelChange={handleModelChange}
                     index={i}
+                    className="step-card"
                   />
                   {i < template.steps.length - 1 && (
                     <div className="flex justify-center text-zinc-700">
@@ -364,8 +382,7 @@ export function ModelMixer() {
                 </div>
               ))}
             </div>
-          </motion.div>
-        </AnimatePresence>
+        </div>
       </div>
 
       {/* Summary */}
