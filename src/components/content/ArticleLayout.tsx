@@ -12,92 +12,121 @@ interface ArticleLayoutProps {
   nextArticle?: ArticleMeta | null;
 }
 
+const CATEGORY_GLOW: Record<Category, string> = {
+  models:    "from-blue-600/[0.06] via-transparent",
+  workflows: "from-emerald-600/[0.06] via-transparent",
+  tooling:   "from-violet-600/[0.06] via-transparent",
+};
+
+const CATEGORY_GRADIENT_TEXT: Record<Category, string> = {
+  models:    "gradient-text-blue",
+  workflows: "gradient-text-emerald",
+  tooling:   "gradient-text-violet",
+};
+
 export function ArticleLayout({ frontmatter, category, children, nextArticle }: ArticleLayoutProps) {
   const meta = CATEGORY_META[category];
+  const glowClass = CATEGORY_GLOW[category];
+  const gradientTextClass = CATEGORY_GRADIENT_TEXT[category];
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-12">
+    <div className="mx-auto max-w-3xl px-6 py-10">
+
       {/* Breadcrumb */}
-      <nav className="mb-8 flex items-center gap-1 font-mono text-xs text-zinc-600">
-        <Link href="/" className="hover:text-zinc-400 transition-colors">
+      <nav className="mb-10 flex items-center gap-1.5 font-mono text-xs text-zinc-600">
+        <Link href="/" className="transition-colors hover:text-zinc-400">
           home
         </Link>
         <ChevronRight className="h-3 w-3" />
         <Link
           href={`/${category}`}
-          className={`hover:text-zinc-300 transition-colors ${meta.accent}`}
+          className={`transition-colors hover:text-zinc-300 ${meta.accent}`}
         >
           {meta.label.toLowerCase()}
         </Link>
         <ChevronRight className="h-3 w-3" />
-        <span className="text-zinc-500 truncate max-w-48">{frontmatter.title}</span>
+        <span className="truncate max-w-48 text-zinc-500">{frontmatter.title}</span>
       </nav>
 
       {/* Article header */}
-      <header className="mb-10 border-b border-zinc-800 pb-8">
-        <div className="mb-3">
-          <span
-            className={`rounded-full border px-2.5 py-0.5 font-mono text-xs ${meta.accentBg} ${meta.accent}`}
-          >
-            {meta.label}
-          </span>
-        </div>
-        <h1 className="text-3xl font-bold leading-tight text-zinc-50 sm:text-4xl">
-          {frontmatter.title}
-        </h1>
-        <p className="mt-4 text-lg leading-relaxed text-zinc-400">
-          {frontmatter.description}
-        </p>
+      <header className="relative mb-12 overflow-hidden rounded-2xl border border-white/7 bg-white/2 p-8 pb-10">
+        {/* Background glow */}
+        <div
+          className={`pointer-events-none absolute inset-0 bg-linear-to-br ${glowClass} to-transparent`}
+          aria-hidden="true"
+        />
 
-        {frontmatter.interactiveTools && frontmatter.interactiveTools.length > 0 && (
-          <div className="mt-5 flex flex-wrap items-center gap-1.5">
-            <span className="text-xs text-zinc-600 self-center mr-1">includes:</span>
-            {frontmatter.interactiveTools.map((tool) => (
-              <span
-                key={tool}
-                className="rounded-full border border-zinc-700 px-2 py-0.5 font-mono text-xs text-zinc-500"
-              >
-                {tool}
-              </span>
-            ))}
-            {frontmatter.interactiveTools.includes("model-tinder") && (
-              <ScrollToMatchButton />
-            )}
+        <div className="relative">
+          {/* Category badge */}
+          <div className="mb-4">
+            <span className={`inline-flex rounded-full border px-3 py-1 font-mono text-xs ${meta.accentBg} ${meta.accent}`}>
+              {meta.label}
+            </span>
           </div>
-        )}
+
+          {/* Title */}
+          <h1 className={`font-display text-3xl font-bold leading-tight tracking-tight sm:text-4xl ${gradientTextClass}`}>
+            {frontmatter.title}
+          </h1>
+
+          {/* Description */}
+          <p className="mt-4 text-base leading-relaxed text-zinc-400">
+            {frontmatter.description}
+          </p>
+
+          {/* Interactive tools */}
+          {frontmatter.interactiveTools && frontmatter.interactiveTools.length > 0 && (
+            <div className="mt-6 flex flex-wrap items-center gap-2">
+              <span className="section-label">includes:</span>
+              {frontmatter.interactiveTools.map((tool) => (
+                <span
+                  key={tool}
+                  className={`rounded-full border px-2.5 py-0.5 font-mono text-xs ${meta.accentBg} ${meta.accent}`}
+                >
+                  {tool}
+                </span>
+              ))}
+              {frontmatter.interactiveTools.includes("model-tinder") && (
+                <ScrollToMatchButton />
+              )}
+            </div>
+          )}
+        </div>
       </header>
 
       {/* MDX content */}
-      <article>{children}</article>
+      <article className="prose prose-base max-w-none">{children}</article>
 
       {/* Footer navigation */}
-      <div className="mt-16 border-t border-zinc-800 pt-8">
+      <div className="mt-16">
+        <div className="gradient-divider mb-10" />
+
         {nextArticle ? (
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
             <Link
               href={`/${category}`}
-              className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-400 transition-colors"
+              className="inline-flex items-center gap-2 text-sm text-zinc-500 transition-colors hover:text-zinc-300"
             >
               <ArrowLeft className="h-4 w-4" />
               Back to {meta.label}
             </Link>
             <Link
               href={`/${category}/${nextArticle.slug}`}
-              className={`group inline-flex items-center gap-3 rounded-lg border ${meta.accentBg} px-5 py-3 transition-opacity hover:opacity-80`}
+              className={`group inline-flex items-center gap-4 rounded-2xl border p-5 transition-all hover:-translate-y-0.5 ${meta.accentBg} hover:border-opacity-40`}
             >
               <div className="text-right">
-                <div className="text-xs text-zinc-500 mb-0.5">Continue to next part</div>
-                <div className={`text-sm font-medium ${meta.accent}`}>
+                <div className="section-label mb-1">Continue to next part</div>
+                <div className={`font-display text-sm font-semibold ${meta.accent}`}>
                   {nextArticle.frontmatter.title}
                 </div>
               </div>
-              <ArrowRight className={`h-4 w-4 shrink-0 ${meta.accent}`} />
+              <ArrowRight className={`h-4 w-4 shrink-0 ${meta.accent} transition-transform group-hover:translate-x-0.5`} />
             </Link>
           </div>
         ) : (
           <Link
             href={`/${category}`}
-            className={`inline-flex items-center gap-2 text-sm ${meta.accent} hover:opacity-80 transition-opacity`}
+            className={`inline-flex items-center gap-2 text-sm font-medium ${meta.accent} transition-opacity hover:opacity-70`}
           >
             <ArrowLeft className="h-4 w-4" />
             Back to {meta.label}

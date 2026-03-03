@@ -9,18 +9,39 @@ interface CategoryHeaderProps {
   showBreadcrumb?: boolean;
 }
 
+const CATEGORY_GLOW: Record<Category, string> = {
+  models:    "from-blue-600/[0.08] via-transparent",
+  workflows: "from-emerald-600/[0.08] via-transparent",
+  tooling:   "from-violet-600/[0.08] via-transparent",
+};
+
+const CATEGORY_GRADIENT_TEXT: Record<Category, string> = {
+  models:    "gradient-text-blue",
+  workflows: "gradient-text-emerald",
+  tooling:   "gradient-text-violet",
+};
+
 export function CategoryHeader({
   category,
   articleCount,
   showBreadcrumb = false,
 }: CategoryHeaderProps) {
   const meta = CATEGORY_META[category];
+  const glowClass = CATEGORY_GLOW[category];
+  const gradientTextClass = CATEGORY_GRADIENT_TEXT[category];
 
   return (
-    <div className="border-b border-zinc-800 pb-8">
+    <div className="relative overflow-hidden pb-12">
+      {/* Background glow */}
+      <div
+        className={`pointer-events-none absolute inset-0 bg-linear-to-br ${glowClass} to-transparent`}
+        aria-hidden="true"
+      />
+
+      {/* Breadcrumb */}
       {showBreadcrumb && (
-        <nav className="mb-4 flex items-center gap-1 font-mono text-xs text-zinc-600">
-          <Link href="/" className="hover:text-zinc-400 transition-colors">
+        <nav className="relative mb-6 flex items-center gap-1 font-mono text-xs text-zinc-600">
+          <Link href="/" className="transition-colors hover:text-zinc-400">
             home
           </Link>
           <ChevronRight className="h-3 w-3" />
@@ -28,21 +49,37 @@ export function CategoryHeader({
         </nav>
       )}
 
-      <div className="flex items-start justify-between gap-4">
+      <div className="relative flex items-end justify-between gap-6">
         <div>
-          <h1 className={`font-mono text-3xl font-bold ${meta.accent}`}>
+          {/* Section label */}
+          <p className="section-label mb-4">{meta.label}</p>
+
+          {/* Large gradient heading */}
+          <h1 className={`font-display text-5xl font-bold tracking-tight sm:text-6xl ${gradientTextClass}`}>
             {meta.label}
           </h1>
-          <p className="mt-3 max-w-2xl text-base leading-relaxed text-zinc-400">
+
+          {/* Description */}
+          <p className="mt-5 max-w-2xl text-base leading-relaxed text-zinc-400">
             {meta.description}
           </p>
         </div>
+
+        {/* Article count badge */}
         {articleCount !== undefined && (
-          <span className="shrink-0 rounded-full border border-zinc-700 px-3 py-1 font-mono text-sm text-zinc-500">
-            {articleCount} {articleCount === 1 ? "article" : "articles"}
-          </span>
+          <div className="shrink-0 text-right">
+            <div className={`font-display text-4xl font-bold ${gradientTextClass} opacity-30`}>
+              {articleCount}
+            </div>
+            <p className="font-mono text-xs text-zinc-600">
+              {articleCount === 1 ? "article" : "articles"}
+            </p>
+          </div>
         )}
       </div>
+
+      {/* Gradient divider */}
+      <div className="gradient-divider mt-10" />
     </div>
   );
 }
