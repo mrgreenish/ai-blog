@@ -84,21 +84,33 @@ export default function Home() {
         </div>
 
         <h2 className="mt-12 text-lg font-semibold text-zinc-200">
-          The main question
+          The real question
         </h2>
         <div className="mt-4 space-y-4 text-base leading-relaxed text-zinc-400">
-          <p className="text-zinc-300 italic">
-            Which model should I use for this task?
+          <p>
+            Imagine this: you pick up a Jira ticket — one that AI helped shape
+            in the first place. You open Cursor, connect your Figma designs
+            through an MCP server, and let plan mode break the work down with a
+            reasoning model that actually thinks before it writes.
           </p>
           <p>
-            That question matters more than most people think.
+            Then you switch to a faster model for implementation. Components
+            land in Storybook. Tests get written and run themselves. The browser
+            preview catches what the tests miss.
           </p>
           <p>
-            Models behave differently. Some are structured but stiff. Some are
-            creative but drift. Some reason deeply. Others are fast but shallow.
+            Rules keep things on track. Agents handle the boring parts. The
+            whole loop — from ticket to tested code — stays tight.
           </p>
           <p>
-            Picking the right one changes the whole workflow.
+            That&apos;s the workflow. And the question underneath all of it is
+            deceptively simple:{" "}
+            <span className="text-zinc-300 italic">
+              which model do you reach for at each step?
+            </span>
+          </p>
+          <p>
+            It matters more than most people think.
           </p>
         </div>
 
