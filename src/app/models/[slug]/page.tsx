@@ -15,6 +15,8 @@ import { CostCalculator } from "@/components/interactive/CostCalculator";
 import { DiffViewer } from "@/components/interactive/DiffViewer";
 import { ContextWindowViz } from "@/components/interactive/ContextWindowViz";
 import { InfoBlock } from "@/components/content/InfoBlock";
+import { PersonalFavorite } from "@/components/content/PersonalFavorite";
+import { ModelLabels } from "@/components/content/ModelLabels";
 import type { Metadata } from "next";
 import type { ArticleFrontmatter } from "@/lib/types";
 
@@ -60,6 +62,8 @@ export default async function ModelArticlePage({ params }: Props) {
       DiffViewer,
       ContextWindowViz,
       InfoBlock,
+      PersonalFavorite,
+      ModelLabels,
     },
     options: {
       mdxOptions: {
