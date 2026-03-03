@@ -1,4 +1,3 @@
-import type React from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { ArticleMeta, Category } from "@/lib/types";
@@ -8,30 +7,21 @@ interface ArticleCardProps {
   article: ArticleMeta;
 }
 
+const CATEGORY_HOVER_GLOW: Record<Category, string> = {
+  models:    "hover:shadow-[0_8px_40px_-8px_rgba(96,165,250,0.25)]",
+  workflows: "hover:shadow-[0_8px_40px_-8px_rgba(52,211,153,0.25)]",
+  tooling:   "hover:shadow-[0_8px_40px_-8px_rgba(167,139,250,0.25)]",
+};
+
 export function ArticleCard({ article }: ArticleCardProps) {
   const { slug, category, frontmatter } = article;
   const meta = CATEGORY_META[category as Category];
-
-  const glowStyle = {
-    models:    { "--glow-color": "rgba(96, 165, 250, 0.18)" } as React.CSSProperties,
-    workflows: { "--glow-color": "rgba(52, 211, 153, 0.18)" } as React.CSSProperties,
-    tooling:   { "--glow-color": "rgba(167, 139, 250, 0.18)" } as React.CSSProperties,
-  }[category as Category];
+  const hoverGlow = CATEGORY_HOVER_GLOW[category as Category];
 
   return (
     <Link
       href={`/${category}/${slug}`}
-      className="group flex flex-col rounded-2xl border border-white/7 bg-white/2 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-white/12 hover:bg-white/4"
-      style={{
-        ...glowStyle,
-        boxShadow: "0 0 0 0 var(--glow-color, transparent)",
-      }}
-      onMouseEnter={(e) => {
-        (e.currentTarget as HTMLElement).style.boxShadow = "0 8px 40px -8px var(--glow-color, transparent)";
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLElement).style.boxShadow = "0 0 0 0 var(--glow-color, transparent)";
-      }}
+      className={`group flex flex-col rounded-2xl border border-white/7 bg-white/2 p-6 shadow-transparent transition-all duration-300 hover:-translate-y-1 hover:border-white/12 hover:bg-white/4 ${hoverGlow}`}
     >
       {/* Category badge */}
       <div className="mb-4">

@@ -190,7 +190,7 @@ function StepCard({
         <span>{step.inputTokens / 1000}K in / {step.outputTokens / 1000}K out</span>
         <span className={`font-mono font-medium ${colors.text}`}>{formatCost(cost)}</span>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
