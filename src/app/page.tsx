@@ -7,7 +7,7 @@ import { GlassCard } from "@/components/ui/GlassCard";
 
 const SECTION_ARTICLES = {
   models: 4,
-  workflows: 8,
+  workflows: 7,
   tooling: 7,
 };
 
