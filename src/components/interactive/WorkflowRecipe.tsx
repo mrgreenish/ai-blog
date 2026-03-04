@@ -162,9 +162,14 @@ const RECIPES: Recipe[] = [
       "Implement this Figma component: [Figma link]. Use our design tokens and existing atoms.",
     steps: [
       {
+        label: "Token skill",
+        description:
+          "Create a SKILL.md that documents how Figma tokens map to your Tailwind config and CSS custom properties. This gives the model persistent context for all future design-to-code work.",
+      },
+      {
         label: "Design tokens",
         description:
-          "Map Figma variables to your Tailwind config or CSS custom properties.",
+          "Use the skill to map Figma variables to your existing Tailwind tokens. The skill tells the model which Figma token names correspond to which Tailwind classes and CSS variables.",
       },
       {
         label: "Component spec",
@@ -174,7 +179,7 @@ const RECIPES: Recipe[] = [
       {
         label: "Implementation",
         description:
-          "Build the component against the spec. The model has actual design values \u2014 no guessing from screenshots.",
+          "Build the component against the spec. The model has actual design values and the token mapping skill \u2014 no guessing from screenshots.",
       },
       {
         label: "Storybook stories",
@@ -187,15 +192,16 @@ const RECIPES: Recipe[] = [
           "Compare Storybook output against the Figma design. Use Figma MCP for side-by-side verification.",
       },
     ],
-    tools: ["Figma MCP", "Cursor", "Storybook"],
+    tools: ["Figma MCP", "Cursor", "Storybook", "SKILL.md"],
     guardrails: [
+      "Create the token skill once \u2014 reuse it across all design-to-code tasks",
       "Use actual token values, not guessed ones",
       "Reuse existing atoms \u2014 don\u2019t create duplicates",
       "Generate stories for all variants, not just the default",
       "Verify spacing and color against Figma, not screenshots",
     ],
     output:
-      "Production component with typed props, matching design tokens, and Storybook stories for every variant.",
+      "Token-mapping skill for persistent AI context, plus a production component with typed props, matching design tokens, and Storybook stories for every variant.",
   },
   {
     id: "jira-to-cursor",

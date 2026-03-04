@@ -12,20 +12,24 @@ The key change: instead of the developer interpreting design specs, the model re
 
 ## The workflow
 
-**Step 1: Design tokens.** Start with the design system tokens. Ask the model to map Figma variables to your Tailwind config or CSS custom properties. This creates a shared language between design and code.
+**Step 1: Token skill.** Before touching any component, create a SKILL.md that documents how your Figma tokens map to your existing Tailwind setup. This is the highest-leverage step — it gives the model persistent context about your design system so it doesn't reinvent token mappings every session. The skill should cover: Figma color variable names → Tailwind color classes, spacing tokens → Tailwind spacing scale, typography tokens → font-family/size/weight classes, and any CSS custom properties you define in your `@theme` block. Create it once, reuse it for every design-to-code task.
 
-**Step 2: Component spec.** Use the Figma MCP to pull the component's properties, variants, and constraints. Ask the model to generate a TypeScript interface from the Figma component properties.
+**Step 2: Design tokens.** With the skill loaded, ask the model to map the specific Figma component's variables to your Tailwind config. The skill tells it that `Primary/500` means `text-blue-500` and `spacing/md` means `gap-4` — it doesn't have to guess.
 
-**Step 3: Implementation.** Implement the component against the spec. The model has the design data, so it can make accurate decisions about spacing, color, and layout without you translating from a screenshot.
+**Step 3: Component spec.** Use the Figma MCP to pull the component's properties, variants, and constraints. Ask the model to generate a TypeScript interface from the Figma component properties.
 
-**Step 4: Storybook stories.** Generate stories for each variant. "Given this component and its props, generate Storybook stories for each variant defined in the Figma component." The stories document the component and make it easy to verify against the design.
+**Step 4: Implementation.** Implement the component against the spec. The model has the design data and the token mapping skill, so it can make accurate decisions about spacing, color, and layout without you translating from a screenshot.
 
-**Step 5: Visual review.** Use the Storybook output to do a visual review against the Figma design. The Figma MCP makes it easy to pull the design back into the loop for comparison.
+**Step 5: Storybook stories.** Generate stories for each variant. "Given this component and its props, generate Storybook stories for each variant defined in the Figma component." The stories document the component and make it easy to verify against the design.
+
+**Step 6: Visual review.** Use the Storybook output to do a visual review against the Figma design. The Figma MCP makes it easy to pull the design back into the loop for comparison.
 
 ## What makes this better than the old way
 
-The biggest improvement: the model can generate accurate code for spacing and color because it has the actual values, not a screenshot. "The gap between these elements is 12px" is information the model has from the design data — it doesn't have to guess from a screenshot.
+The biggest improvement: the token-mapping skill. Without it, every new design-to-code session starts from zero — the model has to rediscover how your Figma tokens map to Tailwind classes. With the skill, that knowledge is persistent. The model knows that your `@theme` block defines `--font-display` as Space Grotesk, that your spacing follows Tailwind's default scale, and that your color palette lives in Tailwind's zinc/blue/emerald ranges. One-time setup, every-session payoff.
 
-The second improvement: Storybook story generation from Figma variants is genuinely useful. A component with 4 variants, 3 sizes, and 2 states has 24 combinations. Generating stories for all of them manually is tedious. The model does it in one shot.
+The second improvement: the model can generate accurate code for spacing and color because it has the actual values from Figma, not a screenshot. "The gap between these elements is 12px" is information the model has from the design data — and the skill tells it that 12px maps to `gap-3` in your Tailwind config.
+
+The third improvement: Storybook story generation from Figma variants is genuinely useful. A component with 4 variants, 3 sizes, and 2 states has 24 combinations. Generating stories for all of them manually is tedious. The model does it in one shot.
 
 <WorkflowRecipe />
