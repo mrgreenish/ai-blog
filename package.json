@@ -13,6 +13,9 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@fontsource-variable/inter": "^5.2.8",
+    "@fontsource-variable/jetbrains-mono": "^5.2.8",
+    "@fontsource-variable/space-grotesk": "^5.2.10",
     "@gsap/react": "2.1.2",
     "framer-motion": "12.34.2",
     "gray-matter": "4.0.3",

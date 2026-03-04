@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import gsap from "gsap";
 import { Draggable } from "gsap/Draggable";
 import { useGSAP } from "@gsap/react";
@@ -765,7 +765,7 @@ function ChatScreen({
   model: Model;
   onBack: () => void;
 }) {
-  const script = CHAT_SCRIPTS[model.id] ?? [];
+  const script = useMemo(() => CHAT_SCRIPTS[model.id] ?? [], [model.id]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [round, setRound] = useState(0);
   const [isTyping, setIsTyping] = useState(true);
