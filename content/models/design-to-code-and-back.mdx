@@ -7,49 +7,43 @@ order: 3
 interactiveTools: [model-picker]
 ---
 
-Vision capabilities in models have gotten genuinely useful in the last year, but the use cases that work well are narrower than the demos suggest. There's a clear split: vision is excellent for *describing* and *extracting* from images, and unreliable for *precise spatial reasoning* or *pixel-level accuracy*. For design-to-code work specifically, the better answer isn't better vision — it's skipping screenshots altogether.
+You screenshot a Figma comp, ask the model to build it. The layout looks right — but every spacing value is wrong. The issue isn't the model's vision; it's that screenshots are a lossy format for design data.
 
-## What vision actually works for
+## What vision is actually good for
 
-**UI review from screenshots.** Sending a screenshot of a component and asking "what accessibility issues do you see?" or "does this match the design spec?" works surprisingly well. The model can identify missing focus states, poor contrast, misaligned elements, and layout issues that are hard to catch in code review.
+Not design-to-code. But for reviewing work, it's useful:
 
-**Extracting structure from diagrams.** Architecture diagrams, ERDs, flowcharts — if you need to turn a visual diagram into a text description or a data structure, vision models do this well. I've used this to extract database schemas from old ERD screenshots and turn whiteboard flows into structured specs.
+**UI accessibility review.** Send a screenshot and ask "what accessibility issues do you see?" Good for catching missing focus states, poor contrast, and layout problems that don't surface in code review.
 
-**Comparing before/after UI states.** Send two screenshots — "before" and "after" a change — and ask the model to describe what changed. Useful for visual regression review when you don't have automated tooling.
+**Extracting from diagrams.** Architecture diagrams, ERDs, flowcharts — turning visuals into text or data structures. Useful for extracting schemas from old ERD screenshots and turning whiteboard flows into specs.
 
-## What doesn't work well
+**Comparing UI states.** Send before/after screenshots and ask what changed. Quick visual regression review without tooling.
 
-**Precise measurements.** "How many pixels is this margin?" — unreliable. The model will give you a number but it's often wrong. Use actual design tools for measurements.
+What it can't do reliably: precise measurements, reading small text, or spatial reasoning you'd trust in production. For those, use the actual design tools.
 
-**Reading small text.** If the screenshot has small font sizes or compressed text, accuracy drops significantly. Zoom in or use the source text instead.
+## Design to code with Figma MCP
 
-**Complex spatial reasoning.** "Is this element centered relative to its container?" — the model might get it right, but I wouldn't trust it for anything that matters. Verify in the browser.
-
-## The Figma MCP: design to code
-
-For design-to-code work, the Figma MCP changes the equation entirely. Instead of sending a screenshot and hoping the model can infer the design intent, you give it structured access to the actual design data: exact colors, spacing values, component variants, and layout constraints. The code output is often closer to production-ready, though it still needs engineering review.
+The Figma MCP bypasses screenshots entirely. Instead of inference from an image, the model gets direct access to design data: exact spacing, colors, component variants, layout constraints. The output lands much closer to production-ready.
 
 The workflow:
 
 1. Share the Figma node URL or node ID in your prompt
-2. The model reads the design data directly — tokens, variants, layout constraints
+2. The model reads design data directly — tokens, variants, layout constraints
 3. Ask it to implement the component
-4. The output uses your actual token values, not guessed ones
+4. Output uses your actual token values, not guessed ones
 
-This is the best design-to-code workflow I've found for frontend development. The difference between screenshot-based and MCP-based output is significant, especially for spacing and color accuracy. See the [official Figma MCP guide](https://help.figma.com/hc/en-us/articles/32132100833559-Guide-to-the-Figma-MCP-server) for setup instructions, or the [developer docs](https://developers.figma.com/docs/figma-mcp-server/) for the full API reference.
+See the [official Figma MCP guide](https://help.figma.com/hc/en-us/articles/32132100833559-Guide-to-the-Figma-MCP-server) for setup, or the [developer docs](https://developers.figma.com/docs/figma-mcp-server/) for the full API reference.
 
-## The reverse: code to Figma
+## Code back to Figma
 
-The loop doesn't have to start in Figma. Figma's [Claude Code to Figma](https://www.figma.com/blog/introducing-claude-code-to-figma/) capability (announced February 2026) lets you capture a live rendered UI — from localhost, staging, or production — and import it into Figma as editable frames.
+The loop runs both ways. Figma's [Claude Code to Figma](https://www.figma.com/blog/introducing-claude-code-to-figma/) (February 2026) lets you capture a live rendered UI — localhost, staging, or production — and import it into Figma as editable frames.
 
-The use case: you've implemented a component or a page. Instead of sharing a URL and waiting for feedback in comments, you push the rendered UI into Figma. The designer can make changes directly in Figma, and you can pull those changes back into the code via the Figma MCP.
-
-This creates a genuinely bidirectional loop:
+Useful when you've built something and want design feedback without waiting on comment threads. The designer edits in Figma; you pull changes back through the MCP.
 
 - **Figma → Code**: the MCP gives the model structured design context for implementation
-- **Code → Figma**: the capture flow pushes the live implementation back onto the canvas for design review
+- **Code → Figma**: the capture flow pushes the live UI back onto the canvas for review
 
-You can capture multiple screens in a single session, preserving sequence and context — useful for multi-step flows where the full experience needs to be reviewed together.
+You can capture multiple screens in one session — useful for reviewing multi-step flows in sequence.
 
 ## When to use each approach
 
