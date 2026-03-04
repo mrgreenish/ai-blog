@@ -5,6 +5,15 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@fontsource-variable/inter':
+    specifier: ^5.2.8
+    version: 5.2.8
+  '@fontsource-variable/jetbrains-mono':
+    specifier: ^5.2.8
+    version: 5.2.8
+  '@fontsource-variable/space-grotesk':
+    specifier: ^5.2.10
+    version: 5.2.10
   '@gsap/react':
     specifier: 2.1.2
     version: 2.1.2(gsap@3.14.2)(react@19.2.4)
@@ -1966,6 +1975,18 @@ packages:
       '@noble/hashes':
         optional: true
     dev: true
+
+  /@fontsource-variable/inter@5.2.8:
+    resolution: {integrity: sha512-kOfP2D+ykbcX/P3IFnokOhVRNoTozo5/JxhAIVYLpea/UBmCQ/YWPBfWIDuBImXX/15KH+eKh4xpEUyS2sQQGQ==}
+    dev: false
+
+  /@fontsource-variable/jetbrains-mono@5.2.8:
+    resolution: {integrity: sha512-WBA9elru6Jdp5df2mES55wuOO0WIrn3kpXnI4+W2ek5u3ZgLS9XS4gmIlcQhiZOWEKl95meYdvK7xI+ETLCq/Q==}
+    dev: false
+
+  /@fontsource-variable/space-grotesk@5.2.10:
+    resolution: {integrity: sha512-yJQO/o35/hAP3CFnpdFTwQku2yzJOae2HIpBmqkOVoxhhXJaQP3g+b6Jrz7u+eI7A5ZdCIf88uMWpBJdFiGr5w==}
+    dev: false
 
   /@gsap/react@2.1.2(gsap@3.14.2)(react@19.2.4):
     resolution: {integrity: sha512-JqliybO1837UcgH2hVOM4VO+38APk3ECNrsuSM4MuXp+rbf+/2IG2K1YJiqfTcXQHH7XlA0m3ykniFYstfq0Iw==}
