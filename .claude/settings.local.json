@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "mcp__Claude_Preview__preview_start"
+      "mcp__Claude_Preview__preview_start",
+      "Bash(wc -l /Users/filipvanharreveld/sites/filip/ai-blog/content/workflows/*.mdx)",
+      "Bash(npm install)",
+      "Bash(pnpm --version)",
+      "Bash(npm --version)",
+      "Bash(lsof -i :3000 -t)"
     ]
   }
 }
