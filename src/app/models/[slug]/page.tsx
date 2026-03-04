@@ -14,6 +14,7 @@ import { ConfigGenerator } from "@/components/interactive/ConfigGenerator";
 import { CostCalculator } from "@/components/interactive/CostCalculator";
 import { DiffViewer } from "@/components/interactive/DiffViewer";
 import { ContextWindowViz } from "@/components/interactive/ContextWindowViz";
+import { DecisionTree } from "@/components/interactive/DecisionTree";
 import { InfoBlock } from "@/components/content/InfoBlock";
 import { PersonalFavorite } from "@/components/content/PersonalFavorite";
 import { ModelLabels } from "@/components/content/ModelLabels";
@@ -61,6 +62,7 @@ export default async function ModelArticlePage({ params }: Props) {
       CostCalculator,
       DiffViewer,
       ContextWindowViz,
+      DecisionTree,
       InfoBlock,
       PersonalFavorite,
       ModelLabels,
