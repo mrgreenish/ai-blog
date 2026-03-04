@@ -1,0 +1,153 @@
+---
+title: "AI Coding Mindset: Prompting & Pitfalls"
+description: "The prompting habits that produce better output — and the failure modes to watch for."
+story: "Same model, same task, wildly different results. The gap between productive AI coding and frustrating AI coding is almost entirely about habits — what you feed the model and what you watch for in its output."
+category: workflows
+order: 7
+interactiveTools: [prompt-lab, dev-benchmark]
+---
+
+Getting good results from AI coding tools isn't about finding the right magic words. It's about two things: giving the model what it needs to do good work, and recognizing when it's going off the rails. The first is prompting. The second is pattern recognition. Both are learnable habits.
+
+## Prompting That Actually Works
+
+Prompting is a skill, and like most skills, the gap between beginner and intermediate is mostly about a handful of habits. I've watched developers get dramatically different results from the same model on the same task — and the difference is almost always in how they framed the request.
+
+These are the habits that made the biggest difference for me.
+
+### Don't be too brief, don't be too rigid
+
+Both extremes fail. A two-sentence prompt lacks the context the model needs to make good decisions. An over-specified prompt that tries to control every detail prevents the model from applying judgment where judgment is actually useful.
+
+The sweet spot: give the model enough context to understand the problem and the constraints, then let it work. You're not writing a specification — you're briefing a capable developer.
+
+**Too brief:** "Add error handling to this function."
+**Too rigid:** "Add a try-catch block starting at line 12, catch the TypeError, log it with console.error, and return null."
+**Right:** "Add error handling to this function. It's called from a React component, so failures should be catchable without crashing the UI. Use whatever pattern fits the existing error handling in this file."
+
+### Explain the why
+
+The model makes better decisions when it understands the goal, not just the task. "Why" gives it the context to make judgment calls that align with what you actually want.
+
+"Refactor this component" is ambiguous — refactor toward what? "Refactor this component to make it easier to add new props without touching the render logic" gives the model a clear direction and a way to evaluate whether its output is good.
+
+This matters most for tasks where there are multiple valid approaches. If the model knows why you're doing something, it can pick the approach that actually serves the goal.
+
+### Provide examples of previous work
+
+If you want the model to match your style — naming conventions, code structure, patterns you use — show it examples. Don't describe your style; show it.
+
+"Follow the same pattern as the existing routes in `src/api/`" is more effective than "use RESTful conventions and consistent naming." The model can read the existing routes and extract the actual pattern, including the things you'd never think to describe explicitly.
+
+This is especially useful for: naming conventions, file structure, component patterns, error handling approaches, and test style.
+
+### Work in small iterations
+
+Long, multi-step prompts that ask for everything at once tend to produce worse results than breaking the task into steps. The model has to hold more in context, make more assumptions, and produce more output in one shot — and errors compound.
+
+The pattern that works: spec first, then plan, then implement, then review. Each step is a separate prompt. You review the output of each step before moving to the next.
+
+**Step 1:** "Given this spec, what's your plan? What files will you create or modify?"
+**Step 2:** "The plan looks good. Now implement step 1 only."
+**Step 3:** "Good. Now implement step 2."
+
+This feels slower but it's faster — you catch misunderstandings before they become code, and each step is small enough to review quickly.
+
+### Encourage reasoning before execution
+
+For complex tasks, ask the model to think through the problem before writing code. "What are the tradeoffs here?" or "Walk me through your approach before implementing" surfaces assumptions and lets you correct them before they're baked into the output.
+
+This is especially useful for:
+- Architecture decisions with long-term implications
+- Tasks where there are multiple valid approaches with different tradeoffs
+- Debugging problems where the cause isn't obvious
+
+The model often produces better output when it's been asked to reason first. It's not just a review step — the reasoning process itself improves the implementation.
+
+### Set clear expectations
+
+Be explicit about what you want. "Give me 3 options" means you get 3 options, not 1 with a note that alternatives exist. "Refactor but don't change the public API" means the API stays the same. "Write just the test, not the implementation" means you get just the test.
+
+Models are good at following explicit instructions. The failure mode is leaving things implicit and then being surprised when the model makes a different assumption than you would have.
+
+If you have a specific constraint — don't add dependencies, don't change the test files, keep the response under 50 lines — say it explicitly. Don't assume the model will infer it.
+
+### Clarify what's out of scope
+
+This is the constraint most people forget. Telling the model what not to do is as important as telling it what to do.
+
+"Don't modify files outside `src/components`." "Don't refactor existing code unless I ask." "Don't add error handling — I'll do that separately." These constraints prevent the most common form of scope creep: the model helpfully doing things you didn't ask for.
+
+The model's instinct is to be thorough. Without explicit boundaries, "thorough" means touching more than you wanted. With explicit boundaries, that same instinct produces a clean, focused output.
+
+## Common Pitfalls to Avoid
+
+After months of daily AI-assisted development, certain failure modes repeat. They're not random — they have patterns, and once you recognize them, you can stop them early.
+
+These are the four I hit most often.
+
+### The Doom Spiral
+
+You ask the model to fix a bug. It patches it. You run the code — still broken, slightly differently. You paste the new error back. It patches that. The patches start referencing each other. The diff grows. The original problem is buried under layers of compensation.
+
+This is the doom spiral: the model doubles down on a direction instead of stepping back to question whether the direction is right. Each patch feels like progress. Collectively they're compounding the problem.
+
+**How it happens.** The model doesn't have a strong signal that it's going wrong. You keep providing new errors, which it interprets as "keep trying this approach." It doesn't have the instinct to say "wait, I think we're solving the wrong problem."
+
+**How to stop it.** When you've seen two or three patches that feel like they're fighting each other, stop. Don't paste the next error. Instead ask: "Step back — what's the actual root cause here? Ignore the patches we've tried. What should the fix look like from scratch?" This resets the context and usually surfaces the real issue quickly.
+
+The other prevention: commit before you start. If the spiral happens, you can reset to a clean state and try a different approach rather than untangling a mess.
+
+### "Looks Fine, Must Be Fine"
+
+The model hands you code. It runs. Tests pass. You skim it, see nothing obviously wrong, and merge it.
+
+Three days later a bug surfaces that was sitting right there in the code you skimmed.
+
+This is the most dangerous failure mode because it feels like success. The code works — until it doesn't. And because you didn't really read it, you don't own it. When it breaks, you're debugging code you don't understand.
+
+**Why it happens.** AI-generated code looks polished. It's formatted correctly, has reasonable variable names, follows familiar patterns. The visual signal of "good code" is there even when the logic is subtly wrong. It's easy to skim past a wrong assumption or a missing edge case when everything looks clean.
+
+**The rule I follow.** Read every line the model writes before accepting it. Not skim — read. If I can't explain what a block of code does, I ask the model to explain it. If the explanation doesn't make sense, I don't merge it.
+
+This slows you down. It's worth it. The goal isn't to generate code faster — it's to ship code you understand and can maintain.
+
+### Complexity Creep
+
+You ask for a simple feature. The model gives you a factory, an interface, a strategy pattern, and three layers of abstraction. It's technically correct. It's also completely unmaintainable for a feature that didn't need any of that.
+
+AI models have a bias toward "clever" solutions. They've been trained on a lot of code, including a lot of over-engineered code, and they pattern-match to patterns that look sophisticated. Simple, direct code is underrepresented in their training relative to how often it's the right answer.
+
+**The signal.** If you're reading the model's output and thinking "I wouldn't have built it this way" — that's worth paying attention to. Not because you're always right, but because complexity you didn't choose is complexity you'll have to maintain.
+
+**The fix.** Add an explicit constraint to your prompt: "Keep this as simple as possible. Prefer direct code over abstractions. Don't introduce patterns unless they're clearly necessary." This is often enough to shift the output significantly.
+
+If the model still produces something over-engineered, ask it: "Is there a simpler version of this that solves the same problem?" Usually there is, and it'll give it to you.
+
+### Outdated Patterns
+
+Models have a training cutoff, and the AI tooling space moves fast. A model might suggest a pattern that was best practice eighteen months ago and has since been superseded — or deprecated entirely.
+
+I've seen this with Next.js APIs, React patterns, and AI SDK usage. The model confidently suggests something that's technically correct for an older version and wrong for the current one.
+
+**The check.** When a model suggests an approach for something that changes frequently — framework APIs, AI SDKs, tooling configuration — ask yourself: "Is this how I'd do it manually today?" If you're not sure, verify against the current docs before implementing.
+
+This isn't about distrusting the model — it's about knowing where its knowledge has gaps. For stable patterns (data structures, algorithms, general architecture), the model is usually reliable. For fast-moving APIs and tooling, verify.
+
+### The stay-sane checklist
+
+Before merging anything AI-assisted, I run through five questions:
+
+- Can I explain this design to someone else?
+- Did I read all the generated code, not just skim it?
+- Is this the simplest version that solves the problem?
+- Are there any APIs or patterns here I should verify against current docs?
+- Would I have built it this way if I'd written it myself?
+
+If the answer to any of these is "no" or "not sure," that's a signal to slow down.
+
+## Try it yourself
+
+<PromptLab />
+
+<DevBenchmark />
