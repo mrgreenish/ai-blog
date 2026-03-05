@@ -7,8 +7,6 @@ import {
   RotateCcw,
   ArrowLeft,
   ArrowRight,
-  Copy,
-  Check,
   ChevronRight,
 } from "lucide-react";
 import Link from "next/link";
@@ -18,6 +16,12 @@ import {
   type TreeResult,
   type TreeNode,
 } from "@/lib/decisionTreeData";
+import {
+  CopyButton,
+  FieldLabel,
+  GuardrailList,
+  StepFlow,
+} from "@/components/ui/WorkflowPrimitives";
 
 // --- Sub-components ---
 
@@ -94,74 +98,6 @@ function QuestionStep({
   );
 }
 
-function CopyResultButton({ result }: { result: TreeResult }) {
-  const [copied, setCopied] = useState(false);
-
-  async function handleCopy() {
-    const text = formatResultAsMarkdown(result);
-    await navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  }
-
-  return (
-    <button
-      onClick={handleCopy}
-      className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 font-mono text-xs transition-colors ${
-        copied
-          ? "border-teal-400/50 bg-teal-400/10 text-teal-300"
-          : "border-zinc-700 bg-zinc-800 text-zinc-300 hover:border-teal-400/50 hover:text-teal-300"
-      }`}
-    >
-      {copied ? (
-        <>
-          <Check className="h-3.5 w-3.5" />
-          Copied!
-        </>
-      ) : (
-        <>
-          <Copy className="h-3.5 w-3.5" />
-          Copy workflow
-        </>
-      )}
-    </button>
-  );
-}
-
-function FieldLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="mb-2 font-mono text-[11px] font-medium uppercase tracking-wider text-teal-400/70">
-      {children}
-    </p>
-  );
-}
-
-function StepFlow({ steps }: { steps: { label: string; description: string }[] }) {
-  return (
-    <div className="relative ml-2.5 border-l border-teal-400/20 pl-5">
-      {steps.map((step, i) => (
-        <motion.div
-          key={step.label}
-          initial={{ opacity: 0, x: -8 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: i * 0.05, duration: 0.2 }}
-          className={`relative ${i < steps.length - 1 ? "pb-3" : ""}`}
-        >
-          <div className="absolute -left-[29px] top-0.5 flex h-5 w-5 items-center justify-center rounded-full border border-teal-400/30 bg-zinc-900 font-mono text-[10px] font-medium text-teal-400">
-            {i + 1}
-          </div>
-          <div>
-            <p className="text-sm font-medium text-zinc-200">{step.label}</p>
-            <p className="mt-0.5 text-xs leading-relaxed text-zinc-500">
-              {step.description}
-            </p>
-          </div>
-        </motion.div>
-      ))}
-    </div>
-  );
-}
-
 function ResultCard({
   result,
   onRestart,
@@ -196,13 +132,13 @@ function ResultCard({
 
       {/* Steps */}
       <div>
-        <FieldLabel>Steps</FieldLabel>
-        <StepFlow steps={result.steps} />
+        <FieldLabel accentColor="teal">Steps</FieldLabel>
+        <StepFlow steps={result.steps} accentColor="teal" />
       </div>
 
       {/* Tools */}
       <div>
-        <FieldLabel>Tools</FieldLabel>
+        <FieldLabel accentColor="teal">Tools</FieldLabel>
         <div className="flex flex-wrap gap-1.5">
           {result.tools.map((tool) => (
             <span
@@ -217,23 +153,13 @@ function ResultCard({
 
       {/* Guardrails */}
       <div>
-        <FieldLabel>Guardrails</FieldLabel>
-        <ul className="space-y-1.5">
-          {result.guardrails.map((g) => (
-            <li
-              key={g}
-              className="flex items-start gap-2 text-xs leading-relaxed text-zinc-400"
-            >
-              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-teal-400/40" />
-              {g}
-            </li>
-          ))}
-        </ul>
+        <FieldLabel accentColor="teal">Guardrails</FieldLabel>
+        <GuardrailList items={result.guardrails} accentColor="teal" />
       </div>
 
       {/* Expected output */}
       <div>
-        <FieldLabel>Expected output</FieldLabel>
+        <FieldLabel accentColor="teal">Expected output</FieldLabel>
         <div className="rounded-lg border border-teal-400/20 bg-teal-400/5 px-3 py-2.5">
           <p className="text-xs leading-relaxed text-zinc-300">
             {result.output}
@@ -283,7 +209,11 @@ function ResultCard({
           <RotateCcw className="h-4 w-4" />
           Start over
         </button>
-        <CopyResultButton result={result} />
+        <CopyButton
+          getText={() => formatResultAsMarkdown(result)}
+          label="Copy workflow"
+          accentColor="teal"
+        />
       </div>
     </motion.div>
   );

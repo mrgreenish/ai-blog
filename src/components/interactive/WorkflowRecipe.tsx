@@ -1,8 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { ChefHat, Copy, Check } from "lucide-react";
+import { ChefHat } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  CopyButton,
+  FieldLabel,
+  GuardrailList,
+  StepFlow,
+} from "@/components/ui/WorkflowPrimitives";
 
 // --- Types ---
 
@@ -317,81 +323,6 @@ function formatRecipeAsMarkdown(recipe: Recipe): string {
   return lines.join("\n");
 }
 
-// --- Sub-components ---
-
-function CopyButton({
-  recipe,
-}: {
-  recipe: Recipe;
-}) {
-  const [copied, setCopied] = useState(false);
-
-  async function handleCopy() {
-    const text = formatRecipeAsMarkdown(recipe);
-    await navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  }
-
-  return (
-    <button
-      onClick={handleCopy}
-      className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 font-mono text-xs transition-colors ${
-        copied
-          ? "border-emerald-400/50 bg-emerald-400/10 text-emerald-300"
-          : "border-zinc-700 bg-zinc-800 text-zinc-300 hover:border-emerald-400/50 hover:text-emerald-300"
-      }`}
-    >
-      {copied ? (
-        <>
-          <Check className="h-3.5 w-3.5" />
-          Copied!
-        </>
-      ) : (
-        <>
-          <Copy className="h-3.5 w-3.5" />
-          Copy recipe
-        </>
-      )}
-    </button>
-  );
-}
-
-function StepFlow({ steps }: { steps: RecipeStep[] }) {
-  return (
-    <div className="relative ml-2.5 border-l border-emerald-400/20 pl-5">
-      {steps.map((step, i) => (
-        <motion.div
-          key={step.label}
-          initial={{ opacity: 0, x: -8 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: i * 0.05, duration: 0.2 }}
-          className={`relative ${i < steps.length - 1 ? "pb-3" : ""}`}
-        >
-          {/* Step number dot on the line */}
-          <div className="absolute -left-[29px] top-0.5 flex h-5 w-5 items-center justify-center rounded-full border border-emerald-400/30 bg-zinc-900 font-mono text-[10px] font-medium text-emerald-400">
-            {i + 1}
-          </div>
-          <div>
-            <p className="text-sm font-medium text-zinc-200">{step.label}</p>
-            <p className="mt-0.5 text-xs leading-relaxed text-zinc-500">
-              {step.description}
-            </p>
-          </div>
-        </motion.div>
-      ))}
-    </div>
-  );
-}
-
-function FieldLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="mb-2 font-mono text-[11px] font-medium uppercase tracking-wider text-emerald-400/70">
-      {children}
-    </p>
-  );
-}
-
 // --- Main component ---
 
 export function WorkflowRecipe() {
@@ -450,7 +381,7 @@ export function WorkflowRecipe() {
           >
             {/* Prompt */}
             <div>
-              <FieldLabel>Prompt</FieldLabel>
+              <FieldLabel accentColor="emerald">Prompt</FieldLabel>
               <div className="rounded-lg border border-zinc-700/50 bg-zinc-800/40 px-3 py-2.5">
                 <p className="font-mono text-xs leading-relaxed text-zinc-300">
                   {recipe.prompt}
@@ -460,13 +391,13 @@ export function WorkflowRecipe() {
 
             {/* Steps */}
             <div>
-              <FieldLabel>Steps</FieldLabel>
-              <StepFlow steps={recipe.steps} />
+              <FieldLabel accentColor="emerald">Steps</FieldLabel>
+              <StepFlow steps={recipe.steps} accentColor="emerald" />
             </div>
 
             {/* Tools */}
             <div>
-              <FieldLabel>Tools</FieldLabel>
+              <FieldLabel accentColor="emerald">Tools</FieldLabel>
               <div className="flex flex-wrap gap-1.5">
                 {recipe.tools.map((tool) => (
                   <span
@@ -481,20 +412,13 @@ export function WorkflowRecipe() {
 
             {/* Guardrails */}
             <div>
-              <FieldLabel>Guardrails</FieldLabel>
-              <ul className="space-y-1.5">
-                {recipe.guardrails.map((g) => (
-                  <li key={g} className="flex items-start gap-2 text-xs leading-relaxed text-zinc-400">
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400/40" />
-                    {g}
-                  </li>
-                ))}
-              </ul>
+              <FieldLabel accentColor="emerald">Guardrails</FieldLabel>
+              <GuardrailList items={recipe.guardrails} accentColor="emerald" />
             </div>
 
             {/* Expected output */}
             <div>
-              <FieldLabel>Expected output</FieldLabel>
+              <FieldLabel accentColor="emerald">Expected output</FieldLabel>
               <div className="rounded-lg border border-emerald-400/20 bg-emerald-400/5 px-3 py-2.5">
                 <p className="text-xs leading-relaxed text-zinc-300">
                   {recipe.output}
@@ -510,7 +434,11 @@ export function WorkflowRecipe() {
         <p className="text-[11px] text-zinc-600">
           Paste into CLAUDE.md, .cursorrules, or your workflow docs
         </p>
-        <CopyButton recipe={recipe} />
+        <CopyButton
+          getText={() => formatRecipeAsMarkdown(recipe)}
+          label="Copy recipe"
+          accentColor="emerald"
+        />
       </div>
     </div>
   );
