@@ -11,7 +11,8 @@ export type InteractiveTool =
   | "config-generator"
   | "cost-calculator"
   | "diff-viewer"
-  | "context-window-viz";
+  | "context-window-viz"
+  | "decision-tree";
 
 export interface ArticleFrontmatter {
   title: string;
