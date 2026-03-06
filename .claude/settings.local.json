@@ -6,7 +6,8 @@
       "Bash(npm install)",
       "Bash(pnpm --version)",
       "Bash(npm --version)",
-      "Bash(lsof -i :3000 -t)"
+      "Bash(lsof -i :3000 -t)",
+      "Bash(node -e \":*)"
     ]
   }
 }
