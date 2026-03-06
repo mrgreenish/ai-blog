@@ -8,7 +8,6 @@ export type InteractiveTool =
   | "prompt-lab"
   | "failure-gallery"
   | "dev-benchmark"
-  | "config-generator"
   | "cost-calculator"
   | "diff-viewer"
   | "context-window-viz"

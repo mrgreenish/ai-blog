@@ -3,7 +3,7 @@ title: "Agents and Skills"
 description: "The emerging skills ecosystem: how reusable agent skills encode domain knowledge, and why they're more powerful than one-off prompt engineering."
 category: tooling
 order: 4
-interactiveTools: [config-generator, prompt-lab, workflow-recipe]
+interactiveTools: [prompt-lab, workflow-recipe]
 ---
 
 One of the most underrated developments in AI tooling: the emergence of reusable "skills" — packages of domain knowledge that agents can apply automatically. Instead of writing the same instructions in every prompt, you encode them once as a skill and the agent applies them whenever relevant.
@@ -54,7 +54,7 @@ The most compelling use case for teams: encoding your team's conventions as skil
 
 When a convention changes, you update the skill. When a new developer joins, they get the team's accumulated knowledge automatically. When you find a new pattern that works well, you add it to the skill.
 
-<ConfigGenerator />
+> **Generate your own:** Use `/create-skill` or `/create-subagent` in Claude Code, or run the `skill-creator` skill to scaffold a skill or subagent tailored to your project.
 
 <WorkflowRecipe />
 

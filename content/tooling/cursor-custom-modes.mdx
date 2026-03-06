@@ -4,7 +4,7 @@ description: "How to use Cursor's custom modes to get better results. Architect 
 story: "I used to jump straight to implementation. The model would start coding, I'd notice it was going in the wrong direction, and we'd spend 20 minutes untangling it. Adding a planning step before implementation cut that waste almost entirely."
 category: tooling
 order: 7
-interactiveTools: [config-generator]
+interactiveTools: []
 ---
 
 Cursor ships with a default mode that handles most tasks well. But for complex work — feature planning, large refactors, architectural decisions — the default mode isn't the right tool. Custom modes let you shape how the model approaches a task before it starts.
@@ -63,6 +63,4 @@ This sequence — plan with full context, implement with focused context — is 
 
 ## Generating your own config
 
-If you want to set up a custom mode or generate a `.cursorrules` file that encodes your project's conventions and guardrails, the Config Generator can produce a starting point based on your project type and preferences.
-
-<ConfigGenerator />
+Use `/create-skill` in Claude Code to scaffold a skill file, `/create-subagent` for a subagent definition, or run the `skill-creator` skill to generate a config tailored to your project conventions.
