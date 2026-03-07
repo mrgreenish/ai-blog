@@ -291,8 +291,8 @@ export const TREE_NODES: Record<string, TreeNode> = {
           },
           relatedLinks: [
             {
-              href: "/tooling/cursor-custom-modes",
-              label: "Cursor Custom Modes",
+              href: "/tooling/agents-and-skills",
+              label: "Agents & Skills",
             },
           ],
         },
@@ -550,14 +550,14 @@ export const TREE_NODES: Record<string, TreeNode> = {
       {
         id: "cursor",
         label: "Cursor",
-        description: "Custom modes, rules, and AI-powered editor setup",
+        description: "Project rules and AI-powered editor setup",
         next: {
-          title: "Cursor Custom Modes",
+          title: "Cursor Setup",
           emoji: "\u{1F5B1}\uFE0F",
           description:
-            "Configure Cursor with custom modes, project rules, and optimized settings for AI-assisted development.",
+            "Configure Cursor with project rules and optimized settings for AI-assisted development.",
           model: "Claude Sonnet 4.6 (in Cursor)",
-          tools: ["Cursor", ".cursorrules", "Custom modes"],
+          tools: ["Cursor", ".cursorrules"],
           steps: [
             {
               label: "Install & configure",
@@ -570,11 +570,6 @@ export const TREE_NODES: Record<string, TreeNode> = {
                 "Add .cursorrules with your codebase conventions, tech stack, and coding standards.",
             },
             {
-              label: "Set up custom modes",
-              description:
-                "Create task-specific modes (e.g., \u201CReview mode\u201D, \u201CRefactor mode\u201D) with tailored system prompts.",
-            },
-            {
               label: "Test with a real task",
               description:
                 "Try a small feature or bug fix using the new configuration. Adjust rules based on results.",
@@ -582,15 +577,13 @@ export const TREE_NODES: Record<string, TreeNode> = {
           ],
           guardrails: [
             "Keep .cursorrules focused \u2014 too many rules confuse the model",
-            "Test custom modes on small tasks first",
             "Update rules as your codebase evolves",
-            "Use modes to constrain scope, not to add features",
           ],
           output:
-            "Cursor configured with project rules and custom modes tailored to your workflow.",
+            "Cursor configured with project rules tailored to your workflow.",
           articleLink: {
-            href: "/tooling/cursor-custom-modes",
-            label: "Cursor Custom Modes",
+            href: "/tooling/agents-and-skills",
+            label: "Agents & Skills",
           },
           relatedLinks: [
             {

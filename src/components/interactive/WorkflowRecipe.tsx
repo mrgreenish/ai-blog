@@ -712,8 +712,8 @@ function HelpMeChoose() {
 // Main component
 // =============================================================================
 
-export function WorkflowRecipe() {
-  const [mode, setMode] = useState<RecipeMode>("browse");
+export function WorkflowRecipe({ initialMode = "browse" }: { initialMode?: RecipeMode }) {
+  const [mode, setMode] = useState<RecipeMode>(initialMode);
 
   return (
     <div className="not-prose my-8 overflow-hidden rounded-xl border border-emerald-400/30 bg-zinc-950">

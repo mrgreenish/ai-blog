@@ -695,8 +695,8 @@ function PipelineBuilder() {
 // Main component
 // =============================================================================
 
-export function ModelMixer() {
-  const [mode, setMode] = useState<MixerMode>("estimate");
+export function ModelMixer({ initialMode = "estimate" }: { initialMode?: MixerMode }) {
+  const [mode, setMode] = useState<MixerMode>(initialMode);
 
   return (
     <div className="not-prose my-8 overflow-hidden rounded-xl border border-violet-400/30 bg-zinc-900/60">
