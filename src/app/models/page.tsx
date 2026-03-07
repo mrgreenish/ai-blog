@@ -50,6 +50,11 @@ const READING_JOURNEY = [
   },
   {
     step: "03",
+    slug: "max-mode",
+    bridge: "Understand the usage tiers. When does Max Mode pay for itself — and when is the API a better call?",
+  },
+  {
+    step: "04",
     slug: "model-personalities",
     bridge: "Go deeper. Beyond speed and cost, every model has instincts. Knowing their tendencies changes how you prompt.",
   },

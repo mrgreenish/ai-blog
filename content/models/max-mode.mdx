@@ -1,0 +1,64 @@
+---
+title: "Max Mode: When More Is Worth More"
+description: "Claude Max 5× and 20× cost 5–10× as much as Pro. Sometimes that's the right trade. Here's how to tell — and when to skip it entirely."
+story: "You're mid-session on a hard problem, the model stops responding, and Claude tells you you've hit your usage limit. That's the moment you start thinking about Max Mode."
+category: models
+order: 4
+interactiveTools: [max-mode-viz]
+---
+
+You're deep into a debugging session. Context is built up, the model knows your codebase, you're actually making progress — and then it stops. Usage limit. Come back in a few hours.
+
+That's when people start looking at Max Mode.
+
+## What Max Mode actually is
+
+Claude Max is a subscription tier above Pro. Two options: 5× at $100/month, 20× at $200/month. Both give you more daily usage of Claude on claude.ai — not a different model, not different capabilities, just more headroom before you hit the ceiling.
+
+The word "max" is a bit misleading. It's not unlimited. It's just *more*. A lot more, in the 20× case. But the ceiling still exists.
+
+## When it earns its cost
+
+The case for Max Mode comes down to one question: are you hitting the Pro limit during normal work, or only occasionally?
+
+**Long-session work is where it pays off.** Architecture reviews, large refactors, debugging complex systems — these sessions run long. Switching models mid-session, or waiting hours to continue, breaks the kind of context that's genuinely hard to rebuild. Max Mode keeps you in the flow.
+
+**Pairing Max with Claude Code.** If you use Claude Code for agentic tasks, it burns through context quickly. A single multi-file refactor or a long debug loop can eat your Pro allocation in one session. Max 5× or 20× means Claude Code can run without interruption.
+
+**Daily heavy use, not occasional spikes.** If you're at the Pro limit most days, not just when you've been unusually busy, Max 5× is probably justified. If you only hit it twice a month, it's not.
+
+## When to skip it
+
+**API access is cheaper for automation.** If you're running pipelines, scripts, or background workflows, Max Mode is the wrong tool. You're paying a flat rate for interactive-session usage. Direct API access scales with actual consumption and has no daily ceiling. For programmatic use, Max Mode is just an expensive wrapper.
+
+**Occasional use doesn't justify it.** I talked to a developer who upgraded to Max 20× because they hit the Pro limit during a particularly intense week. One week. The rest of the month they used maybe 30% of Pro. That's $180 of waste per month — more than half a year's worth of Pro — to insure against occasional heavy days.
+
+**Casual users get nothing from it.** If you're asking Claude a few questions a day, reading its answers, and moving on — Pro has more than enough headroom. Max Mode would be a complete overpay.
+
+## The API alternative
+
+One thing the Max pricing page doesn't emphasize: at moderate volumes, using the API directly is cheaper than any subscription tier. If you're mainly using Claude through a developer workflow — not the web interface — run the math before upgrading.
+
+At $3/M input and $15/M output for Sonnet 4.6, a typical conversation costs less than $0.02. You'd need 1,500+ conversations per month before API costs match Max 5×. That's 50 conversations per day, every day — most developers aren't close.
+
+The calculator below shows where each option makes sense at your actual usage level.
+
+<MaxModeViz />
+
+## The actual decision
+
+I use Max 5× during intensive project phases and switch back to Pro when I'm in lighter periods. Most tools let you change plan monthly, so there's no reason to stay on Max when you don't need it.
+
+The mental model that helped me: Max Mode is for *sustained* heavy use, not peak load. If your usage is spiky, either manage the Pro limit with batching or use the API. If you're consistently maxing out Pro, Max 5× is probably worth it without even running the numbers.
+
+Max 20× is a narrower use case. It makes sense for teams sharing an account, for developers running Claude Code as a primary tool all day, or for anyone doing the kind of long multi-hour sessions where 5× still runs out. For individual developers with normal workflows, it's usually overkill.
+
+## Examples that tipped the scale
+
+- **Migrating a large codebase to TypeScript:** multiple long sessions over two weeks, each burning through Pro allocation before finishing a file batch. Max 5× paid for itself in that one project.
+- **Daily code review workflow:** 8 reviews/day, each about 10 minutes, every working day. Consistent Pro throttling by afternoon. Max 5× solved it cleanly.
+- **Running Claude Code for end-to-end feature work:** three or four long agentic sessions per day, each eating significant context. Max 20× became the only option that didn't interrupt the flow.
+
+The failure cases are equally instructive: buying Max 20× for a two-week crunch and then sitting on it for months, or upgrading because of one unusually heavy day, or using it primarily for the API-driven automation that should just be on the API.
+
+Treat Max Mode as a scaling decision, not a status upgrade. When the Pro ceiling is genuinely costing you time, it's worth it. When you're not hitting the ceiling consistently, it isn't.
