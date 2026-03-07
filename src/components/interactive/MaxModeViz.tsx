@@ -340,10 +340,10 @@ export function MaxModeViz() {
           {status === "warning" && (
             <>
               <p className="font-mono text-xs font-semibold text-amber-400 mb-1">
-                You're close — consider trimming first
+                You&apos;re close — consider trimming first
               </p>
               <p className="text-[11px] leading-relaxed text-zinc-500">
-                You're near the default limit. Try removing files that aren't directly relevant before
+                You&apos;re near the default limit. Try removing files that aren&apos;t directly relevant before
                 enabling Max Mode. Often you can stay under 200K with a tighter selection.
               </p>
             </>
@@ -355,7 +355,7 @@ export function MaxModeViz() {
               </p>
               <p className="text-[11px] leading-relaxed text-zinc-500">
                 Your task genuinely needs more than 200K tokens of context. Enable Max Mode for this
-                session — just remember to turn it off when you're back to focused, single-file work.
+                session — just remember to turn it off when you&apos;re back to focused, single-file work.
               </p>
             </>
           )}
