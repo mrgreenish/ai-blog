@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Compass, Calculator, Shuffle, Layers } from "lucide-react";
+import { ArrowRight, Compass, Calculator, Shuffle, Layers, Maximize2 } from "lucide-react";
 import { getArticlesByCategory } from "@/lib/content";
 import { CategoryHeader } from "@/components/content/CategoryHeader";
 import { ArticleCard } from "@/components/content/ArticleCard";
@@ -50,6 +50,11 @@ const READING_JOURNEY = [
   },
   {
     step: "03",
+    slug: "max-mode",
+    bridge: "Understand the usage tiers. When does Max Mode pay for itself — and when is the API a better call?",
+  },
+  {
+    step: "04",
     slug: "model-personalities",
     bridge: "Go deeper. Beyond speed and cost, every model has instincts. Knowing their tendencies changes how you prompt.",
   },
@@ -60,6 +65,7 @@ const MODEL_TOOLS = [
   { icon: Calculator, name: "Cost Calculator", description: "Compare token costs across models at your actual scale" },
   { icon: Shuffle, name: "Model Tinder", description: "Swipe through model personalities to find your match" },
   { icon: Layers, name: "Model Mixer", description: "Assign the right model to each step of a multi-stage task" },
+  { icon: Maximize2, name: "Max Mode Calc", description: "See when Cursor Max Mode earns its cost vs. Auto" },
 ];
 
 export default function ModelsPage() {

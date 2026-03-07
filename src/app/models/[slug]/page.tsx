@@ -12,6 +12,7 @@ import { FailureGallery } from "@/components/interactive/FailureGallery";
 import { ModelCompare } from "@/components/interactive/ModelCompare";
 import { ConfigGenerator } from "@/components/interactive/ConfigGenerator";
 import { DiffViewer } from "@/components/interactive/DiffViewer";
+import { MaxModeViz } from "@/components/interactive/MaxModeViz";
 import { InfoBlock } from "@/components/content/InfoBlock";
 import { PersonalFavorite } from "@/components/content/PersonalFavorite";
 import { ModelLabels } from "@/components/content/ModelLabels";
@@ -57,6 +58,7 @@ export default async function ModelArticlePage({ params }: Props) {
       ModelCompare,
       ConfigGenerator,
       DiffViewer,
+      MaxModeViz,
       InfoBlock,
       PersonalFavorite,
       ModelLabels,
