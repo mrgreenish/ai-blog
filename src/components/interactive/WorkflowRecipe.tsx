@@ -15,39 +15,15 @@ import {
   FieldLabel,
   GuardrailList,
   StepFlow,
+  ModeToggle,
 } from "@/components/ui/WorkflowPrimitives";
-
-// =============================================================================
-// Shared: Mode Toggle
-// =============================================================================
 
 type RecipeMode = "browse" | "choose";
 
-function ModeToggle({ mode, onChange }: { mode: RecipeMode; onChange: (m: RecipeMode) => void }) {
-  return (
-    <div className="border-b border-zinc-800 px-3 py-2.5 sm:px-5 sm:py-3">
-      <div className="inline-flex rounded-lg border border-zinc-700/50 bg-zinc-800/40 p-0.5">
-        {([
-          { id: "browse" as const, label: "Browse Recipes", icon: ChefHat },
-          { id: "choose" as const, label: "Help Me Choose", icon: TreeDeciduous },
-        ]).map(({ id, label, icon: Icon }) => (
-          <button
-            key={id}
-            onClick={() => onChange(id)}
-            className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-mono text-[11px] transition-all sm:text-xs ${
-              mode === id
-                ? "bg-emerald-400/15 text-emerald-300 shadow-sm"
-                : "text-zinc-500 hover:text-zinc-300"
-            }`}
-          >
-            <Icon className="h-3 w-3" />
-            {label}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
+const RECIPE_MODE_OPTIONS = [
+  { id: "browse" as const, label: "Browse Recipes", icon: ChefHat },
+  { id: "choose" as const, label: "Help Me Choose", icon: TreeDeciduous },
+] as const;
 
 // =============================================================================
 // Browse Recipes mode (original WorkflowRecipe)
@@ -757,7 +733,7 @@ export function WorkflowRecipe() {
       </div>
 
       {/* Mode toggle */}
-      <ModeToggle mode={mode} onChange={setMode} />
+      <ModeToggle mode={mode} onChange={setMode} options={RECIPE_MODE_OPTIONS} accent="emerald" />
 
       {/* Content */}
       <AnimatePresence mode="wait">

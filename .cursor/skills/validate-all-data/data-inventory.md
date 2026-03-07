@@ -37,7 +37,7 @@ These files contain hardcoded strings that do **not** derive from `modelSpecs.ts
 | Data | Current value | Validate against |
 |------|---------------|-----------------|
 | Model name col 1 | `"Claude Sonnet"` | `MODEL_REGISTRY` — does a model with this display name exist? |
-| Model name col 2 | `"GPT-4o"` | `MODEL_REGISTRY` — does a model with this display name exist? |
+| Model name col 2 | `"GPT-5.4"` | `MODEL_REGISTRY` — does a model with this display name exist? |
 
 ### WorkflowRecipe.tsx
 **File:** `src/components/interactive/WorkflowRecipe.tsx`

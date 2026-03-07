@@ -20,12 +20,12 @@ These are the models currently registered in `MODEL_REGISTRY` in `src/lib/modelS
 | Registry ID | Display name | Provider | Posts referencing it | What to check |
 |---|---|---|---|---|
 | `gemini-flash` | Gemini 2.0 Flash | Google | reasoning-vs-fast, model-personalities, long-context | Still current version? Gemini 2.5 released? |
-| `gpt4o-mini` | GPT-4o mini | OpenAI | reasoning-vs-fast | Still available? Renamed? |
+| `gpt-5.4` | GPT-5.4 | OpenAI | reasoning-vs-fast | Still available? Renamed? |
 | `deepseek-r1` | DeepSeek R1 | DeepSeek | reasoning-vs-fast | Still current? Newer version (R2, etc.)? |
 | `haiku-4.5` | Claude Haiku 4.5 | Anthropic | reasoning-vs-fast | Still this version? Haiku 4.6 released? |
 | `composer-1` | Cursor Composer-1 | Cursor | model-personalities, coding-refactor-vs-greenfield | Still this name? Superseded? |
 | `o3` | o3 | OpenAI | reasoning-vs-fast, coding-refactor-vs-greenfield | Still current name? Successor released? |
-| `gpt4o` | GPT-4o | OpenAI | model-personalities, coding-refactor-vs-greenfield | Still current? GPT-4.5/5 released? |
+| `gpt-5.4` | GPT-5.4 | OpenAI | model-personalities, coding-refactor-vs-greenfield | Still current? Newer version released? |
 | `sonnet-4.6` | Claude Sonnet 4.6 | Anthropic | model-personalities, coding-refactor-vs-greenfield | Still this version? Sonnet 5 released? |
 | `opus-4.6` | Claude Opus 4.6 | Anthropic | model-personalities | Version number? Still available? |
 | `o3-pro` | o3-pro | OpenAI | reasoning-vs-fast | Still available? Renamed? |
@@ -41,7 +41,7 @@ The canonical values are `contextWindowTokens` in `src/lib/modelSpecs.ts`. Curre
 |---|---|---|---|
 | Claude Sonnet 4.6 | 200,000 | long-context | Still 200k? |
 | Gemini 2.0 Flash | 1,000,000 | long-context | Still 1M? Increased? |
-| GPT-4o | 128,000 | long-context | Still 128k? |
+| GPT-5.4 | 128,000 | long-context | Still 128k? |
 | Cursor Composer-1 | 128,000 | — | Still 128k? |
 | Cursor Composer-1.5 | 200,000 | — | Still 200k? |
 
@@ -74,12 +74,12 @@ Canonical pricing is in `src/lib/modelSpecs.ts` (`inputPer1M` / `outputPer1M`). 
 | Model | Input $/1M | Output $/1M | Post | What to check |
 |---|---|---|---|---|
 | Gemini 2.0 Flash | $0.10 | $0.40 | reasoning-vs-fast | Still current? |
-| GPT-4o mini | $0.15 | $0.60 | reasoning-vs-fast | Still current? |
+| GPT-5.4 | $0.15 | $0.60 | reasoning-vs-fast | Still current? |
 | DeepSeek R1 | $0.55 | $2.19 | reasoning-vs-fast | Still current? |
 | Claude Haiku 4.5 | $1.00 | $5.00 | reasoning-vs-fast | Still current? |
 | Cursor Composer-1 | $1.25 | $10.00 | — | Still current? |
 | o3 | $2.00 | $8.00 | reasoning-vs-fast | Still current? |
-| GPT-4o | $2.50 | $10.00 | — | Still current? |
+| GPT-5.4 | $2.50 | $10.00 | — | Still current? |
 | Claude Sonnet 4.6 | $3.00 | $15.00 | reasoning-vs-fast | Still current? |
 | Cursor Composer-1.5 | $3.00 | $15.00 | — | Still current? |
 | Claude Opus 4.6 | $5.00 | $25.00 | — | Still current? |

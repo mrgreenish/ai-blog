@@ -4,6 +4,7 @@ import { useState } from "react";
 import { BarChart3, Maximize2, ClipboardCheck } from "lucide-react";
 import { InteractivePlaceholder } from "./InteractivePlaceholder";
 import { getContextWindowModels, BENCHMARK_CHECKS, getDevBenchmarkColumns } from "@/lib/modelSpecs";
+import { ModeToggle } from "@/components/ui/WorkflowPrimitives";
 
 // =============================================================================
 // Context Window preview data
@@ -44,29 +45,10 @@ function Pass({ val }: { val: boolean }) {
 
 type CompareTab = "context" | "benchmarks";
 
-function TabToggle({ tab, onChange }: { tab: CompareTab; onChange: (t: CompareTab) => void }) {
-  return (
-    <div className="mb-4 inline-flex rounded-lg border border-zinc-700/50 bg-zinc-800/60 p-0.5">
-      {([
-        { id: "context" as const, label: "Context Windows", icon: Maximize2 },
-        { id: "benchmarks" as const, label: "Benchmarks", icon: ClipboardCheck },
-      ]).map(({ id, label, icon: Icon }) => (
-        <button
-          key={id}
-          onClick={() => onChange(id)}
-          className={`flex items-center gap-1.5 rounded-md px-2.5 py-1 font-mono text-[11px] transition-all ${
-            tab === id
-              ? "bg-cyan-400/15 text-cyan-300 shadow-sm"
-              : "text-zinc-500 hover:text-zinc-300"
-          }`}
-        >
-          <Icon className="h-3 w-3" />
-          {label}
-        </button>
-      ))}
-    </div>
-  );
-}
+const COMPARE_TAB_OPTIONS = [
+  { id: "context" as const, label: "Context Windows", icon: Maximize2 },
+  { id: "benchmarks" as const, label: "Benchmarks", icon: ClipboardCheck },
+] as const;
 
 // =============================================================================
 // Combined preview
@@ -77,7 +59,7 @@ function CombinedPreview() {
 
   return (
     <div>
-      <TabToggle tab={tab} onChange={setTab} />
+      <ModeToggle mode={tab} onChange={setTab} options={COMPARE_TAB_OPTIONS} accent="cyan" />
 
       {tab === "context" ? (
         <div>

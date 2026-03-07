@@ -107,8 +107,8 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     },
   },
   {
-    id: "gpt4o-mini",
-    name: "GPT-4o mini",
+    id: "gpt-5.4",
+    name: "GPT-5.4",
     provider: "OpenAI",
     inputPer1M: 0.15,
     outputPer1M: 0.60,
@@ -438,7 +438,7 @@ export function getCostCalculatorModels() {
   // Only include models that are meaningful for cost comparison in the blog
   const ids = [
     "gemini-flash",
-    "gpt4o-mini",
+    "gpt-5.4",
     "deepseek-r1",
     "haiku-4.5",
     "composer-1",

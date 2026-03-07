@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { Shuffle, Calculator, ChevronDown, ArrowRight, ArrowDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
@@ -9,38 +9,14 @@ import { useGSAP } from "@gsap/react";
 gsap.registerPlugin(useGSAP);
 import { getMixerModels, getCostCalculatorModels, PRICING_META } from "@/lib/modelSpecs";
 import type { Tier } from "@/lib/modelSpecs";
-
-// =============================================================================
-// Shared: Mode Toggle
-// =============================================================================
+import { ModeToggle } from "@/components/ui/WorkflowPrimitives";
 
 type MixerMode = "estimate" | "pipeline";
 
-function ModeToggle({ mode, onChange }: { mode: MixerMode; onChange: (m: MixerMode) => void }) {
-  return (
-    <div className="border-b border-zinc-800 px-3 py-2.5 sm:px-5 sm:py-3">
-      <div className="inline-flex rounded-lg border border-zinc-700/50 bg-zinc-800/40 p-0.5">
-        {([
-          { id: "estimate" as const, label: "Quick Estimate", icon: Calculator },
-          { id: "pipeline" as const, label: "Pipeline Builder", icon: Shuffle },
-        ]).map(({ id, label, icon: Icon }) => (
-          <button
-            key={id}
-            onClick={() => onChange(id)}
-            className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-mono text-[11px] transition-all sm:text-xs ${
-              mode === id
-                ? "bg-violet-400/15 text-violet-300 shadow-sm"
-                : "text-zinc-500 hover:text-zinc-300"
-            }`}
-          >
-            <Icon className="h-3 w-3" />
-            {label}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
+const MIXER_MODE_OPTIONS = [
+  { id: "estimate" as const, label: "Quick Estimate", icon: Calculator },
+  { id: "pipeline" as const, label: "Pipeline Builder", icon: Shuffle },
+] as const;
 
 // =============================================================================
 // Quick Estimate mode (absorbed from CostCalculator)
@@ -317,6 +293,9 @@ const MODELS: Model[] = getMixerModels();
 
 const MODEL_BY_ID = Object.fromEntries(MODELS.map((m) => [m.id, m]));
 
+// Pre-compute grouped models for ModelSelect to avoid re-filtering on every render
+const MODELS_BY_TIER = Object.groupBy(MODELS, (m) => m.tier) as Record<Tier, Model[]>;
+
 const TEMPLATES: Template[] = [
   {
     id: "fullstack",
@@ -332,7 +311,7 @@ const TEMPLATES: Template[] = [
     id: "bugfix",
     label: "Bug investigation",
     steps: [
-      { id: "reproduce", label: "Reproduce", description: "Isolate the failing case, minimal repro", defaultTier: "fast", defaultModelId: "gpt4o-mini", recommendedModelId: "gpt4o-mini", inputTokens: 1000, outputTokens: 1000 },
+      { id: "reproduce", label: "Reproduce", description: "Isolate the failing case, minimal repro", defaultTier: "fast", defaultModelId: "gpt-5.4", recommendedModelId: "gpt-5.4", inputTokens: 1000, outputTokens: 1000 },
       { id: "diagnose", label: "Diagnose", description: "Trace root cause through execution path", defaultTier: "reasoning", defaultModelId: "opus-4.6", recommendedModelId: "opus-4.6", inputTokens: 2500, outputTokens: 2000 },
       { id: "fix", label: "Fix", description: "Implement the targeted fix", defaultTier: "balanced", defaultModelId: "sonnet-4.6", recommendedModelId: "sonnet-4.6", inputTokens: 2000, outputTokens: 2500 },
       { id: "verify", label: "Verify", description: "Confirm fix, check for regressions", defaultTier: "fast", defaultModelId: "haiku-4.5", recommendedModelId: "haiku-4.5", inputTokens: 1500, outputTokens: 1000 },
@@ -374,10 +353,6 @@ function formatCost(cost: number): string {
   return `$${cost.toFixed(4)}`;
 }
 
-function formatCostShort(cost: number): string {
-  return `$${cost.toFixed(4)}`;
-}
-
 // --- Sub-components ---
 
 function TierBadge({ tier }: { tier: Tier }) {
@@ -409,9 +384,9 @@ function ModelSelect({
         onChange={(e) => onChange(stepId, e.target.value)}
         className={`w-full appearance-none rounded-md border ${colors.border} ${colors.bg} py-1.5 pl-2.5 pr-7 font-mono text-xs ${colors.text} focus:outline-none focus:ring-1 focus:ring-current cursor-pointer`}
       >
-        {(["fast", "balanced", "reasoning"] as Tier[]).map((tier) => (
-          <optgroup key={tier} label={`── ${tier} ──`}>
-            {MODELS.filter((m) => m.tier === tier).map((m) => (
+        {(["fast", "balanced", "reasoning"] as Tier[]).map((t) => (
+          <optgroup key={t} label={`── ${t} ──`}>
+            {(MODELS_BY_TIER[t] ?? []).map((m) => (
               <option key={m.id} value={m.id}>
                 {m.name}
               </option>
@@ -428,13 +403,11 @@ function StepCard({
   step,
   modelId,
   onModelChange,
-  index,
   className,
 }: {
   step: PipelineStep;
   modelId: string;
   onModelChange: (stepId: string, modelId: string) => void;
-  index: number;
   className?: string;
 }) {
   const model = MODEL_BY_ID[modelId];
@@ -493,7 +466,7 @@ function PipelineCostBar({
           transition={{ duration: 0.5, ease: "easeOut" }}
         />
         <span className="absolute inset-y-0 right-2 flex items-center font-mono text-[11px] text-zinc-300">
-          {formatCostShort(cost)}/run
+          ${cost.toFixed(4)}/run
         </span>
       </div>
     </div>
@@ -541,17 +514,20 @@ function PipelineBuilder() {
 
   const [retries, setRetries] = useState(1);
 
-  const mixedCostBase = calcTotalCost(currentAssignments, template.steps);
-  const sonnetCostBase = calcTotalCost(
+  const mixedCost = calcTotalCost(currentAssignments, template.steps);
+
+  // These only depend on the template, not on user model assignments or retries.
+  const sonnetCostBase = useMemo(() => calcTotalCost(
     Object.fromEntries(template.steps.map((s) => [s.id, "sonnet-4.6"])),
     template.steps
-  );
-  const opusCostBase = calcTotalCost(
+  ), [template]);
+  const opusCostBase = useMemo(() => calcTotalCost(
     Object.fromEntries(template.steps.map((s) => [s.id, "opus-4.6"])),
     template.steps
-  );
+  ), [template]);
 
-  const mixedCost = mixedCostBase;
+  // Mixed pipeline cost is NOT multiplied by retries — the premise is that
+  // using the right model per step gets it right on the first attempt.
   const sonnetCost = sonnetCostBase * retries;
   const opusCost = opusCostBase * retries;
 
@@ -591,7 +567,6 @@ function PipelineBuilder() {
                     step={step}
                     modelId={currentAssignments[step.id]}
                     onModelChange={handleModelChange}
-                    index={i}
                     className="step-card"
                   />
                   {i < template.steps.length - 1 && (
@@ -605,13 +580,12 @@ function PipelineBuilder() {
 
             {/* Medium: 2x2 grid */}
             <div className="hidden grid-cols-2 gap-2 md:grid lg:hidden">
-              {template.steps.map((step, i) => (
+              {template.steps.map((step) => (
                 <StepCard
                   key={step.id}
                   step={step}
                   modelId={currentAssignments[step.id]}
                   onModelChange={handleModelChange}
-                  index={i}
                   className="step-card"
                 />
               ))}
@@ -625,7 +599,6 @@ function PipelineBuilder() {
                     step={step}
                     modelId={currentAssignments[step.id]}
                     onModelChange={handleModelChange}
-                    index={i}
                     className="step-card"
                   />
                   {i < template.steps.length - 1 && (
@@ -741,7 +714,7 @@ export function ModelMixer() {
       </div>
 
       {/* Mode toggle */}
-      <ModeToggle mode={mode} onChange={setMode} />
+      <ModeToggle mode={mode} onChange={setMode} options={MIXER_MODE_OPTIONS} accent="violet" />
 
       {/* Content */}
       <AnimatePresence mode="wait">
