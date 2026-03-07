@@ -9,9 +9,13 @@ import { ModelMixer } from "@/components/interactive/ModelMixer";
 import { WorkflowRecipe } from "@/components/interactive/WorkflowRecipe";
 import { PromptLab } from "@/components/interactive/PromptLab";
 import { FailureGallery } from "@/components/interactive/FailureGallery";
-import { ModelCompare } from "@/components/interactive/ModelCompare";
+import { DevBenchmark } from "@/components/interactive/DevBenchmark";
 import { ConfigGenerator } from "@/components/interactive/ConfigGenerator";
+import { CostCalculator } from "@/components/interactive/CostCalculator";
 import { DiffViewer } from "@/components/interactive/DiffViewer";
+import { ContextWindowViz } from "@/components/interactive/ContextWindowViz";
+import { DecisionTree } from "@/components/interactive/DecisionTree";
+import { MaxModeViz } from "@/components/interactive/MaxModeViz";
 import { InfoBlock } from "@/components/content/InfoBlock";
 import { PersonalFavorite } from "@/components/content/PersonalFavorite";
 import { ModelLabels } from "@/components/content/ModelLabels";
@@ -54,9 +58,13 @@ export default async function ModelArticlePage({ params }: Props) {
       WorkflowRecipe,
       PromptLab,
       FailureGallery,
-      ModelCompare,
+      DevBenchmark,
       ConfigGenerator,
+      CostCalculator,
       DiffViewer,
+      ContextWindowViz,
+      DecisionTree,
+      MaxModeViz,
       InfoBlock,
       PersonalFavorite,
       ModelLabels,
