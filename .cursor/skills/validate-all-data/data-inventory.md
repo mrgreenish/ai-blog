@@ -37,7 +37,7 @@ These files contain hardcoded strings that do **not** derive from `modelSpecs.ts
 | Data | Current value | Validate against |
 |------|---------------|-----------------|
 | Model name col 1 | `"Claude Sonnet"` | `MODEL_REGISTRY` — does a model with this display name exist? |
-| Model name col 2 | `"GPT-4o"` | `MODEL_REGISTRY` — does a model with this display name exist? |
+| Model name col 2 | `"GPT-5.4"` | `MODEL_REGISTRY` — does a model with this display name exist? |
 
 ### WorkflowRecipe.tsx
 **File:** `src/components/interactive/WorkflowRecipe.tsx`
@@ -83,7 +83,7 @@ Contains `BEFORE_LINES` / `AFTER_LINES` — illustrative code diff. No factual c
 Current MDX files (as of last audit):
 - `content/models/`: `reasoning-vs-fast.mdx`, `design-to-code-and-back.mdx`, `model-personalities.mdx` → **3 files**
 - `content/workflows/`: `building-blocks.mdx`, `design-to-storybook.mdx`, `claude-mobile.mdx`, `common-pitfalls.mdx`, `spec-to-pr.mdx`, `bug-to-fix.mdx`, `jira-to-cursor.mdx`, `ai-code-review.mdx`, `prompting-guide.mdx` → **9 files**
-- `content/tooling/`: `agents-and-skills.mdx`, `figma-mcp.mdx`, `code-to-canvas.mdx`, `diff-review-loops.mdx`, `cursor-custom-modes.mdx`, `claude-code-codex.mdx`, `agent-guardrails.mdx` → **7 files**
+- `content/tooling/`: `agents-and-skills.mdx`, `figma-mcp.mdx`, `code-to-canvas.mdx`, `diff-review-loops.mdx`, `claude-code-codex.mdx`, `agent-guardrails.mdx` → **6 files**
 
 > Always recount by listing the directory — these counts may be stale.
 

@@ -24,7 +24,7 @@ export interface ModelSpec {
   // Context window (tokens)
   contextWindowTokens: number;
 
-  // Presentation — used by ModelPicker, ModelTinder, DevBenchmark header
+  // Presentation — used by ModelPicker, ModelTinder, ModelCompare
   tagline: string;
   emoji: string;
   gradientFrom: string;
@@ -44,7 +44,7 @@ export interface ModelSpec {
   bestFor: string;
   worstFor: string;
 
-  // DevBenchmark — pass/fail per check key
+  // ModelCompare benchmarks — pass/fail per check key
   benchmark: {
     correctServerAction: boolean;
     followedConstraints: boolean;
@@ -107,8 +107,8 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     },
   },
   {
-    id: "gpt4o-mini",
-    name: "GPT-4o mini",
+    id: "gpt-5.4",
+    name: "GPT-5.4",
     provider: "OpenAI",
     inputPer1M: 0.15,
     outputPer1M: 0.60,
@@ -433,12 +433,12 @@ export const PRICING_META = {
   },
 } as const;
 
-/** Models shown in CostCalculator */
+/** Models shown in ModelMixer Quick Estimate mode */
 export function getCostCalculatorModels() {
   // Only include models that are meaningful for cost comparison in the blog
   const ids = [
     "gemini-flash",
-    "gpt4o-mini",
+    "gpt-5.4",
     "deepseek-r1",
     "haiku-4.5",
     "composer-1",
@@ -459,7 +459,7 @@ export function getCostCalculatorModels() {
   });
 }
 
-/** Models shown in ContextWindowViz */
+/** Models shown in ModelCompare context window tab */
 export function getContextWindowModels() {
   const ids = [
     "sonnet-4.6",
@@ -542,7 +542,7 @@ export const BENCHMARK_CHECKS: BenchmarkCheck[] = [
   { check: "Introduced hidden bugs in refactor?", key: "hiddenBugsInRefactor" },
 ];
 
-/** Models shown as columns in DevBenchmark */
+/** Models shown as columns in ModelCompare benchmarks tab */
 export function getDevBenchmarkColumns() {
   const ids = ["sonnet-4.6", "gemini-flash", "haiku-4.5", "composer-1-5"];
   return ids.map((id) => {

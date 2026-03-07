@@ -21,7 +21,7 @@ function Preview() {
       <div className="grid grid-cols-2 gap-3">
         {[
           { model: "Claude Sonnet", output: "Refactored with clear separation of concerns. Added error boundary. Removed redundant state." },
-          { model: "GPT-4o", output: "Rewrote using functional patterns. Extracted custom hook. Added JSDoc comments throughout." },
+          { model: "GPT-5.4", output: "Rewrote using functional patterns. Extracted custom hook. Added JSDoc comments throughout." },
         ].map((col) => (
           <div key={col.model} className="rounded-lg border border-zinc-800 p-3">
             <p className="mb-2 font-mono text-xs font-semibold text-zinc-400">

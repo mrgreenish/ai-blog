@@ -106,4 +106,4 @@ After all findings, add a summary:
 - **Don't rewrite paragraphs.** Only suggest the minimal change needed to fix the factual issue.
 - **Flag uncertainty.** If you can't definitively confirm whether a claim is still accurate, note it as "needs manual verification" rather than suggesting a change.
 - **Include today's date** in every search query to get the most current results.
-- **Check model naming carefully.** AI companies frequently rename models (e.g., GPT-4 Turbo → GPT-4o, Claude 3 → Claude 3.5 → Claude 4). A model name that was correct 6 months ago may now refer to something different.
+- **Check model naming carefully.** AI companies frequently rename models (e.g., GPT-4 Turbo → GPT-4o → GPT-5.4, Claude 3 → Claude 3.5 → Claude 4). A model name that was correct 6 months ago may now refer to something different.

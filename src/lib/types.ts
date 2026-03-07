@@ -7,12 +7,9 @@ export type InteractiveTool =
   | "workflow-recipe"
   | "prompt-lab"
   | "failure-gallery"
-  | "dev-benchmark"
+  | "model-compare"
   | "config-generator"
-  | "cost-calculator"
-  | "diff-viewer"
-  | "context-window-viz"
-  | "decision-tree";
+  | "diff-viewer";
 
 export interface ArticleFrontmatter {
   title: string;
