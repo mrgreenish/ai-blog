@@ -1,64 +1,64 @@
 ---
-title: "Max Mode: When More Is Worth More"
-description: "Claude Max 5× and 20× cost 5–10× as much as Pro. Sometimes that's the right trade. Here's how to tell — and when to skip it entirely."
-story: "You're mid-session on a hard problem, the model stops responding, and Claude tells you you've hit your usage limit. That's the moment you start thinking about Max Mode."
+title: "Cursor Max Mode: When to Flip the Switch"
+description: "Max Mode expands Cursor's context window from 200K to 1M tokens — and bills you directly at API rates + 20%. Here's when it earns that cost and when to leave it off."
+story: "You paste in six files, Cursor reads half of them, and the refactor is wrong because it missed the other half. That's the moment Max Mode starts making sense."
 category: models
 order: 4
 interactiveTools: [max-mode-viz]
 ---
 
-You're deep into a debugging session. Context is built up, the model knows your codebase, you're actually making progress — and then it stops. Usage limit. Come back in a few hours.
+You paste in six files. Cursor reads some of them. The refactor comes back plausible but wrong — it missed the context that was sitting just past the cutoff. You re-run it with less context and it works fine, which tells you exactly what happened.
 
-That's when people start looking at Max Mode.
+That's the problem Max Mode solves.
 
-## What Max Mode actually is
+## What Max Mode actually does
 
-Claude Max is a subscription tier above Pro. Two options: 5× at $100/month, 20× at $200/month. Both give you more daily usage of Claude on claude.ai — not a different model, not different capabilities, just more headroom before you hit the ceiling.
+By default, Cursor operates with a 200K token context window — roughly 15,000 lines of code. That covers most single-feature work. Max Mode extends that to 1M tokens (about 75,000 lines) for models that support it, like Gemini 2.5 Pro and GPT-4.1.
 
-The word "max" is a bit misleading. It's not unlimited. It's just *more*. A lot more, in the 20× case. But the ceiling still exists.
+The catch: it bypasses your regular request quota and bills directly at the underlying API rate, plus a 20% margin. A few queries in Max Mode can consume your entire monthly credit pool.
+
+It's not a "better" mode. It's a "bigger context" mode. The model doesn't reason differently with Max Mode on — it just sees more of your codebase at once.
 
 ## When it earns its cost
 
-The case for Max Mode comes down to one question: are you hitting the Pro limit during normal work, or only occasionally?
+**Multi-file refactors where relationships matter.** When you're restructuring something that spans 20+ files — shared types, cascading interface changes, a module extraction — the model needs to hold the whole picture. If it can only see half the affected files, it'll miss dependencies and the output will be wrong. Max Mode is the right call here, not because the model is smarter, but because it can actually read all the relevant code.
 
-**Long-session work is where it pays off.** Architecture reviews, large refactors, debugging complex systems — these sessions run long. Switching models mid-session, or waiting hours to continue, breaks the kind of context that's genuinely hard to rebuild. Max Mode keeps you in the flow.
+**Debugging across a large call chain.** Some bugs only appear when you trace execution across multiple layers: a UI component, an API route, a service, a database query. Feeding the full chain into context is what lets the model spot the issue. Under the default limit, you're either cutting the chain short or making multiple fragmented requests.
 
-**Pairing Max with Claude Code.** If you use Claude Code for agentic tasks, it burns through context quickly. A single multi-file refactor or a long debug loop can eat your Pro allocation in one session. Max 5× or 20× means Claude Code can run without interruption.
+**Initial codebase comprehension.** The first time you ask Cursor to explain or audit a large, unfamiliar codebase, feeding it a broad slice helps. You do this once, not on every query.
 
-**Daily heavy use, not occasional spikes.** If you're at the Pro limit most days, not just when you've been unusually busy, Max 5× is probably justified. If you only hit it twice a month, it's not.
+## When to leave it off
 
-## When to skip it
+**For anything a single file can answer.** Renaming a function, adding a prop, writing a test for one module — none of this needs 1M tokens. Turning on Max Mode for these is like renting a truck to carry a laptop.
 
-**API access is cheaper for automation.** If you're running pipelines, scripts, or background workflows, Max Mode is the wrong tool. You're paying a flat rate for interactive-session usage. Direct API access scales with actual consumption and has no daily ceiling. For programmatic use, Max Mode is just an expensive wrapper.
+**When Auto mode handles it.** Cursor's Auto mode selects a cost-efficient model automatically and doesn't count against your credit pool the same way. If Auto gives you a correct result, you have no reason to switch to Max.
 
-**Occasional use doesn't justify it.** I talked to a developer who upgraded to Max 20× because they hit the Pro limit during a particularly intense week. One week. The rest of the month they used maybe 30% of Pro. That's $180 of waste per month — more than half a year's worth of Pro — to insure against occasional heavy days.
+**When you're iterating quickly.** Rapid back-and-forth — "tweak this", "make it shorter", "add a case" — compounds cost fast in Max Mode. Each exchange processes your full context again at full token rates. Keep Max Mode off during iteration and only flip it on when you need the full picture.
 
-**Casual users get nothing from it.** If you're asking Claude a few questions a day, reading its answers, and moving on — Pro has more than enough headroom. Max Mode would be a complete overpay.
+**When cost matters more than completeness.** A few extended Max Mode sessions can exhaust a Pro plan's entire $20 monthly credit pool. If you're on a budget or want predictable costs, stick to Auto for everyday work and use Max Mode surgically.
 
-## The API alternative
+## The cost reality
 
-One thing the Max pricing page doesn't emphasize: at moderate volumes, using the API directly is cheaper than any subscription tier. If you're mainly using Claude through a developer workflow — not the web interface — run the math before upgrading.
+Cursor Pro includes a $20/month credit pool for non-Auto model usage. Max Mode draws from this pool at API rate + 20% margin. The numbers compound quickly:
 
-At $3/M input and $15/M output for Sonnet 4.6, a typical conversation costs less than $0.02. You'd need 1,500+ conversations per month before API costs match Max 5×. That's 50 conversations per day, every day — most developers aren't close.
+- A session processing 400K tokens of context costs roughly $0.50–$2.00 in Max Mode depending on model
+- Run that three or four times a day and you've consumed your monthly pool in a week
+- Overages charge at raw API rates — there's no cap unless you turn off pay-as-you-go
 
-The calculator below shows where each option makes sense at your actual usage level.
+The calculator below shows how context size and frequency affect when Max Mode makes sense.
 
 <MaxModeViz />
 
-## The actual decision
+## The actual pattern
 
-I use Max 5× during intensive project phases and switch back to Pro when I'm in lighter periods. Most tools let you change plan monthly, so there's no reason to stay on Max when you don't need it.
+I keep Max Mode off by default and flip it on for specific sessions: initial codebase exploration on a new project, large cross-file refactors, and debugging that spans multiple layers. Everything else stays on Auto.
 
-The mental model that helped me: Max Mode is for *sustained* heavy use, not peak load. If your usage is spiky, either manage the Pro limit with batching or use the API. If you're consistently maxing out Pro, Max 5× is probably worth it without even running the numbers.
+The useful mental shift: think of Max Mode as a session-level decision, not a default setting. When you're starting work on a large, interconnected change, turn it on. When you're doing focused, contained edits, leave it off.
 
-Max 20× is a narrower use case. It makes sense for teams sharing an account, for developers running Claude Code as a primary tool all day, or for anyone doing the kind of long multi-hour sessions where 5× still runs out. For individual developers with normal workflows, it's usually overkill.
+The failure mode is leaving it on because you're not sure whether you need it. If you're not actively working with more than 15K lines of context in a session, you're burning credits for no benefit.
 
-## Examples that tipped the scale
+## What doesn't change
 
-- **Migrating a large codebase to TypeScript:** multiple long sessions over two weeks, each burning through Pro allocation before finishing a file batch. Max 5× paid for itself in that one project.
-- **Daily code review workflow:** 8 reviews/day, each about 10 minutes, every working day. Consistent Pro throttling by afternoon. Max 5× solved it cleanly.
-- **Running Claude Code for end-to-end feature work:** three or four long agentic sessions per day, each eating significant context. Max 20× became the only option that didn't interrupt the flow.
+Max Mode doesn't make the model smarter, more accurate, or better at reasoning. It makes the model aware of more code. If your task doesn't require broad awareness — and most tasks don't — the extra context is just cost.
 
-The failure cases are equally instructive: buying Max 20× for a two-week crunch and then sitting on it for months, or upgrading because of one unusually heavy day, or using it primarily for the API-driven automation that should just be on the API.
-
-Treat Max Mode as a scaling decision, not a status upgrade. When the Pro ceiling is genuinely costing you time, it's worth it. When you're not hitting the ceiling consistently, it isn't.
+The cases where Max Mode actually moves the needle are the ones where the model was producing wrong answers *because* it was reading an incomplete picture of your codebase. Those cases exist, and they're worth paying for. The rest of the time, Auto is the better call.
