@@ -4,8 +4,8 @@ import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Copy, Check } from "lucide-react";
 
-// Shared primitives used by WorkflowRecipe and DecisionTree.
-// All components accept accentColor to differentiate the two widgets visually.
+// Shared primitives used by WorkflowRecipe (Browse Recipes + Help Me Choose modes).
+// All components accept accentColor to differentiate the two modes visually.
 
 type AccentColor = "teal" | "emerald";
 
