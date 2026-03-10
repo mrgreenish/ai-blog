@@ -154,4 +154,4 @@ The `interactiveTools` frontmatter field lists component names. Valid component 
 | OpenAI | https://openai.com/api/pricing |
 | Google | https://ai.google.dev/gemini-api/docs/pricing |
 | DeepSeek | https://api-docs.deepseek.com/quick_start/pricing |
-| Cursor | https://cursor.com/docs/models |
+| Cursor | https://cursor.com/docs/account/teams/pricing#model-pricing |

@@ -23,7 +23,7 @@ These are the models currently registered in `MODEL_REGISTRY` in `src/lib/modelS
 | `gpt4o-mini` | GPT-4o mini | OpenAI | reasoning-vs-fast | Still available? Renamed? |
 | `deepseek-r1` | DeepSeek R1 | DeepSeek | reasoning-vs-fast | Still current? Newer version (R2, etc.)? |
 | `haiku-4.5` | Claude Haiku 4.5 | Anthropic | reasoning-vs-fast | Still this version? Haiku 4.6 released? |
-| `composer-1` | Cursor Composer-1 | Cursor | model-personalities, coding-refactor-vs-greenfield | Still this name? Superseded? |
+| `composer-1` | Cursor Composer-1 | Cursor | model-personalities, coding-refactor-vs-greenfield | **Retired 2026-03-16** — users auto-migrated to Composer 1.5 |
 | `o3` | o3 | OpenAI | reasoning-vs-fast, coding-refactor-vs-greenfield | Still current name? Successor released? |
 | `gpt4o` | GPT-4o | OpenAI | model-personalities, coding-refactor-vs-greenfield | Still current? GPT-4.5/5 released? |
 | `sonnet-4.6` | Claude Sonnet 4.6 | Anthropic | model-personalities, coding-refactor-vs-greenfield | Still this version? Sonnet 5 released? |
@@ -77,11 +77,11 @@ Canonical pricing is in `src/lib/modelSpecs.ts` (`inputPer1M` / `outputPer1M`). 
 | GPT-4o mini | $0.15 | $0.60 | reasoning-vs-fast | Still current? |
 | DeepSeek R1 | $0.55 | $2.19 | reasoning-vs-fast | Still current? |
 | Claude Haiku 4.5 | $1.00 | $5.00 | reasoning-vs-fast | Still current? |
-| Cursor Composer-1 | $1.25 | $10.00 | — | Still current? |
+| Cursor Composer-1 | $1.25 | $10.00 | — | **Retired 2026-03-16** |
 | o3 | $2.00 | $8.00 | reasoning-vs-fast | Still current? |
 | GPT-4o | $2.50 | $10.00 | — | Still current? |
 | Claude Sonnet 4.6 | $3.00 | $15.00 | reasoning-vs-fast | Still current? |
-| Cursor Composer-1.5 | $3.00 | $15.00 | — | Still current? |
+| Cursor Composer-1.5 | $3.50 | $17.50 | — | Still current? |
 | Claude Opus 4.6 | $5.00 | $25.00 | — | Still current? |
 | o3-pro | $20.00 | $80.00 | — | Still current? |
 

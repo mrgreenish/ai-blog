@@ -51,6 +51,11 @@ export interface ModelSpec {
     madeUpDocs: boolean;
     hiddenBugsInRefactor: boolean;
   };
+
+  /** ISO date when the model was/will be retired. Components can use this to
+   *  filter deprecated models from recommendations while keeping them in
+   *  data-oriented views (cost calculator, mixer). */
+  deprecated?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -213,6 +218,7 @@ export const MODEL_REGISTRY: ModelSpec[] = [
   },
 
   // ── Balanced tier ──────────────────────────────────────────────────────────
+  // Composer 1 retired 2026-03-16 — users auto-migrated to Composer 1.5
   {
     id: "composer-1",
     name: "Cursor Composer-1",
@@ -221,6 +227,7 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     outputPer1M: 10.00,
     tier: "balanced",
     contextWindowTokens: 128_000,
+    deprecated: "2026-03-16",
     tagline: "The Focused One",
     emoji: "🎯",
     gradientFrom: "from-sky-600",
@@ -422,14 +429,14 @@ export function getMixerModels() {
 // ---------------------------------------------------------------------------
 
 export const PRICING_META = {
-  verifiedDate: "2026-02-19",
+  verifiedDate: "2026-03-10",
   source: "Official API pricing pages",
   urls: {
     Anthropic: "https://docs.anthropic.com/en/docs/about-claude/pricing",
     OpenAI: "https://openai.com/api/pricing",
     Google: "https://ai.google.dev/gemini-api/docs/pricing",
     DeepSeek: "https://api-docs.deepseek.com/quick_start/pricing",
-    Cursor: "https://www.cursor.com/pricing",
+    Cursor: "https://cursor.com/docs/account/teams/pricing#model-pricing",
   },
 } as const;
 
