@@ -68,6 +68,123 @@ The real power is writing skills for your specific project. A custom skill for y
 
 Skills compose with `CLAUDE.md`, `AGENTS.md`, and `.cursorrules`. Think of them as layers: the skill provides domain knowledge, the project config provides project-specific context, and the task prompt provides the specific request.
 
+## Subagents: skills with autonomy
+
+Skills tell an agent what to do. Subagents are agents that *do it* — they run as specialized workers within a larger task, with their own context, tools, and scope. Think of them as team members you spin up for specific jobs.
+
+Claude Code supports this through `AGENTS.md` — a file where you define subagents with their own instructions, tool access, and constraints. When the main agent encounters a task that matches a subagent's domain, it delegates.
+
+### Example: a Prepr integration agent
+
+Here's the actual agent we use for Prepr CMS integration on a Next.js monorepo. It lives at `.cursor/agents/prepr-integration.md` and is invoked automatically whenever we're working with CMS data:
+
+```markdown
+---
+name: prepr-integration
+description: Expert in Prepr CMS integration for this codebase. Handles
+  GraphQL queries, fragments, codegen, Apollo client setup, data fetching
+  patterns, and preview mode. Use proactively when working with CMS data,
+  creating new content types, or connecting frontend pages to Prepr.
+---
+
+## Architecture Overview
+
+- Prepr CMS: GraphQL API at https://graphql.prepr.io/{token}
+- Apollo Client: with Next.js App Router via @apollo/client-integration-nextjs
+- GraphQL Codegen: generates typed operations from .graphql files
+- Fragment Masking: for type-safe fragment data extraction
+
+## Key Locations
+
+packages/prepr-sdk/
+├── src/queries/*.graphql         # GraphQL query documents
+├── src/fragments/*.graphql       # Reusable fragments
+└── src/generated/                # Auto-generated types + documents
+
+## When Creating a New Content Type
+
+1. Create the query in packages/prepr-sdk/src/queries/{name}.graphql
+2. Use existing fragments from packages/prepr-sdk/src/fragments/
+3. Run codegen: pnpm --filter @repo/prepr-sdk codegen
+4. Cache the query with React's cache() for request deduplication
+5. Add cache tags in fetchOptions.next.tags for on-demand revalidation
+6. Include <meta property="prepr:id" content={_id} /> for analytics
+
+## Data Fetching Pattern
+
+const getResult = cache(async (slug: string) => {
+  return getClient().query<GetContentBySlugQuery>({
+    query: GetContentBySlugDocument,
+    variables: { slug },
+    context: { fetchOptions: { next: { tags: ['content', slug] } } },
+  });
+});
+
+## Constraints
+
+- Never hardcode the GraphQL URL — use helpers from @repo/prepr-sdk/api
+- Always use getFragmentData() to extract typed fragment data
+- Always organize imports: external → repo (@repo/) → local (@/)
+```
+
+The description field is key — it tells the main agent when to delegate. "Working with CMS data, creating new content types, connecting frontend pages to Prepr" is precise enough that the agent knows to hand off automatically.
+
+### Example: a design system expert
+
+Here's the actual agent for Figma-to-code on the same project. It has deeper context about the token architecture — four layers from primitives to components — and uses the Figma MCP to inspect designs directly:
+
+```markdown
+---
+name: design-expert
+description: Design system expert that verifies Figma designs match
+  implementation using design tokens. Use proactively when implementing
+  UI from Figma, reviewing components for design compliance, or checking
+  that colors/typography/spacing use correct tokens.
+---
+
+## Figma MCP Tools
+
+- get_design_context: generate UI code for a node (always set
+  clientLanguages: "typescript,css", clientFrameworks: "react,next")
+- get_variable_defs: get Figma variables used in the design
+- get_screenshot: visual reference
+- get_code_connect_suggestions: link Figma components to code
+
+## 4-Layer Token Architecture
+
+Layer 1: Primitives   → packages/design-system/colors.css, typography.css
+Layer 2: Semantic     → packages/ui/src/globals.css (generates Tailwind utilities)
+Layer 3: Component    → packages/ui/src/{atoms|molecules|organisms}/*.css.ts
+Layer 4: React        → packages/ui/src/{atoms|molecules|organisms}/*.tsx
+
+Rules:
+✅ Components use semantic tokens from globals.css
+✅ Semantic tokens reference primitives from design-system
+❌ NEVER use primitives directly in components
+❌ NEVER use arbitrary values (no text-[36px], no #hexvalue)
+
+## Workflow
+
+1. get_screenshot for visual reference
+2. get_design_context for structure
+3. get_variable_defs to see Figma tokens
+4. Read packages/design-system/colors.css and globals.css for current values
+5. Map every Figma variable to an existing token — flag gaps, never invent
+6. Check get_code_connect_map for existing component links
+7. Report findings with token mapping table and layer compliance checklist
+
+## Anti-Patterns to Flag
+
+❌ className="text-[36px]"           → text-heading-1 leading-heading-1
+❌ className="text-[#hexvalue]"      → text-spinach-500
+❌ className="text-2xl md:text-4xl"  → text-heading-1 (responsive via tokens)
+❌ className="p-4 mb-8"             → p-component-inner mb-component-outer
+```
+
+What makes this agent useful in practice: it reads the source token files before every review rather than relying on cached knowledge. Tokens change — a design system update might rename `--color-spinach-500` — and the agent stays current because the instructions say to read the file, not assume.
+
+Both examples follow the same principle: encode the expertise once, delegate the execution. The agent description controls when delegation happens; the instructions control what happens when it does.
+
 ## Skills as team knowledge
 
 The most compelling use case for teams: encoding your team's conventions as skills. Instead of every developer writing the same instructions in their prompts, you write them once as a skill and everyone benefits.

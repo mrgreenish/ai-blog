@@ -3,9 +3,10 @@
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Copy, Check } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
-// Shared primitives used by WorkflowRecipe and DecisionTree.
-// All components accept accentColor to differentiate the two widgets visually.
+// Shared primitives used by interactive tools.
+// All components accept accentColor to differentiate widgets visually.
 
 type AccentColor = "teal" | "emerald";
 
@@ -110,6 +111,52 @@ export function GuardrailList({
         </li>
       ))}
     </ul>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Mode toggle — used by ModelMixer, WorkflowRecipe, ModelCompare
+// ---------------------------------------------------------------------------
+
+// Full Tailwind class strings for toggle accent colors.
+const toggleAccent = {
+  violet: { active: "bg-violet-400/15 text-violet-300 shadow-sm" },
+  emerald: { active: "bg-emerald-400/15 text-emerald-300 shadow-sm" },
+  cyan: { active: "bg-cyan-400/15 text-cyan-300 shadow-sm" },
+} as const;
+
+export type ToggleAccent = keyof typeof toggleAccent;
+
+export function ModeToggle<T extends string>({
+  mode,
+  onChange,
+  options,
+  accent: color = "violet",
+}: {
+  mode: T;
+  onChange: (m: T) => void;
+  options: readonly { readonly id: T; readonly label: string; readonly icon: LucideIcon }[];
+  accent?: ToggleAccent;
+}) {
+  return (
+    <div className="border-b border-zinc-800 px-3 py-2.5 sm:px-5 sm:py-3">
+      <div className="inline-flex rounded-lg border border-zinc-700/50 bg-zinc-800/40 p-0.5">
+        {options.map(({ id, label, icon: Icon }) => (
+          <button
+            key={id}
+            onClick={() => onChange(id)}
+            className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-mono text-[11px] transition-all sm:text-xs ${
+              mode === id
+                ? toggleAccent[color].active
+                : "text-zinc-500 hover:text-zinc-300"
+            }`}
+          >
+            <Icon className="h-3 w-3" />
+            {label}
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
 
