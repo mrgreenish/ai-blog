@@ -28,7 +28,7 @@ I use Haiku or Flash for:
 
 ## The model mixer approach
 
-In practice I don't pick one model — I use different models for different steps in the same task. A recent example: I had Haiku generate the component scaffolding, Sonnet implement the business logic, and o3 review the final result for edge cases. Each model played to its strengths, and the total cost was a fraction of running o3 for the whole thing.
+In practice I don't pick one model — I use different models for different steps in the same task. A recent example: I used Opus 4.6 to think through the plan and break down the problem, Sonnet 4.6 to implement the actual code, Composer 1.5 to build out the test suite, and GPT-5.4 to review the final result for edge cases. Each model played to its strengths, and the total cost was a fraction of running the heaviest model end-to-end.
 
 <ModelMixer />
 

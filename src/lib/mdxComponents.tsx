@@ -25,6 +25,8 @@ import { MaxModeViz } from "@/components/interactive/MaxModeViz";
 import { InfoBlock } from "@/components/content/InfoBlock";
 import { PersonalFavorite } from "@/components/content/PersonalFavorite";
 import { ModelLabels } from "@/components/content/ModelLabels";
+import { WorkflowsCTA } from "@/components/content/WorkflowsCTA";
+import { ToolingCTA } from "@/components/content/ToolingCTA";
 
 export const MDX_COMPONENTS = {
   // Interactive tools
@@ -44,6 +46,8 @@ export const MDX_COMPONENTS = {
   InfoBlock,
   PersonalFavorite,
   ModelLabels,
+  WorkflowsCTA,
+  ToolingCTA,
 } as const;
 
 export type MdxComponentName = keyof typeof MDX_COMPONENTS;
