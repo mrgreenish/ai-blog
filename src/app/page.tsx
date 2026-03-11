@@ -32,7 +32,7 @@ const JOURNEY = [
 const FEATURED_TOOLS = [
   { icon: Compass, name: "Model Picker", description: "Find the right model for any task" },
   { icon: Calculator, name: "Cost Calculator", description: "Compare token costs at scale" },
-  { icon: Beaker, name: "Prompt Lab", description: "Test and refine your prompts" },
+  { icon: Beaker, name: "Scenario Lab", description: "Real tasks, real outputs — see which model wins" },
   { icon: Terminal, name: "Config Generator", description: "Generate tool configurations" },
 ];
 
@@ -229,7 +229,7 @@ export default function Home() {
 
         <FadeIn delay={0.35}>
           <p className="mt-4 font-mono text-xs text-zinc-700">
-            + 6 more tools across all articles
+            + 7 more tools across all articles
           </p>
         </FadeIn>
       </section>

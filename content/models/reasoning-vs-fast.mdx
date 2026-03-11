@@ -4,7 +4,7 @@ description: "When to reach for o3/R1 vs Haiku/Flash — from real shipping expe
 story: "You fire up o3 for a simple rename refactor. 40 seconds later, you get a perfect result — and a bill 15× higher than Sonnet. Was it worth it?"
 category: models
 order: 1
-interactiveTools: [model-picker, model-mixer, cost-calculator]
+interactiveTools: [scenario-lab, model-picker, model-mixer, cost-calculator]
 ---
 
 The first time I used o3 for a coding task, I was impressed — then I checked the latency and the bill. It took 40 seconds and cost 15× more than Sonnet for a task where Sonnet would have been fine. That's when I started keeping notes on *when* the expensive reasoning models actually earn their cost.
@@ -31,6 +31,10 @@ I use Haiku or Flash for:
 In practice I don't pick one model — I use different models for different steps in the same task. A recent example: I had Haiku generate the component scaffolding, Sonnet implement the business logic, and o3 review the final result for edge cases. Each model played to its strengths, and the total cost was a fraction of running o3 for the whole thing.
 
 <ModelMixer />
+
+## See it in practice
+
+<ScenarioLab />
 
 ## Pick the right model for your task
 

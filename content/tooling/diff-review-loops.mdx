@@ -3,7 +3,7 @@ title: "Diff Review Loops"
 description: "Iterating on AI-generated diffs effectively. The review patterns that catch real issues and the habits that prevent you from shipping bugs."
 category: tooling
 order: 2
-interactiveTools: [dev-benchmark, diff-viewer]
+interactiveTools: [scenario-lab]
 ---
 
 The most dangerous moment in AI-assisted development is when you're looking at a diff that looks correct. The code is clean, the logic seems right, the tests pass. You approve it. Two days later, there's a bug in production.
@@ -36,6 +36,4 @@ Some patterns in AI-generated diffs that I've learned to scrutinize more careful
 - **New async/await patterns.** Async code is where subtle bugs hide. Any change to async patterns deserves extra attention.
 - **Modified error handling.** The model tends to add or remove error handling in ways that change behavior silently.
 
-<DiffViewer />
-
-<DevBenchmark />
+<ScenarioLab />

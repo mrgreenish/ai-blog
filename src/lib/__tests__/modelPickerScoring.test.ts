@@ -1,18 +1,30 @@
 import { describe, it, expect } from "vitest";
 import {
   score,
+  scoreDimensions,
+  getRanking,
   getRecommendation,
   QUESTIONS,
   type Answers,
 } from "../modelPickerScoring";
 
+type ModelStub = { id: string; name: string; why: Record<string, string> };
+
 // Minimal model stubs for getRecommendation tests
-const MODELS = [
+const MODELS: ModelStub[] = [
   { id: "gemini-flash", name: "Gemini Flash", why: { targeted: "Fast targeted edits", vision: "Best vision model" } },
   { id: "sonnet-4.6", name: "Sonnet 4.6", why: { multifile: "Great at multi-file", writing: "Strong writing" } },
   { id: "opus-4.6", name: "Opus 4.6", why: { critical: "Best for critical systems", reasoning: "Deep reasoning" } },
   { id: "composer-1", name: "Composer-1", why: { targeted: "Precise targeted edits", speed: "Fastest completions" } },
   { id: "composer-1-5", name: "Composer-1.5", why: { autonomous: "Runs tasks end-to-end", multifile: "Multi-file agent" } },
+];
+
+// Extended model set including new models for getRanking tests
+const ALL_MODELS: ModelStub[] = [
+  ...MODELS,
+  { id: "gpt4o-mini", name: "GPT-4o mini", why: { everyday: "Everyday shipping", balance: "Balanced output" } },
+  { id: "haiku-4.5", name: "Claude Haiku 4.5", why: {} },
+  { id: "deepseek-v3", name: "DeepSeek-V3.2", why: {} },
 ];
 
 function allAnswers(overrides: Partial<Answers> = {}): Answers {
@@ -312,7 +324,7 @@ describe("getRecommendation()", () => {
 
     it("uses fallback reason when no why key matches", () => {
       // Create models with no matching why keys for the answers
-      const models = [
+      const models: ModelStub[] = [
         { id: "a", name: "Model A", why: { xyz: "nope" } },
         { id: "b", name: "Model B", why: { abc: "nah" } },
       ];
@@ -368,5 +380,234 @@ describe("real-world scenarios", () => {
       priority: "accuracy", autonomy: "targeted",
     });
     expect(rec.model.id).toBe("gemini-flash");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// scoreDimensions() — new dimension-level API
+// ---------------------------------------------------------------------------
+describe("scoreDimensions()", () => {
+  it("returns a ModelScore with modelId, total, and dimensions array", () => {
+    const result = scoreDimensions("sonnet-4.6", allAnswers());
+    expect(result.modelId).toBe("sonnet-4.6");
+    expect(typeof result.total).toBe("number");
+    expect(Array.isArray(result.dimensions)).toBe(true);
+  });
+
+  it("total matches score() for all known models", () => {
+    const modelIds = ["gemini-flash", "sonnet-4.6", "opus-4.6", "composer-1", "composer-1-5"];
+    for (const id of modelIds) {
+      const answers = allAnswers({ task: "coding", scope: "multifile", stakes: "production" });
+      expect(scoreDimensions(id, answers).total).toBe(score(id, answers));
+    }
+  });
+
+  it("dimensions sum to total", () => {
+    const answers = allAnswers({ task: "reasoning", scope: "architecture", stakes: "critical", priority: "accuracy" });
+    const result = scoreDimensions("opus-4.6", answers);
+    const sum = result.dimensions.reduce((s, d) => s + d.points, 0);
+    expect(sum).toBe(result.total);
+  });
+
+  it("each dimension has a dimension name and points", () => {
+    const result = scoreDimensions("composer-1", allAnswers({ scope: "targeted", autonomy: "targeted" }));
+    for (const d of result.dimensions) {
+      expect(d.dimension).toBeTruthy();
+      expect(typeof d.points).toBe("number");
+    }
+  });
+
+  it("returns zero total for unknown model", () => {
+    const result = scoreDimensions("unknown-xyz", allAnswers());
+    expect(result.total).toBe(0);
+    expect(result.dimensions).toHaveLength(0);
+  });
+
+  it("haiku-4.5 scores high for speed + targeted + prototype", () => {
+    const result = scoreDimensions("haiku-4.5", allAnswers({
+      priority: "speed", scope: "targeted", stakes: "prototype", autonomy: "targeted",
+    }));
+    expect(result.total).toBeGreaterThan(0);
+  });
+
+  it("gpt4o-mini scores positively for internal + speed", () => {
+    const result = scoreDimensions("gpt4o-mini", allAnswers({
+      stakes: "internal", priority: "speed",
+    }));
+    expect(result.total).toBeGreaterThan(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// getRanking() — new top-3 API
+// ---------------------------------------------------------------------------
+describe("getRanking()", () => {
+  it("returns exactly 3 ranked models (or fewer if model list is small)", () => {
+    const ranking = getRanking(MODELS, allAnswers());
+    expect(ranking.top3.length).toBeLessThanOrEqual(3);
+    expect(ranking.top3.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("top3 are sorted by total score descending", () => {
+    const ranking = getRanking(MODELS, allAnswers());
+    for (let i = 0; i < ranking.top3.length - 1; i++) {
+      expect(ranking.top3[i].total).toBeGreaterThanOrEqual(ranking.top3[i + 1].total);
+    }
+  });
+
+  it("rank values are 1, 2, 3", () => {
+    const ranking = getRanking(MODELS, allAnswers());
+    expect(ranking.top3.map((r) => r.rank)).toEqual([1, 2, 3]);
+  });
+
+  it("all top3 model ids are distinct", () => {
+    const ranking = getRanking(MODELS, allAnswers());
+    const ids = ranking.top3.map((r) => r.model.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it("winner matches getRecommendation winner for same inputs", () => {
+    const answers = allAnswers({ task: "reasoning", scope: "architecture", stakes: "critical", priority: "accuracy" });
+    const ranking = getRanking(MODELS, answers);
+    const rec = getRecommendation(MODELS, answers);
+    expect(ranking.top3[0].model.id).toBe(rec.model.id);
+  });
+
+  it("confidence is 'strong' when top model dominates", () => {
+    const ranking = getRanking(MODELS, {
+      task: "reasoning", scope: "architecture", stakes: "critical",
+      priority: "accuracy", autonomy: "gaps",
+    });
+    expect(ranking.confidence).toBe("strong");
+  });
+
+  it("confidence is 'close' or 'good' for balanced answers", () => {
+    const ranking = getRanking(MODELS, {
+      task: "coding", scope: "multifile", stakes: "internal",
+      priority: "balance", autonomy: "gaps",
+    });
+    expect(["close", "good"]).toContain(ranking.confidence);
+  });
+
+  it("each ranked model has topReasons and cautions arrays", () => {
+    const ranking = getRanking(MODELS, allAnswers());
+    for (const r of ranking.top3) {
+      expect(Array.isArray(r.topReasons)).toBe(true);
+      expect(Array.isArray(r.cautions)).toBe(true);
+    }
+  });
+
+  it("topReasons only contain positive-point dimensions", () => {
+    const ranking = getRanking(MODELS, allAnswers({ scope: "targeted", autonomy: "targeted" }));
+    for (const r of ranking.top3) {
+      for (const reason of r.topReasons) {
+        expect(reason.points).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it("cautions only contain negative-point dimensions", () => {
+    const ranking = getRanking(MODELS, allAnswers({ scope: "autonomous", autonomy: "drive" }));
+    for (const r of ranking.top3) {
+      for (const caution of r.cautions) {
+        expect(caution.points).toBeLessThan(0);
+      }
+    }
+  });
+
+  it("hasCaution is true when critical stakes + composer-1-5 wins", () => {
+    // Force composer-1-5 to win by using autonomous scope + drive autonomy
+    // but also critical stakes — should trigger caution
+    const ranking = getRanking(
+      [{ id: "composer-1-5", name: "Composer-1.5", why: { autonomous: "Runs end-to-end" } }],
+      allAnswers({ stakes: "critical", scope: "autonomous", autonomy: "drive" })
+    );
+    expect(ranking.hasCaution).toBe(true);
+    expect(ranking.cautionMessage).toBeTruthy();
+  });
+
+  it("hasCaution is true for close confidence", () => {
+    // A balanced combo where models score similarly triggers close confidence → caution
+    const ranking = getRanking(MODELS, {
+      task: "coding", scope: "multifile", stakes: "internal",
+      priority: "balance", autonomy: "gaps",
+    });
+    if (ranking.confidence === "close") {
+      expect(ranking.hasCaution).toBe(true);
+    }
+  });
+
+  it("works with extended model set including haiku and gpt4o-mini", () => {
+    const ranking = getRanking(ALL_MODELS, allAnswers({ priority: "speed", scope: "targeted", stakes: "prototype" }));
+    expect(ranking.top3.length).toBe(3);
+    // haiku or gemini-flash should surface for speed + targeted + prototype
+    const topIds = ranking.top3.map((r) => r.model.id);
+    const hasFastModel = topIds.some((id) => ["haiku-4.5", "gemini-flash", "gpt4o-mini", "composer-1"].includes(id));
+    expect(hasFastModel).toBe(true);
+  });
+
+  it("reason string is non-empty for all top3", () => {
+    const ranking = getRanking(MODELS, allAnswers());
+    for (const r of ranking.top3) {
+      expect(r.reason.length).toBeGreaterThan(0);
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// scenarioLabData helpers
+// ---------------------------------------------------------------------------
+describe("scenarioLabData", () => {
+  it("SCENARIOS has at least 3 entries", async () => {
+    const { SCENARIOS } = await import("../scenarioLabData");
+    expect(SCENARIOS.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it("each scenario has required fields", async () => {
+    const { SCENARIOS } = await import("../scenarioLabData");
+    for (const s of SCENARIOS) {
+      expect(s.id).toBeTruthy();
+      expect(s.label).toBeTruthy();
+      expect(s.results.length).toBeGreaterThan(0);
+      expect(s.recommendedModelId).toBeTruthy();
+    }
+  });
+
+  it("each scenario has exactly one 'best' verdict", async () => {
+    const { SCENARIOS } = await import("../scenarioLabData");
+    for (const s of SCENARIOS) {
+      const bestCount = s.results.filter((r) => r.verdict === "best").length;
+      expect(bestCount).toBe(1);
+    }
+  });
+
+  it("recommendedModelId matches a result in the scenario", async () => {
+    const { SCENARIOS } = await import("../scenarioLabData");
+    for (const s of SCENARIOS) {
+      const found = s.results.find((r) => r.modelId === s.recommendedModelId);
+      expect(found).toBeDefined();
+    }
+  });
+
+  it("calcScenarioCost returns a positive number", async () => {
+    const { SCENARIOS, calcScenarioCost } = await import("../scenarioLabData");
+    const cost = calcScenarioCost(3.0, 15.0, SCENARIOS[0]);
+    expect(cost).toBeGreaterThan(0);
+  });
+
+  it("formatCost formats small values with 4 decimal places", async () => {
+    const { formatCost } = await import("../scenarioLabData");
+    expect(formatCost(0.001)).toMatch(/\$0\.\d{4}/);
+  });
+
+  it("getScenarioById returns the right scenario", async () => {
+    const { SCENARIOS, getScenarioById } = await import("../scenarioLabData");
+    const first = SCENARIOS[0];
+    expect(getScenarioById(first.id)).toBe(first);
+  });
+
+  it("getScenarioById returns undefined for unknown id", async () => {
+    const { getScenarioById } = await import("../scenarioLabData");
+    expect(getScenarioById("does-not-exist")).toBeUndefined();
   });
 });

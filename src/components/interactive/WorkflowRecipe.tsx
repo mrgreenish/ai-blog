@@ -81,12 +81,17 @@ const RECIPES: Recipe[] = [
     id: "bug-to-fix",
     label: "Bug \u2192 Fix",
     prompt:
-      "I have a bug: [description]. Expected: [X]. Actual: [Y]. Here\u2019s a minimal repro: [code].",
+      "I have a bug: [description]. Expected: [X]. Actual: [Y]. Open [URL] in Cursor, reproduce it, inspect devtools / console / network state first, then diagnose from that evidence. Here\u2019s the minimal repro: [code].",
     steps: [
       {
         label: "Reproduce",
         description:
-          "Reliably reproduce the bug. If you can\u2019t reproduce it, start there.",
+          "Reliably reproduce the bug. For UI issues, open the page in Cursor's browser and confirm the exact failure mode first.",
+      },
+      {
+        label: "Inspect runtime",
+        description:
+          "Check the browser evidence before touching code: devtools output, console logs, network failures, warnings, and visible UI state.",
       },
       {
         label: "Isolate",
@@ -96,7 +101,7 @@ const RECIPES: Recipe[] = [
       {
         label: "Diagnose",
         description:
-          'With the minimal repro, ask: "Here\u2019s a minimal example that demonstrates the bug. What\u2019s causing it?"',
+          'With the minimal repro, ask: "Here\u2019s a minimal example that demonstrates the bug. What\u2019s causing it?" If Browser MCP is available, have it open the page and include what it observed in the browser.',
       },
       {
         label: "Fix",
@@ -109,15 +114,17 @@ const RECIPES: Recipe[] = [
           "Write a test that would have caught this bug. Prevents it from coming back.",
       },
     ],
-    tools: ["Cursor", "Claude Code"],
+    tools: ["Cursor", "Cursor browser + devtools", "Browser MCP", "Claude Code"],
     guardrails: [
       "Always create a minimal repro first",
+      "Use actual browser evidence for frontend bugs, not screenshots or memory",
+      "Look at console and network state before changing code",
       "Keep the fix narrow \u2014 one bug, one fix",
       'Ask "why does this fix work?" \u2014 if the explanation doesn\u2019t make sense, the fix might be wrong',
       "Don\u2019t refactor adjacent code in the same PR",
     ],
     output:
-      "Targeted fix with a regression test that would have caught the original bug.",
+      "Targeted fix with browser-backed diagnosis and a regression test that would have caught the original bug.",
   },
   {
     id: "ai-code-review",
@@ -250,49 +257,6 @@ const RECIPES: Recipe[] = [
     ],
     output:
       "PR that maps directly to ticket acceptance criteria with design-accurate implementation.",
-  },
-  {
-    id: "building-blocks",
-    label: "Blocks",
-    prompt:
-      "Build [component/feature] using only existing atoms and molecules. Check what exists first.",
-    steps: [
-      {
-        label: "Audit",
-        description:
-          "Check existing atoms, molecules, and organisms. Know what\u2019s available before building anything new.",
-      },
-      {
-        label: "Plan composition",
-        description:
-          "Identify what to reuse vs. what to create. New atoms only when nothing existing fits.",
-      },
-      {
-        label: "Build atoms first",
-        description:
-          "If new primitives are needed, build them first. Typed props, defined variants, no business logic.",
-      },
-      {
-        label: "Compose up",
-        description:
-          "Assemble atoms into molecules, molecules into organisms. Each layer only uses the layer below.",
-      },
-      {
-        label: "Storybook stories",
-        description:
-          "Generate stories for each new component. Cover default state, variants, and edge cases.",
-      },
-    ],
-    tools: ["Cursor with project rules", "Storybook", "cva"],
-    guardrails: [
-      "One component, one job \u2014 split if it does two things",
-      "Typed props always \u2014 TypeScript interfaces for every component",
-      "Variants over conditionals \u2014 use cva patterns",
-      "Shared tokens only \u2014 no hardcoded colors or spacing",
-      "Naming describes function \u2014 PriceBadge, not Badge2",
-    ],
-    output:
-      "New component composed from existing building blocks with typed props, defined variants, and Storybook coverage.",
   },
 ];
 

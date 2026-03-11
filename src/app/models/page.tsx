@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Compass, Calculator, Shuffle, Layers } from "lucide-react";
+import { ArrowRight, Compass, Calculator, Shuffle, Layers, FlaskConical } from "lucide-react";
 import { getArticlesByCategory } from "@/lib/content";
 import { CategoryHeader } from "@/components/content/CategoryHeader";
 import { ArticleCard } from "@/components/content/ArticleCard";
@@ -56,7 +56,8 @@ const READING_JOURNEY = [
 ];
 
 const MODEL_TOOLS = [
-  { icon: Compass, name: "Model Picker", description: "Answer a few questions, get a model recommendation" },
+  { icon: FlaskConical, name: "Scenario Lab", description: "Real tasks, real outputs — see which model wins and why" },
+  { icon: Compass, name: "Model Picker", description: "Answer a few questions, get a top-3 ranked recommendation" },
   { icon: Calculator, name: "Cost Calculator", description: "Compare token costs across models at your actual scale" },
   { icon: Shuffle, name: "Model Tinder", description: "Swipe through model personalities to find your match" },
   { icon: Layers, name: "Model Mixer", description: "Assign the right model to each step of a multi-stage task" },
@@ -171,7 +172,7 @@ export default function ModelsPage() {
           </div>
         </FadeIn>
 
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {MODEL_TOOLS.map(({ icon: Icon, name, description }, i) => (
             <FadeIn key={name} delay={0.05 + i * 0.07}>
               <GlassCard hover glow="blue" className="p-5">

@@ -12,9 +12,9 @@ import { FailureGallery } from "@/components/interactive/FailureGallery";
 import { DevBenchmark } from "@/components/interactive/DevBenchmark";
 import { ConfigGenerator } from "@/components/interactive/ConfigGenerator";
 import { CostCalculator } from "@/components/interactive/CostCalculator";
-import { DiffViewer } from "@/components/interactive/DiffViewer";
 import { ContextWindowViz } from "@/components/interactive/ContextWindowViz";
 import { DecisionTree } from "@/components/interactive/DecisionTree";
+import { ScenarioLab } from "@/components/interactive/ScenarioLab";
 import { InfoBlock } from "@/components/content/InfoBlock";
 import { PersonalFavorite } from "@/components/content/PersonalFavorite";
 import { ModelLabels } from "@/components/content/ModelLabels";
@@ -60,9 +60,9 @@ export default async function ModelArticlePage({ params }: Props) {
       DevBenchmark,
       ConfigGenerator,
       CostCalculator,
-      DiffViewer,
       ContextWindowViz,
       DecisionTree,
+      ScenarioLab,
       InfoBlock,
       PersonalFavorite,
       ModelLabels,

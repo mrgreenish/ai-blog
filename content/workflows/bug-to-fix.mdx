@@ -16,21 +16,45 @@ This is the step most people skip, and it's the most important one. A minimal re
 
 When you do need model help, a minimal repro gives it the right context. "Here's a 10-line example that reproduces the bug" is dramatically more useful than "here's my 500-line component that has a bug somewhere."
 
+## When the bug lives in the browser
+
+For frontend bugs, don't debug from a pasted error string alone. Open the app inside Cursor's browser, reproduce the bug there, and look at the actual runtime signals: console logs, failed network requests, warnings, visible DOM state, and whether the UI breaks before or after an interaction.
+
+That matters because a lot of bugs are only obvious in the browser: hydration mismatches, broken form submissions, race conditions after navigation, event handlers that never fire, or client-side state that diverges from what the server rendered. A terminal stack trace often misses the part you actually need.
+
+If you have Browser MCP connected, the debugging loop gets tighter. Instead of saying "the page looks broken," you can ask the model to open the page, reproduce the issue, inspect the browser state, and use that evidence as part of the diagnosis. That's much better context than screenshots or vague descriptions.
+
+<InfoBlock title="Browser-first debugging in Cursor">
+
+For bugs on `localhost`, I want the model to use the browser as evidence, not just intuition.
+
+**In Cursor:** open the page in Cursor's built-in browser and reproduce the issue with the console and network information visible.
+
+**With Browser MCP:** let the model navigate the page, inspect the rendered UI, and reason from actual browser state instead of guessed behavior.
+
+The useful prompt shape is: "Open `http://localhost:3000/...`, reproduce the bug, check console errors / network failures / visible UI state, then explain the likely cause before changing code."
+
+</InfoBlock>
+
 ## The debugging flow
 
-**Step 1: Reproduce.** Can you reliably reproduce the bug? If not, start there. A bug you can't reproduce is much harder to fix.
+**Step 1: Reproduce.** Can you reliably reproduce the bug? If not, start there. A bug you can't reproduce is much harder to fix. For UI bugs, reproduce it in Cursor's browser instead of describing it from memory.
 
-**Step 2: Isolate.** Strip away everything that isn't necessary to reproduce the bug. Remove dependencies, simplify data, reduce to the smallest case.
+**Step 2: Inspect runtime evidence.** Before changing code, check what the browser is telling you: console output, failed requests, warnings, broken DOM state, and whether the bug appears on load or only after interaction.
 
-**Step 3: Diagnose.** With the minimal repro in hand, ask the model to explain what's happening and why. "Here's a minimal example that demonstrates the bug. What's causing it?"
+**Step 3: Isolate.** Strip away everything that isn't necessary to reproduce the bug. Remove dependencies, simplify data, reduce to the smallest case.
 
-**Step 4: Fix.** Implement the fix. Keep it narrow — fix the specific bug, don't refactor adjacent code.
+**Step 4: Diagnose.** With the minimal repro in hand, ask the model to explain what's happening and why. "Here's a minimal example that demonstrates the bug. What's causing it?" If Browser MCP is available, include what it saw in the browser as part of the prompt.
 
-**Step 5: Regression test.** Write a test that would have caught this bug. "Write a test that verifies this specific behavior." This is the most valuable step — it prevents the bug from coming back.
+**Step 5: Fix.** Implement the fix. Keep it narrow — fix the specific bug, don't refactor adjacent code.
+
+**Step 6: Regression test.** Write a test that would have caught this bug. "Write a test that verifies this specific behavior." This is the most valuable step — it prevents the bug from coming back.
 
 ## What I've learned about AI-assisted debugging
 
 Models are good at pattern recognition — they've seen most common bugs before. They're less good at reasoning about your specific system's behavior. The more context you give them (the minimal repro, the expected vs actual behavior, the relevant code), the better they do.
+
+Browser context helps here too. A model that can see the runtime evidence is less likely to invent a cause that sounds plausible but doesn't match what's actually happening in the page.
 
 The failure mode to watch for: the model gives you a fix that addresses the symptom but not the cause. Always ask "why does this fix work?" If the explanation doesn't make sense, the fix might be wrong.
 

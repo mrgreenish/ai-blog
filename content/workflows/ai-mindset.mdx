@@ -4,7 +4,7 @@ description: "The prompting habits that produce better output — and the failur
 story: "Same model, same task, wildly different results. The gap between productive AI coding and frustrating AI coding is almost entirely about habits — what you feed the model and what you watch for in its output."
 category: workflows
 order: 7
-interactiveTools: [prompt-lab, dev-benchmark]
+interactiveTools: [scenario-lab]
 ---
 
 Getting good results from AI coding tools isn't about finding the right magic words. It's about two things: giving the model what it needs to do good work, and recognizing when it's going off the rails. The first is prompting. The second is pattern recognition. Both are learnable habits.
@@ -124,6 +124,10 @@ AI models have a bias toward "clever" solutions. They've been trained on a lot o
 
 If the model still produces something over-engineered, ask it: "Is there a simpler version of this that solves the same problem?" Usually there is, and it'll give it to you.
 
+The useful pattern here is to make simplification its own pass. First get to working code. Then ask for a second pass with a different goal: "Preserve behavior. Reduce nesting. Remove unnecessary abstractions. Keep the public API the same." Models are often better at simplifying a concrete implementation than they are at generating the simplest version on the first try.
+
+This is especially helpful with agents that are proactive by default. Their first instinct is often "be thorough," which can mean extra helpers, layers, and cleanup you didn't ask for. A dedicated simplification pass turns that same energy into something more useful: keep what matters, cut what doesn't.
+
 ### Outdated Patterns
 
 Models have a training cutoff, and the AI tooling space moves fast. A model might suggest a pattern that was best practice eighteen months ago and has since been superseded — or deprecated entirely.
@@ -141,6 +145,7 @@ Before merging anything AI-assisted, I run through five questions:
 - Can I explain this design to someone else?
 - Did I read all the generated code, not just skim it?
 - Is this the simplest version that solves the problem?
+- Did I ask for a simplification pass after the first working version?
 - Are there any APIs or patterns here I should verify against current docs?
 - Would I have built it this way if I'd written it myself?
 
@@ -148,6 +153,4 @@ If the answer to any of these is "no" or "not sure," that's a signal to slow dow
 
 ## Try it yourself
 
-<PromptLab />
-
-<DevBenchmark />
+<ScenarioLab />

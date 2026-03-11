@@ -3,7 +3,7 @@ title: "AI-Powered Code Review"
 description: "Using Cursor BugBot and Codex on GitHub as reviewers in your PR pipeline. What AI catches that humans miss, and what it gets wrong."
 category: workflows
 order: 5
-interactiveTools: [workflow-recipe, failure-gallery, diff-viewer]
+interactiveTools: [workflow-recipe, failure-gallery]
 ---
 
 AI code review has gone from a novelty to a genuine part of my PR workflow. Not as a replacement for human review — as a first pass that catches the mechanical issues before a human reviewer has to spend time on them.
@@ -50,8 +50,6 @@ AI review produces false positives. The most common ones:
 - Missing bugs that require understanding the business logic (the model doesn't know what the code is *supposed* to do)
 
 The right mental model: AI review is a fast, cheap first pass. It catches a specific category of mechanical bugs well. It's not a substitute for a human reviewer who understands the product.
-
-<DiffViewer />
 
 <WorkflowRecipe />
 

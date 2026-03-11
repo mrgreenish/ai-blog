@@ -3,7 +3,7 @@ title: "Agents and Skills"
 description: "The emerging skills ecosystem: how reusable agent skills encode domain knowledge, and why they're more powerful than one-off prompt engineering."
 category: tooling
 order: 4
-interactiveTools: [config-generator, prompt-lab, workflow-recipe]
+interactiveTools: [config-generator, scenario-lab, workflow-recipe]
 ---
 
 One of the most underrated developments in AI tooling: the emergence of reusable "skills" — packages of domain knowledge that agents can apply automatically. Instead of writing the same instructions in every prompt, you encode them once as a skill and the agent applies them whenever relevant.
@@ -37,6 +37,26 @@ Install them with:
 npx skills add vercel-labs/next-skills --skill next-best-practices
 ```
 
+## A useful second-pass skill: `code-simplifier`
+
+One pattern I like a lot: let the model implement first, then run a simplification pass before you accept the diff.
+
+That's exactly what Anthropic's official [`code-simplifier`](https://claude.com/plugins/code-simplifier) plugin is for. The goal isn't "shorter code at all costs." It's preserving behavior while making recently changed code easier to read and maintain: less nesting, fewer unnecessary abstractions, clearer naming, and less dense conditional logic. The source is public in Anthropic's [`claude-plugins-official` repository](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-simplifier).
+
+The use case is straightforward:
+
+- After a feature that works but feels overbuilt
+- After a bug fix that added too many defensive branches
+- After a refactor that became harder to read than the original
+
+The prompt shapes are simple too:
+
+- "Simplify this component without changing behavior."
+- "Refine the recently changed functions for clarity."
+- "Preserve the public API, reduce nesting, and remove unnecessary abstractions."
+
+If you use Claude Code, install the official `code-simplifier` plugin from Claude's plugin marketplace, then use it as a cleanup pass after implementation rather than as your first move. That's the important habit: generation first, simplification second.
+
 ## Writing your own skills
 
 The real power is writing skills for your specific project. A custom skill for your codebase might include:
@@ -58,4 +78,4 @@ When a convention changes, you update the skill. When a new developer joins, the
 
 <WorkflowRecipe />
 
-<PromptLab />
+<ScenarioLab />

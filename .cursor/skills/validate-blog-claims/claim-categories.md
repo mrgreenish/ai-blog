@@ -1,6 +1,6 @@
 # Claim Categories in This Blog
 
-Reference of verifiable claim types found across the 17 MDX posts in `content/`.
+Reference of verifiable claim types found across the MDX posts in `content/`.
 
 ## Canonical model data source
 
@@ -11,89 +11,89 @@ Reference of verifiable claim types found across the 17 MDX posts in `content/`.
 - `tier` — `fast | balanced | reasoning`
 - `provider` — `Anthropic | OpenAI | Google | DeepSeek | Cursor`
 
-When model data in `modelSpecs.ts` is outdated, update it there. Component UIs (ModelMixer, CostCalculator, ContextWindowViz, etc.) all derive from this registry automatically.
+When model data in `modelSpecs.ts` is outdated, update it there. Component UIs derive from this registry automatically.
 
 ## Model names and identifiers
 
-These are the models currently registered in `MODEL_REGISTRY` in `src/lib/modelSpecs.ts`. Check if any have been renamed, deprecated, or superseded:
+Build the expected model list from `MODEL_REGISTRY`, not from this file. Current registry rows:
 
-| Registry ID | Display name | Provider | Posts referencing it | What to check |
-|---|---|---|---|---|
-| `gemini-flash` | Gemini 2.0 Flash | Google | reasoning-vs-fast, model-personalities, long-context | Still current version? Gemini 2.5 released? |
-| `gpt4o-mini` | GPT-4o mini | OpenAI | reasoning-vs-fast | Still available? Renamed? |
-| `deepseek-r1` | DeepSeek R1 | DeepSeek | reasoning-vs-fast | Still current? Newer version (R2, etc.)? |
-| `haiku-4.5` | Claude Haiku 4.5 | Anthropic | reasoning-vs-fast | Still this version? Haiku 4.6 released? |
-| `composer-1` | Cursor Composer-1 | Cursor | model-personalities, coding-refactor-vs-greenfield | Still this name? Superseded? |
-| `o3` | o3 | OpenAI | reasoning-vs-fast, coding-refactor-vs-greenfield | Still current name? Successor released? |
-| `gpt4o` | GPT-4o | OpenAI | model-personalities, coding-refactor-vs-greenfield | Still current? GPT-4.5/5 released? |
-| `sonnet-4.6` | Claude Sonnet 4.6 | Anthropic | model-personalities, coding-refactor-vs-greenfield | Still this version? Sonnet 5 released? |
-| `opus-4.6` | Claude Opus 4.6 | Anthropic | model-personalities | Version number? Still available? |
-| `o3-pro` | o3-pro | OpenAI | reasoning-vs-fast | Still available? Renamed? |
-| `composer-1-5` | Cursor Composer-1.5 | Cursor | model-personalities | Still this name? Superseded? |
+| Registry ID | Display name | Provider | What to check |
+|---|---|---|---|
+| `gemini-flash` | Gemini 2.0 Flash | Google | Still current name/version? |
+| `gpt4o-mini` | GPT-4o mini | OpenAI | Still available? Renamed? |
+| `deepseek-v3` | DeepSeek-V3.2 | DeepSeek | Still current? Newer version? |
+| `haiku-4.5` | Claude Haiku 4.5 | Anthropic | Still this version/name? |
+| `gpt-5.4` | GPT-5.4 | OpenAI | Still current name/version? |
+| `composer-1` | Cursor Composer-1 | Cursor | Still this name? Superseded? |
+| `sonnet-4.6` | Claude Sonnet 4.6 | Anthropic | Still this version/name? |
+| `opus-4.6` | Claude Opus 4.6 | Anthropic | Still this version/name? |
+| `composer-1-5` | Composer 1.5 | Cursor | Still this name? Superseded? |
 
-Also check for any model referenced in MDX prose that is **not** in the registry (e.g. `o1`, older Gemini versions) — those may be stale references.
+Also check for any model referenced in MDX prose that is **not** in the registry (older Gemini versions, `o3`, `GPT-4o`, etc.) — those are likely stale references unless the post is explicitly historical.
 
 ## Context window sizes
 
 The canonical values are `contextWindowTokens` in `src/lib/modelSpecs.ts`. Current registry values:
 
-| Model | Registry value | Post | What to check |
-|---|---|---|---|
-| Claude Sonnet 4.6 | 200,000 | long-context | Still 200k? |
-| Gemini 2.0 Flash | 1,000,000 | long-context | Still 1M? Increased? |
-| GPT-4o | 128,000 | long-context | Still 128k? |
-| Cursor Composer-1 | 128,000 | — | Still 128k? |
-| Cursor Composer-1.5 | 200,000 | — | Still 200k? |
+| Model | Registry value | What to check |
+|---|---|---|
+| Gemini 2.0 Flash | 1,000,000 | Still 1M? Increased or renamed? |
+| GPT-4o mini | 128,000 | Still 128k? |
+| DeepSeek-V3.2 | 128,000 | Still 128k? |
+| Claude Haiku 4.5 | 200,000 | Still 200k? |
+| GPT-5.4 | 1,050,000 | Still 1.05M? |
+| Cursor Composer-1 | 128,000 | Still 128k? |
+| Claude Sonnet 4.6 | 200,000 | Still 200k? |
+| Claude Opus 4.6 | 200,000 | Still 200k? |
+| Composer 1.5 | 200,000 | Still 200k? |
 
 ## Tools and products
 
-| Tool | Posts | What to check |
-|---|---|---|
-| Claude Code | claude-code-codex, agent-guardrails | Still this name? Major feature changes? |
-| GitHub Codex | claude-code-codex, ai-code-review | Still this name? Still GitHub-native? |
-| Cursor BugBot | ai-code-review | Still exists? Renamed? |
-| Figma MCP | figma-mcp, code-to-canvas, design-to-storybook, vision-tasks | Feature set still accurate? |
-| Figma Code to Canvas | code-to-canvas | Still available? How it works changed? |
+| Tool / product | What to check |
+|---|---|
+| Claude Code | Still this name? Major workflow changes? |
+| Codex on GitHub / GitHub Codex | Current product naming and GitHub workflow still accurate? |
+| Cursor BugBot | Still exists? Renamed? |
+| Figma MCP | Feature set and setup flow still accurate? |
+| Claude Code to Figma | Still available? Workflow still two-way? |
+| Browser MCP | Current name and capabilities still accurate? |
 
 ## SDK and API references
 
-| Reference | Post | What to check |
-|---|---|---|
-| Next.js 15 | long-context | Is 15 still current or is there a newer stable? |
-| Next.js 16 Cache Components (`use cache`) | agents-and-skills | Still in Next.js 16? API changed? |
-| `vercel-labs/next-skills` repo | agents-and-skills | Repo still exists? Renamed? |
-| `npx skills add` command | agents-and-skills | Command still valid? |
-| CLAUDE.md | claude-code-codex, agent-guardrails | Still the standard config file name? |
-| AGENTS.md | agent-guardrails, agents-and-skills | Still used? |
-| .cursorrules | agent-guardrails, agents-and-skills | Still the config name in Cursor? |
+| Reference | What to check |
+|---|---|
+| Next.js 15 | Still current stable version? |
+| Next.js 16 Cache Components (`use cache`) | API still current? Naming changed? |
+| `next-cache-components` | Package/repo still exists and is still the right reference? |
+| `npx skills add` | Command still valid? |
+| `CLAUDE.md` | Still the standard config file name? |
+| `AGENTS.md` | Still used? |
+| `.cursorrules` | Still the config name in Cursor? |
 
 ## Pricing and cost claims
 
 Canonical pricing is in `src/lib/modelSpecs.ts` (`inputPer1M` / `outputPer1M`). Current registry values to verify against provider pricing pages:
 
-| Model | Input $/1M | Output $/1M | Post | What to check |
-|---|---|---|---|---|
-| Gemini 2.0 Flash | $0.10 | $0.40 | reasoning-vs-fast | Still current? |
-| GPT-4o mini | $0.15 | $0.60 | reasoning-vs-fast | Still current? |
-| DeepSeek R1 | $0.55 | $2.19 | reasoning-vs-fast | Still current? |
-| Claude Haiku 4.5 | $1.00 | $5.00 | reasoning-vs-fast | Still current? |
-| Cursor Composer-1 | $1.25 | $10.00 | — | Still current? |
-| o3 | $2.00 | $8.00 | reasoning-vs-fast | Still current? |
-| GPT-4o | $2.50 | $10.00 | — | Still current? |
-| Claude Sonnet 4.6 | $3.00 | $15.00 | reasoning-vs-fast | Still current? |
-| Cursor Composer-1.5 | $3.00 | $15.00 | — | Still current? |
-| Claude Opus 4.6 | $5.00 | $25.00 | — | Still current? |
-| o3-pro | $20.00 | $80.00 | — | Still current? |
+| Model | Input $/1M | Output $/1M | What to check |
+|---|---|---|---|
+| Gemini 2.0 Flash | $0.10 | $0.40 | Still current? |
+| GPT-4o mini | $0.15 | $0.60 | Still current? |
+| DeepSeek-V3.2 | $0.28 | $0.42 | Still current? |
+| Claude Haiku 4.5 | $1.00 | $5.00 | Still current? |
+| GPT-5.4 | $2.50 | $15.00 | Still current? |
+| Cursor Composer-1 | $1.25 | $10.00 | Still current? |
+| Claude Sonnet 4.6 | $3.00 | $15.00 | Still current? |
+| Composer 1.5 | $3.50 | $17.50 | Still current? |
+| Claude Opus 4.6 | $5.00 | $25.00 | Still current? |
 
 Also check prose cost comparisons:
-
-| Claim | Post | What to check |
-|---|---|---|
-| "cost 15x more than Sonnet" (about o3) | reasoning-vs-fast | Current pricing ratio between o3 and Sonnet |
+- Any claim like "X costs Yx more than Z" should be recomputed from the current registry before deciding whether the prose is stale.
 
 ## Capability claims worth verifying
 
-| Claim | Post | What to check |
-|---|---|---|
-| Gemini "lost in the middle" problem | long-context | Has this been fixed in newer Gemini versions? |
-| "GPT is the most consistent at following output format instructions" | model-personalities | Still true with latest GPT and competing models? |
+Use extra scrutiny for:
+- Versioned feature claims: native tool use, browser/computer use, MCP capabilities, cache APIs, context-window sizes
+- Comparative claims that sound factual rather than editorial: "best at format following", "strongest for architecture", "fastest round-trip"
+- Time-bound announcements or launch claims, especially references to release months or "new" capabilities
+
+Treat clearly personal experience language ("in my experience", "feels like", "I use") as editorial unless it cites a concrete factual feature or metric.

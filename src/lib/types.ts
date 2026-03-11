@@ -5,12 +5,12 @@ export type InteractiveTool =
   | "model-tinder"
   | "model-mixer"
   | "workflow-recipe"
+  | "scenario-lab"
   | "prompt-lab"
   | "failure-gallery"
   | "dev-benchmark"
   | "config-generator"
   | "cost-calculator"
-  | "diff-viewer"
   | "context-window-viz"
   | "decision-tree";
 

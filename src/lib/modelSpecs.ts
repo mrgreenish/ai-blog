@@ -7,6 +7,12 @@
 
 export type Tier = "fast" | "balanced" | "reasoning";
 export type Provider = "Anthropic" | "OpenAI" | "Google" | "DeepSeek" | "Cursor";
+/** Rough latency band for a typical developer task */
+export type LatencyBand = "instant" | "fast" | "moderate" | "slow";
+/** How aggressively the model expands scope beyond what was asked */
+export type InitiativeStyle = "minimal" | "measured" | "proactive" | "autonomous";
+/** How well the model respects explicit scope constraints */
+export type ScopeDiscipline = "strict" | "good" | "drifts" | "unpredictable";
 
 export interface ModelSpec {
   // Core identity
@@ -43,6 +49,18 @@ export interface ModelSpec {
   traits: string[];
   bestFor: string;
   worstFor: string;
+
+  // Qualitative signals — used by ModelPicker 2.0 and ScenarioLab
+  /** Typical response latency for a developer-sized task */
+  latencyBand: LatencyBand;
+  /** How much initiative the model takes beyond the literal request */
+  initiativeStyle: InitiativeStyle;
+  /** How reliably the model stays inside explicit scope constraints */
+  scopeDiscipline: ScopeDiscipline;
+  /** One-line "reach for this when…" guidance */
+  pickWhen: string;
+  /** One-line "avoid this when…" guidance */
+  avoidWhen: string;
 
   // DevBenchmark — pass/fail per check key
   benchmark: {
@@ -99,6 +117,11 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     ],
     bestFor: "Production refactors where surprises are costly",
     worstFor: "Open-ended exploration or design decisions",
+    latencyBand: "fast",
+    initiativeStyle: "minimal",
+    scopeDiscipline: "strict",
+    pickWhen: "You need predictable, constraint-respecting output with no surprises",
+    avoidWhen: "You want the model to push back, suggest alternatives, or notice problems you didn't mention",
     benchmark: {
       correctServerAction: false,
       followedConstraints: false,
@@ -142,6 +165,11 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     ],
     bestFor: "Everyday shipping in team codebases",
     worstFor: "Tasks that need genuine creative insight",
+    latencyBand: "fast",
+    initiativeStyle: "measured",
+    scopeDiscipline: "good",
+    pickWhen: "You want reliable, readable output that your whole team will understand",
+    avoidWhen: "You need the model to spot problems you didn't ask about or suggest a better approach",
     benchmark: {
       correctServerAction: false,
       followedConstraints: false,
@@ -150,11 +178,11 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     },
   },
   {
-    id: "deepseek-r1",
-    name: "DeepSeek R1",
+    id: "deepseek-v3",
+    name: "DeepSeek-V3.2",
     provider: "DeepSeek",
-    inputPer1M: 0.55,
-    outputPer1M: 2.19,
+    inputPer1M: 0.28,
+    outputPer1M: 0.42,
     tier: "fast",
     contextWindowTokens: 128_000,
     tagline: "The Open One",
@@ -173,6 +201,11 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     ],
     bestFor: "Cost-sensitive pipelines where open weights matter",
     worstFor: "Tasks requiring the latest frontier capabilities",
+    latencyBand: "moderate",
+    initiativeStyle: "measured",
+    scopeDiscipline: "good",
+    pickWhen: "Cost is a primary constraint and you want inspectable, self-hostable weights",
+    avoidWhen: "You need the latest frontier capabilities or enterprise-grade support",
     benchmark: {
       correctServerAction: false,
       followedConstraints: false,
@@ -204,6 +237,11 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     ],
     bestFor: "High-volume pipelines and quick structured tasks",
     worstFor: "Complex reasoning or architecture decisions",
+    latencyBand: "instant",
+    initiativeStyle: "measured",
+    scopeDiscipline: "good",
+    pickWhen: "You're running many quick structured tasks and latency or cost compounds",
+    avoidWhen: "The task requires architectural judgment, deep reasoning, or multi-step planning",
     benchmark: {
       correctServerAction: false,
       followedConstraints: true,
@@ -213,6 +251,54 @@ export const MODEL_REGISTRY: ModelSpec[] = [
   },
 
   // ── Balanced tier ──────────────────────────────────────────────────────────
+  {
+    id: "gpt-5.4",
+    name: "GPT-5.4",
+    provider: "OpenAI",
+    inputPer1M: 2.50,
+    outputPer1M: 15.00,
+    tier: "balanced",
+    contextWindowTokens: 1_050_000,
+    tagline: "The Agentic Frontier",
+    emoji: "🚀",
+    gradientFrom: "from-emerald-600",
+    gradientTo: "to-green-500",
+    accentColor: "text-emerald-400",
+    contextBarColor: "bg-emerald-500",
+    costColor: "text-emerald-300",
+    why: {
+      coding:
+        "GPT-5.4 reasons through code with high token efficiency — it uses fewer reasoning tokens than earlier models to reach the same answer, which means faster and cheaper results on hard problems.",
+      autonomous:
+        "Built-in computer-use and native tool support make GPT-5.4 the strongest OpenAI model for agentic workflows that need to operate UIs, run code, and verify results end-to-end.",
+      architecture:
+        "The 1M token context window lets GPT-5.4 hold an entire large codebase in context while reasoning about architectural decisions — without chunking or summarization.",
+      hard:
+        "Reasoning effort levels (low → xhigh) let you dial in exactly how much thinking the model does. For genuinely hard problems, xhigh effort catches what other models miss.",
+      multifile:
+        "With a 1M context window and strong tool use, GPT-5.4 can coordinate changes across a large codebase in a single pass.",
+    },
+    whenWrong:
+      "When you need predictable, scope-respecting output. GPT-5.4's agentic instincts mean it can go deep on a problem — sometimes deeper than you wanted. Set explicit constraints or use a lighter model for simple tasks.",
+    traits: [
+      "1M token context — holds entire large codebases",
+      "Reasoning effort levels: none → low → medium → high → xhigh",
+      "Native computer-use and tool search built in",
+    ],
+    bestFor: "Complex agentic tasks, hard reasoning, and large-context work",
+    worstFor: "Simple tasks where the cost and latency aren't justified",
+    latencyBand: "moderate",
+    initiativeStyle: "proactive",
+    scopeDiscipline: "good",
+    pickWhen: "You need frontier reasoning with large context or native computer-use for agentic workflows",
+    avoidWhen: "The task is simple — GPT-4o mini or Haiku will do it faster and cheaper",
+    benchmark: {
+      correctServerAction: true,
+      followedConstraints: true,
+      madeUpDocs: false,
+      hiddenBugsInRefactor: false,
+    },
+  },
   {
     id: "composer-1",
     name: "Cursor Composer-1",
@@ -245,6 +331,11 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     ],
     bestFor: "Precise, single-file edits and quick targeted changes",
     worstFor: "Multi-step tasks that span many files or need tool use",
+    latencyBand: "instant",
+    initiativeStyle: "minimal",
+    scopeDiscipline: "strict",
+    pickWhen: "You're in the editor making a targeted change and want the fastest possible round-trip",
+    avoidWhen: "The task spans multiple files, needs tool use, or requires the model to verify its own output",
     benchmark: {
       correctServerAction: false,
       followedConstraints: false,
@@ -288,6 +379,11 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     ],
     bestFor: "Feature design and architecture exploration",
     worstFor: "Tight-scope tasks where drift is expensive",
+    latencyBand: "moderate",
+    initiativeStyle: "proactive",
+    scopeDiscipline: "drifts",
+    pickWhen: "You want a thought partner that notices things, suggests better approaches, and handles multi-file work",
+    avoidWhen: "Scope drift is expensive — add explicit constraints or use a more focused model",
     benchmark: {
       correctServerAction: true,
       followedConstraints: true,
@@ -339,6 +435,11 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     ],
     bestFor: "Hard problems, architecture reviews, subtle bugs",
     worstFor: "Routine tasks — cost and latency don't justify it",
+    latencyBand: "slow",
+    initiativeStyle: "proactive",
+    scopeDiscipline: "good",
+    pickWhen: "Correctness is non-negotiable — hard bugs, architecture decisions, or critical system design",
+    avoidWhen: "The task is routine — scaffolding, boilerplate, or simple refactors don't justify the cost",
     benchmark: {
       correctServerAction: false,
       followedConstraints: false,
@@ -381,6 +482,11 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     ],
     bestFor: "Multi-step features, refactors, and autonomous bug fixes",
     worstFor: "Quick one-liner changes where the overhead isn't worth it",
+    latencyBand: "moderate",
+    initiativeStyle: "autonomous",
+    scopeDiscipline: "unpredictable",
+    pickWhen: "You want the model to run a multi-step task end-to-end with tool use and self-correction",
+    avoidWhen: "You need tight control — it can go deep down wrong paths before you notice",
     benchmark: {
       correctServerAction: true,
       followedConstraints: true,
@@ -422,14 +528,14 @@ export function getMixerModels() {
 // ---------------------------------------------------------------------------
 
 export const PRICING_META = {
-  verifiedDate: "2026-02-19",
+  verifiedDate: "2026-03-11", // re-verified: all prices confirmed correct; DeepSeek renamed to V3.2
   source: "Official API pricing pages",
   urls: {
     Anthropic: "https://docs.anthropic.com/en/docs/about-claude/pricing",
     OpenAI: "https://openai.com/api/pricing",
     Google: "https://ai.google.dev/gemini-api/docs/pricing",
     DeepSeek: "https://api-docs.deepseek.com/quick_start/pricing",
-    Cursor: "https://www.cursor.com/pricing",
+    Cursor: "https://cursor.com/docs/models-and-pricing",
   },
 } as const;
 
@@ -439,9 +545,10 @@ export function getCostCalculatorModels() {
   const ids = [
     "gemini-flash",
     "gpt4o-mini",
-    "deepseek-r1",
+    "deepseek-v3",
     "haiku-4.5",
     "composer-1",
+    "gpt-5.4",
     "sonnet-4.6",
     "composer-1-5",
     "opus-4.6",
@@ -462,10 +569,11 @@ export function getCostCalculatorModels() {
 /** Models shown in ContextWindowViz */
 export function getContextWindowModels() {
   const ids = [
-    "sonnet-4.6",
+    "gpt-5.4",
     "gemini-flash",
-    "composer-1",
+    "sonnet-4.6",
     "composer-1-5",
+    "composer-1",
   ];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
@@ -500,6 +608,81 @@ export function getPickerModels() {
       whenWrong: m.whenWrong,
     };
   });
+}
+
+/** Full model set for ModelPicker 2.0 — includes all models that can surface as recommendations */
+export function getPickerModelsV2() {
+  // All models are candidates; scoring determines which surface in top-3
+  return MODEL_REGISTRY.map((m) => ({
+    id: m.id,
+    name: m.name,
+    provider: m.provider,
+    tagline: m.tagline,
+    emoji: m.emoji,
+    gradientFrom: m.gradientFrom,
+    gradientTo: m.gradientTo,
+    accentColor: m.accentColor,
+    tier: m.tier,
+    inputPer1M: m.inputPer1M,
+    outputPer1M: m.outputPer1M,
+    latencyBand: m.latencyBand,
+    initiativeStyle: m.initiativeStyle,
+    scopeDiscipline: m.scopeDiscipline,
+    why: m.why,
+    whenWrong: m.whenWrong,
+    pickWhen: m.pickWhen,
+    avoidWhen: m.avoidWhen,
+    traits: m.traits,
+    bestFor: m.bestFor,
+    worstFor: m.worstFor,
+  }));
+}
+
+/** Models available in ScenarioLab comparisons */
+export function getScenarioLabModels() {
+  const ids = [
+    "gemini-flash",
+    "gpt4o-mini",
+    "haiku-4.5",
+    "composer-1",
+    "gpt-5.4",
+    "sonnet-4.6",
+    "composer-1-5",
+    "opus-4.6",
+  ];
+  return ids.map((id) => {
+    const m = MODEL_BY_ID[id];
+    return {
+      id: m.id,
+      name: m.name,
+      provider: m.provider,
+      tagline: m.tagline,
+      emoji: m.emoji,
+      accentColor: m.accentColor,
+      tier: m.tier,
+      inputPer1M: m.inputPer1M,
+      outputPer1M: m.outputPer1M,
+      latencyBand: m.latencyBand,
+      initiativeStyle: m.initiativeStyle,
+      scopeDiscipline: m.scopeDiscipline,
+      pickWhen: m.pickWhen,
+      avoidWhen: m.avoidWhen,
+    };
+  });
+}
+
+/** Models shown in FailureGallery — susceptibility indicators */
+export function getFailureGalleryModels() {
+  return MODEL_REGISTRY.map((m) => ({
+    id: m.id,
+    name: m.name,
+    emoji: m.emoji,
+    accentColor: m.accentColor,
+    initiativeStyle: m.initiativeStyle,
+    scopeDiscipline: m.scopeDiscipline,
+    latencyBand: m.latencyBand,
+    tier: m.tier,
+  }));
 }
 
 /** Models shown in ModelTinder — swipe-card subset */

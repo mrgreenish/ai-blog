@@ -25,7 +25,7 @@ Read `src/lib/modelSpecs.ts` in full. For each entry in `MODEL_REGISTRY`, extrac
 - `contextWindowTokens`
 - `tier`
 
-Build a checklist of every model to verify.
+Build your verification checklist directly from the live file. Do **not** trust older snapshots inside this skill, prior audit notes, or downstream tables — the registry can gain new models, lose models, or rename them between audits.
 
 ### Step 2: Research each model
 
@@ -36,8 +36,8 @@ For each model, use **WebSearch** to verify against the provider's official pric
 | Anthropic | https://docs.anthropic.com/en/docs/about-claude/pricing | `"Claude Sonnet" API pricing per token 2026` |
 | OpenAI | https://openai.com/api/pricing | `"GPT-4o mini" API pricing per million tokens 2026` |
 | Google | https://ai.google.dev/gemini-api/docs/pricing | `"Gemini Flash" API pricing per token 2026` |
-| DeepSeek | https://api-docs.deepseek.com/quick_start/pricing | `"DeepSeek R1" API pricing 2026` |
-| Cursor | https://cursor.com/docs/models | `Cursor "Composer 1.5" pricing per token 2026` |
+| DeepSeek | https://api-docs.deepseek.com/quick_start/pricing | `"DeepSeek-V3.2" "deepseek-reasoner" API pricing 2026` |
+| Cursor | https://cursor.com/docs/models-and-pricing | `Cursor "Composer 1.5" pricing per token 2026` |
 
 **For each model, verify:**
 
@@ -48,6 +48,8 @@ For each model, use **WebSearch** to verify against the provider's official pric
 5. **Tier** — is `fast` / `balanced` / `reasoning` still an accurate classification?
 
 Fetch the official pricing page directly with **WebFetch** when search results are ambiguous.
+
+> **Tip:** https://cursor.com/docs/models-and-pricing lists API rates for *all* supported models (Anthropic, OpenAI, Google, xAI, Moonshot, and Cursor-native) in one table. Cross-reference it alongside the provider's own pricing page — especially useful for catching model renames or new model additions.
 
 ### Step 3: Report findings
 
@@ -67,7 +69,7 @@ If a model has no issues, note it as "verified correct" in a summary table.
 
 After reporting all findings, apply every correction directly to `src/lib/modelSpecs.ts`. All model data lives in `MODEL_REGISTRY` — that is the only file to edit.
 
-Update `PRICING_META.verifiedDate` to today's date after making corrections.
+Update `PRICING_META.verifiedDate` to today's date after making corrections. Also update `PRICING_META.urls.Cursor` to `https://cursor.com/docs/models-and-pricing` if it still points to the old `/pricing` URL.
 
 ## Important guidelines
 

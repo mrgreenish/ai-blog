@@ -2,38 +2,28 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Compass, RotateCcw, ChevronRight, ArrowLeft } from "lucide-react";
-import { getPickerModels } from "@/lib/modelSpecs";
+import { Compass, RotateCcw, ArrowLeft, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
+import { getPickerModelsV2 } from "@/lib/modelSpecs";
 import {
   QUESTIONS,
-  getRecommendation,
+  getRanking,
   type Question,
   type Confidence,
   type Answers,
-  type Recommendation,
+  type Ranking,
+  type RankedModel,
+  type DimensionScore,
 } from "@/lib/modelPickerScoring";
 
-interface Model {
-  id: string;
-  name: string;
-  tagline: string;
-  emoji: string;
-  gradientFrom: string;
-  gradientTo: string;
-  accentColor: string;
-  why: Record<string, string>;
-  whenWrong: string;
-}
+type PickerModel = ReturnType<typeof getPickerModelsV2>[number];
 
-const MODELS: Model[] = getPickerModels();
+const MODELS: PickerModel[] = getPickerModelsV2();
 
-function ProgressDots({
-  total,
-  current,
-}: {
-  total: number;
-  current: number;
-}) {
+// ---------------------------------------------------------------------------
+// Sub-components
+// ---------------------------------------------------------------------------
+
+function ProgressDots({ total, current }: { total: number; current: number }) {
   return (
     <div className="flex items-center gap-1.5">
       {Array.from({ length: total }).map((_, i) => (
@@ -91,10 +81,7 @@ function QuestionStep({
   );
 }
 
-const CONFIDENCE_STYLES: Record<
-  Confidence,
-  { label: string; classes: string }
-> = {
+const CONFIDENCE_STYLES: Record<Confidence, { label: string; classes: string }> = {
   strong: {
     label: "Strong match",
     classes: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20",
@@ -109,14 +96,202 @@ const CONFIDENCE_STYLES: Record<
   },
 };
 
+function ScoreBar({ dims }: { dims: DimensionScore[] }) {
+  const positive = dims.filter((d) => d.points > 0);
+  const negative = dims.filter((d) => d.points < 0);
+  const maxAbs = Math.max(...dims.map((d) => Math.abs(d.points)), 1);
+
+  if (positive.length === 0 && negative.length === 0) return null;
+
+  return (
+    <div className="space-y-1">
+      {positive.slice(0, 3).map((d) => (
+        <div key={d.dimension} className="flex items-center gap-2">
+          <div className="w-16 shrink-0 text-right font-mono text-[10px] text-zinc-500 capitalize">
+            {d.dimension}
+          </div>
+          <div className="relative h-3 flex-1 overflow-hidden rounded-full bg-zinc-800">
+            <motion.div
+              className="absolute inset-y-0 left-0 rounded-full bg-emerald-400/40"
+              initial={{ width: 0 }}
+              animate={{ width: `${(d.points / maxAbs) * 100}%` }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+            />
+          </div>
+          <span className="w-4 shrink-0 font-mono text-[10px] text-emerald-400">
+            +{d.points}
+          </span>
+        </div>
+      ))}
+      {negative.slice(0, 2).map((d) => (
+        <div key={d.dimension} className="flex items-center gap-2">
+          <div className="w-16 shrink-0 text-right font-mono text-[10px] text-zinc-500 capitalize">
+            {d.dimension}
+          </div>
+          <div className="relative h-3 flex-1 overflow-hidden rounded-full bg-zinc-800">
+            <motion.div
+              className="absolute inset-y-0 left-0 rounded-full bg-red-400/30"
+              initial={{ width: 0 }}
+              animate={{ width: `${(Math.abs(d.points) / maxAbs) * 100}%` }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+            />
+          </div>
+          <span className="w-4 shrink-0 font-mono text-[10px] text-red-400">
+            {d.points}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function RankedCard({
+  ranked,
+  isWinner,
+  defaultExpanded,
+}: {
+  ranked: RankedModel<PickerModel>;
+  isWinner: boolean;
+  defaultExpanded: boolean;
+}) {
+  const [expanded, setExpanded] = useState(defaultExpanded);
+  const { model, reason, topReasons, cautions, dimensions } = ranked;
+
+  return (
+    <div
+      className={`overflow-hidden rounded-xl border transition-colors ${
+        isWinner
+          ? "border-blue-500/40 bg-zinc-900"
+          : "border-zinc-800 bg-zinc-900/60"
+      }`}
+    >
+      {/* Header */}
+      <div className="flex items-start gap-3 p-4">
+        <div
+          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br ${model.gradientFrom} ${model.gradientTo}`}
+        >
+          <span className="text-xl">{model.emoji}</span>
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+            <span className="font-display text-sm font-bold text-white">
+              {model.name}
+            </span>
+            <span className={`text-xs font-medium ${model.accentColor}`}>
+              {model.tagline}
+            </span>
+            {isWinner && (
+              <span className="rounded-full border border-blue-400/20 bg-blue-400/10 px-2 py-0.5 font-mono text-[10px] font-medium text-blue-400">
+                #1 pick
+              </span>
+            )}
+          </div>
+          <p className="mt-1 text-xs leading-relaxed text-zinc-400">{reason}</p>
+        </div>
+        <button
+          onClick={() => setExpanded((e) => !e)}
+          className="shrink-0 rounded-md p-1 text-zinc-600 transition-colors hover:text-zinc-400"
+          aria-label={expanded ? "Collapse" : "Expand"}
+        >
+          {expanded ? (
+            <ChevronUp className="h-4 w-4" />
+          ) : (
+            <ChevronDown className="h-4 w-4" />
+          )}
+        </button>
+      </div>
+
+      {/* Expanded details */}
+      <AnimatePresence initial={false}>
+        {expanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="overflow-hidden"
+          >
+            <div className="border-t border-zinc-800 px-4 pb-4 pt-3 space-y-3">
+              {/* Score breakdown */}
+              <div>
+                <p className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-zinc-600">
+                  Score breakdown
+                </p>
+                <ScoreBar dims={dimensions} />
+              </div>
+
+              {/* Why it wins */}
+              {topReasons.length > 0 && (
+                <div>
+                  <p className="mb-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-zinc-600">
+                    Why it fits
+                  </p>
+                  <ul className="space-y-1">
+                    {topReasons.map((r) => (
+                      <li key={r.dimension} className="flex items-start gap-1.5 text-xs text-zinc-400">
+                        <span className="mt-0.5 shrink-0 text-emerald-400">▸</span>
+                        {r.reason || r.dimension}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Cautions */}
+              {cautions.length > 0 && (
+                <div>
+                  <p className="mb-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-zinc-600">
+                    Watch out for
+                  </p>
+                  <ul className="space-y-1">
+                    {cautions.map((c) => (
+                      <li key={c.dimension} className="flex items-start gap-1.5 text-xs text-zinc-500">
+                        <span className="mt-0.5 shrink-0 text-amber-400">▸</span>
+                        {c.reason || c.dimension}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* When wrong */}
+              <div className="rounded-lg border border-zinc-700/60 bg-zinc-800/50 px-3 py-2.5">
+                <p className="mb-1 text-[10px] font-semibold text-zinc-500">
+                  When I was wrong
+                </p>
+                <p className="text-xs leading-relaxed text-zinc-400">
+                  {model.whenWrong}
+                </p>
+              </div>
+
+              {/* Latency + initiative badges */}
+              <div className="flex flex-wrap gap-1.5">
+                <span className="rounded-md border border-zinc-700 bg-zinc-800 px-2 py-0.5 font-mono text-[10px] text-zinc-400">
+                  latency: {model.latencyBand}
+                </span>
+                <span className="rounded-md border border-zinc-700 bg-zinc-800 px-2 py-0.5 font-mono text-[10px] text-zinc-400">
+                  initiative: {model.initiativeStyle}
+                </span>
+                <span className="rounded-md border border-zinc-700 bg-zinc-800 px-2 py-0.5 font-mono text-[10px] text-zinc-400">
+                  scope: {model.scopeDiscipline}
+                </span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 function ResultScreen({
-  recommendation,
+  ranking,
   onRestart,
 }: {
-  recommendation: Recommendation<Model>;
+  ranking: Ranking<PickerModel>;
   onRestart: () => void;
 }) {
-  const { model, runnerUp, reason, confidence } = recommendation;
+  const { top3, confidence, hasCaution, cautionMessage } = ranking;
   const badge = CONFIDENCE_STYLES[confidence];
 
   return (
@@ -124,49 +299,38 @@ function ResultScreen({
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="flex flex-col gap-5"
+      className="flex flex-col gap-4"
     >
-      {/* Winner card */}
-      <div className="overflow-hidden rounded-xl border border-zinc-700 bg-zinc-900">
-        <div
-          className={`flex h-28 items-center justify-center bg-linear-to-br ${model.gradientFrom} ${model.gradientTo}`}
+      {/* Confidence badge */}
+      <div className="flex items-center gap-2">
+        <span
+          className={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-medium ${badge.classes}`}
         >
-          <span className="text-6xl">{model.emoji}</span>
-        </div>
-        <div className="p-4">
-          <div className="mb-1 flex items-baseline gap-2">
-            <h3 className="text-lg font-bold text-white">{model.name}</h3>
-            <span className={`text-xs font-medium ${model.accentColor}`}>
-              {model.tagline}
-            </span>
-            <span
-              className={`rounded-full border px-2 py-0.5 text-[10px] font-medium ${badge.classes}`}
-            >
-              {badge.label}
-            </span>
-          </div>
-          <p className="text-sm leading-relaxed text-zinc-300">{reason}</p>
-
-          <div className="mt-3 rounded-lg border border-zinc-700/60 bg-zinc-800/50 px-3 py-2.5">
-            <p className="mb-1 text-xs font-semibold text-zinc-500">
-              When I was wrong
-            </p>
-            <p className="text-xs leading-relaxed text-zinc-400">
-              {model.whenWrong}
-            </p>
-          </div>
-        </div>
+          {badge.label}
+        </span>
+        <span className="text-xs text-zinc-500">
+          Top {top3.length} recommendations for your answers
+        </span>
       </div>
 
-      {/* Runner-up */}
-      <div className="flex items-center gap-3 rounded-lg border border-zinc-800 bg-zinc-900/60 px-4 py-3">
-        <span className="text-2xl">{runnerUp.emoji}</span>
-        <div className="min-w-0 flex-1">
-          <p className="text-xs text-zinc-500">Also consider</p>
-          <p className="text-sm font-medium text-zinc-300">{runnerUp.name}</p>
-          <p className={`text-xs ${runnerUp.accentColor}`}>{runnerUp.tagline}</p>
+      {/* Caution banner */}
+      {hasCaution && cautionMessage && (
+        <div className="flex items-start gap-2.5 rounded-lg border border-amber-400/20 bg-amber-400/5 px-3 py-2.5">
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
+          <p className="text-xs leading-relaxed text-amber-300">{cautionMessage}</p>
         </div>
-        <ChevronRight className="h-4 w-4 shrink-0 text-zinc-600" />
+      )}
+
+      {/* Ranked cards */}
+      <div className="space-y-2">
+        {top3.map((ranked, i) => (
+          <RankedCard
+            key={ranked.model.id}
+            ranked={ranked}
+            isWinner={i === 0}
+            defaultExpanded={i === 0}
+          />
+        ))}
       </div>
 
       {/* Restart */}
@@ -181,12 +345,16 @@ function ResultScreen({
   );
 }
 
+// ---------------------------------------------------------------------------
+// Root component
+// ---------------------------------------------------------------------------
+
 export function ModelPicker() {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
 
   const isDone = step >= QUESTIONS.length;
-  const recommendation = isDone ? getRecommendation(MODELS, answers) : null;
+  const ranking = isDone ? getRanking(MODELS, answers) : null;
 
   const handleAnswer = (optionId: string) => {
     const question = QUESTIONS[step];
@@ -223,7 +391,7 @@ export function ModelPicker() {
               Model Picker
             </h3>
             <p className="mt-0.5 text-xs text-zinc-500">
-              Opinionated guidance from real usage
+              Top-3 recommendations with score breakdowns
             </p>
           </div>
         </div>
@@ -235,10 +403,10 @@ export function ModelPicker() {
       {/* Content */}
       <div className="px-5 py-5">
         <AnimatePresence mode="wait">
-          {isDone && recommendation ? (
+          {isDone && ranking ? (
             <ResultScreen
               key="result"
-              recommendation={recommendation}
+              ranking={ranking}
               onRestart={handleRestart}
             />
           ) : (
