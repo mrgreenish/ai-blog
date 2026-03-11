@@ -2,7 +2,8 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import { cache } from "react";
-import type { Article, ArticleFrontmatter, ArticleMeta, Category } from "./types";
+import type { Article, ArticleMeta, Category } from "./types";
+import { parseFrontmatter } from "./contentSchema";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
 
@@ -21,7 +22,7 @@ export function getArticlesByCategory(category: Category): ArticleMeta[] {
     return {
       slug,
       category,
-      frontmatter: data as ArticleFrontmatter,
+      frontmatter: parseFrontmatter(data, slug, category),
     };
   });
 
@@ -40,7 +41,7 @@ export const getArticle = cache(function getArticle(category: Category, slug: st
   return {
     slug,
     category,
-    frontmatter: data as ArticleFrontmatter,
+    frontmatter: parseFrontmatter(data, slug, category),
     content,
   };
 });

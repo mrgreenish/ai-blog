@@ -3,21 +3,7 @@ import { compileMDX } from "next-mdx-remote/rsc";
 import rehypePrettyCode from "rehype-pretty-code";
 import { getArticle, getAllArticlePaths, getNextArticle } from "@/lib/content";
 import { ArticleLayout } from "@/components/content/ArticleLayout";
-import { ModelPicker } from "@/components/interactive/ModelPicker";
-import { ModelTinder } from "@/components/interactive/ModelTinder";
-import { ModelMixer } from "@/components/interactive/ModelMixer";
-import { WorkflowRecipe } from "@/components/interactive/WorkflowRecipe";
-import { PromptLab } from "@/components/interactive/PromptLab";
-import { FailureGallery } from "@/components/interactive/FailureGallery";
-import { DevBenchmark } from "@/components/interactive/DevBenchmark";
-import { ConfigGenerator } from "@/components/interactive/ConfigGenerator";
-import { CostCalculator } from "@/components/interactive/CostCalculator";
-import { ContextWindowViz } from "@/components/interactive/ContextWindowViz";
-import { DecisionTree } from "@/components/interactive/DecisionTree";
-import { ScenarioLab } from "@/components/interactive/ScenarioLab";
-import { InfoBlock } from "@/components/content/InfoBlock";
-import { PersonalFavorite } from "@/components/content/PersonalFavorite";
-import { ModelLabels } from "@/components/content/ModelLabels";
+import { MDX_COMPONENTS } from "@/lib/mdxComponents";
 import type { Metadata } from "next";
 import type { ArticleFrontmatter } from "@/lib/types";
 
@@ -50,23 +36,7 @@ export default async function ModelArticlePage({ params }: Props) {
 
   const { content } = await compileMDX<ArticleFrontmatter>({
     source: article.content,
-    components: {
-      ModelPicker,
-      ModelTinder,
-      ModelMixer,
-      WorkflowRecipe,
-      PromptLab,
-      FailureGallery,
-      DevBenchmark,
-      ConfigGenerator,
-      CostCalculator,
-      ContextWindowViz,
-      DecisionTree,
-      ScenarioLab,
-      InfoBlock,
-      PersonalFavorite,
-      ModelLabels,
-    },
+    components: MDX_COMPONENTS,
     options: {
       mdxOptions: {
         rehypePlugins: [[rehypePrettyCode as never, { theme: "github-dark-dimmed" }]],

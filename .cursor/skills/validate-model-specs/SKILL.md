@@ -69,7 +69,7 @@ If a model has no issues, note it as "verified correct" in a summary table.
 
 After reporting all findings, apply every correction directly to `src/lib/modelSpecs.ts`. All model data lives in `MODEL_REGISTRY` — that is the only file to edit.
 
-Update `PRICING_META.verifiedDate` to today's date after making corrections. Also update `PRICING_META.urls.Cursor` to `https://cursor.com/docs/models-and-pricing` if it still points to the old `/pricing` URL.
+Update `PRICING_META.verifiedDate` to today's date after completing the audit — even if no values changed. This field means "last verified against official sources," not "last changed." Keeping it current lets readers and future audits know when the data was last confirmed accurate. Also update `PRICING_META.urls.Cursor` to `https://cursor.com/docs/models-and-pricing` if it still points to the old `/pricing` URL.
 
 ## Important guidelines
 

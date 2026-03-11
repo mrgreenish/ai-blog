@@ -9,6 +9,7 @@
     "lint": "next lint",
     "test": "vitest",
     "test:ci": "vitest run",
+    "test:integrity": "vitest run src/lib/__tests__/contentIntegrity.test.ts",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },

@@ -110,7 +110,7 @@ function formatTokens(n: number): string {
   return n >= 1000 ? `${(n / 1000).toFixed(0)}k` : `${n}`;
 }
 
-function QuickEstimate() {
+export function QuickEstimate() {
   const [scenarioId, setScenarioId] = useState(SCENARIOS[1].id);
   const [frequencyId, setFrequencyId] = useState(FREQUENCIES[2].id);
 

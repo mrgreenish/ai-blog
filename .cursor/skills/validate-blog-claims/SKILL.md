@@ -89,12 +89,12 @@ Group findings by file. If a post has no outdated claims, don't mention it.
 
 ### Summary
 
-After all findings, add a summary:
+After all findings, add a summary. Derive the total post count by listing `content/models/`, `content/workflows/`, and `content/tooling/` — do not hardcode a number.
 
 ```
 ## Summary
 
-- Posts checked: X/17
+- Posts checked: X/[total from filesystem]
 - Posts with outdated claims: X
 - Total outdated claims: X
 - By category: models (X), pricing (X), tools (X), APIs (X)

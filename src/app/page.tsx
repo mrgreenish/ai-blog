@@ -1,15 +1,10 @@
 import Link from "next/link";
 import { ArrowRight, Compass, Calculator, Beaker, Terminal } from "lucide-react";
 import { CATEGORY_META } from "@/lib/types";
+import { getArticlesByCategory, getAllArticles } from "@/lib/content";
 import { HomeHero } from "@/components/content/HomeHero";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { GlassCard } from "@/components/ui/GlassCard";
-
-const SECTION_ARTICLES = {
-  models: 4,
-  workflows: 7,
-  tooling: 7,
-};
 
 const JOURNEY = [
   {
@@ -86,6 +81,19 @@ const NARRATIVE_SECTIONS = [
 ];
 
 export default function Home() {
+  const articleCounts = {
+    models: getArticlesByCategory("models").length,
+    workflows: getArticlesByCategory("workflows").length,
+    tooling: getArticlesByCategory("tooling").length,
+  };
+
+  const allArticles = getAllArticles();
+  const uniqueToolCount = new Set(
+    allArticles.flatMap((a) => a.frontmatter.interactiveTools ?? [])
+  ).size;
+  const featuredToolCount = FEATURED_TOOLS.length;
+  const extraToolCount = Math.max(0, uniqueToolCount - featuredToolCount);
+
   return (
     <div>
       {/* Hero */}
@@ -156,7 +164,7 @@ export default function Home() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {JOURNEY.map(({ step, cat, tagline }, i) => {
             const meta = CATEGORY_META[cat];
-            const count = SECTION_ARTICLES[cat];
+            const count = articleCounts[cat];
             const glowVariant = cat === "models" ? "blue" : cat === "workflows" ? "emerald" : "violet";
 
             return (
@@ -227,11 +235,13 @@ export default function Home() {
           ))}
         </div>
 
-        <FadeIn delay={0.35}>
-          <p className="mt-4 font-mono text-xs text-zinc-700">
-            + 7 more tools across all articles
-          </p>
-        </FadeIn>
+        {extraToolCount > 0 && (
+          <FadeIn delay={0.35}>
+            <p className="mt-4 font-mono text-xs text-zinc-700">
+              + {extraToolCount} more tool{extraToolCount !== 1 ? "s" : ""} across all articles
+            </p>
+          </FadeIn>
+        )}
       </section>
 
       {/* CTA */}

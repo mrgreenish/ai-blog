@@ -1,99 +1,118 @@
-# Claim Categories in This Blog
+# Claim Categories
 
-Reference of verifiable claim types found across the MDX posts in `content/`.
+Taxonomy of verifiable claim types found across the MDX posts in `content/`. Use this as a heuristic guide for what to look for and how to prioritize. Do not use this file as a data source — always derive current values from `src/lib/modelSpecs.ts` and the live content files.
 
-## Canonical model data source
+---
 
-**`src/lib/modelSpecs.ts`** is the single source of truth for all model-specific data. Before checking MDX posts, read this file. It contains the current registry of models with:
-- `name` — display name used in components and prose
-- `inputPer1M` / `outputPer1M` — pricing per 1M tokens (USD)
-- `contextWindowTokens` — context window size in tokens
-- `tier` — `fast | balanced | reasoning`
-- `provider` — `Anthropic | OpenAI | Google | DeepSeek | Cursor`
+## Canonical data sources
 
-When model data in `modelSpecs.ts` is outdated, update it there. Component UIs derive from this registry automatically.
+Before checking any claim, read these files:
 
-## Model names and identifiers
+- **`src/lib/modelSpecs.ts`** — canonical source for model names, pricing, context windows, tiers, and providers. Any discrepancy between a blog post and `modelSpecs.ts` is a candidate issue.
+- **`src/lib/types.ts`** — canonical source for valid `interactiveTools` slugs.
 
-Build the expected model list from `MODEL_REGISTRY`, not from this file. Current registry rows:
+---
 
-| Registry ID | Display name | Provider | What to check |
-|---|---|---|---|
-| `gemini-flash` | Gemini 2.0 Flash | Google | Still current name/version? |
-| `gpt4o-mini` | GPT-4o mini | OpenAI | Still available? Renamed? |
-| `deepseek-v3` | DeepSeek-V3.2 | DeepSeek | Still current? Newer version? |
-| `haiku-4.5` | Claude Haiku 4.5 | Anthropic | Still this version/name? |
-| `gpt-5.4` | GPT-5.4 | OpenAI | Still current name/version? |
-| `composer-1` | Cursor Composer-1 | Cursor | Still this name? Superseded? |
-| `sonnet-4.6` | Claude Sonnet 4.6 | Anthropic | Still this version/name? |
-| `opus-4.6` | Claude Opus 4.6 | Anthropic | Still this version/name? |
-| `composer-1-5` | Composer 1.5 | Cursor | Still this name? Superseded? |
+## Claim types by staleness risk
 
-Also check for any model referenced in MDX prose that is **not** in the registry (older Gemini versions, `o3`, `GPT-4o`, etc.) — those are likely stale references unless the post is explicitly historical.
+### 1. Model names and versions (highest risk)
 
-## Context window sizes
+AI companies rename models frequently. A model name that was correct 6 months ago may now refer to something different or be deprecated.
 
-The canonical values are `contextWindowTokens` in `src/lib/modelSpecs.ts`. Current registry values:
+**What to look for:**
+- Specific model names in prose: "Claude Sonnet 4.6", "GPT-5.4", "Gemini 2.0 Flash"
+- Version numbers that may have incremented
+- References to models that may have been superseded or discontinued
 
-| Model | Registry value | What to check |
-|---|---|---|
-| Gemini 2.0 Flash | 1,000,000 | Still 1M? Increased or renamed? |
-| GPT-4o mini | 128,000 | Still 128k? |
-| DeepSeek-V3.2 | 128,000 | Still 128k? |
-| Claude Haiku 4.5 | 200,000 | Still 200k? |
-| GPT-5.4 | 1,050,000 | Still 1.05M? |
-| Cursor Composer-1 | 128,000 | Still 128k? |
-| Claude Sonnet 4.6 | 200,000 | Still 200k? |
-| Claude Opus 4.6 | 200,000 | Still 200k? |
-| Composer 1.5 | 200,000 | Still 200k? |
+**How to verify:** Cross-reference against `MODEL_REGISTRY` in `modelSpecs.ts`, then verify against the provider's current documentation.
 
-## Tools and products
+---
 
-| Tool / product | What to check |
+### 2. Pricing and cost comparisons (highest risk)
+
+Pricing changes without notice. Any prose claim about cost — absolute or relative — can go stale.
+
+**What to look for:**
+- Dollar amounts: "$X per million tokens", "costs $Y"
+- Relative comparisons: "X costs 3× more than Y", "cheapest option"
+- Cost justifications that depend on specific price ratios
+
+**How to verify:** Cross-reference against `inputPer1M` / `outputPer1M` in `modelSpecs.ts`, then verify against the provider's current pricing page.
+
+---
+
+### 3. Context window sizes (high risk)
+
+Context windows increase over time. Claims about specific token limits become stale as models are updated.
+
+**What to look for:**
+- Token counts: "200K tokens", "1M context window"
+- Relative size claims: "largest context window", "fits your entire codebase"
+- Specific line-count equivalents derived from token counts
+
+**How to verify:** Cross-reference against `contextWindowTokens` in `modelSpecs.ts`, then verify against current documentation.
+
+---
+
+### 4. Tool names and features (high risk)
+
+AI tooling evolves rapidly. Products get renamed, features change, and workflows shift.
+
+**What to look for:**
+- Product names: "Claude Code", "Cursor BugBot", "Codex on GitHub", "Figma MCP"
+- Feature availability: "supports X", "can do Y", "doesn't yet support Z"
+- Setup workflows that may have changed
+- Config file names: `CLAUDE.md`, `AGENTS.md`, `.cursorrules`
+
+**How to verify:** Web search for the current product name and feature set.
+
+---
+
+### 5. SDK and API references (medium risk)
+
+Framework versions and API shapes change, but less frequently than pricing.
+
+**What to look for:**
+- Framework versions: "Next.js 15", "React 19"
+- Specific API names: `use cache`, `next-cache-components`
+- Install commands and package names
+- CLI commands: `npx skills add`
+
+**How to verify:** Web search for the current stable version or package.
+
+---
+
+### 6. Capability claims (lower risk)
+
+General claims about what a model or tool can or cannot do. These change, but more slowly.
+
+**What to look for:**
+- Comparative capability claims: "best at format following", "strongest for architecture"
+- Absolute capability claims: "can run code", "supports vision"
+- Claims about failure modes: "tends to hallucinate X", "struggles with Y"
+
+**How to verify:** Web search for current model capability documentation. Be conservative — only flag if demonstrably incorrect.
+
+---
+
+## What not to flag
+
+- Subjective opinions and personal experiences: "in my experience", "feels like", "I prefer"
+- General advice that remains valid regardless of specific versions
+- Claims that are still accurate
+- Editorial voice and style choices
+
+---
+
+## Search query patterns
+
+| Claim type | Example query |
 |---|---|
-| Claude Code | Still this name? Major workflow changes? |
-| Codex on GitHub / GitHub Codex | Current product naming and GitHub workflow still accurate? |
-| Cursor BugBot | Still exists? Renamed? |
-| Figma MCP | Feature set and setup flow still accurate? |
-| Claude Code to Figma | Still available? Workflow still two-way? |
-| Browser MCP | Current name and capabilities still accurate? |
+| Model version | `"Claude Sonnet" latest version 2026` |
+| Context window | `"Gemini Flash" context window tokens 2026` |
+| Tool feature | `"Cursor BugBot" features 2026` |
+| Pricing | `"Claude API pricing" per token 2026` |
+| SDK version | `"Next.js" latest stable version 2026` |
+| Product rename | `"GitHub Codex" renamed OR deprecated 2026` |
 
-## SDK and API references
-
-| Reference | What to check |
-|---|---|
-| Next.js 15 | Still current stable version? |
-| Next.js 16 Cache Components (`use cache`) | API still current? Naming changed? |
-| `next-cache-components` | Package/repo still exists and is still the right reference? |
-| `npx skills add` | Command still valid? |
-| `CLAUDE.md` | Still the standard config file name? |
-| `AGENTS.md` | Still used? |
-| `.cursorrules` | Still the config name in Cursor? |
-
-## Pricing and cost claims
-
-Canonical pricing is in `src/lib/modelSpecs.ts` (`inputPer1M` / `outputPer1M`). Current registry values to verify against provider pricing pages:
-
-| Model | Input $/1M | Output $/1M | What to check |
-|---|---|---|---|
-| Gemini 2.0 Flash | $0.10 | $0.40 | Still current? |
-| GPT-4o mini | $0.15 | $0.60 | Still current? |
-| DeepSeek-V3.2 | $0.28 | $0.42 | Still current? |
-| Claude Haiku 4.5 | $1.00 | $5.00 | Still current? |
-| GPT-5.4 | $2.50 | $15.00 | Still current? |
-| Cursor Composer-1 | $1.25 | $10.00 | Still current? |
-| Claude Sonnet 4.6 | $3.00 | $15.00 | Still current? |
-| Composer 1.5 | $3.50 | $17.50 | Still current? |
-| Claude Opus 4.6 | $5.00 | $25.00 | Still current? |
-
-Also check prose cost comparisons:
-- Any claim like "X costs Yx more than Z" should be recomputed from the current registry before deciding whether the prose is stale.
-
-## Capability claims worth verifying
-
-Use extra scrutiny for:
-- Versioned feature claims: native tool use, browser/computer use, MCP capabilities, cache APIs, context-window sizes
-- Comparative claims that sound factual rather than editorial: "best at format following", "strongest for architecture", "fastest round-trip"
-- Time-bound announcements or launch claims, especially references to release months or "new" capabilities
-
-Treat clearly personal experience language ("in my experience", "feels like", "I use") as editorial unless it cites a concrete factual feature or metric.
+Always include the current year in search queries to get the most recent results.
