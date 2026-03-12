@@ -79,10 +79,10 @@ export const MODEL_REGISTRY: ModelSpec[] = [
   // ── Fast tier ──────────────────────────────────────────────────────────────
   {
     id: "gemini-flash",
-    name: "Gemini 2.0 Flash",
+    name: "Gemini 2.5 Flash",
     provider: "Google",
-    inputPer1M: 0.10,
-    outputPer1M: 0.40,
+    inputPer1M: 0.30,
+    outputPer1M: 2.50,
     tier: "fast",
     contextWindowTokens: 1_000_000,
     tagline: "The Careful One",
@@ -258,7 +258,7 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     inputPer1M: 2.50,
     outputPer1M: 15.00,
     tier: "balanced",
-    contextWindowTokens: 1_050_000,
+    contextWindowTokens: 1_000_000,
     tagline: "The Agentic Frontier",
     emoji: "🚀",
     gradientFrom: "from-emerald-600",
@@ -528,7 +528,7 @@ export function getMixerModels() {
 // ---------------------------------------------------------------------------
 
 export const PRICING_META = {
-  verifiedDate: "2026-03-11", // re-verified: all prices confirmed correct; DeepSeek renamed to V3.2
+  verifiedDate: "2026-03-12", // re-verified: Gemini 2.0 Flash → 2.5 Flash (deprecated Jun 2026); GPT-5.4 context window corrected to 1M
   source: "Official API pricing pages",
   urls: {
     Anthropic: "https://docs.anthropic.com/en/docs/about-claude/pricing",
