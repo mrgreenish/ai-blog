@@ -354,6 +354,10 @@ export const TREE_NODES: Record<string, TreeNode> = {
           },
           relatedLinks: [
             {
+              href: "/workflows/spec-files",
+              label: "Spec Files",
+            },
+            {
               href: "/tooling/claude-code-codex",
               label: "Claude Code & Codex",
             },
