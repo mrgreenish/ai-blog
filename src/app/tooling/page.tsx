@@ -44,10 +44,10 @@ export default function ToolingPage() {
 
               <Link
                 href="/models"
-                className="group inline-flex shrink-0 items-center gap-2 rounded-xl bg-blue-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition-all hover:bg-blue-400 hover:shadow-blue-400/30 active:scale-[0.98]"
+                className="group inline-flex shrink-0 items-center gap-2 rounded-xl bg-blue-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition-[background-color,box-shadow,transform] hover:bg-blue-400 hover:shadow-blue-400/30 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
               >
                 Explore Models
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
             </div>
           </div>
