@@ -7,6 +7,8 @@ interface CategoryHeaderProps {
   category: Category;
   articleCount?: number;
   showBreadcrumb?: boolean;
+  showEyebrow?: boolean;
+  showCount?: boolean;
 }
 
 const CATEGORY_GLOW: Record<Category, string> = {
@@ -25,6 +27,8 @@ export function CategoryHeader({
   category,
   articleCount,
   showBreadcrumb = false,
+  showEyebrow = true,
+  showCount = true,
 }: CategoryHeaderProps) {
   const meta = CATEGORY_META[category];
   const glowClass = CATEGORY_GLOW[category];
@@ -52,7 +56,7 @@ export function CategoryHeader({
       <div className="relative flex items-end justify-between gap-6">
         <div>
           {/* Section label */}
-          <p className="section-label mb-4">{meta.label}</p>
+          {showEyebrow && <p className="section-label mb-4">{meta.label}</p>}
 
           {/* Large gradient heading */}
           <h1 className={`font-display text-5xl font-bold tracking-tight sm:text-6xl ${gradientTextClass}`}>
@@ -66,7 +70,7 @@ export function CategoryHeader({
         </div>
 
         {/* Article count badge */}
-        {articleCount !== undefined && (
+        {showCount && articleCount !== undefined && (
           <div className="shrink-0 text-right">
             <div className={`font-display text-4xl font-bold ${gradientTextClass} opacity-30`}>
               {articleCount}
