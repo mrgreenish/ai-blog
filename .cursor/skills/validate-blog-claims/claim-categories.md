@@ -62,7 +62,7 @@ AI tooling evolves rapidly. Products get renamed, features change, and workflows
 - Product names: "Claude Code", "Cursor BugBot", "Codex on GitHub", "Figma MCP"
 - Feature availability: "supports X", "can do Y", "doesn't yet support Z"
 - Setup workflows that may have changed
-- Config file names: `CLAUDE.md`, `AGENTS.md`, `.cursorrules`
+- Config file names: `CLAUDE.md`, `SKILL.md`, `.claude/agents/`
 
 **How to verify:** Web search for the current product name and feature set.
 

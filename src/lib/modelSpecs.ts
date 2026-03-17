@@ -79,12 +79,12 @@ export const MODEL_REGISTRY: ModelSpec[] = [
   // ── Fast tier ──────────────────────────────────────────────────────────────
   {
     id: "gemini-flash",
-    name: "Gemini 2.5 Flash",
+    name: "Gemini 3 Flash",
     provider: "Google",
-    inputPer1M: 0.30,
-    outputPer1M: 2.50,
+    inputPer1M: 0.50,
+    outputPer1M: 3.00,
     tier: "fast",
-    contextWindowTokens: 1_000_000,
+    contextWindowTokens: 1_048_576,
     tagline: "The Careful One",
     emoji: "💎",
     gradientFrom: "from-blue-600",
@@ -210,7 +210,7 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     inputPer1M: 2.50,
     outputPer1M: 15.00,
     tier: "balanced",
-    contextWindowTokens: 1_000_000,
+    contextWindowTokens: 1_050_000,
     tagline: "The Agentic Frontier",
     emoji: "🚀",
     gradientFrom: "from-emerald-600",
@@ -258,7 +258,7 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     inputPer1M: 3.00,
     outputPer1M: 15.00,
     tier: "balanced",
-    contextWindowTokens: 200_000,
+    contextWindowTokens: 1_000_000,
     tagline: "The Proactive One",
     emoji: "✨",
     gradientFrom: "from-violet-600",
@@ -308,7 +308,7 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     inputPer1M: 5.00,
     outputPer1M: 25.00,
     tier: "reasoning",
-    contextWindowTokens: 200_000,
+    contextWindowTokens: 1_000_000,
     tagline: "The Deep Thinker",
     emoji: "🧠",
     gradientFrom: "from-orange-600",
@@ -436,7 +436,7 @@ export function getMixerModels() {
 // ---------------------------------------------------------------------------
 
 export const PRICING_META = {
-  verifiedDate: "2026-03-12", // re-verified: Gemini 2.0 Flash → 2.5 Flash (deprecated Jun 2026); GPT-5.4 context window corrected to 1M
+  verifiedDate: "2026-03-17", // re-verified: Gemini 3 Flash pricing/name; Anthropic Sonnet/Opus 4.6 context windows; GPT-5.4 exact context window
   source: "Official API pricing pages",
   urls: {
     Anthropic: "https://docs.anthropic.com/en/docs/about-claude/pricing",

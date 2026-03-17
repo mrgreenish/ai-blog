@@ -17,14 +17,14 @@ const MAX_MODE_LIMIT_TOKENS = 1_000_000;
 // Average lines per file (typical source file)
 const LINES_PER_FILE = 200;
 
-// Credit pool included with Cursor Pro
+// API usage included with Cursor Pro
 const PRO_MONTHLY_CREDITS = 20; // USD
 
 // Cost models (USD per 1M tokens, input/output)
 // Auto mode (cursor-small / balanced model)
 const AUTO_INPUT_PER_M = 1.25;
 const AUTO_OUTPUT_PER_M = 6.0;
-// Max Mode (frontier model, e.g. claude-opus + 20% margin)
+// Max Mode example pricing (Claude Sonnet 4.6 API rate + 20% margin)
 const MAX_INPUT_PER_M = 3.0 * 1.2; // $3 + 20% margin
 const MAX_OUTPUT_PER_M = 15.0 * 1.2; // $15 + 20% margin
 
@@ -286,7 +286,7 @@ export function MaxModeViz() {
               <span className="font-mono text-[11px] font-semibold text-violet-300">Max Mode</span>
             </div>
             <p className="font-mono text-2xl font-bold text-violet-200">{formatCost(maxCost)}</p>
-            <p className="mt-1 font-mono text-[10px] text-zinc-600">per session (API + 20%)</p>
+            <p className="mt-1 font-mono text-[10px] text-zinc-600">per session (Sonnet 4.6 API + 20%)</p>
             {needsMaxMode && (
               <p className="mt-1.5 font-mono text-[10px] text-violet-400/80">Full context fits ✓</p>
             )}
@@ -299,9 +299,9 @@ export function MaxModeViz() {
             <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-zinc-500" />
             <div className="space-y-0.5">
               <p className="font-mono text-[11px] text-zinc-400">
-                Cursor Pro includes a{" "}
-                <span className="text-zinc-200 font-semibold">$20/month credit pool</span>
-                {" "}for non-Auto models.
+                Cursor Pro includes{" "}
+                <span className="text-zinc-200 font-semibold">$20/month of API usage</span>
+                {" "}on the API pool.
               </p>
               <p className="font-mono text-[11px] text-zinc-500">
                 At Max Mode rates, that pool covers{" "}

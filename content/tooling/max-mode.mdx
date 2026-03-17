@@ -1,6 +1,6 @@
 ---
 title: "Cursor Max Mode: When to Flip the Switch"
-description: "Max Mode expands Cursor's context window from 200K to 1M tokens — and bills you directly at API rates + 20%. Here's when it earns that cost and when to leave it off."
+description: "Max Mode can expand Cursor's standard context window up to 1M tokens — and on individual plans it bills at API rates + 20%. Here's when it earns that cost and when to leave it off."
 story: "You paste in six files, Cursor reads half of them, and the refactor is wrong because it missed the other half. That's the moment Max Mode starts making sense."
 category: tooling
 order: 4
@@ -13,9 +13,9 @@ That's the problem Max Mode solves.
 
 ## What Max Mode actually does
 
-By default, Cursor operates with a 200K token context window — roughly 15,000 lines of code. That covers most single-feature work. Max Mode extends that to 1M tokens (about 75,000 lines) for models that support it, like Gemini 3.1 Pro and GPT-4.1.
+By default, Cursor keeps you on the standard context window for the selected model. In practice that often means working in the 200K band — roughly 15,000 lines of code, which covers most single-feature work. Max Mode extends that to the model's maximum context window for models that support it, like GPT-5.4, Claude Sonnet 4.6, Claude Opus 4.6, and Gemini 3.1 Pro.
 
-The catch: it bypasses your regular request quota and bills directly at the underlying API rate, plus a 20% margin. A few queries in Max Mode can consume your entire monthly credit pool.
+The catch: on individual plans it switches that session onto API-rate billing, plus a 20% upcharge. A few heavy Max Mode queries can chew through your included API usage fast.
 
 It's not a "better" mode. It's a "bigger context" mode. The model doesn't reason differently with Max Mode on — it just sees more of your codebase at once.
 
@@ -31,17 +31,17 @@ It's not a "better" mode. It's a "bigger context" mode. The model doesn't reason
 
 **For anything a single file can answer.** Renaming a function, adding a prop, writing a test for one module — none of this needs 1M tokens. Turning on Max Mode for these is like renting a truck to carry a laptop.
 
-**When Auto mode handles it.** Cursor's Auto mode selects a cost-efficient model automatically and doesn't count against your credit pool the same way. If Auto gives you a correct result, you have no reason to switch to Max.
+**When Auto mode handles it.** Cursor's Auto mode selects a cost-efficient model automatically and draws from the separate Auto + Composer pool instead of your API pool. If Auto gives you a correct result, you have no reason to switch to Max.
 
 **When you're iterating quickly.** Rapid back-and-forth — "tweak this", "make it shorter", "add a case" — compounds cost fast in Max Mode. Each exchange processes your full context again at full token rates. Keep Max Mode off during iteration and only flip it on when you need the full picture.
 
-**When cost matters more than completeness.** A few extended Max Mode sessions can exhaust a Pro plan's entire $20 monthly credit pool. If you're on a budget or want predictable costs, stick to Auto for everyday work and use Max Mode surgically.
+**When cost matters more than completeness.** A few extended Max Mode sessions can exhaust a Pro plan's included $20 of API usage surprisingly fast. If you're on a budget or want predictable costs, stick to Auto for everyday work and use Max Mode surgically.
 
 ## The cost reality
 
-Cursor Pro includes a $20/month credit pool for non-Auto model usage. Max Mode draws from this pool at API rate + 20% margin. The numbers compound quickly:
+Cursor Pro includes $20/month of API usage. Max Mode draws from that API pool at the selected model's rate, plus a 20% upcharge on individual plans. The numbers compound quickly:
 
-- A session processing 400K tokens of context costs roughly $0.50–$2.00 in Max Mode depending on model
+- A session processing 400K tokens of context can cost well under a dollar on Gemini 3 Flash and several dollars on Sonnet or GPT-5.4 once Max Mode pricing kicks in
 - Run that three or four times a day and you've consumed your monthly pool in a week
 - Overages charge at raw API rates — there's no cap unless you turn off pay-as-you-go
 
