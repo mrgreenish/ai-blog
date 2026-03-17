@@ -130,54 +130,6 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     },
   },
   {
-    id: "gpt4o-mini",
-    name: "GPT-4o mini",
-    provider: "OpenAI",
-    inputPer1M: 0.15,
-    outputPer1M: 0.60,
-    tier: "fast",
-    contextWindowTokens: 128_000,
-    tagline: "The Balanced One",
-    emoji: "⚡",
-    gradientFrom: "from-emerald-600",
-    gradientTo: "to-teal-500",
-    accentColor: "text-emerald-400",
-    contextBarColor: "bg-zinc-400",
-    costColor: "text-zinc-300",
-    why: {
-      coding:
-        "GPT produces the kind of code that feels like the accepted Stack Overflow answer — sensible, readable, and something your team will understand.",
-      everyday:
-        "GPT's pragmatic defaults make it ideal for the steady stream of everyday shipping tasks. It fills in reasonable gaps without overstepping.",
-      internal:
-        "For internal tools where 'good enough' is genuinely good enough, GPT's balanced approach keeps you moving without overthinking.",
-      format:
-        "GPT is the most consistent at following output format instructions. If you have structured output requirements, it delivers.",
-      balance:
-        "GPT sits in the sweet spot between speed and accuracy. It's rarely the best at either extreme, but it's reliably solid across the middle.",
-    },
-    whenWrong:
-      "When you need genuine insight or creative problem-solving. GPT optimizes for giving you what you asked for, not what you actually need. It won't surprise you with a better approach.",
-    traits: [
-      "Pragmatic defaults — Stack Overflow energy",
-      "Measured initiative — fills gaps without overstepping",
-      "Best at following output format instructions",
-    ],
-    bestFor: "Everyday shipping in team codebases",
-    worstFor: "Tasks that need genuine creative insight",
-    latencyBand: "fast",
-    initiativeStyle: "measured",
-    scopeDiscipline: "good",
-    pickWhen: "You want reliable, readable output that your whole team will understand",
-    avoidWhen: "You need the model to spot problems you didn't ask about or suggest a better approach",
-    benchmark: {
-      correctServerAction: false,
-      followedConstraints: false,
-      madeUpDocs: false,
-      hiddenBugsInRefactor: false,
-    },
-  },
-  {
     id: "deepseek-v3",
     name: "DeepSeek-V3.2",
     provider: "DeepSeek",
@@ -291,7 +243,7 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     initiativeStyle: "proactive",
     scopeDiscipline: "good",
     pickWhen: "You need frontier reasoning with large context or native computer-use for agentic workflows",
-    avoidWhen: "The task is simple — GPT-4o mini or Haiku will do it faster and cheaper",
+    avoidWhen: "The task is simple — use a fast model like Gemini Flash or Haiku instead",
     benchmark: {
       correctServerAction: true,
       followedConstraints: true,
@@ -544,7 +496,6 @@ export function getCostCalculatorModels() {
   // Only include models that are meaningful for cost comparison in the blog
   const ids = [
     "gemini-flash",
-    "gpt4o-mini",
     "deepseek-v3",
     "haiku-4.5",
     "composer-1",
@@ -642,7 +593,6 @@ export function getPickerModelsV2() {
 export function getScenarioLabModels() {
   const ids = [
     "gemini-flash",
-    "gpt4o-mini",
     "haiku-4.5",
     "composer-1",
     "gpt-5.4",

@@ -233,7 +233,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           relatedLinks: [
             { href: "/tooling/figma-mcp", label: "Figma MCP" },
             {
-              href: "/models/design-to-code-and-back",
+              href: "/tooling/design-to-code-and-back",
               label: "Design to Code and Back",
             },
           ],
@@ -356,10 +356,6 @@ export const TREE_NODES: Record<string, TreeNode> = {
             {
               href: "/workflows/spec-files",
               label: "Spec Files",
-            },
-            {
-              href: "/tooling/claude-code-codex",
-              label: "Claude Code & Codex",
             },
             {
               href: "/tooling/diff-review-loops",
@@ -639,14 +635,10 @@ export const TREE_NODES: Record<string, TreeNode> = {
           output:
             "Claude Code configured with project context, safe permissions, and a working workflow.",
           articleLink: {
-            href: "/tooling/claude-code-codex",
-            label: "Claude Code & Codex",
+            href: "/tooling/agent-guardrails",
+            label: "Agent Guardrails",
           },
           relatedLinks: [
-            {
-              href: "/tooling/agent-guardrails",
-              label: "Agent Guardrails",
-            },
             {
               href: "/tooling/diff-review-loops",
               label: "Diff Review Loops",
@@ -760,10 +752,6 @@ export const TREE_NODES: Record<string, TreeNode> = {
             {
               href: "/tooling/agent-guardrails",
               label: "Agent Guardrails",
-            },
-            {
-              href: "/tooling/claude-code-codex",
-              label: "Claude Code & Codex",
             },
           ],
         },

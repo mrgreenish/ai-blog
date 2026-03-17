@@ -2,17 +2,15 @@
 title: "Code to Canvas: Claude Code → Figma"
 description: "Sending live rendered UI into Figma as editable frames, then iterating with designers and pulling design context back into the coding loop."
 category: tooling
-order: 6
+order: 8
 interactiveTools: [workflow-recipe]
 ---
 
-The Figma MCP is usually talked about in one direction: design to code. But the reverse flow — code to Figma — is equally powerful and less discussed. Figma's [Claude Code to Figma](https://www.figma.com/blog/introducing-claude-code-to-figma/) capability (announced February 2026) lets you capture a live rendered UI from localhost, staging, or production and push it into Figma as editable frames, closing the loop between implementation and design.
+The reverse flow — code to Figma — is equally powerful. Figma's [Claude Code to Figma](https://www.figma.com/blog/introducing-claude-code-to-figma/) capability (announced February 2026) lets you capture a live rendered UI and import it into Figma as editable frames.
 
 The use case: you've implemented a component or a page. You want a designer to review it, suggest changes, and iterate. Instead of sharing a URL and waiting for feedback in comments, you push the rendered UI into Figma as an editable frame. The designer can make changes directly in Figma, and you can pull those changes back into the code.
 
 ## How it works
-
-The Claude Code to Figma flow captures a live rendered UI — from localhost, staging, or production — and imports it into Figma as editable frames. You can pair this with MCP workflows for faster design-code iteration, and the imported frames can be modified by designers using standard Figma tools.
 
 You can capture multiple screens in a single session, preserving sequence and context — so multi-step flows make sense when reviewed together rather than as isolated screenshots.
 
@@ -26,12 +24,10 @@ The workflow:
 
 ## The bidirectional loop
 
-This creates a genuinely bidirectional design-developer workflow:
+For the full bidirectional loop, see [Figma MCP Workflows](/tooling/figma-mcp).
 
 - **Code → Figma**: implementation becomes the source of truth for the current state
 - **Figma → Code**: designer changes become the spec for the next iteration
-
-The model mediates both directions. It can capture the current implementation, describe what changed in the designer's Figma edits, and implement those changes in code.
 
 ## When this is most useful
 

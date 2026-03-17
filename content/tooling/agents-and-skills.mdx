@@ -2,7 +2,7 @@
 title: "Agents and Skills"
 description: "The emerging skills ecosystem: how reusable agent skills encode domain knowledge, and why they're more powerful than one-off prompt engineering."
 category: tooling
-order: 4
+order: 5
 interactiveTools: [config-generator, scenario-lab, workflow-recipe]
 ---
 
@@ -76,7 +76,7 @@ Claude Code supports this through `AGENTS.md` — a file where you define subage
 
 ### Example: a Prepr integration agent
 
-Here's the actual agent we use for Prepr CMS integration on a Next.js monorepo. It lives at `.cursor/agents/prepr-integration.md` and is invoked automatically whenever we're working with CMS data:
+Agent for Prepr CMS integration on a Next.js monorepo, invoked automatically when working with CMS data:
 
 ```markdown
 ---
@@ -127,11 +127,11 @@ const getResult = cache(async (slug: string) => {
 - Always organize imports: external → repo (@repo/) → local (@/)
 ```
 
-The description field is key — it tells the main agent when to delegate. "Working with CMS data, creating new content types, connecting frontend pages to Prepr" is precise enough that the agent knows to hand off automatically.
+The description field tells the main agent when to delegate.
 
 ### Example: a design system expert
 
-Here's the actual agent for Figma-to-code on the same project. It has deeper context about the token architecture — four layers from primitives to components — and uses the Figma MCP to inspect designs directly:
+Figma-to-code agent with token architecture context and Figma MCP access:
 
 ```markdown
 ---
@@ -181,15 +181,11 @@ Rules:
 ❌ className="p-4 mb-8"             → p-component-inner mb-component-outer
 ```
 
-What makes this agent useful in practice: it reads the source token files before every review rather than relying on cached knowledge. Tokens change — a design system update might rename `--color-spinach-500` — and the agent stays current because the instructions say to read the file, not assume.
-
-Both examples follow the same principle: encode the expertise once, delegate the execution. The agent description controls when delegation happens; the instructions control what happens when it does.
+It stays current by reading source token files before each review instead of relying on cached knowledge.
 
 ## Skills as team knowledge
 
-The most compelling use case for teams: encoding your team's conventions as skills. Instead of every developer writing the same instructions in their prompts, you write them once as a skill and everyone benefits.
-
-When a convention changes, you update the skill. When a new developer joins, they get the team's accumulated knowledge automatically. When you find a new pattern that works well, you add it to the skill.
+Encode your team's conventions as skills so everyone benefits: update once when conventions change, onboard new developers with accumulated knowledge, and add new patterns as you discover them.
 
 <ConfigGenerator />
 

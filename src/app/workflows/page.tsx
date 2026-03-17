@@ -23,19 +23,28 @@ export default function WorkflowsPage() {
         showEyebrow={false}
         showCount={false}
       />
-      {/* Prompting callout */}
+
+      {/* Section framing */}
       <FadeIn delay={0.05}>
-        <div className="mt-8 mb-2 rounded-2xl border border-emerald-500/20 bg-emerald-950/20 px-6 py-5">
+        <div className="mt-8 mb-2 space-y-4 text-base leading-relaxed text-zinc-400">
+          <p>
+            Now that you know which model to reach for, the question becomes how to
+            structure the work. These articles cover the repeatable flows I run —
+            from prompting habits through shipping.
+          </p>
+        </div>
+      </FadeIn>
+
+      {/* Prompting callout */}
+      <FadeIn delay={0.1}>
+        <div className="mt-6 mb-2 rounded-2xl border border-emerald-500/20 bg-emerald-950/20 px-6 py-5">
           <p className="font-mono text-xs font-semibold uppercase tracking-widest text-emerald-400 mb-2">
-            Prompting tip
+            Start here
           </p>
           <p className="text-sm leading-relaxed text-zinc-300">
-            <span className="font-semibold text-zinc-100">If anything is unclear, ask clarifying questions first.</span>{" "}
-            One question upfront is almost always faster than confidently solving the wrong problem.
-            Before starting a task, try:{" "}
-            <span className="font-mono text-xs text-emerald-300 bg-emerald-950/60 rounded px-1.5 py-0.5">
-              &ldquo;Before you start, ask me anything that would help you do this better.&rdquo;
-            </span>
+            <span className="font-semibold text-zinc-100">Prompting &amp; Pitfalls</span>{" "}
+            covers the habits that produce better output and the failure modes to watch for.
+            Everything else builds on it.
           </p>
           <div className="mt-3 flex flex-wrap gap-4">
             <Link
@@ -48,7 +57,7 @@ export default function WorkflowsPage() {
               href="/workflows/spec-to-pr"
               className="font-mono text-xs text-emerald-400 hover:text-emerald-300 transition-colors underline underline-offset-2"
             >
-              Spec → Plan → Code →
+              Then: Spec → PR →
             </Link>
           </div>
         </div>

@@ -35,6 +35,17 @@ export interface ModelResult {
   };
 }
 
+export interface PlanModeData {
+  /** Model used for the planning phase */
+  planModelId: string;
+  /** Model used for the execution phase */
+  executeModelId: string;
+  /** Plan-mode-specific insight replacing the default insight */
+  insight: string;
+  recommendationReason: string;
+  results: ModelResult[];
+}
+
 export interface Scenario {
   id: string;
   label: string;
@@ -51,6 +62,8 @@ export interface Scenario {
   recommendedModelId: string;
   /** Why the recommended model wins for this scenario */
   recommendationReason: string;
+  /** When present, enables the "With Plan Mode" tab for this scenario */
+  planMode?: PlanModeData;
 }
 
 // ---------------------------------------------------------------------------
@@ -198,6 +211,75 @@ export const SCENARIOS: Scenario[] = [
         costContext: { compareToModelId: "composer-1" },
       },
     ],
+    planMode: {
+      planModelId: "sonnet-4.6",
+      executeModelId: "composer-1",
+      insight:
+        "Plan mode turns Sonnet's scope drift into a feature. It reasons about the refactor approach — naming, structure, edge cases — but a fast model executes the actual edit. You get Sonnet's judgment without its tendency to touch adjacent code.",
+      recommendationReason:
+        "Sonnet plans the approach (extract helper, simplify conditionals, preserve API), then Composer-1 executes exactly that. The plan constrains scope; the executor stays within it. Cheaper than Sonnet doing everything, cleaner than Composer-1 guessing the approach.",
+      results: [
+        {
+          modelId: "sonnet-4.6",
+          verdict: "best",
+          summary: "Plans the approach without touching code directly",
+          outputExcerpt:
+            "Plan: Extract validation into `isValidUser()`, convert nested ifs to early returns, keep the function signature unchanged. Don't touch the calling code or add JSDoc — scope is this function only.",
+          strengths: [
+            "Identified the right refactor strategy",
+            "Explicitly scoped what NOT to change",
+            "Plan acts as a guardrail for the executor",
+          ],
+          weaknesses: [],
+          costCommentary: "Planning tokens are cheap — the plan is short and focused",
+        },
+        {
+          modelId: "composer-1",
+          verdict: "best",
+          summary: "Executes the plan precisely, stays in scope",
+          outputExcerpt:
+            "Following the plan: extracted `isValidUser()`, converted to early returns. No other files touched. Diff is exactly what was planned.",
+          strengths: [
+            "Followed the plan without deviation",
+            "Clean, minimal diff",
+            "Fast execution after plan was set",
+          ],
+          weaknesses: [],
+          costCommentary: "Fast executor — combined plan + execute cost is less than Sonnet doing both",
+          costContext: { compareToModelId: "sonnet-4.6" },
+        },
+        {
+          modelId: "gemini-flash",
+          verdict: "good",
+          summary: "Solid executor when given a clear plan",
+          outputExcerpt:
+            "Applied the planned refactor. Early returns and helper extraction done as specified.",
+          strengths: [
+            "Followed the plan accurately",
+            "Cheapest execution cost",
+          ],
+          weaknesses: [
+            "Less IDE-native — requires copy-paste to apply",
+          ],
+          costCommentary: "Cheapest combo when paired with a Sonnet plan",
+        },
+        {
+          modelId: "composer-1-5",
+          verdict: "caution",
+          summary: "Ignores the plan and does its own thing",
+          outputExcerpt:
+            "I see the plan, but I also noticed the calling code could be improved. I've updated both the function and its callers for consistency.",
+          strengths: ["High-quality output overall"],
+          weaknesses: [
+            "Overrode the plan's scope constraints",
+            "Agentic autonomy fights against plan-mode discipline",
+            "You lose the benefit of planning if the executor expands scope anyway",
+          ],
+          costCommentary: "Defeats the purpose of plan mode — use Composer-1 instead",
+          costContext: { compareToModelId: "composer-1" },
+        },
+      ],
+    },
   },
   {
     id: "generate-tests",
@@ -293,6 +375,78 @@ export const SCENARIOS: Scenario[] = [
         costContext: { compareToModelId: "sonnet-4.6" },
       },
     ],
+    planMode: {
+      planModelId: "sonnet-4.6",
+      executeModelId: "haiku-4.5",
+      insight:
+        "The hard part of test generation is knowing what to test — the edge cases, race conditions, failure modes. The easy part is writing the actual test code. Plan mode lets a strong model do the thinking while a fast model does the typing.",
+      recommendationReason:
+        "Sonnet identifies the edge cases (concurrent payments, timeouts, idempotency) and writes a test plan. Haiku generates the actual test code from that plan. You get Sonnet-quality coverage at a fraction of the cost.",
+      results: [
+        {
+          modelId: "sonnet-4.6",
+          verdict: "best",
+          summary: "Identifies every edge case worth testing",
+          outputExcerpt:
+            "Test plan for processPayment:\n1. Happy path — valid payment processes correctly\n2. Concurrent duplicate — two payments for same order, one must be rejected\n3. Network timeout — payment gateway doesn't respond within 5s\n4. Partial failure — charge succeeds but confirmation write fails\n5. Idempotency — retried payment with same key returns original result",
+          strengths: [
+            "Caught the concurrent payment race condition",
+            "Identified the partial failure scenario most devs miss",
+            "Plan is specific enough for any model to execute",
+          ],
+          weaknesses: [],
+          costCommentary: "Planning tokens are a fraction of writing the full test suite",
+        },
+        {
+          modelId: "haiku-4.5",
+          verdict: "best",
+          summary: "Turns the test plan into working code quickly",
+          outputExcerpt:
+            "// From plan item 2: concurrent duplicate payments\nit('should reject duplicate payment attempts', async () => {\n  const [r1, r2] = await Promise.all([processPayment(order), processPayment(order)])\n  expect([r1.status, r2.status]).toContain('duplicate_rejected')\n})",
+          strengths: [
+            "Followed the plan faithfully — all 5 scenarios covered",
+            "Fast generation, clean test structure",
+            "Would have missed these edge cases without the plan",
+          ],
+          weaknesses: [
+            "Test descriptions are more mechanical than hand-written",
+          ],
+          costCommentary: "Negligible execution cost — the plan did the heavy lifting",
+        },
+        {
+          modelId: "gpt4o-mini",
+          verdict: "good",
+          summary: "Decent executor, but Haiku is faster for the same result",
+          outputExcerpt:
+            "Generated all 5 test cases from the plan. Structure is clean, assertions are correct.",
+          strengths: [
+            "Followed the plan accurately",
+            "Good test structure",
+          ],
+          weaknesses: [
+            "Slightly slower than Haiku for equivalent output",
+          ],
+          costCommentary: "Works fine, but Haiku is the better executor here",
+        },
+        {
+          modelId: "opus-4.6",
+          verdict: "caution",
+          summary: "Overkill as planner — Sonnet catches the same edge cases",
+          outputExcerpt:
+            "Comprehensive test strategy including property-based testing, mutation testing suggestions, and coverage analysis for the payment module…",
+          strengths: [
+            "Most thorough test strategy",
+            "Suggested advanced testing approaches",
+          ],
+          weaknesses: [
+            "Marginal improvement over Sonnet's plan for 3x the cost",
+            "Extra depth (property-based testing) often isn't needed",
+          ],
+          costCommentary: "Sonnet's plan is good enough — save Opus for architecture",
+          costContext: { compareToModelId: "sonnet-4.6" },
+        },
+      ],
+    },
   },
   {
     id: "multi-file-feature",
@@ -396,6 +550,98 @@ export const SCENARIOS: Scenario[] = [
         costContext: { compareToModelId: "composer-1-5" },
       },
     ],
+    planMode: {
+      planModelId: "opus-4.6",
+      executeModelId: "composer-1",
+      insight:
+        "Multi-file features fail when the executor doesn't understand the big picture. Plan mode flips the direct approach: Opus maps the architecture and file changes, then a fast model executes each file edit. The plan prevents the cross-file inconsistencies that plague cheap models working alone.",
+      recommendationReason:
+        "Opus plans the full feature — which files to touch, what patterns to follow, how the layers connect. Composer-1 executes each file change from the plan. Total cost is lower than Composer 1.5 doing everything autonomously, and the plan catches architectural issues upfront.",
+      results: [
+        {
+          modelId: "opus-4.6",
+          verdict: "best",
+          summary: "Maps the architecture before a single line is written",
+          outputExcerpt:
+            "Plan:\n1. New type `PaymentIntent` in src/types/payment.ts — extends existing `Transaction` type\n2. Service: src/services/payment.ts — follow the existing `OrderService` pattern, inject `db` via constructor\n3. API route: src/app/api/payments/route.ts — POST handler with Zod validation, reuse `withAuth` middleware\n4. UI: src/components/PaymentForm.tsx — use existing `useFormState` pattern from OrderForm\nNote: the current service layer couples data access and business logic. Keep them separate in the new service.",
+          strengths: [
+            "Identified every file that needs to change",
+            "Referenced existing patterns by name",
+            "Caught the coupling issue and planned around it",
+            "Plan is specific enough for a fast model to execute",
+          ],
+          weaknesses: [],
+          costCommentary: "Planning cost is a fraction of the full implementation — and prevents rework",
+        },
+        {
+          modelId: "composer-1",
+          verdict: "best",
+          summary: "Executes each planned file change cleanly",
+          outputExcerpt:
+            "Following the plan: created PaymentIntent type, implemented PaymentService with constructor injection, added POST route with Zod validation and withAuth middleware. All files follow the patterns specified in the plan.",
+          strengths: [
+            "Followed the plan file-by-file without deviation",
+            "Matched existing patterns because the plan told it to",
+            "Fast execution — no time spent exploring the codebase",
+          ],
+          weaknesses: [
+            "Won't catch issues the plan missed",
+          ],
+          costCommentary: "Combined Opus plan + Composer-1 execution costs less than Composer 1.5 doing everything",
+          costContext: { compareToModelId: "composer-1-5" },
+        },
+        {
+          modelId: "sonnet-4.6",
+          verdict: "good",
+          summary: "Strong planner, but Opus catches more architectural issues",
+          outputExcerpt:
+            "Plan covers the three layers and references existing patterns. Missed the service layer coupling issue that Opus flagged.",
+          strengths: [
+            "Good plan structure",
+            "Cheaper planning phase than Opus",
+          ],
+          weaknesses: [
+            "Missed the architectural coupling issue",
+            "Plan was less specific about which patterns to follow",
+          ],
+          costCommentary: "Good enough for simpler features — use Opus for complex multi-layer work",
+          costContext: { compareToModelId: "opus-4.6" },
+        },
+        {
+          modelId: "gemini-flash",
+          verdict: "good",
+          summary: "Capable executor when the plan is detailed enough",
+          outputExcerpt:
+            "Implemented all four files from the plan. Followed the specified patterns. One type import needed manual correction.",
+          strengths: [
+            "Cheapest execution cost",
+            "Followed the plan accurately",
+          ],
+          weaknesses: [
+            "Needed one manual fix — less reliable than Composer-1 for multi-file edits",
+            "No IDE integration for applying changes",
+          ],
+          costCommentary: "Cheapest combo overall, but expect minor manual fixes",
+        },
+        {
+          modelId: "composer-1-5",
+          verdict: "caution",
+          summary: "Autonomous approach costs more and adds less when a plan exists",
+          outputExcerpt:
+            "I see the plan, but let me also explore the codebase to verify… Found the service layer. Implementing with some adjustments to the plan based on what I found.",
+          strengths: [
+            "Self-verified against the codebase",
+          ],
+          weaknesses: [
+            "Spent tokens re-exploring what the plan already covered",
+            "Deviated from the plan based on its own judgment",
+            "Agentic overhead is wasted when the plan is already good",
+          ],
+          costCommentary: "The plan already did the hard work — Composer 1.5's autonomy adds cost without adding value here",
+          costContext: { compareToModelId: "composer-1" },
+        },
+      ],
+    },
   },
   {
     id: "architecture-decision",

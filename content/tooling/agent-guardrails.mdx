@@ -1,6 +1,6 @@
 ---
 title: "Agent Guardrails"
-description: "Keeping AI agents on track. The guardrails that prevent the most common failure modes and the habits that make agent-assisted development reliable."
+description: "Keeping AI agents on track. Scope constraints, confirmation rules, and CLAUDE.md patterns for reliable agent behavior."
 category: tooling
 order: 3
 interactiveTools: [failure-gallery]
@@ -28,6 +28,16 @@ A good `CLAUDE.md` includes:
 - Project conventions (naming, file structure, patterns to follow)
 - Explicit guardrails (what not to do)
 - Context about the codebase (what's important, what's legacy, what's in flux)
+
+## SKILL.md — guardrails with domain scope
+
+`CLAUDE.md` is always-on and project-wide. `SKILL.md` files are composable and domain-specific — the agent reads them when working in a specific area and applies the knowledge automatically.
+
+This makes them a natural home for domain-scoped guardrails. A `SKILL.md` for your API layer might say "never return raw database errors to the client." A `SKILL.md` for your design system might say "never use arbitrary values — map everything to a semantic token." These constraints belong close to the domain knowledge they protect, not buried in a project-wide config file.
+
+The layering works like this: `SKILL.md` provides domain guardrails, `CLAUDE.md` provides project-wide guardrails, and the task prompt provides the specific request. Each layer handles what it knows best.
+
+See [Agents and Skills](/tooling/agents-and-skills) for how to write and structure skill files.
 
 ## When guardrails fail
 

@@ -2,7 +2,7 @@
 title: "Spec Files: AI-Readable Documentation That Ships With Your Code"
 description: "Why .spec.md files beat chat-only specs, how to write them, and two workflows for keeping them in sync with your code."
 category: workflows
-order: 8
+order: 7
 ---
 
 The [Spec → PR workflow](/workflows/spec-to-pr) covers writing a spec in the chat before asking the model to plan and code. That works well for a single session. The problem is that the spec disappears when the conversation ends.
@@ -100,19 +100,19 @@ A link is active if the pathname exactly matches or is a sub-path
 
 Each section does specific work for the AI:
 
-**Overview** gives the model a one-sentence mental model before it reads anything else. Without this, the model infers purpose from the code — which is slower and sometimes wrong.
+**Overview** gives the model a one-sentence mental model before it reads anything else.
 
-**Inputs** tells the model what data the component consumes and where it comes from. This prevents the model from inventing props that don't exist or fetching data the component is supposed to receive from outside.
+**Inputs** tells the model what data the component consumes and where it comes from.
 
-**Outputs** describes the rendered structure. When the model modifies the component, it knows what it's allowed to change and what it needs to preserve.
+**Outputs** describes the rendered structure.
 
-**Behaviour / Logic** captures the non-obvious logic — the kind that looks arbitrary in code but has a specific reason. The `startsWith(\`${href}/\`)` pattern in the active check is a good example: without the spec, a model refactoring this code might simplify it in a way that breaks sub-path matching.
+**Behaviour / Logic** captures the non-obvious logic — the kind that looks arbitrary in code but has a specific reason.
 
-**Constraints** is where you encode architectural decisions. "Must be a Client Component" prevents the model from converting it to a Server Component to optimise it. "Max width must match the page layout container" prevents the model from changing the width in isolation.
+**Constraints** is where you encode architectural decisions.
 
-**Edge Cases** is the section that most specs skip and most bugs come from. Documenting edge cases explicitly means the model considers them when making changes, not just when generating the initial implementation.
+**Edge Cases** is the section that most specs skip and most bugs come from.
 
-**Not in scope** is the most underrated section. It tells the model what you've deliberately chosen not to build. Without it, the model will add features it thinks are helpful — a mobile menu, a theme toggle — because those are reasonable things a header might have.
+**Not in scope** tells the model what you've deliberately chosen not to build.
 
 ## Two workflows for making changes
 
@@ -226,8 +226,6 @@ The naming convention `{filename}.spec.md` makes the relationship obvious and ke
 ## Keeping specs in sync
 
 The spec is only useful if it's accurate. A spec that describes what the component used to do is worse than no spec — it actively misleads the model.
-
-The discipline is simple: **any PR that changes a component's behaviour should also update its spec.** This is a good addition to your PR checklist or code review criteria.
 
 If you're using AI to make the change, ask it to update the spec as part of the same task:
 

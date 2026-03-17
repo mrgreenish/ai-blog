@@ -47,21 +47,21 @@ export const CATEGORY_META: Record<
   models: {
     label: "Models",
     description:
-      "When to reach for which model — from real shipping experience. Reasoning vs fast, model personalities, design to code.",
+      "Reasoning vs fast, model personalities, and the tradeoffs that shape every task.",
     accent: "text-blue-400",
     accentBg: "bg-blue-400/10 border-blue-400/20",
   },
   workflows: {
     label: "Workflows",
     description:
-      "Battle-tested flows I actually run as a developer. Spec to PR, bug to fix, design to Storybook — with guardrails and expected outputs.",
+      "Spec to PR, bug to fix, design to Storybook — step-by-step flows with guardrails and expected outputs.",
     accent: "text-emerald-400",
     accentBg: "bg-emerald-400/10 border-emerald-400/20",
   },
   tooling: {
     label: "Tooling",
     description:
-      "Claude Code, Codex, Figma MCP, agent guardrails, and the emerging skills ecosystem. What I use, how I configure it, what broke.",
+      "Claude Code, Codex, Figma MCP, agent guardrails, and the skills ecosystem. Configuration, usage patterns, and tradeoffs.",
     accent: "text-violet-400",
     accentBg: "bg-violet-400/10 border-violet-400/20",
   },

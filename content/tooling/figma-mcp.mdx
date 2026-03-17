@@ -2,7 +2,7 @@
 title: "Figma MCP Workflows"
 description: "Design context in the coding loop. How the Figma MCP changes design-to-code from interpretation to direct translation."
 category: tooling
-order: 5
+order: 6
 interactiveTools: [workflow-recipe]
 ---
 
@@ -46,25 +46,10 @@ The Figma MCP enables a tighter design-developer loop. Instead of the designer e
 
 The model mediates the translation in both directions.
 
-## The reverse direction: Claude Code to Figma
+## The reverse direction: Code to Figma
 
-The MCP is usually talked about as a one-way flow — design into code. But Figma's [Claude Code to Figma](https://www.figma.com/blog/introducing-claude-code-to-figma/) capability (announced February 2026) closes the loop in the other direction: you can capture a live rendered UI from localhost, staging, or production and push it into Figma as editable frames.
+The loop runs both ways. Figma's [Claude Code to Figma](https://www.figma.com/blog/introducing-claude-code-to-figma/) capability lets you capture a live rendered UI and push it into Figma as editable frames for design review. See [Code to Canvas](/tooling/code-to-canvas) for the full reverse-loop workflow.
 
-This matters because code-first exploration is inherently single-player. One person holds the branch, the dev server, and the context. As soon as the UI grows beyond a single screen, getting feedback means sharing screenshots, recordings, or asking someone to run a build locally — each option adds friction at exactly the moment you'd benefit from going wider.
-
-With the capture flow, each screen becomes a Figma frame you can organize, duplicate, annotate, and share alongside the rest of your design work. Teams can react to the same artifact at the same fidelity, without needing to context-switch into a new environment.
-
-You can capture multiple screens in a single session, preserving sequence and context — useful for multi-step flows where the full experience needs to be reviewed together.
-
-## The full roundtrip
-
-The two capabilities together create a complete design-developer loop:
-
-- **Figma → Code** (Figma MCP): the model reads structured design data — tokens, variants, layout constraints — and implements components with your actual values, not guessed ones
-- **Code → Figma** (Claude Code to Figma): the model captures the live implementation and pushes it onto the canvas for design review and iteration
-
-Neither direction requires manual export, screenshot interpretation, or spec handoff. The model mediates both translations.
-
-This is the same pattern Figma Make uses — prompts that generate working prototypes, then push them to the canvas for further iteration. Claude Code to Figma applies the same idea to code-first workflows.
+Together, the two directions create a complete design-developer loop — no manual export, screenshot interpretation, or spec handoff required.
 
 <WorkflowRecipe />

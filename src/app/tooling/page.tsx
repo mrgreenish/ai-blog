@@ -9,7 +9,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Tooling",
   description:
-    "Claude Code, Codex, Figma MCP, agent guardrails, and the emerging skills ecosystem. What I use, how I configure it, what broke.",
+    "Figma MCP, agent guardrails, diff review loops, and the skills ecosystem. Configuration, usage patterns, and tradeoffs.",
 };
 
 export default function ToolingPage() {
@@ -18,6 +18,18 @@ export default function ToolingPage() {
   return (
     <div className="mx-auto max-w-5xl px-6 py-12">
       <CategoryHeader category="tooling" articleCount={articles.length} />
+
+      {/* Section framing */}
+      <FadeIn delay={0.05}>
+        <div className="mt-8 mb-2 space-y-4 text-base leading-relaxed text-zinc-400">
+          <p>
+            You know the models and the workflows. This section covers the tools
+            that make the system repeatable — Figma MCP, guardrails, diff review
+            loops, and the skills ecosystem.
+          </p>
+        </div>
+      </FadeIn>
+
       <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
         {articles.map((article) => (
           <ArticleCard key={article.slug} article={article} />

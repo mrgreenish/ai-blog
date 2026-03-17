@@ -10,29 +10,20 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Models",
   description:
-    "When to reach for which model — from real shipping experience. Reasoning vs fast, model personalities, design to code.",
+    "When to reach for which model — reasoning vs fast, model personalities, and the tradeoffs that shape every task.",
 };
 
 const NARRATIVE_SECTIONS = [
   {
     heading: "The real question",
     body: [
-      "Not \"which model is best\" — that question has no answer. The real question is which model is right for this task, at this cost, with this latency budget.",
-      "That framing changes everything. It turns model selection from a one-time setup decision into a skill you develop over time.",
+      "Not \"which model is best\" — the real question is which model fits this task, at this cost, with this latency budget.",
     ],
   },
   {
     heading: "The tradeoff",
     body: [
       "Reasoning models think longer and cost more. Fast models respond in seconds and cost almost nothing. Neither is always right.",
-      "The mistake I made early on: defaulting to the most capable model for everything. The bill was painful. The latency was worse.",
-    ],
-  },
-  {
-    heading: "It keeps shifting",
-    body: [
-      "New versions drop. Behaviour changes. A model that was unreliable for a task six months ago might be the right choice today.",
-      "So this isn't a reference page. It's a set of frameworks for thinking about model choice — ones that hold up even as the models themselves change.",
     ],
   },
 ];
@@ -45,13 +36,8 @@ const READING_JOURNEY = [
   },
   {
     step: "02",
-    slug: "design-to-code-and-back",
-    bridge: "See how model choice plays out in a concrete workflow — turning Figma designs into code and back again.",
-  },
-  {
-    step: "03",
     slug: "model-personalities",
-    bridge: "Go deeper. Beyond speed and cost, every model has instincts. Knowing their tendencies changes how you prompt.",
+    bridge: "Beyond speed and cost, every model has instincts. Knowing their tendencies changes how you prompt.",
   },
 ];
 
@@ -82,16 +68,12 @@ export default function ModelsPage() {
           <FadeIn delay={0.05}>
             <div className="space-y-5 text-base leading-relaxed text-zinc-400">
               <p>
-                Model choice was the first thing I got wrong. I defaulted to the most capable model
-                for everything — and paid for it in latency, cost, and occasionally in quality.
-              </p>
-              <p>
-                The better mental model: think of each AI model like a specialist. Some are slow,
-                methodical, expensive — great for hard problems. Others are fast, cheap, and
-                surprisingly capable — ideal for well-defined tasks in a loop.
+                Think of each AI model like a specialist. Some are slow, methodical, expensive —
+                great for hard problems. Others are fast, cheap, and surprisingly capable for
+                well-defined tasks.
               </p>
               <p className="font-medium text-zinc-300">
-                Knowing which to reach for, and when, is the foundation everything else builds on.
+                Knowing which to reach for is the foundation everything else builds on.
               </p>
             </div>
           </FadeIn>

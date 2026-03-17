@@ -1,6 +1,6 @@
 ---
 title: "Bug Report → Minimal Repro → Fix → Regression Tests"
-description: "The AI-assisted debugging flow that actually works. The key is minimal reproduction — everything else follows from that."
+description: "The AI-assisted debugging flow. The key is minimal reproduction — everything else follows from that."
 category: workflows
 order: 3
 interactiveTools: [workflow-recipe]
@@ -33,6 +33,20 @@ For bugs on `localhost`, I want the model to use the browser as evidence, not ju
 **With Browser MCP:** let the model navigate the page, inspect the rendered UI, and reason from actual browser state instead of guessed behavior.
 
 The useful prompt shape is: "Open `http://localhost:3000/...`, reproduce the bug, check console errors / network failures / visible UI state, then explain the likely cause before changing code."
+
+</InfoBlock>
+
+## Cursor's Debug Mode
+
+When standard Agent interactions struggle with a bug — especially ones you can reproduce but can't explain, race conditions, timing issues, or regressions — [Debug Mode](https://cursor.com/docs/agent/debug-mode) takes a different approach. Instead of guessing at fixes, the agent generates hypotheses, adds log instrumentation, and uses runtime evidence to pinpoint the root cause before making a targeted fix. The loop is: explore and hypothesize → add instrumentation → reproduce the bug → analyze logs → fix → verify and remove instrumentation. Switch to it via the mode picker dropdown in Agent or press Shift+Tab.
+
+<InfoBlock title="When to use Debug Mode">
+
+Use Debug Mode when the cause isn't obvious from reading the code: race conditions, performance issues, memory leaks, or regressions where something used to work.
+
+**How to activate:** Mode picker dropdown in Agent, or Shift+Tab.
+
+**The useful prompt shape:** Describe the bug, how to reproduce it, and what you expect vs. what happens. Include error messages and stack traces if you have them. Follow the agent's reproduction steps exactly so it captures real runtime behavior.
 
 </InfoBlock>
 

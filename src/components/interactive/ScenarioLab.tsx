@@ -11,6 +11,7 @@ import {
   type Scenario,
   type ModelResult,
   type Verdict,
+  type PlanModeData,
 } from "@/lib/scenarioLabData";
 import { getScenarioLabModels, PRICING_META } from "@/lib/modelSpecs";
 
@@ -221,12 +222,46 @@ function ModelResultCard({
 // Scenario view
 // ---------------------------------------------------------------------------
 
+type ScenarioMode = "direct" | "planMode";
+
+function WorkflowIndicator({ planMode }: { planMode: PlanModeData }) {
+  const planSpec = MODEL_BY_ID[planMode.planModelId];
+  const execSpec = MODEL_BY_ID[planMode.executeModelId];
+  return (
+    <div className="flex items-center gap-2 rounded-lg border border-violet-400/20 bg-violet-400/5 px-3 py-2">
+      <span className="font-mono text-[10px] font-semibold text-violet-400">workflow</span>
+      <span className="font-mono text-[11px] text-zinc-300">
+        {planSpec?.name ?? planMode.planModelId}
+      </span>
+      <span className="text-[10px] text-zinc-600">plans</span>
+      <span className="text-zinc-600">→</span>
+      <span className="font-mono text-[11px] text-zinc-300">
+        {execSpec?.name ?? planMode.executeModelId}
+      </span>
+      <span className="text-[10px] text-zinc-600">executes</span>
+    </div>
+  );
+}
+
 function ScenarioView({ scenario }: { scenario: Scenario }) {
-  // Sort: best first, then good, caution, avoid
+  const [mode, setMode] = useState<ScenarioMode>("direct");
+  const hasPlanMode = !!scenario.planMode;
+
+  const isPlan = mode === "planMode" && hasPlanMode;
+  const activeResults = isPlan ? scenario.planMode!.results : scenario.results;
+  const activeInsight = isPlan ? scenario.planMode!.insight : scenario.insight;
+  const activeReason = isPlan
+    ? scenario.planMode!.recommendationReason
+    : scenario.recommendationReason;
+
   const VERDICT_ORDER: Record<Verdict, number> = { best: 0, good: 1, caution: 2, avoid: 3 };
-  const sorted = [...scenario.results].sort(
+  const sorted = [...activeResults].sort(
     (a, b) => VERDICT_ORDER[a.verdict] - VERDICT_ORDER[b.verdict]
   );
+
+  const recommendedId = isPlan
+    ? scenario.planMode!.results.find((r) => r.verdict === "best")?.modelId
+    : scenario.recommendedModelId;
 
   return (
     <motion.div
@@ -247,9 +282,40 @@ function ScenarioView({ scenario }: { scenario: Scenario }) {
         </div>
         <div className="flex items-start gap-2 rounded-lg border border-blue-400/15 bg-blue-400/5 px-3 py-2">
           <span className="mt-0.5 shrink-0 text-blue-400 text-xs">→</span>
-          <p className="text-xs leading-relaxed text-blue-300">{scenario.insight}</p>
+          <p className="text-xs leading-relaxed text-blue-300">{activeInsight}</p>
         </div>
       </div>
+
+      {/* Mode toggle — only shown when planMode data exists */}
+      {hasPlanMode && (
+        <div className="flex items-center gap-2">
+          <div className="inline-flex rounded-lg border border-zinc-700 bg-zinc-900 p-0.5">
+            <button
+              onClick={() => setMode("direct")}
+              className={`rounded-md px-3 py-1 font-mono text-[11px] transition-colors ${
+                mode === "direct"
+                  ? "bg-amber-400/15 text-amber-300 border border-amber-400/30"
+                  : "text-zinc-500 border border-transparent hover:text-zinc-400"
+              }`}
+            >
+              Direct
+            </button>
+            <button
+              onClick={() => setMode("planMode")}
+              className={`rounded-md px-3 py-1 font-mono text-[11px] transition-colors ${
+                mode === "planMode"
+                  ? "bg-violet-400/15 text-violet-300 border border-violet-400/30"
+                  : "text-zinc-500 border border-transparent hover:text-zinc-400"
+              }`}
+            >
+              With Plan Mode
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Workflow indicator for plan mode */}
+      {isPlan && <WorkflowIndicator planMode={scenario.planMode!} />}
 
       {/* Model result cards */}
       <div className="space-y-2">
@@ -258,7 +324,7 @@ function ScenarioView({ scenario }: { scenario: Scenario }) {
             key={result.modelId}
             result={result}
             scenario={scenario}
-            isRecommended={result.modelId === scenario.recommendedModelId}
+            isRecommended={result.modelId === recommendedId}
           />
         ))}
       </div>
@@ -269,7 +335,7 @@ function ScenarioView({ scenario }: { scenario: Scenario }) {
           Bottom line
         </p>
         <p className="text-xs leading-relaxed text-zinc-300">
-          {scenario.recommendationReason}
+          {activeReason}
         </p>
       </div>
     </motion.div>

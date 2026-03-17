@@ -38,18 +38,12 @@ const NARRATIVE_SECTIONS = [
       <>
         If you squint, this whole era feels like the early internet — the 1980s kind.
         Everyone experimenting. Nothing standardised. Half the tools built in a weekend.
-        That same sense that the ground is shifting and anyone paying attention could end up ahead.
       </>,
       <>
-        But faster. Wildly faster. And with a frequency the early internet never had — a low,
-        persistent hum of{" "}
+        But faster. Wildly faster. And with a persistent hum of{" "}
         <em className="text-zinc-300 not-italic font-medium">
           are we building something we don&apos;t fully control?
         </em>
-      </>,
-      <>
-        Excitement and unease in the same breath. That&apos;s the backdrop.
-        And honestly, it makes the work more interesting, not less.
       </>,
     ],
   },
@@ -60,22 +54,9 @@ const NARRATIVE_SECTIONS = [
         Which model should I use for this task?
       </span>,
       <>
-        That question matters more than most people think. Models behave differently.
-        Some are structured but stiff. Some are creative but drift. Some reason deeply.
-        Others are fast but shallow.
+        That question shapes everything else — the workflow, the guardrails, the cost.
+        The articles here walk through how I answer it.
       </>,
-      <>Picking the right one changes the whole workflow.</>,
-    ],
-  },
-  {
-    heading: "And it keeps changing",
-    body: [
-      <>The tricky part is that everything moves fast.</>,
-      <>
-        New versions drop. Context windows grow. Behaviour shifts. Guardrails change.
-        What worked a few months ago can feel different today.
-      </>,
-      <>So model choice isn&apos;t a one-time decision. It&apos;s constant recalibration.</>,
     ],
   },
 ];
@@ -113,16 +94,12 @@ export default function Home() {
           <FadeIn delay={0.05}>
             <div className="space-y-5 text-base leading-relaxed text-zinc-400">
               <p>
-                Over the past year I&apos;ve been using AI inside real projects — not as a toy,
-                but inside specs, tickets and production code.
-              </p>
-              <p>
-                I started experimenting out of curiosity. Very quickly it turned into testing
-                what actually works, what doesn&apos;t, and what fails in subtle ways you only
-                notice later.
+                Over the past year I&apos;ve been using AI inside real projects —
+                specs, tickets, production code. What started as curiosity turned into
+                a set of habits I now run every day.
               </p>
               <p className="font-medium text-zinc-300">
-                This isn&apos;t theory. It&apos;s just what I&apos;ve learned while building.
+                This site is the distilled version of what I&apos;ve learned.
               </p>
             </div>
           </FadeIn>
