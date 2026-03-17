@@ -6,7 +6,7 @@ order: 4
 interactiveTools: [workflow-recipe]
 ---
 
-In my experience, the traditional design-to-code workflow is slow and lossy: designer exports specs, developer interprets them, implementation drifts from design, designer reviews and finds issues, repeat. AI tooling — specifically the Figma MCP — can compress this loop significantly.
+The traditional design-to-code workflow is slow and lossy: designer exports specs, developer interprets them, implementation drifts from design, designer reviews and finds issues, repeat. The Figma MCP can compress this loop significantly.
 
 For how the Figma MCP provides structured design data instead of screenshots, see [Figma MCP Workflows](/tooling/figma-mcp).
 
@@ -26,10 +26,10 @@ For how the Figma MCP provides structured design data instead of screenshots, se
 
 ## What makes this better than the old way
 
-The biggest improvement: the token-mapping skill. Without it, every new design-to-code session starts from zero — the model has to rediscover how your Figma tokens map to Tailwind classes. With the skill, that knowledge is persistent. The model knows that your `@theme` block defines `--font-display` as Space Grotesk, that your spacing follows Tailwind's default scale, and that your color palette lives in Tailwind's zinc/blue/emerald ranges. One-time setup, every-session payoff.
+The token-mapping skill is the biggest improvement. Without it, every new design-to-code session starts from zero — the model has to rediscover how your Figma tokens map to Tailwind classes. With the skill, that knowledge is persistent. It knows your `@theme` block defines `--font-display` as Space Grotesk, your spacing follows Tailwind's default scale, your color palette lives in zinc/blue/emerald. One-time setup, every-session payoff.
 
-The second improvement: the model can generate accurate code for spacing and color because it has the actual values from Figma, not a screenshot. "The gap between these elements is 12px" is information the model has from the design data — and the skill tells it that 12px maps to `gap-3` in your Tailwind config.
+Second: accurate spacing and color because the model has actual values from Figma, not a screenshot. "The gap between these elements is 12px" — the skill tells it 12px maps to `gap-3` in your Tailwind config.
 
-The third improvement: Storybook story generation from Figma variants is genuinely useful. A component with 4 variants, 3 sizes, and 2 states has 24 combinations. Generating stories for all of them manually is tedious. The model does it in one shot.
+Third: Storybook story generation from Figma variants. A component with 4 variants, 3 sizes, and 2 states has 24 combinations. Generating stories for all of them manually is tedious. The model does it in one shot.
 
 <WorkflowRecipe />

@@ -6,7 +6,7 @@ order: 2
 interactiveTools: [workflow-recipe, model-mixer]
 ---
 
-This is the workflow I run for most non-trivial features. It's not the fastest path to working code — it's the path that produces code I'm comfortable shipping. The extra steps (planning, review, explicit test generation) catch the category of bugs that are hardest to find in code review.
+This is what I run for most non-trivial features. Not the fastest path to working code — the path that produces code I'm comfortable shipping. The extra steps (planning, review, explicit test generation) catch the bugs that are hardest to find in code review.
 
 Not sure this is the right workflow for your task? Use the finder to get a recommendation in a few clicks.
 
@@ -28,15 +28,15 @@ Not sure this is the right workflow for your task? Use the finder to get a recom
 
 ## Why the plan step matters
 
-The most common failure mode I've seen: skipping the plan and going straight to code. The model produces something that works for the happy path but misses the constraints you had in mind. You then spend time correcting the code instead of reviewing a plan — which is much slower.
+Most common failure mode: skipping the plan and going straight to code. The model produces something that works for the happy path but misses the constraints you had in mind. Then you're correcting code instead of reviewing a plan — much slower.
 
-The plan step also surfaces ambiguities in your spec. If the model asks a clarifying question during planning, that's a question you would have had to answer anyway — better to answer it before the code is written.
+The plan step also surfaces ambiguities in your spec. If the model asks a clarifying question during planning, that's a question you'd have had to answer anyway — better to answer it before code is written.
 
-One way to make this explicit: before asking for the plan, add **"If anything in the spec is unclear or leaves room for multiple interpretations, ask me before planning."** This turns the plan step into a two-pass process — clarify first, then plan — and consistently produces tighter output.
+One way to make this explicit: before asking for the plan, add **"If anything in the spec is unclear or leaves room for multiple interpretations, ask me before planning."** Turns it into a two-pass process (clarify, then plan) and consistently produces tighter output.
 
-## Model strategy for this workflow
+## Model strategy
 
-Different steps benefit from different models. Planning and review are where reasoning models earn their cost. Code generation and test writing are where fast models are often sufficient.
+Different steps benefit from different models. Planning and review are where reasoning models earn their cost. Code generation and test writing? Fast models are often sufficient.
 
 <ModelMixer />
 

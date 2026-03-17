@@ -5,13 +5,13 @@ category: workflows
 order: 7
 ---
 
-The [Spec → PR workflow](/workflows/spec-to-pr) covers writing a spec in the chat before asking the model to plan and code. That works well for a single session. The problem is that the spec disappears when the conversation ends.
+The [Spec → PR workflow](/workflows/spec-to-pr) covers writing a spec in chat before asking the model to plan and code. Works well for a single session. Problem is, the spec disappears when the conversation ends.
 
-A `.spec.md` file solves that. It's a markdown file that lives next to the component it describes, gets committed to the repo, and becomes the durable source of truth for what that component does and — just as importantly — what it doesn't do.
+A `.spec.md` file solves that. Markdown file that lives next to the component it describes, gets committed to the repo, becomes the durable source of truth for what that component does — and what it doesn't do.
 
 ## Why spec files beat chat-only specs
 
-When you write a spec in chat, it exists for one session. The next time you open a new conversation and ask about the same component, the AI has no memory of the decisions you made. You either re-explain everything or the model makes assumptions.
+Write a spec in chat, it exists for one session. Next time you open a new conversation about the same component, the AI has no memory of the decisions you made. You either re-explain everything or the model makes assumptions.
 
 A spec file persists:
 
@@ -21,7 +21,7 @@ A spec file persists:
 - **Prevents scope creep** — a "Not in scope" section is explicit and durable, not buried in a chat transcript
 - **Onboarding aid** — new developers read the spec to understand the component without digging through the code
 
-The most underrated benefit is the "Not in scope" section. If you tell the model in chat "don't add a mobile menu", that constraint lives for one message. If it's in the spec file, it's enforced every time you reference the spec.
+The most underrated benefit: the "Not in scope" section. Tell the model in chat "don't add a mobile menu" — that constraint lives for one message. Put it in the spec file, and it's enforced every time you reference the spec.
 
 ## Anatomy of a spec file
 
@@ -221,13 +221,13 @@ src/lib/
 ├── content.spec.md
 ```
 
-The naming convention `{filename}.spec.md` makes the relationship obvious and keeps the spec out of the way in file explorers — it's not a test file, not a config file, just documentation that travels with the code.
+The naming convention `{filename}.spec.md` makes the relationship obvious — not a test file, not a config file, just documentation that travels with the code.
 
 ## Keeping specs in sync
 
-The spec is only useful if it's accurate. A spec that describes what the component used to do is worse than no spec — it actively misleads the model.
+A spec is only useful if it's accurate. One that describes what the component *used* to do is worse than no spec — it actively misleads the model.
 
-If you're using AI to make the change, ask it to update the spec as part of the same task:
+If you're using AI to make the change, have it update the spec as part of the same task:
 
 ```
 @Header.spec.md @Header.tsx
@@ -236,4 +236,4 @@ Add a "Workflows" link to NAV_LINKS. Update the spec to reflect
 the new nav link, then update the component.
 ```
 
-The model updates both files in one pass. The spec stays accurate without extra effort.
+Both files update in one pass. Spec stays accurate without extra effort.
