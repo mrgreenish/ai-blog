@@ -676,8 +676,7 @@ function PipelineBuilder() {
             step={1}
             value={retries}
             onChange={(e) => setRetries(Number(e.target.value))}
-            className="mt-2 h-1.5 w-full cursor-pointer appearance-none rounded-full accent-violet-400 [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-violet-400"
-            className="bg-border-strong"
+            className="mt-2 h-1.5 w-full cursor-pointer appearance-none rounded-full bg-border-strong accent-violet-400 [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-violet-400"
           />
           <div className="mt-1 flex justify-between font-mono text-[10px] text-fg-muted">
             {[1, 2, 3, 4, 5].map((n) => (

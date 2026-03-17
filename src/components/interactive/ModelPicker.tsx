@@ -65,8 +65,7 @@ function QuestionStep({
           <button
             key={opt.id}
             onClick={() => onAnswer(opt.id)}
-            className="group flex flex-col items-start rounded-lg px-4 py-3 text-left transition-all hover:border-blue-500/50 hover:bg-blue-500/5 active:scale-[0.98]"
-            className="border border-border-strong bg-bg-surface"
+            className="group flex flex-col items-start rounded-lg border border-border-strong bg-bg-surface px-4 py-3 text-left transition-all hover:border-blue-500/50 hover:bg-blue-500/5 active:scale-[0.98]"
           >
             <span className="text-sm font-medium text-zinc-200 group-hover:text-white">
               {opt.label}

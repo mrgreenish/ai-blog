@@ -72,8 +72,7 @@ export function StepFlow({
           className={`relative ${i < steps.length - 1 ? "pb-3" : ""}`}
         >
           <div
-            className={`absolute -left-[29px] top-0.5 flex h-5 w-5 items-center justify-center rounded-full border font-mono text-[10px] font-medium ${c.borderDot} ${c.textDot}`}
-            className="bg-bg-surface"
+            className={`absolute -left-[29px] top-0.5 flex h-5 w-5 items-center justify-center rounded-full border bg-bg-surface font-mono text-[10px] font-medium ${c.borderDot} ${c.textDot}`}
           >
             {i + 1}
           </div>

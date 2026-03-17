@@ -38,8 +38,7 @@ export function SearchResults({ query, groupedResults }: SearchResultsProps) {
               <Link
                 key={cat}
                 href={`/${cat}`}
-                className={`inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition-all ${meta.accent}`}
-                 className="bg-bg-surface border border-border-default"
+                className={`inline-flex items-center gap-2 rounded-xl border border-border-default bg-bg-surface px-5 py-3 text-sm font-semibold transition-all ${meta.accent}`}
               >
                 {meta.label}
               </Link>
