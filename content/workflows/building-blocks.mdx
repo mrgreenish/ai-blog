@@ -6,19 +6,19 @@ order: 8
 interactiveTools: [workflow-recipe]
 ---
 
-When we start a project, we don't start with pages. We start with atoms.
+We don't start projects with pages. We start with atoms.
 
-Small, clear, single-purpose building blocks. A button. A heading. A card. Then molecules — a form field with label and validation. Then organisms — a complete form, a navigation bar. Every piece has a clear role, a clear API, and clear rules.
+Small, clear, single-purpose building blocks. A button. A heading. A card. Then molecules — a form field with label and validation. Then organisms — a complete form, a navigation bar. Each piece with a clear role, a clear API, clear rules.
 
-This isn't just a preference for tidiness. It changes how AI-assisted development works in practice.
+This isn't just tidiness. It changes how AI-assisted development works.
 
 ## Why structure changes AI behavior
 
-If the codebase is messy, AI has to guess. If naming is inconsistent, if there are three different button implementations, if spacing is hardcoded in random places — the model improvises. And improvisation in production systems usually means inconsistency.
+Messy codebase, AI has to guess. Inconsistent naming, three different button implementations, spacing hardcoded in random places — the model improvises. And improvisation in production systems usually means inconsistency.
 
-But when the codebase is atomic — clear naming, defined variants, shared tokens, typed props, strict component boundaries — the AI doesn't guess. It composes. It sees the vocabulary of the system and reuses existing blocks instead of inventing new ones.
+But when the codebase is atomic (clear naming, defined variants, shared tokens, typed props, strict component boundaries) the AI doesn't guess. It composes. Sees the vocabulary of the system and reuses existing blocks instead of inventing new ones.
 
-I've seen this firsthand: the same model, the same prompt, produces noticeably better output when the codebase it's working in has clear patterns to follow. It's not smarter — it's less confused.
+Same model, same prompt, noticeably better output when the codebase has clear patterns to follow. It's not smarter — it's less confused.
 
 ## What "atomic" looks like in practice
 
@@ -36,50 +36,48 @@ The key: each layer only uses pieces from the layers below it. A molecule never 
 
 ## The rules that make it work
 
-Atomic structure alone isn't enough. The AI benefits from explicit rules that govern how blocks are used. These are the ones I enforce:
+Atomic structure alone isn't enough. The AI benefits from explicit rules about how blocks are used:
 
-**One component, one job.** If a component does two unrelated things, split it. The model is better at composing two focused components than understanding one that has hidden modes.
+**One component, one job.** Does two unrelated things? Split it. The model is better at composing two focused components than understanding one with hidden modes.
 
-**Typed props, always.** TypeScript interfaces for every component's props. This gives the model — and your future self — a contract to work against. No guessing what a component accepts.
+**Typed props, always.** TypeScript interfaces for every component's props. Gives the model — and your future self — a contract to work against.
 
-**Variants over conditionals.** Instead of `if (type === 'primary') ... else if (type === 'secondary')` scattered through a render function, define explicit variants. Tailwind's `cva` or similar patterns work well here. The model can see all variants at a glance.
+**Variants over conditionals.** Instead of `if (type === 'primary') ... else if (type === 'secondary')` scattered through a render function, define explicit variants. Tailwind's `cva` or similar patterns. The model can see all variants at a glance.
 
-**Shared tokens.** Colors, spacing, font sizes — all from a single source. Tailwind config, CSS custom properties, whatever fits your stack. When the model reaches for a color value, there's only one right answer.
+**Shared tokens.** Colors, spacing, font sizes — all from a single source. Tailwind config, CSS custom properties, whatever fits. When the model reaches for a color value, there's only one right answer.
 
-**Naming that describes function.** `PriceBadge`, not `Badge2`. `SearchInput`, not `InputWithIcon`. Clear names help the model pick the right component without you having to specify it.
+**Naming that describes function.** `PriceBadge`, not `Badge2`. `SearchInput`, not `InputWithIcon`. Clear names help the model pick the right component without you having to point it there.
 
 ## Teaching AI the rules: skills and project rules
 
-Building blocks give the AI something to work with. But it still needs to know *how* to work with them. That's where Cursor project rules and skills come in — they're the instructions layer on top of the component layer.
+Building blocks give the AI something to work with. It still needs to know *how* to work with them — that's where Cursor project rules and skills come in.
 
-**Project rules** (`.cursor/rules/`) are persistent instructions that apply every time the model works in your codebase. They're the place to encode the conventions that live in your head: "always use the `Button` component from `@/components/ui`, never create a new one," "spacing uses Tailwind's scale, never arbitrary values," "every new component gets a Storybook story." Without these rules, you repeat yourself in every prompt. With them, the model follows your conventions by default.
+**Project rules** (`.cursor/rules/`) are persistent instructions that apply every time the model works in your codebase. The place to encode conventions that live in your head: "always use the `Button` component from `@/components/ui`, never create a new one," "spacing uses Tailwind's scale, never arbitrary values," "every new component gets a Storybook story." Without these, you repeat yourself in every prompt.
 
 The rules I find most valuable:
 
-- **Component usage rules.** Which components exist, when to use them, and what not to reinvent. This prevents the model from creating a one-off card when `ProductCard` already exists.
-- **File and naming conventions.** Where new components go, how they're named, how files are structured. The model follows whatever pattern it sees — make sure it sees the right one.
-- **Tech stack constraints.** "Use server components by default," "data fetching goes through `@/lib/api`," "no `useEffect` for data loading." These catch the most common drift.
+- **Component usage rules.** Which components exist, when to use them, what not to reinvent. Prevents the model from creating a one-off card when `ProductCard` already exists.
+- **File and naming conventions.** Where new components go, how they're named. The model follows whatever pattern it sees — make sure it sees the right one.
+- **Tech stack constraints.** "Use server components by default," "data fetching goes through `@/lib/api`," "no `useEffect` for data loading." Catches the most common drift.
 
-**Skills** (`.cursor/skills/`) go further. A skill is a reusable instruction set for a specific type of task — creating a new component, implementing a Figma design, setting up a new page. Where rules say "follow these conventions," skills say "here's the full workflow for this type of work."
+**Skills** (`.cursor/skills/`) go further — reusable instruction sets for specific types of tasks. Creating a component, implementing a Figma design, setting up a new page. Where rules say "follow these conventions," skills say "here's the full workflow."
 
-A well-written skill for component creation might include: check existing atoms first, use the project's `cva` variant pattern, add TypeScript props interface, create a Storybook story, register in the component index. The model follows the full recipe every time, so output is consistent regardless of how you phrased the prompt.
+A well-written component creation skill: check existing atoms first, use the project's `cva` variant pattern, add TypeScript props interface, create a Storybook story, register in the component index. Same recipe every time, consistent output regardless of how you phrased the prompt.
 
-## How AI benefits from the building blocks
+## How AI benefits from building blocks
 
-Every new atom increases the probability that the next feature can be assembled instead of built from scratch. Every new molecule reduces ambiguity about how atoms combine. Every rule you enforce narrows the space of "valid" output the model can produce.
+Every new atom increases the chance that the next feature can be assembled instead of built from scratch. Every molecule reduces ambiguity about how atoms combine. Every rule narrows the space of "valid" output.
 
-In practice, this means:
+What this looks like:
 
-- **Less correction.** When the model has clear blocks to compose, its first output is closer to what you want. Fewer rounds of "no, use the existing card component."
-- **Consistent output.** The model's code looks like the rest of the codebase because it's following the same patterns. New components feel like they belong.
-- **Faster features.** A new page that's mostly composition of existing blocks is fast to build — for you or for the model. The creative work happened when you designed the atoms.
+- **Less correction.** Clear blocks to compose = first output closer to what you want. Fewer rounds of "no, use the existing card component."
+- **Consistent output.** The model's code looks like the rest of the codebase because it's following the same patterns.
+- **Faster features.** A new page that's mostly composition of existing blocks is fast to build. The creative work happened when you designed the atoms.
 
 ## The flywheel
 
-Over time, this compounds. Each new building block makes the next feature cheaper to build. Each new rule makes AI output more predictable. The codebase gets easier to work with for both humans and models.
+This compounds. Each building block makes the next feature cheaper. Each rule makes AI output more predictable. The codebase gets easier for both humans and models.
 
-This isn't about asking AI to be creative in chaos. It's about giving it a structured system to work within. The more defined that system is, the more useful the AI becomes — not through better prompts, but through better architecture.
-
-The system becomes smarter because the structure becomes clearer. And once that flywheel starts turning, every new block makes the next one easier.
+Not about asking AI to be creative in chaos — it's about giving it a structured system to work within. The more defined the system, the more useful the AI becomes. Not through better prompts, but through better architecture.
 
 <WorkflowRecipe />

@@ -6,9 +6,9 @@ order: 6
 interactiveTools: [workflow-recipe, failure-gallery]
 ---
 
-AI code review has gone from a novelty to a genuine part of my PR workflow. Not as a replacement for human review — as a first pass that catches the mechanical issues before a human reviewer has to spend time on them.
+AI code review has gone from novelty to a genuine part of my PR workflow. Not replacing human review — it's a first pass that catches mechanical issues before a human reviewer has to spend time on them.
 
-The two tools I use: **Cursor BugBot** for PR review in Cursor workflows, and **Codex on GitHub** as a PR reviewer that can run automatically on pull requests when enabled.
+Two tools I use: **Cursor BugBot** for PR review in Cursor workflows, and **Codex on GitHub** as an automatic PR reviewer.
 
 ## Cursor BugBot
 
@@ -19,7 +19,7 @@ BugBot reviews pull requests in Cursor workflows and posts actionable review fee
 - Spotting inconsistencies between the implementation and the surrounding code style
 - Flagging potential performance issues (unnecessary re-renders, missing memoization, N+1 queries)
 
-The workflow: make your changes, open or update the PR, run BugBot review, fix the issues it finds, then request human review. By the time a human reviewer sees the code, many mechanical issues are already resolved.
+The workflow: make your changes, open the PR, run BugBot review, fix what it finds, then request human review. By the time a human sees the code, the mechanical stuff is already resolved.
 
 ## Codex on GitHub
 
@@ -30,11 +30,11 @@ Codex as a GitHub reviewer can run on every PR and post review comments automati
 - Catching security issues (exposed secrets, SQL injection patterns, missing auth checks)
 - Verifying that error handling is consistent with the rest of the codebase
 
-The key difference from BugBot: Codex has the full repository context, not just the changed files. This lets it catch issues like "this function is now inconsistent with how similar functions work elsewhere in the codebase."
+Key difference from BugBot: Codex has the full repository context, not just the changed files. So it catches things like "this function is now inconsistent with how similar functions work elsewhere in the codebase."
 
 ## What AI review actually catches
 
-The most valuable catches I've seen from AI review:
+The most valuable catches I've seen:
 
 - **Off-by-one errors in pagination** — the kind that only show up when you're on the last page
 - **Missing edge cases in input validation** — empty strings, null values, negative numbers
@@ -43,13 +43,13 @@ The most valuable catches I've seen from AI review:
 
 ## What it gets wrong
 
-AI review produces false positives. The most common ones:
+AI review produces false positives. Common ones:
 
-- Flagging intentional patterns as bugs (the model doesn't have enough context to know it's intentional)
+- Flagging intentional patterns as bugs (not enough context to know it's intentional)
 - Suggesting refactors that aren't in scope for the PR
 - Missing bugs that require understanding the business logic (the model doesn't know what the code is *supposed* to do)
 
-The right mental model: AI review is a fast, cheap first pass. It catches a specific category of mechanical bugs well. It's not a substitute for a human reviewer who understands the product.
+Think of it as a fast, cheap first pass. Catches mechanical bugs well. Not a substitute for a human reviewer who understands the product.
 
 <WorkflowRecipe />
 

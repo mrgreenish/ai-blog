@@ -13,11 +13,11 @@ That's the problem Max Mode solves.
 
 ## What Max Mode actually does
 
-By default, Cursor keeps you on the standard context window for the selected model. In practice that often means working in the 200K band — roughly 15,000 lines of code, which covers most single-feature work. Max Mode extends that to the model's maximum context window for models that support it, like GPT-5.4, Claude Sonnet 4.6, Claude Opus 4.6, and Gemini 3.1 Pro.
+By default, Cursor keeps you on the standard context window for the selected model — in practice often the 200K band, roughly 15,000 lines of code, which covers most single-feature work. Max Mode extends that to the model's maximum context window (GPT-5.4, Claude Sonnet 4.6, Claude Opus 4.6, Gemini 3.1 Pro).
 
-The catch: on individual plans it switches that session onto API-rate billing, plus a 20% upcharge. A few heavy Max Mode queries can chew through your included API usage fast.
+The catch: on individual plans, it switches that session onto API-rate billing plus a 20% upcharge. A few heavy queries can chew through your included API usage fast.
 
-It's not a "better" mode. It's a "bigger context" mode. The model doesn't reason differently with Max Mode on — it just sees more of your codebase at once.
+Not a "better" mode. A "bigger context" mode. The model doesn't reason differently — it just sees more of your codebase at once.
 
 ## When it earns its cost
 
@@ -29,13 +29,13 @@ It's not a "better" mode. It's a "bigger context" mode. The model doesn't reason
 
 ## When to leave it off
 
-**For anything a single file can answer.** Renaming a function, adding a prop, writing a test for one module — none of this needs 1M tokens. Turning on Max Mode for these is like renting a truck to carry a laptop.
+**Single-file tasks.** Renaming a function, adding a prop, writing a test for one module — none of this needs 1M tokens. Like renting a truck to carry a laptop.
 
-**When Auto mode handles it.** Cursor's Auto mode selects a cost-efficient model automatically and draws from the separate Auto + Composer pool instead of your API pool. If Auto gives you a correct result, you have no reason to switch to Max.
+**When Auto handles it.** Cursor's Auto mode picks a cost-efficient model automatically and draws from the separate Auto + Composer pool. If Auto gives you a correct result, no reason to switch.
 
-**When you're iterating quickly.** Rapid back-and-forth — "tweak this", "make it shorter", "add a case" — compounds cost fast in Max Mode. Each exchange processes your full context again at full token rates. Keep Max Mode off during iteration and only flip it on when you need the full picture.
+**Rapid iteration.** "Tweak this", "make it shorter", "add a case" — each exchange processes your full context again at full token rates. Keep Max Mode off during iteration, flip it on when you need the full picture.
 
-**When cost matters more than completeness.** A few extended Max Mode sessions can exhaust a Pro plan's included $20 of API usage surprisingly fast. If you're on a budget or want predictable costs, stick to Auto for everyday work and use Max Mode surgically.
+**When cost matters.** A few extended Max Mode sessions can exhaust a Pro plan's $20 of included API usage surprisingly fast. Budget-conscious? Auto for everyday work, Max Mode surgically.
 
 ## The cost reality
 

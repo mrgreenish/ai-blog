@@ -7,28 +7,28 @@ order: 1
 interactiveTools: [scenario-lab, model-picker, model-mixer, cost-calculator]
 ---
 
-The first time I used o3 for a coding task, I was impressed — then I checked the latency and the bill. It took 40 seconds and cost 15× more than Sonnet for a task where Sonnet would have been fine. That's when I started keeping notes on *when* the expensive reasoning models actually earn their cost.
+The first time I used o3 for a coding task, I was impressed — then I checked the latency and the bill. 40 seconds and 15× more than Sonnet, for a task where Sonnet would have been fine. That's when I started keeping notes on *when* the expensive reasoning models actually earn their cost.
 
 ## When reasoning models actually earn it
 
-If you can describe the task in one sentence and the expected output is obvious, you don't need a reasoning model. But if you're asking "design the data model for this feature given these constraints" or "find the bug in this async code that only fails under load" — that's where o3 earns its cost.
+If you can describe the task in one sentence and the expected output is obvious, you don't need a reasoning model. But "design the data model for this feature given these constraints" or "find the bug in this async code that only fails under load" — that's where reasoning earns its cost.
 
-- **Architecture decisions with real tradeoffs.** When I asked Sonnet to choose between three caching strategies for a Next.js app, it picked the most common one. o3 identified that my specific access pattern made the "common" choice wrong and explained why.
+- **Architecture decisions with real tradeoffs.** I asked Sonnet to choose between three caching strategies for a Next.js app — it picked the most common one. o3 identified that my specific access pattern made the "common" choice wrong and explained why.
 - **Complex refactors with many constraints.** "Refactor this without changing the public API, keeping backward compatibility, and not touching the test files" — the more constraints you stack, the more reasoning models pull ahead.
 
 ## When fast models win
 
 Fast models are often *better* at constrained tasks because they don't overthink them. Ask Haiku to "convert this array of objects to CSV" and it just does it. Ask o3 and it might add error handling you didn't want.
 
-I use Haiku or Flash for:
+Haiku or Flash for:
 
-- Generating boilerplate (component scaffolding, test stubs, migration files)
+- Boilerplate (component scaffolding, test stubs, migration files)
 - Extracting structured data from text (JSON extraction, classification)
-- Any task running in a loop or pipeline where latency compounds
+- Anything running in a loop or pipeline where latency compounds
 
 ## The model mixer approach
 
-In practice I don't pick one model — I use different models for different steps in the same task. A recent example: I used Opus 4.6 to think through the plan and break down the problem, Sonnet 4.6 to implement the actual code, Composer 1.5 to build out the test suite, and GPT-5.4 to review the final result for edge cases. Each model played to its strengths, and the total cost was a fraction of running the heaviest model end-to-end.
+I don't pick one model — I use different models for different steps in the same task. Opus 4.6 to think through the plan, Sonnet 4.6 to implement, Composer 1.5 to build the test suite, GPT-5.4 to review for edge cases. Each model playing to its strengths, total cost a fraction of running the heaviest model end-to-end.
 
 <ModelMixer />
 

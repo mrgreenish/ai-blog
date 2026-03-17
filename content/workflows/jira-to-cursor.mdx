@@ -6,7 +6,7 @@ order: 5
 interactiveTools: [workflow-recipe, model-mixer]
 ---
 
-At iO, we use an internal AI tool to generate first-draft Jira tickets from a feature description. The tickets include scope, acceptance criteria, edge cases, and analytics requirements. This sounds like a small thing, but it changes the entire development workflow — because a well-structured ticket is excellent context for Cursor.
+At iO, we use an internal AI tool to generate first-draft Jira tickets from a feature description. Scope, acceptance criteria, edge cases, analytics requirements. Sounds like a small thing — but a well-structured ticket is excellent context for Cursor, and that changes the entire development workflow.
 
 ## The ticket generation step
 
@@ -16,13 +16,13 @@ A good AI-generated ticket has:
 - **Edge cases**: the scenarios that are easy to miss
 - **Analytics**: what events to track, what properties to include
 
-The key is that these are generated from a brief description, not written from scratch. The model fills in the structure and forces you to think about edge cases you might have skipped.
+These are generated from a brief description, not written from scratch. The model fills in the structure and forces you to think about edge cases you might have skipped.
 
 ## Using the ticket as Cursor context
 
-Once you have a well-structured ticket, it becomes the starting context for your Cursor session. Paste the ticket into the conversation, add the relevant code files, and the model has everything it needs to understand the task.
+Once you have a well-structured ticket, paste it into your Cursor session, add the relevant code files, and the model has everything it needs.
 
-The ticket's acceptance criteria become the test cases. The edge cases become the guardrails. The scope definition prevents the model from going off on tangents.
+Acceptance criteria become test cases. Edge cases become guardrails. Scope definition prevents the model from going off on tangents.
 
 For UI tasks, grab the Figma link for the component you're implementing. In Figma, select the component or frame you want to build, right-click and choose **Copy/paste → Copy link to selection** (or press **⌘L**). Add it to your Cursor prompt as:
 
@@ -40,7 +40,7 @@ The flow: ticket context + Figma design link + Figma MCP → plan → implementa
 
 ## Model strategy
 
-Ticket generation benefits from a capable model — you want it to think carefully about edge cases and acceptance criteria. Implementation can use a faster model once the context is set. Final review benefits from a reasoning model.
+Ticket generation benefits from a capable model — you want it to think carefully about edge cases. Implementation can use a faster model once the context is set. Final review? A reasoning model.
 
 <ModelMixer />
 

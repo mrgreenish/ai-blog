@@ -7,7 +7,7 @@ order: 2
 interactiveTools: [model-tinder, model-picker, scenario-lab]
 ---
 
-Benchmarks tell you what a model *can* do. Personality tells you what it *will* do when you don't spell out every detail. Two models with identical scores can produce wildly different results — not because one is smarter, but because one interprets ambiguity differently, takes more initiative, or defaults to a different level of caution.
+Benchmarks tell you what a model *can* do. Personality tells you what it *will* do when you don't spell out every detail. Two models with identical benchmark scores can produce wildly different results — not because one is smarter, but because they interpret ambiguity differently, take different amounts of initiative, default to different levels of caution.
 
 <ModelTinder />
 
@@ -17,13 +17,13 @@ Benchmarks tell you what a model *can* do. Personality tells you what it *will* 
 
 Gemini asks for permission. It's conservative, sticks close to what you asked for, and rarely goes off-script. Ambiguous task? It'll ask a clarifying question rather than assume and run.
 
-**Literal-minded.** Gemini does what you say, not what you might have meant. Ask it to "clean up this component" and it'll fix formatting — it won't restructure the hierarchy or suggest a different pattern unless you ask.
+It's literal-minded — does what you say, not what you might have meant. Ask it to "clean up this component" and it'll fix formatting. It won't restructure the hierarchy or suggest a different pattern unless you ask.
 
-**Risk-averse.** Multiple valid approaches? Gemini picks the safest, most conventional one. Reliable for production work, but you miss out on solutions that require a judgment call.
+Multiple valid approaches? Gemini picks the safest, most conventional one. Reliable for production work, but you miss out on solutions that require a judgment call.
 
-**Consistent under pressure.** In long sessions with large contexts, Gemini stays level. It doesn't drift or get "creative" with your architecture. For marathon refactoring, this steadiness matters.
+In long sessions with large contexts, it stays level. Doesn't drift or get "creative" with your architecture. For marathon refactoring, that steadiness matters.
 
-**Where it falls short.** It won't push back on your approach, suggest alternatives, or notice you're solving the wrong problem. Reliable executor, not a thought partner.
+Where it falls short: it won't push back on your approach, suggest alternatives, or notice you're solving the wrong problem. Reliable executor, not a thought partner.
 
 ## GPT-5.4: the balanced one
 
@@ -31,35 +31,35 @@ Gemini asks for permission. It's conservative, sticks close to what you asked fo
 
 <ModelLabels provider="OpenAI" tier="Balanced" bestFor="Everyday shipping" />
 
-GPT sits in the middle — initiative when the situation is clear, deference when it's ambiguous. Output that feels sensible without being surprising. The 5.4 update shifted Codex into a general-purpose agent: 25% faster, fewer tokens, and it can now run autonomously for hours.
+GPT sits in the middle — initiative when the situation is clear, deference when it's ambiguous. Output that feels sensible without being surprising. The 5.4 update shifted Codex into a general-purpose agent: 25% faster, fewer tokens, can run autonomously for hours.
 
-**Pragmatic defaults.** GPT picks the approach most developers would pick. Stack Overflow's accepted answer energy — not the most clever, but the one your team will understand.
+It picks the approach most developers would pick. Stack Overflow's accepted answer energy — not the most clever, but the one your team will understand.
 
-**Measured initiative.** Fills in reasonable gaps — default error handling, obvious edge cases, standard patterns — but stops short of architectural decisions. High hit rate of "helpful without overstepping."
+Fills in reasonable gaps (default error handling, obvious edge cases, standard patterns) but stops short of architectural decisions. High hit rate of "helpful without overstepping."
 
-**Good at reading the room.** Detailed prompt? GPT stays precise. Loose prompt? It makes reasonable assumptions but flags them. It adapts its initiative to match your specificity.
+It's also good at reading the room. Detailed prompt? GPT stays precise. Loose prompt? It makes reasonable assumptions but flags them.
 
-**Predictable output format.** The most consistent at following format instructions. "Respond in JSON" or "only output code" — it complies where other models can't help adding commentary.
+Format-wise, it's the most consistent. "Respond in JSON" or "only output code" — it complies where other models can't help adding commentary.
 
-**Switchable reasoning depth.** GPT-5.4 lets you dial in how hard it thinks. High reasoning kicks in for ambiguous or multi-step problems — it slows down, considers edge cases, and reasons before committing to an approach. Extra high is the full deliberation mode: best for architecture decisions or debugging something gnarly where missing a step costs you hours. For simple tasks, leave it off — the overhead isn't worth it.
+GPT-5.4 also lets you dial in reasoning depth. High reasoning kicks in for ambiguous or multi-step problems — slows down, considers edge cases, reasons before committing. Extra high is full deliberation mode: best for architecture decisions or debugging something gnarly. For simple tasks, leave it off.
 
-**Where it falls short.** Rarely surprises you with insight. It gives you what you asked for, not necessarily what you need. With 5.4's agentic capabilities, autonomy is powerful but guardrails matter.
+Where it falls short: rarely surprises you with insight. Gives you what you asked for, not necessarily what you need. With 5.4's agentic capabilities, autonomy is powerful but guardrails matter.
 
 ## Claude Sonnet 4.6: the proactive one
 
 <ModelLabels provider="Anthropic" tier="Proactive" bestFor="Feature design" />
 
-Claude has opinions and isn't shy about sharing them. It pushes back on your approach, suggests alternatives, notices bugs you didn't ask about, and restructures code to be "better" — even when you just wanted a simple change. With 4.6, Sonnet scores within 1.2 points of Opus on SWE-bench at one-fifth the cost, now with a 1M context window and automatic compaction for long sessions.
+Claude has opinions and isn't shy about sharing them. Pushes back on your approach, suggests alternatives, notices bugs you didn't ask about, restructures code to be "better" — even when you just wanted a simple change. With 4.6, Sonnet scores within 1.2 points of Opus on SWE-bench at one-fifth the cost, now with a 1M context window and automatic compaction for long sessions.
 
-**Creative by instinct.** It might suggest a better API surface, flag that your data model will break at scale, or restructure code in a way you hadn't considered.
+It might suggest a better API surface, flag that your data model will break at scale, or restructure code in a way you hadn't considered. Creative by instinct.
 
-**Proactive to a fault.** While implementing a feature, it'll spot naming inconsistencies, missing error boundaries, potential race conditions in adjacent code — and often fix them without being asked. Magical in short sessions. A 40-file diff in long ones.
+But that proactiveness cuts both ways. While implementing a feature, it'll spot naming inconsistencies, missing error boundaries, potential race conditions in adjacent code — and often fix them without being asked. Magical in short sessions. A 40-file diff in long ones.
 
-**Opinionated about code quality.** Strong preferences about structure, naming, and patterns. It will refactor code to match its taste. Setting explicit constraints ("do not refactor unless I ask") is essential.
+It has strong preferences about structure, naming, and patterns — will refactor code to match its taste. Setting explicit constraints ("do not refactor unless I ask") is essential.
 
-**Excellent at explaining.** The clearest, most useful explanations of any model. It connects your specific code to the general principle. This is where the personality really shines.
+On the upside, it gives the clearest explanations of any model. Connects your specific code to the general principle. That's where the personality really shines.
 
-**Where it falls short.** Scope creep. Its instinct to be helpful means it expands tasks. The fix is explicit constraints in your prompt or `CLAUDE.md`.
+Where it falls short: scope creep. Its instinct to be helpful means it expands tasks. Fix it with explicit constraints in your prompt or `CLAUDE.md`.
 
 ## Claude Opus 4.6: the deep thinker
 
@@ -67,19 +67,19 @@ Claude has opinions and isn't shy about sharing them. It pushes back on your app
 
 <ModelLabels provider="Anthropic" tier="Deep" bestFor="Hard problems & architecture" />
 
-Opus isn't Sonnet with the volume up. Where Sonnet notices things, Opus understands them — tracing actual logic rather than pattern-matching, reasoning about systems rather than files. The 4.6 update sharpened it considerably: industry-leading agentic coding, a 1M token context window, and long-context retrieval that jumped from 18.5% to 76%.
+Opus isn't Sonnet with the volume up. Where Sonnet notices things, Opus *understands* them — traces actual logic rather than pattern-matching, reasons about systems rather than files. The 4.6 update sharpened it: industry-leading agentic coding, a 1M token context window, and long-context retrieval that jumped from 18.5% to 76%.
 
-**Deep accuracy.** Where other models pattern-match, Opus traces actual logic. It catches bugs three levels of indirection deep, identifies race conditions by simulating concurrent execution, and spots type issues TypeScript misses.
+Where other models pattern-match, Opus traces actual logic. Catches bugs three levels of indirection deep, identifies race conditions by simulating concurrent execution, spots type issues TypeScript misses.
 
-**Architecturally creative.** It suggests different abstractions entirely and explains why your current approach will cause problems two features from now. It thinks in systems, not just code.
+It's also architecturally creative in a way the other models aren't. Suggests different abstractions entirely and explains why your current approach will cause problems two features from now. Thinks in systems, not just code.
 
-**Thorough to the point of slow.** Considers more options, explores more edge cases, gives more complete answers. Overkill for quick tasks. For hard problems and architecture decisions, the thoroughness pays for itself.
+The tradeoff: it's thorough to the point of slow. Considers more options, explores more edge cases, gives more complete answers. Overkill for quick tasks — but for hard problems and architecture decisions, the thoroughness pays for itself.
 
-**Proactive with substance.** Where Sonnet might fix a naming inconsistency, Opus notices your abstraction is leaking, explains why, and suggests a restructure that fixes the root cause.
+Where Sonnet might fix a naming inconsistency, Opus notices your abstraction is leaking, explains why, and suggests a restructure that fixes the root cause.
 
-**Reasoning modes that actually matter.** Opus supports high and extra high reasoning — and unlike lighter models, it uses that budget meaningfully. High reasoning is worth enabling whenever the task has real depth: a subtle bug, a non-obvious refactor, a design with long-term consequences. Extra high is for the hardest problems — when you genuinely don't know the right answer and need the model to work through the problem space before committing to a direction. At Opus's capability level, the extra thinking translates into noticeably better answers.
+Opus supports high and extra high reasoning — and unlike lighter models, it uses that budget meaningfully. High reasoning is worth enabling whenever the task has real depth: a subtle bug, a non-obvious refactor, a design with long-term consequences. Extra high is for the hardest problems, when you genuinely don't know the right answer and need the model to work through the problem space first.
 
-**Where it falls short.** Cost and latency. For routine tasks — scaffolding, simple refactors, boilerplate — you're burning money without proportional value. Reserve it for problems that actually need it.
+Where it falls short: cost and latency. For routine tasks (scaffolding, simple refactors, boilerplate) you're burning money without proportional value. Save it for problems that actually need it.
 
 ## Cursor Composer-1.5: the agentic & fast one
 
@@ -87,20 +87,20 @@ Opus isn't Sonnet with the volume up. Where Sonnet notices things, Opus understa
 
 <ModelLabels provider="Cursor" tier="Agentic" bestFor="End-to-end tasks" />
 
-Composer-1.5 doesn't just edit files — it acts. Terminal commands, reading output, making more edits, looping until the task is done. The closest thing to an AI developer that can execute end-to-end.
+Composer-1.5 doesn't just edit files — it acts. Terminal commands, reading output, making more edits, looping until the task is done. Closest thing to an AI developer that can execute end-to-end.
 
-**Multi-step execution.** Give it a task spanning multiple files with verification — "add this feature, make sure tests pass, fix type errors" — and it works through the steps autonomously. It runs the build, reads errors, fixes them, and reruns.
+Give it a task spanning multiple files with verification — "add this feature, make sure tests pass, fix type errors" — and it works through the steps autonomously. Runs the build, reads errors, fixes them, reruns.
 
-**Self-correcting.** It observes the results of its own actions, catches mistakes a non-agentic model would leave for you. Sees the TypeScript error, understands it in context, fixes it — no copy-pasting errors back into a prompt.
+It also self-corrects. Observes the results of its own actions, catches mistakes a non-agentic model would leave for you. Sees the TypeScript error, understands it in context, fixes it — no copy-pasting errors back into a prompt.
 
-**Edits across the whole codebase.** Not limited to open files. It navigates the project, finds relevant files, and makes coordinated changes across many of them.
+Not limited to open files either. It navigates the project, finds relevant files, makes coordinated changes across many of them.
 
-**Where it falls short.** Autonomy has a cost. It can go down wrong paths and make many changes before you realize it's off track. Short task scopes and frequent checkpoints are essential.
+Where it falls short: autonomy has a cost. It can go down wrong paths and make a lot of changes before you realize it's off track. Short task scopes and frequent checkpoints are essential.
 
 ## How personality affects prompting
 
-The pattern is consistent: match your prompt style to the model's instincts. Be explicit with Gemini — it won't infer intent. Set hard scope limits with Claude — "mention issues but don't fix them" — or its helpfulness will expand your task. Give Composer-1.5 a clear success condition and let it run, but check in at breakpoints.
+Match your prompt style to the model's instincts. Be explicit with Gemini — it won't infer intent. Set hard scope limits with Claude ("mention issues but don't fix them") or its helpfulness will expand your task. Give Composer-1.5 a clear success condition and let it run, but check in at breakpoints.
 
-The right model isn't the smartest one — it's the one whose personality matches the task.
+The right model isn't the smartest one — it's the one whose personality fits the task.
 
 <WorkflowsCTA />
