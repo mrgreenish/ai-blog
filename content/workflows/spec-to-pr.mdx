@@ -32,6 +32,8 @@ The most common failure mode I've seen: skipping the plan and going straight to 
 
 The plan step also surfaces ambiguities in your spec. If the model asks a clarifying question during planning, that's a question you would have had to answer anyway — better to answer it before the code is written.
 
+One way to make this explicit: before asking for the plan, add **"If anything in the spec is unclear or leaves room for multiple interpretations, ask me before planning."** This turns the plan step into a two-pass process — clarify first, then plan — and consistently produces tighter output.
+
 ## Model strategy for this workflow
 
 Different steps benefit from different models. Planning and review are where reasoning models earn their cost. Code generation and test writing are where fast models are often sufficient.

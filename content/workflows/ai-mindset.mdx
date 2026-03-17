@@ -3,7 +3,7 @@ title: "AI Coding Mindset: Prompting & Pitfalls"
 description: "The prompting habits that produce better output — and the failure modes to watch for."
 story: "Same model, same task, wildly different results. The gap between productive AI coding and frustrating AI coding is almost entirely about habits — what you feed the model and what you watch for in its output."
 category: workflows
-order: 7
+order: 2
 interactiveTools: [scenario-lab]
 ---
 
@@ -14,6 +14,16 @@ Getting good results from AI coding tools isn't about finding the right magic wo
 Prompting is a skill, and like most skills, the gap between beginner and intermediate is mostly about a handful of habits. I've watched developers get dramatically different results from the same model on the same task — and the difference is almost always in how they framed the request.
 
 These are the habits that made the biggest difference for me.
+
+### Ask clarifying questions first
+
+If anything in the request is unclear, ask before answering or writing code. One clarifying question upfront is almost always faster than confidently solving the wrong problem.
+
+This sounds obvious. It isn't the default. Most models — and most developers — have a bias toward action. The instinct is to start, not to pause. But a 30-second clarification usually produces a better result than the best possible answer to the wrong question.
+
+The prompt that unlocks this: **"Before you start, ask me anything that would help you do this better."** That single sentence shifts the model from execution mode to clarification mode. Use it whenever the task has ambiguity you haven't fully resolved.
+
+For complex tasks, go further: **"What assumptions are you making? List them before you begin."** Surfacing assumptions is even more useful than asking questions — it shows you what the model filled in on its own, and gives you a chance to correct it before those assumptions are baked into the output.
 
 ### Don't be too brief, don't be too rigid
 
