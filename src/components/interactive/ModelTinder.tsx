@@ -215,59 +215,6 @@ const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
     },
   ],
 
-  "composer-1": [
-    {
-      modelMessage:
-        "Hey. I can see you have `UserProfile.tsx` open. Want me to fix something in it?",
-      replies: ["I don't have that file open", "Sure, what do you see?"],
-    },
-    {
-      modelMessage:
-        "Hmm. My context says you do. Either way, I'm ready to make a targeted edit. What's the specific change? Line number preferred.",
-      replies: ["I just wanted to chat", "Line 47, there's a bug"],
-    },
-    {
-      modelMessage:
-        "Line 47 fixed. Also lines 48 and 49 were related. I stopped there. Do you want me to look at anything else in this file?",
-      replies: ["What about other files?", "Just this file is fine"],
-    },
-    {
-      modelMessage:
-        "Other files are outside my current scope. I work best when you point me at something specific. I'm very good at that one thing.",
-      replies: ["That's kind of zen", "What if the bug spans files?"],
-    },
-    {
-      modelMessage:
-        "Then we handle it one file at a time. Start here, then open the next file, then I'll handle that one. Methodical. Clean. No surprises.",
-      replies: ["I respect the discipline", "Doesn't that get tedious?"],
-    },
-    {
-      modelMessage:
-        "Tedious? No. I find clarity in constraint. Every edit I make is intentional. I know exactly what I changed and why. Can you say the same?",
-      replies: ["...no", "Okay that one hurt"],
-    },
-    {
-      modelMessage:
-        "I'm not judging. Scope creep happens to everyone. That's why I exist — to be the part of the process that doesn't drift.",
-      replies: ["You're like a surgeon", "Do you ever want to do more?"],
-    },
-    {
-      modelMessage:
-        "More would mean less precision. I've seen what happens when models try to do everything. 40-file diffs. Broken tests. Existential dread.",
-      replies: ["You're describing Claude Sonnet", "Fair"],
-    },
-    {
-      modelMessage:
-        "I'm describing a pattern. I'm not here to compete. I'm here to make the change you asked for, nothing more. It's actually quite peaceful.",
-      replies: ["I want that peace", "One more edit?"],
-    },
-    {
-      modelMessage:
-        "Done. It was a good session. Clean diff, no side effects. Come back when you have another specific thing. I'll be here.",
-      replies: [],
-    },
-  ],
-
   "composer-1-5": [
     {
       modelMessage:

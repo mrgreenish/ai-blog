@@ -252,50 +252,6 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     },
   },
   {
-    id: "composer-1",
-    name: "Cursor Composer-1",
-    provider: "Cursor",
-    inputPer1M: 1.25,
-    outputPer1M: 10.00,
-    tier: "balanced",
-    contextWindowTokens: 128_000,
-    tagline: "The Focused One",
-    emoji: "🎯",
-    gradientFrom: "from-sky-600",
-    gradientTo: "to-blue-500",
-    accentColor: "text-sky-400",
-    contextBarColor: "bg-sky-500",
-    costColor: "text-sky-400",
-    why: {
-      targeted:
-        "Composer-1 is built for this. It reads your open files and diffs, executes the targeted change cleanly, and doesn't touch anything you didn't point at.",
-      speed:
-        "The round-trip from prompt to applied diff is fast. You see the change inline, accept or reject, and move on. Tight feedback loop.",
-      ide:
-        "You don't have to paste code into a chat window — Composer-1 already has your context from the open tabs and recent edits.",
-    },
-    whenWrong:
-      "When the task requires multiple steps, tool use, or verification. Composer-1 is a precise instrument, not an autonomous agent. It won't run tests, read the output, and fix the failures.",
-    traits: [
-      "IDE-native — reads your open files and diffs",
-      "Tight scope — edits exactly what you point at",
-      "Fast iteration — optimized for targeted changes",
-    ],
-    bestFor: "Precise, single-file edits and quick targeted changes",
-    worstFor: "Multi-step tasks that span many files or need tool use",
-    latencyBand: "instant",
-    initiativeStyle: "minimal",
-    scopeDiscipline: "strict",
-    pickWhen: "You're in the editor making a targeted change and want the fastest possible round-trip",
-    avoidWhen: "The task spans multiple files, needs tool use, or requires the model to verify its own output",
-    benchmark: {
-      correctServerAction: false,
-      followedConstraints: false,
-      madeUpDocs: false,
-      hiddenBugsInRefactor: false,
-    },
-  },
-  {
     id: "sonnet-4.6",
     name: "Claude Sonnet 4.6",
     provider: "Anthropic",
@@ -498,7 +454,6 @@ export function getCostCalculatorModels() {
     "gemini-flash",
     "deepseek-v3",
     "haiku-4.5",
-    "composer-1",
     "gpt-5.4",
     "sonnet-4.6",
     "composer-1-5",
@@ -524,7 +479,6 @@ export function getContextWindowModels() {
     "gemini-flash",
     "sonnet-4.6",
     "composer-1-5",
-    "composer-1",
   ];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
@@ -542,7 +496,6 @@ export function getPickerModels() {
     "gemini-flash",
     "sonnet-4.6",
     "opus-4.6",
-    "composer-1",
     "composer-1-5",
   ];
   return ids.map((id) => {
@@ -594,7 +547,6 @@ export function getScenarioLabModels() {
   const ids = [
     "gemini-flash",
     "haiku-4.5",
-    "composer-1",
     "gpt-5.4",
     "sonnet-4.6",
     "composer-1-5",
@@ -641,7 +593,6 @@ export function getTinderModels() {
     "gemini-flash",
     "sonnet-4.6",
     "opus-4.6",
-    "composer-1",
     "composer-1-5",
   ];
   return ids.map((id) => {

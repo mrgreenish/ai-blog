@@ -294,6 +294,10 @@ export const TREE_NODES: Record<string, TreeNode> = {
               href: "/tooling/agents-and-skills",
               label: "Agents & Skills",
             },
+            {
+              href: "/tooling/max-mode",
+              label: "Cursor Max Mode",
+            },
           ],
         },
       },

@@ -149,12 +149,12 @@ export const SCENARIOS: Scenario[] = [
     primarySignal: "scope",
     insight:
       "Scope discipline matters here. A model that drifts will touch things you didn't ask about. A model that's too literal might miss the spirit of the refactor.",
-    recommendedModelId: "composer-1",
+    recommendedModelId: "composer-1-5",
     recommendationReason:
-      "Composer-1 executes exactly what you point at. It won't restructure adjacent code or suggest a different pattern — it just does the refactor cleanly.",
+      "Composer 1.5 still handles this well when you keep the scope explicit. You get the same IDE context plus the option to self-check the result if the edit turns out to be slightly trickier than expected.",
     results: [
       {
-        modelId: "composer-1",
+        modelId: "composer-1-5",
         verdict: "best",
         summary: "Clean refactor, stayed in scope",
         outputExcerpt:
@@ -165,7 +165,7 @@ export const SCENARIOS: Scenario[] = [
           "No surprises in the diff",
         ],
         weaknesses: [],
-        costCommentary: "Fast and focused — cost matches the task",
+        costCommentary: "Fast enough for a focused edit, with extra headroom if verification becomes useful",
       },
       {
         modelId: "gemini-flash",
@@ -175,7 +175,7 @@ export const SCENARIOS: Scenario[] = [
           "Refactored to use early returns and extracted the validation into a separate function as requested.",
         strengths: ["Followed instructions precisely", "No scope drift"],
         weaknesses: [
-          "Less IDE-native than Composer-1 — requires copy-paste workflow",
+          "Less IDE-native than Composer 1.5 — requires copy-paste workflow",
         ],
         costCommentary: "Very cheap",
       },
@@ -194,30 +194,16 @@ export const SCENARIOS: Scenario[] = [
           "Requires careful diff review to avoid unintended changes",
         ],
         costCommentary: "Fine if you review the diff, risky if you don't",
-        costContext: { compareToModelId: "composer-1" },
-      },
-      {
-        modelId: "composer-1-5",
-        verdict: "caution",
-        summary: "Over-engineered the task",
-        outputExcerpt:
-          "Refactored the function and ran the test suite to verify. Also updated the related utility functions for consistency. Tests pass.",
-        strengths: ["Self-verified the output", "Consistent across related code"],
-        weaknesses: [
-          "Autonomous scope expansion for a simple targeted task",
-          "Overhead not justified for a single-function refactor",
-        ],
-        costCommentary: "Agentic overhead for a task that didn't need it",
-        costContext: { compareToModelId: "composer-1" },
+        costContext: { compareToModelId: "composer-1-5" },
       },
     ],
     planMode: {
       planModelId: "sonnet-4.6",
-      executeModelId: "composer-1",
+      executeModelId: "composer-1-5",
       insight:
         "Plan mode turns Sonnet's scope drift into a feature. It reasons about the refactor approach — naming, structure, edge cases — but a fast model executes the actual edit. You get Sonnet's judgment without its tendency to touch adjacent code.",
       recommendationReason:
-        "Sonnet plans the approach (extract helper, simplify conditionals, preserve API), then Composer-1 executes exactly that. The plan constrains scope; the executor stays within it. Cheaper than Sonnet doing everything, cleaner than Composer-1 guessing the approach.",
+        "Sonnet plans the approach (extract helper, simplify conditionals, preserve API), then Composer 1.5 executes it with explicit guardrails. The plan constrains scope while still letting the executor verify the result if needed.",
       results: [
         {
           modelId: "sonnet-4.6",
@@ -234,7 +220,7 @@ export const SCENARIOS: Scenario[] = [
           costCommentary: "Planning tokens are cheap — the plan is short and focused",
         },
         {
-          modelId: "composer-1",
+          modelId: "composer-1-5",
           verdict: "best",
           summary: "Executes the plan precisely, stays in scope",
           outputExcerpt:
@@ -245,7 +231,7 @@ export const SCENARIOS: Scenario[] = [
             "Fast execution after plan was set",
           ],
           weaknesses: [],
-          costCommentary: "Fast executor — combined plan + execute cost is less than Sonnet doing both",
+          costCommentary: "Fast executor — combined plan + execute cost stays reasonable while adding verification headroom",
           costContext: { compareToModelId: "sonnet-4.6" },
         },
         {
@@ -262,21 +248,6 @@ export const SCENARIOS: Scenario[] = [
             "Less IDE-native — requires copy-paste to apply",
           ],
           costCommentary: "Cheapest combo when paired with a Sonnet plan",
-        },
-        {
-          modelId: "composer-1-5",
-          verdict: "caution",
-          summary: "Ignores the plan and does its own thing",
-          outputExcerpt:
-            "I see the plan, but I also noticed the calling code could be improved. I've updated both the function and its callers for consistency.",
-          strengths: ["High-quality output overall"],
-          weaknesses: [
-            "Overrode the plan's scope constraints",
-            "Agentic autonomy fights against plan-mode discipline",
-            "You lose the benefit of planning if the executor expands scope anyway",
-          ],
-          costCommentary: "Defeats the purpose of plan mode — use Composer-1 instead",
-          costContext: { compareToModelId: "composer-1" },
         },
       ],
     },
@@ -296,18 +267,22 @@ export const SCENARIOS: Scenario[] = [
       "Sonnet notices edge cases you didn't think to mention. For test generation, that proactiveness is a feature — you want the model to think about failure modes.",
     results: [
       {
-        modelId: "gpt4o-mini",
+        modelId: "deepseek-v3",
         verdict: "caution",
-        summary: "Boilerplate tests, missed edge cases",
+        summary: "Cheap and capable, but still missed the nastier edge cases",
         outputExcerpt:
-          "describe('processPayment', () => {\n  it('should process a valid payment', () => { ... })\n  it('should handle invalid amount', () => { ... })\n})",
-        strengths: ["Fast", "Correct for the happy path", "Clean test structure"],
-        weaknesses: [
-          "Missed concurrent payment edge case",
-          "No test for network timeout scenario",
-          "Tests feel like they were generated, not thought through",
+          "Covered the happy path and basic validation failures, but skipped the concurrent payment race and idempotency checks that tend to bite in production.",
+        strengths: [
+          "Very cheap for the amount of code generated",
+          "Readable test structure",
+          "Reasonable baseline coverage",
         ],
-        costCommentary: "Cheap, but you'll need to add edge cases manually",
+        weaknesses: [
+          "Missed the concurrent payment edge case",
+          "No idempotency or partial-failure coverage",
+          "Still feels more pattern-matched than thought through",
+        ],
+        costCommentary: "Cheap, but you'll still add the most important edge cases yourself",
       },
       {
         modelId: "haiku-4.5",
@@ -414,19 +389,19 @@ export const SCENARIOS: Scenario[] = [
           costCommentary: "Negligible execution cost — the plan did the heavy lifting",
         },
         {
-          modelId: "gpt4o-mini",
+          modelId: "deepseek-v3",
           verdict: "good",
-          summary: "Decent executor, but Haiku is faster for the same result",
+          summary: "Solid executor from a clear plan, but Haiku is still the cleaner fast path",
           outputExcerpt:
-            "Generated all 5 test cases from the plan. Structure is clean, assertions are correct.",
+            "Implemented all planned test cases with correct structure, but one of the edge-case assertions needed a small cleanup pass.",
           strengths: [
             "Followed the plan accurately",
             "Good test structure",
           ],
           weaknesses: [
-            "Slightly slower than Haiku for equivalent output",
+            "A little less crisp than Haiku on the final polish",
           ],
-          costCommentary: "Works fine, but Haiku is the better executor here",
+          costCommentary: "Works fine, but Haiku is still the better executor here",
         },
         {
           modelId: "opus-4.6",
@@ -552,11 +527,11 @@ export const SCENARIOS: Scenario[] = [
     ],
     planMode: {
       planModelId: "opus-4.6",
-      executeModelId: "composer-1",
+      executeModelId: "composer-1-5",
       insight:
         "Multi-file features fail when the executor doesn't understand the big picture. Plan mode flips the direct approach: Opus maps the architecture and file changes, then a fast model executes each file edit. The plan prevents the cross-file inconsistencies that plague cheap models working alone.",
       recommendationReason:
-        "Opus plans the full feature — which files to touch, what patterns to follow, how the layers connect. Composer-1 executes each file change from the plan. Total cost is lower than Composer 1.5 doing everything autonomously, and the plan catches architectural issues upfront.",
+        "Opus plans the full feature — which files to touch, what patterns to follow, how the layers connect. Composer 1.5 executes against that plan with less wandering and better verification than working fully autonomously from scratch.",
       results: [
         {
           modelId: "opus-4.6",
@@ -574,7 +549,7 @@ export const SCENARIOS: Scenario[] = [
           costCommentary: "Planning cost is a fraction of the full implementation — and prevents rework",
         },
         {
-          modelId: "composer-1",
+          modelId: "composer-1-5",
           verdict: "best",
           summary: "Executes each planned file change cleanly",
           outputExcerpt:
@@ -587,8 +562,7 @@ export const SCENARIOS: Scenario[] = [
           weaknesses: [
             "Won't catch issues the plan missed",
           ],
-          costCommentary: "Combined Opus plan + Composer-1 execution costs less than Composer 1.5 doing everything",
-          costContext: { compareToModelId: "composer-1-5" },
+          costCommentary: "Combined Opus plan + Composer 1.5 execution trades a little extra cost for cleaner verification and less rework",
         },
         {
           modelId: "sonnet-4.6",
@@ -618,27 +592,10 @@ export const SCENARIOS: Scenario[] = [
             "Followed the plan accurately",
           ],
           weaknesses: [
-            "Needed one manual fix — less reliable than Composer-1 for multi-file edits",
+            "Needed one manual fix — less reliable than Composer 1.5 for multi-file edits",
             "No IDE integration for applying changes",
           ],
           costCommentary: "Cheapest combo overall, but expect minor manual fixes",
-        },
-        {
-          modelId: "composer-1-5",
-          verdict: "caution",
-          summary: "Autonomous approach costs more and adds less when a plan exists",
-          outputExcerpt:
-            "I see the plan, but let me also explore the codebase to verify… Found the service layer. Implementing with some adjustments to the plan based on what I found.",
-          strengths: [
-            "Self-verified against the codebase",
-          ],
-          weaknesses: [
-            "Spent tokens re-exploring what the plan already covered",
-            "Deviated from the plan based on its own judgment",
-            "Agentic overhead is wasted when the plan is already good",
-          ],
-          costCommentary: "The plan already did the hard work — Composer 1.5's autonomy adds cost without adding value here",
-          costContext: { compareToModelId: "composer-1" },
         },
       ],
     },

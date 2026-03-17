@@ -178,19 +178,6 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
       : autonomy === "drive" ? "Not built for autonomous tasks — needs explicit direction" : "");
   }
 
-  if (modelId === "gpt4o-mini") {
-    dim("task", task === "coding" ? 2 : task === "analysis" ? 1 : 0,
-      task === "coding" ? "Pragmatic defaults — Stack Overflow energy, readable output" : "");
-    dim("scope", scope === "targeted" ? 2 : scope === "multifile" ? 1 : 0,
-      "Measured initiative — fills gaps without overstepping");
-    dim("stakes", stakes === "internal" ? 3 : stakes === "prototype" ? 2 : 0,
-      stakes === "internal" ? "Good enough is genuinely good enough for internal tools" : "");
-    dim("priority", priority === "speed" ? 3 : priority === "balance" ? 2 : 0,
-      priority === "speed" ? "Fast and cheap — best value for well-defined tasks" : "");
-    dim("autonomy", autonomy === "gaps" ? 2 : autonomy === "targeted" ? 1 : 0,
-      "Fills in reasonable gaps without overstepping");
-  }
-
   if (modelId === "haiku-4.5") {
     dim("task", task === "coding" ? 2 : 0,
       "Retains Claude's instruction-following quality at high speed");
@@ -247,21 +234,6 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
       "Proactive with high-signal observations");
   }
 
-  if (modelId === "composer-1") {
-    dim("task", task === "coding" ? 3 : 0,
-      "IDE-native — reads your open files and diffs, executes the targeted change cleanly");
-    dim("scope", scope === "targeted" ? 5 : scope === "multifile" ? -2 : scope === "autonomous" ? -4 : 0,
-      scope === "targeted" ? "Built for this — tight scope, fast round-trip, no wandering"
-      : scope === "autonomous" ? "Not built for autonomous tasks — needs explicit direction" : "");
-    dim("stakes", stakes === "production" ? 2 : 0,
-      "Tight scope means predictable diffs — safe for production changes");
-    dim("priority", priority === "speed" ? 3 : 0,
-      "Fastest round-trip from prompt to applied diff");
-    dim("autonomy", autonomy === "targeted" ? 5 : autonomy === "drive" ? -4 : 0,
-      autonomy === "targeted" ? "Edits exactly what you point at — the model least likely to touch things you didn't ask about"
-      : autonomy === "drive" ? "Precise instrument, not an autonomous agent" : "");
-  }
-
   if (modelId === "gpt-5.4") {
     dim("task", task === "coding" ? 3 : task === "reasoning" ? 3 : task === "analysis" ? 2 : task === "vision" ? 2 : 0,
       task === "reasoning" ? "Reasoning effort levels (low → xhigh) let you dial in exactly how much thinking the model does"
@@ -282,16 +254,18 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
   if (modelId === "composer-1-5") {
     dim("task", task === "coding" ? 3 : 0,
       "Thinking model — reasons deeply on hard problems, fast on easy ones");
-    dim("scope", scope === "autonomous" ? 5 : scope === "multifile" ? 3 : scope === "targeted" ? -2 : 0,
+    dim("scope", scope === "autonomous" ? 5 : scope === "targeted" ? 4 : scope === "multifile" ? 3 : 0,
       scope === "autonomous" ? "Runs terminal commands, reads output, loops until done — closest thing to a developer who can execute end-to-end"
+      : scope === "targeted" ? "Still handles focused edits well when you keep the scope explicit"
       : scope === "multifile" ? "Navigates the project, finds relevant files, makes coordinated changes" : "");
-    dim("stakes", stakes === "prototype" ? 2 : stakes === "internal" ? 2 : stakes === "critical" ? -3 : 0,
-      stakes === "critical" ? "Autonomy has a cost — can go down wrong paths before you notice" : "");
-    dim("priority", priority === "speed" ? 2 : priority === "accuracy" ? -1 : 0,
+    dim("stakes", stakes === "production" ? 2 : stakes === "prototype" ? 2 : stakes === "internal" ? 2 : stakes === "critical" ? -3 : 0,
+      stakes === "critical" ? "Autonomy has a cost — can go down wrong paths before you notice"
+      : stakes === "production" ? "Can self-verify with compiler and test runs before you merge" : "");
+    dim("priority", priority === "speed" ? 3 : priority === "accuracy" ? -1 : 0,
       "Fast on easy tasks, thorough on hard ones");
-    dim("autonomy", autonomy === "drive" ? 5 : autonomy === "gaps" ? 2 : autonomy === "targeted" ? -3 : 0,
+    dim("autonomy", autonomy === "drive" ? 5 : autonomy === "targeted" ? 4 : autonomy === "gaps" ? 2 : 0,
       autonomy === "drive" ? "Self-corrects — sees the TypeScript error, understands it, fixes it without copy-pasting back"
-      : autonomy === "targeted" ? "Agentic overhead isn't worth it for targeted edits" : "");
+      : autonomy === "targeted" ? "Can stay on a pointed task when you give it explicit guardrails" : "");
   }
 
   // ── Interaction effects ──────────────────────────────────────────────────

@@ -26,6 +26,7 @@ The blog covers a fast-moving space. Three types of things go stale:
 | **Structural** | Broken slugs, unregistered components, stale model IDs in data files | `pnpm test:integrity` — runs in CI on every PR |
 | **Model specs** | Pricing, context windows, model names | `validate-model-specs` skill — web-backed, run monthly or after a model release |
 | **Blog claims** | Prose references to models, tools, APIs, versions | `validate-blog-claims` skill — web-backed, run before publishing and quarterly |
+| **Full audit** | Any combination of the above, or uncertainty about what changed | `validate-all-data` skill — runs structural integrity first, then model specs, then blog claims |
 
 ### When to run each check
 
@@ -37,7 +38,7 @@ The blog covers a fast-moving space. Three types of things go stale:
 
 **Before publishing a new article:** Run the `validate-blog-claims` skill on the new post.
 
-**Quarterly or before a major launch:** Run the `validate-all-data` skill for a full audit.
+**Quarterly or before a major launch:** Run the `validate-all-data` skill for a full audit. This is the umbrella workflow when you want to "check everything." It runs the checks in the correct order: `validate-structural-integrity` first to catch repo-local issues, then `validate-model-specs` to refresh `src/lib/modelSpecs.ts`, then `validate-blog-claims` to verify MDX prose against the updated source of truth.
 
 ### When to bump `updatedAt`
 

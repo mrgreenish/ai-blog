@@ -11,6 +11,7 @@ const VALID_INTERACTIVE_TOOLS: InteractiveTool[] = [
   "model-picker",
   "model-tinder",
   "model-mixer",
+  "model-compare",
   "workflow-recipe",
   "scenario-lab",
   "prompt-lab",
