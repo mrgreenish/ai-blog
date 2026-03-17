@@ -8,8 +8,7 @@ interface ToolingCTAProps {
 export function ToolingCTA({ compact = false }: ToolingCTAProps) {
   return (
     <div
-      className={`not-prose relative overflow-hidden rounded-2xl my-10 ${compact ? "p-6" : "p-10"}`}
-       className="bg-bg-surface border border-border-default"
+      className={`not-prose relative overflow-hidden rounded-2xl my-10 bg-bg-surface border border-border-default ${compact ? "p-6" : "p-10"}`}
     >
       <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-violet-600/[0.05] via-transparent to-blue-600/[0.03]" aria-hidden="true" />
       <div className="pointer-events-none absolute left-1/4 top-0 h-40 w-80 -translate-y-1/2 rounded-full bg-violet-500/[0.06] blur-3xl" aria-hidden="true" />

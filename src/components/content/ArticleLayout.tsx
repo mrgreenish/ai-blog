@@ -115,8 +115,7 @@ export function ArticleLayout({ frontmatter, category, children, nextArticle }: 
             </Link>
             <Link
               href={`/${category}/${nextArticle.slug}`}
-              className={`group inline-flex items-center gap-4 rounded-2xl border p-5 transition-all hover:-translate-y-0.5 ${meta.accentBg}`}
-               className="border-border-default"
+              className={`group inline-flex items-center gap-4 rounded-2xl border border-border-default p-5 transition-all hover:-translate-y-0.5 ${meta.accentBg}`}
             >
               <div className="text-right">
                 <div className="section-label mb-1">Continue to next part</div>

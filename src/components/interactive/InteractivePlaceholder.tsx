@@ -21,8 +21,7 @@ export function InteractivePlaceholder({
 }: InteractivePlaceholderProps) {
   return (
     <div
-      className={`not-prose my-8 rounded-xl border ${borderColor} overflow-hidden`}
-      className="bg-bg-surface"
+      className={`not-prose my-8 rounded-xl border ${borderColor} overflow-hidden bg-bg-surface`}
     >
       {/* Header */}
       <div
@@ -31,8 +30,7 @@ export function InteractivePlaceholder({
       >
         <div className="flex items-center gap-3">
           <div
-            className={`rounded-lg p-2 ${accentColor}`}
-            className="bg-bg-elevated"
+            className={`rounded-lg p-2 ${accentColor} bg-bg-elevated`}
           >
             <Icon className="h-4 w-4" />
           </div>

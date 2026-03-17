@@ -12,8 +12,8 @@ export function HomeHero() {
         className="pointer-events-none absolute inset-0 overflow-hidden"
         aria-hidden="true"
       >
-        <div className="absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/4 rounded-full blur-3xl" className="bg-ambient-blue" />
-        <div className="absolute right-0 top-1/4 h-[300px] w-[400px] rounded-full blur-3xl" className="bg-ambient-violet" />
+        <div className="absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/4 rounded-full blur-3xl bg-ambient-blue" />
+        <div className="absolute right-0 top-1/4 h-[300px] w-[400px] rounded-full blur-3xl bg-ambient-violet" />
       </div>
 
       <div className="relative mx-auto w-full max-w-5xl">
@@ -25,7 +25,7 @@ export function HomeHero() {
           className="mb-6 inline-flex items-center gap-2 rounded-full px-4 py-1.5 bg-bg-surface border border-border-default"
           
         >
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full" className="bg-accent-blue" />
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent-blue" />
           <span className="section-label">developer field notes</span>
         </motion.div>
 
