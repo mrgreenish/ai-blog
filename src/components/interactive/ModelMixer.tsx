@@ -134,8 +134,8 @@ export function QuickEstimate() {
   return (
     <>
       {/* Scenario selector */}
-      <div className="border-b border-zinc-800 px-3 py-3 sm:px-5 sm:py-4">
-        <p className="mb-2.5 font-mono text-[11px] font-medium text-zinc-500">Pick a task</p>
+      <div className="px-3 py-3 sm:px-5 sm:py-4 border-b border-border-default">
+        <p className="mb-2.5 font-mono text-[11px] font-medium text-fg-secondary">Pick a task</p>
         <div className="flex flex-wrap gap-1.5 sm:gap-2">
           {SCENARIOS.map((s) => (
             <button
@@ -144,25 +144,26 @@ export function QuickEstimate() {
               className={`rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors sm:px-3 sm:py-1.5 sm:text-xs ${
                 s.id === scenarioId
                   ? "border-emerald-400/50 bg-emerald-400/10 text-emerald-300"
-                  : "border-zinc-700 text-zinc-500 hover:border-zinc-600 hover:text-zinc-400"
+                  : ""
               }`}
+              style={s.id !== scenarioId ? { borderColor: "var(--color-border-strong)", color: "var(--color-fg-secondary)" } : undefined}
             >
               {s.label}
             </button>
           ))}
         </div>
         <div className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <p className="text-[11px] text-zinc-400">{scenario.description}</p>
-          <span className="shrink-0 font-mono text-[10px] text-zinc-600">
+          <p className="text-[11px] text-fg-secondary">{scenario.description}</p>
+          <span className="shrink-0 font-mono text-[10px] text-fg-muted">
             ~{formatTokens(scenario.inputTokens)} in / ~{formatTokens(scenario.outputTokens)} out
           </span>
         </div>
       </div>
 
       {/* Frequency selector */}
-      <div className="border-b border-zinc-800 px-3 py-3 sm:px-5 sm:py-3">
+      <div className="px-3 py-3 sm:px-5 sm:py-3 border-b border-border-default">
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-          <p className="font-mono text-[11px] font-medium text-zinc-500">How often?</p>
+          <p className="font-mono text-[11px] font-medium text-fg-secondary">How often?</p>
           <div className="flex flex-wrap gap-1.5">
             {FREQUENCIES.map((f) => (
               <button
@@ -171,8 +172,9 @@ export function QuickEstimate() {
                 className={`rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors ${
                   f.id === frequencyId
                     ? "border-emerald-400/50 bg-emerald-400/10 text-emerald-300"
-                    : "border-zinc-700 text-zinc-500 hover:border-zinc-600 hover:text-zinc-400"
+                    : ""
                 }`}
+                style={f.id !== frequencyId ? { borderColor: "var(--color-border-strong)", color: "var(--color-fg-secondary)" } : undefined}
               >
                 {f.label}
               </button>
@@ -197,18 +199,18 @@ export function QuickEstimate() {
                 <div className={`w-32 shrink-0 font-mono text-[11px] sm:w-40 sm:text-xs ${m.color}`}>
                   {m.name}
                 </div>
-                <div className="relative h-6 flex-1 overflow-hidden rounded bg-zinc-800">
+                <div className="relative h-6 flex-1 overflow-hidden rounded bg-bg-elevated">
                   <motion.div
                     className="absolute inset-y-0 left-0 rounded bg-emerald-400/20"
                     initial={{ width: 0 }}
                     animate={{ width: `${pct}%` }}
                     transition={{ duration: 0.45, ease: "easeOut" }}
                   />
-                  <span className="absolute inset-y-0 right-2 flex items-center font-mono text-[11px] text-zinc-300">
+                  <span className="absolute inset-y-0 right-2 flex items-center font-mono text-[11px] text-fg-primary">
                     {formatEstimateCost(m.monthly)}/mo
                   </span>
                 </div>
-                <div className="w-16 shrink-0 text-right font-mono text-[11px] text-zinc-600 sm:w-20">
+                <div className="w-16 shrink-0 text-right font-mono text-[11px] sm:w-20 text-fg-muted">
                   {formatEstimateCost(m.perRun)}/run
                 </div>
               </motion.div>
@@ -217,19 +219,19 @@ export function QuickEstimate() {
         </div>
 
         {savingsPct > 0 && (
-          <div className="mt-4 rounded-lg border border-zinc-700/50 bg-zinc-800/40 px-3 py-2.5 space-y-1.5">
-            <p className="text-[11px] leading-relaxed text-zinc-400">
+          <div className="mt-4 rounded-lg px-3 py-2.5 space-y-1.5 bg-bg-elevated border border-border-default">
+            <p className="text-[11px] leading-relaxed text-fg-secondary">
               <span className={`font-medium ${cheapest.color}`}>{cheapest.name}</span>
               {" is "}
               <span className="font-medium text-emerald-400">{savingsPct}% cheaper</span>
               {" than "}
               <span className={`font-medium ${mostExpensive.color}`}>{mostExpensive.name}</span>
               {" for this task — "}
-              <span className="text-zinc-500">
+              <span className="text-fg-secondary">
                 {formatEstimateCost(cheapest.monthly)} vs {formatEstimateCost(mostExpensive.monthly)}/mo
               </span>
             </p>
-            <p className="text-[11px] leading-relaxed text-zinc-500">
+            <p className="text-[11px] leading-relaxed text-fg-secondary">
               {scenario.complexityNote}
             </p>
           </div>
@@ -237,8 +239,8 @@ export function QuickEstimate() {
       </div>
 
       {/* Footer — data source attribution */}
-      <div className="border-t border-zinc-800 bg-zinc-900/40 px-3 py-3 sm:px-5">
-        <p className="text-[11px] text-zinc-600">
+      <div className="px-3 py-3 sm:px-5 bg-bg-surface border-t border-border-default">
+        <p className="text-[11px] text-fg-muted">
           Prices from official API docs, verified {PRICING_META.verifiedDate}.{" "}
           {(Object.entries(PRICING_META.urls) as [string, string][]).map(([provider, url], i, arr) => (
             <span key={provider}>
@@ -394,7 +396,7 @@ function ModelSelect({
           </optgroup>
         ))}
       </select>
-      <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-zinc-500" />
+      <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-fg-secondary" />
     </div>
   );
 }
@@ -420,7 +422,7 @@ function StepCard({
       className={`min-w-0 flex-1 rounded-lg border ${colors.border} ${colors.bg} p-2.5 sm:p-3 ${className || ""}`}
     >
       <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
-        <p className="font-mono text-xs font-semibold text-zinc-200">{step.label}</p>
+        <p className="font-mono text-xs font-semibold text-fg-primary">{step.label}</p>
         <div className="ml-auto flex shrink-0 items-center gap-1">
           {modelId === step.recommendedModelId && (
             <span className="rounded px-1 py-0.5 font-mono text-[10px] font-medium leading-none text-pink-400 bg-pink-400/10">
@@ -430,9 +432,9 @@ function StepCard({
           <TierBadge tier={tier} />
         </div>
       </div>
-      <p className="mb-2 text-[11px] leading-relaxed text-zinc-500 line-clamp-2">{step.description}</p>
+      <p className="mb-2 text-[11px] leading-relaxed line-clamp-2 text-fg-secondary">{step.description}</p>
       <ModelSelect stepId={step.id} value={modelId} onChange={onModelChange} />
-      <div className="mt-1.5 flex items-center justify-between text-[10px] text-zinc-500">
+      <div className="mt-1.5 flex items-center justify-between text-[10px] text-fg-secondary">
         <span>{step.inputTokens / 1000}K in / {step.outputTokens / 1000}K out</span>
         <span className={`font-mono font-medium ${colors.text}`}>{formatCost(cost)}</span>
       </div>
@@ -457,15 +459,15 @@ function PipelineCostBar({
 
   return (
     <div className="flex items-center gap-2 sm:gap-3">
-      <div className="w-20 shrink-0 text-right font-mono text-[11px] text-zinc-400 sm:w-28 sm:text-xs">{label}</div>
-      <div className="relative h-5 flex-1 overflow-hidden rounded bg-zinc-800">
+      <div className="w-20 shrink-0 text-right font-mono text-[11px] sm:w-28 sm:text-xs text-fg-secondary">{label}</div>
+      <div className="relative h-5 flex-1 overflow-hidden rounded bg-bg-elevated">
         <motion.div
           className={`absolute inset-y-0 left-0 rounded ${colorClass} ${isMixed ? "opacity-90" : "opacity-40"}`}
           initial={{ width: 0 }}
           animate={{ width: `${pct}%` }}
           transition={{ duration: 0.5, ease: "easeOut" }}
         />
-        <span className="absolute inset-y-0 right-2 flex items-center font-mono text-[11px] text-zinc-300">
+        <span className="absolute inset-y-0 right-2 flex items-center font-mono text-[11px] text-fg-primary">
           ${cost.toFixed(4)}/run
         </span>
       </div>
@@ -538,7 +540,7 @@ function PipelineBuilder() {
   return (
     <>
       {/* Template selector */}
-      <div className="border-b border-zinc-800 px-3 py-2.5 sm:px-5 sm:py-3">
+      <div className="px-3 py-2.5 sm:px-5 sm:py-3 border-b border-border-default">
         <div className="flex flex-wrap gap-1.5 sm:gap-2">
           {TEMPLATES.map((t) => (
             <button
@@ -547,8 +549,9 @@ function PipelineBuilder() {
               className={`rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors sm:px-3 sm:py-1.5 sm:text-xs ${
                 t.id === templateId
                   ? "border-violet-400/50 bg-violet-400/10 text-violet-300"
-                  : "border-zinc-700 text-zinc-500 hover:border-zinc-600 hover:text-zinc-400"
+                  : ""
               }`}
+              style={t.id !== templateId ? { borderColor: "var(--color-border-strong)", color: "var(--color-fg-secondary)" } : undefined}
             >
               {t.label}
             </button>
@@ -570,7 +573,7 @@ function PipelineBuilder() {
                     className="step-card"
                   />
                   {i < template.steps.length - 1 && (
-                    <div className="mt-6 shrink-0 text-zinc-700">
+                    <div className="mt-6 shrink-0 text-border-strong">
                       <ArrowRight className="h-4 w-4" />
                     </div>
                   )}
@@ -602,7 +605,7 @@ function PipelineBuilder() {
                     className="step-card"
                   />
                   {i < template.steps.length - 1 && (
-                    <div className="flex justify-center text-zinc-700">
+                    <div className="flex justify-center text-border-strong">
                       <ArrowDown className="h-3.5 w-3.5" />
                     </div>
                   )}
@@ -613,8 +616,8 @@ function PipelineBuilder() {
       </div>
 
       {/* Summary */}
-      <div className="border-t border-zinc-800 bg-zinc-900/40 px-3 py-3 sm:px-5 sm:py-4">
-        <p className="mb-3 font-mono text-xs font-semibold text-zinc-400">Real-world cost</p>
+      <div className="px-3 py-3 sm:px-5 sm:py-4 bg-bg-surface border-t border-border-default">
+        <p className="mb-3 font-mono text-xs font-semibold text-fg-secondary">Real-world cost</p>
         <div className="space-y-2">
           <PipelineCostBar
             label={retries === 1 ? "Mixed pipeline" : "Right model, first try"}
@@ -636,7 +639,7 @@ function PipelineBuilder() {
             colorClass="bg-zinc-400"
           />
         </div>
-        <div className="mt-3 flex flex-wrap gap-4 text-xs text-zinc-500">
+        <div className="mt-3 flex flex-wrap gap-4 text-xs text-fg-secondary">
           {savingsVsSonnet > 0 ? (
             <span>
               <span className="font-medium text-emerald-400">{savingsVsSonnet}% cheaper</span> than all-Sonnet
@@ -646,7 +649,7 @@ function PipelineBuilder() {
               <span className="font-medium text-red-400">{Math.abs(savingsVsSonnet)}% more expensive</span> than all-Sonnet
             </span>
           ) : (
-            <span className="text-zinc-600">Same cost as all-Sonnet</span>
+            <span className="text-fg-muted">Same cost as all-Sonnet</span>
           )}
           {savingsVsOpus > 0 && (
             <span>
@@ -656,9 +659,9 @@ function PipelineBuilder() {
         </div>
 
         {/* Retry simulator */}
-        <div className="mt-4 rounded-lg border border-zinc-700/50 bg-zinc-800/40 px-3 py-3">
+        <div className="mt-4 rounded-lg px-3 py-3 bg-bg-elevated border border-border-default">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <label htmlFor="retry-slider" className="text-[11px] font-medium text-zinc-300">
+            <label htmlFor="retry-slider" className="text-[11px] font-medium text-fg-primary">
               How many attempts does one-model-for-everything need?
             </label>
             <span className="font-mono text-[11px] text-violet-400">
@@ -673,14 +676,15 @@ function PipelineBuilder() {
             step={1}
             value={retries}
             onChange={(e) => setRetries(Number(e.target.value))}
-            className="mt-2 h-1.5 w-full cursor-pointer appearance-none rounded-full bg-zinc-700 accent-violet-400 [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-violet-400"
+            className="mt-2 h-1.5 w-full cursor-pointer appearance-none rounded-full accent-violet-400 [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-violet-400"
+            className="bg-border-strong"
           />
-          <div className="mt-1 flex justify-between font-mono text-[10px] text-zinc-600">
+          <div className="mt-1 flex justify-between font-mono text-[10px] text-fg-muted">
             {[1, 2, 3, 4, 5].map((n) => (
               <span key={n}>{n}</span>
             ))}
           </div>
-          <p className="mt-2 text-[11px] leading-relaxed text-zinc-500">
+          <p className="mt-2 text-[11px] leading-relaxed text-fg-secondary">
             {retries === 1
               ? "Slide to simulate back-and-forth. Using one model for everything often means re-prompting the steps it's not great at."
               : `Using one model for every step? The planning or review step might need ${retries} attempts before the output is good enough. The mixed pipeline uses the right model per step — so it nails each one first time.`}
@@ -699,15 +703,20 @@ export function ModelMixer({ initialMode = "estimate" }: { initialMode?: MixerMo
   const [mode, setMode] = useState<MixerMode>(initialMode);
 
   return (
-    <div className="not-prose my-8 overflow-hidden rounded-xl border border-violet-400/30 bg-zinc-900/60">
+    <div
+      className="not-prose my-8 overflow-hidden rounded-xl border border-violet-400/30 bg-bg-surface"
+    >
       {/* Header */}
-      <div className="flex items-center gap-3 border-b border-zinc-800 px-3 py-3 sm:px-5 sm:py-4">
-        <div className="rounded-lg bg-zinc-800 p-2 text-violet-400">
+      <div
+        className="flex items-center gap-3 px-3 py-3 sm:px-5 sm:py-4 border-b border-border-default"
+        
+      >
+        <div className="rounded-lg p-2 text-violet-400 bg-bg-elevated">
           <Shuffle className="h-4 w-4" />
         </div>
         <div className="min-w-0">
           <h3 className="font-mono text-sm font-semibold text-violet-400">Model Mixer</h3>
-          <p className="mt-0.5 text-xs text-zinc-500">
+          <p className="mt-0.5 text-xs text-fg-secondary">
             Compare costs and build optimized model pipelines
           </p>
         </div>

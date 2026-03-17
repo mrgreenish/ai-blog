@@ -65,9 +65,7 @@ function ModelResultCard({
 
   return (
     <div
-      className={`overflow-hidden rounded-xl border transition-colors ${meta.borderClass} ${
-        isRecommended ? "bg-zinc-900" : "bg-zinc-900/50"
-      }`}
+      className={`overflow-hidden rounded-xl border transition-colors ${meta.borderClass} ${isRecommended ? "bg-bg-surface" : "bg-bg-page"}`}
     >
       {/* Card header */}
       <div className="flex items-center gap-3 px-4 py-3">
@@ -97,11 +95,11 @@ function ModelResultCard({
               </span>
             )}
           </div>
-          <p className="mt-0.5 text-xs text-zinc-500">{result.summary}</p>
+          <p className="mt-0.5 text-xs text-fg-secondary">{result.summary}</p>
         </div>
         <button
           onClick={() => setExpanded((e) => !e)}
-          className="shrink-0 rounded-md p-1 text-zinc-600 transition-colors hover:text-zinc-400"
+          className="shrink-0 rounded-md p-1 transition-colors hover:opacity-70 text-fg-muted"
           aria-label={expanded ? "Collapse" : "Expand"}
         >
           {expanded ? (
@@ -122,13 +120,16 @@ function ModelResultCard({
             transition={{ duration: 0.2, ease: "easeOut" }}
             className="overflow-hidden"
           >
-            <div className="border-t border-zinc-800 px-4 pb-4 pt-3 space-y-3">
+            <div className="px-4 pb-4 pt-3 space-y-3 border-t border-border-default">
               {/* Output excerpt */}
               <div>
                 <p className="mb-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-zinc-600">
                   What it produced
                 </p>
-                <div className="rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2.5 font-mono text-xs leading-relaxed text-zinc-300 whitespace-pre-wrap">
+                <div
+                  className="rounded-lg px-3 py-2.5 font-mono text-xs leading-relaxed whitespace-pre-wrap text-fg-primary bg-bg-page border border-border-default"
+                  
+                >
                   {result.outputExcerpt}
                 </div>
               </div>
@@ -168,7 +169,7 @@ function ModelResultCard({
               )}
 
               {/* Cost note — token cost derived from modelSpecs.ts, commentary from scenario data */}
-              <div className="rounded-lg border border-zinc-700/60 bg-zinc-800/50 px-3 py-2.5 space-y-2">
+              <div className="rounded-lg px-3 py-2.5 space-y-2 bg-bg-elevated border border-border-default">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <p className="text-[10px] font-semibold text-zinc-500">Cost note</p>
@@ -187,7 +188,7 @@ function ModelResultCard({
                 </div>
                 {/* Derived comparison row */}
                 {(ratio !== null || (effectiveRuns > 1 && effectiveCost !== null)) && (
-                  <div className="flex flex-wrap gap-x-4 gap-y-1 border-t border-zinc-700/40 pt-2">
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 pt-2 border-t border-border-default">
                     {ratio !== null && compareSpec && (
                       <p className="font-mono text-[10px] text-zinc-500">
                         <span className={ratio > 1 ? "text-amber-400" : "text-emerald-400"}>
@@ -230,15 +231,15 @@ function WorkflowIndicator({ planMode }: { planMode: PlanModeData }) {
   return (
     <div className="flex items-center gap-2 rounded-lg border border-violet-400/20 bg-violet-400/5 px-3 py-2">
       <span className="font-mono text-[10px] font-semibold text-violet-400">workflow</span>
-      <span className="font-mono text-[11px] text-zinc-300">
+      <span className="font-mono text-[11px] text-fg-primary">
         {planSpec?.name ?? planMode.planModelId}
       </span>
-      <span className="text-[10px] text-zinc-600">plans</span>
-      <span className="text-zinc-600">→</span>
-      <span className="font-mono text-[11px] text-zinc-300">
+      <span className="text-[10px] text-fg-muted">plans</span>
+      <span className="text-fg-muted">→</span>
+      <span className="font-mono text-[11px] text-fg-primary">
         {execSpec?.name ?? planMode.executeModelId}
       </span>
-      <span className="text-[10px] text-zinc-600">executes</span>
+      <span className="text-[10px] text-fg-muted">executes</span>
     </div>
   );
 }
@@ -273,7 +274,7 @@ function ScenarioView({ scenario }: { scenario: Scenario }) {
       className="space-y-4"
     >
       {/* Scenario description + insight */}
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 px-4 py-3 space-y-2">
+      <div className="rounded-xl border px-4 py-3 space-y-2 bg-bg-surface border-border-default">
         <p className="text-sm leading-relaxed text-zinc-300">{scenario.description}</p>
         <div className="flex flex-wrap gap-3 text-xs text-zinc-500">
           <span className="font-mono">~{scenario.inputTokens / 1000}k in</span>
@@ -289,14 +290,15 @@ function ScenarioView({ scenario }: { scenario: Scenario }) {
       {/* Mode toggle — only shown when planMode data exists */}
       {hasPlanMode && (
         <div className="flex items-center gap-2">
-          <div className="inline-flex rounded-lg border border-zinc-700 bg-zinc-900 p-0.5">
+          <div className="inline-flex rounded-lg p-0.5 bg-bg-elevated border border-border-default">
             <button
               onClick={() => setMode("direct")}
               className={`rounded-md px-3 py-1 font-mono text-[11px] transition-colors ${
                 mode === "direct"
                   ? "bg-amber-400/15 text-amber-300 border border-amber-400/30"
-                  : "text-zinc-500 border border-transparent hover:text-zinc-400"
+                  : "border border-transparent"
               }`}
+              style={mode !== "direct" ? { color: "var(--color-fg-secondary)" } : undefined}
             >
               Direct
             </button>
@@ -305,8 +307,9 @@ function ScenarioView({ scenario }: { scenario: Scenario }) {
               className={`rounded-md px-3 py-1 font-mono text-[11px] transition-colors ${
                 mode === "planMode"
                   ? "bg-violet-400/15 text-violet-300 border border-violet-400/30"
-                  : "text-zinc-500 border border-transparent hover:text-zinc-400"
+                  : "border border-transparent"
               }`}
+              style={mode !== "planMode" ? { color: "var(--color-fg-secondary)" } : undefined}
             >
               With Plan Mode
             </button>
@@ -334,7 +337,7 @@ function ScenarioView({ scenario }: { scenario: Scenario }) {
         <p className="mb-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-emerald-500">
           Bottom line
         </p>
-        <p className="text-xs leading-relaxed text-zinc-300">
+        <p className="text-xs leading-relaxed text-fg-primary">
           {activeReason}
         </p>
       </div>
@@ -351,22 +354,27 @@ export function ScenarioLab() {
   const activeScenario = SCENARIOS.find((s) => s.id === activeId) ?? SCENARIOS[0];
 
   return (
-    <div className="not-prose my-8 overflow-hidden rounded-xl border border-amber-400/30 bg-zinc-900/60">
+    <div
+      className="not-prose my-8 overflow-hidden rounded-xl border border-amber-400/30 bg-bg-surface"
+    >
       {/* Header */}
-      <div className="flex items-center gap-3 border-b border-zinc-800 px-3 py-3 sm:px-5 sm:py-4">
-        <div className="rounded-lg bg-zinc-800 p-2 text-amber-400">
+      <div
+        className="flex items-center gap-3 px-3 py-3 sm:px-5 sm:py-4 border-b border-border-default"
+        
+      >
+        <div className="rounded-lg p-2 text-amber-400 bg-bg-elevated">
           <FlaskConical className="h-4 w-4" />
         </div>
         <div className="min-w-0">
           <h3 className="font-mono text-sm font-semibold text-amber-400">Scenario Lab</h3>
-          <p className="mt-0.5 text-xs text-zinc-500">
+          <p className="mt-0.5 text-xs text-fg-secondary">
             Real tasks, real model outputs — see which model wins and why
           </p>
         </div>
       </div>
 
       {/* Scenario selector */}
-      <div className="border-b border-zinc-800 px-3 py-2.5 sm:px-5 sm:py-3">
+      <div className="px-3 py-2.5 sm:px-5 sm:py-3 border-b border-border-default">
         <div className="flex flex-wrap gap-1.5 sm:gap-2">
           {SCENARIOS.map((s) => (
             <button
@@ -375,8 +383,9 @@ export function ScenarioLab() {
               className={`rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors sm:px-3 sm:py-1.5 sm:text-xs ${
                 s.id === activeId
                   ? "border-amber-400/50 bg-amber-400/10 text-amber-300"
-                  : "border-zinc-700 text-zinc-500 hover:border-zinc-600 hover:text-zinc-400"
+                  : ""
               }`}
+              style={s.id !== activeId ? { borderColor: "var(--color-border-strong)", color: "var(--color-fg-secondary)" } : undefined}
             >
               {s.label}
             </button>
@@ -392,7 +401,7 @@ export function ScenarioLab() {
       </div>
 
       {/* Footer */}
-      <div className="border-t border-zinc-800 bg-zinc-900/40 px-3 py-3 sm:px-5">
+      <div className="px-3 py-3 sm:px-5 bg-bg-surface border-t border-border-default">
         <p className="text-[11px] text-zinc-600">
           Outputs are curated from real usage. Prices from official API docs, verified{" "}
           {PRICING_META.verifiedDate}.{" "}

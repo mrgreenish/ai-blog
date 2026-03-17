@@ -25,10 +25,10 @@ export function SearchResults({ query, groupedResults }: SearchResultsProps) {
   if (totalCount === 0) {
     return (
       <div className="mx-auto max-w-5xl px-6 py-16">
-        <p className="text-lg text-zinc-400">
+        <p className="text-lg text-fg-secondary">
           No results for &ldquo;{query}&rdquo;
         </p>
-        <p className="mt-4 text-sm text-zinc-500">
+        <p className="mt-4 text-sm text-fg-muted">
           Try a different search, or browse by category:
         </p>
         <div className="mt-8 flex flex-wrap gap-4">
@@ -38,7 +38,8 @@ export function SearchResults({ query, groupedResults }: SearchResultsProps) {
               <Link
                 key={cat}
                 href={`/${cat}`}
-                className={`inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/4 px-5 py-3 text-sm font-semibold transition-all hover:border-white/16 hover:bg-white/7 ${meta.accent} hover:text-white`}
+                className={`inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition-all ${meta.accent}`}
+                 className="bg-bg-surface border border-border-default"
               >
                 {meta.label}
               </Link>
@@ -51,7 +52,7 @@ export function SearchResults({ query, groupedResults }: SearchResultsProps) {
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-12">
-      <p className="mb-10 font-mono text-sm text-zinc-500">
+      <p className="mb-10 font-mono text-sm text-fg-muted">
         {totalCount} result{totalCount !== 1 ? "s" : ""} for &ldquo;{query}&rdquo;
       </p>
 

@@ -967,16 +967,23 @@ export function ModelTinder() {
   };
 
   return (
-    <div id="model-match" className="my-8 overflow-x-clip rounded-xl border border-zinc-700 bg-zinc-950">
+    <div
+      id="model-match"
+      className="not-prose my-8 overflow-x-clip rounded-xl bg-bg-page border border-border-strong"
+      
+    >
       {/* Header — hidden during chat (chat has its own header) */}
       {phase !== "chat" && (
-        <div className="flex items-center justify-between border-b border-zinc-800 px-5 py-4">
+        <div
+          className="flex items-center justify-between px-5 py-4 border-b border-border-default"
+          
+        >
           <div>
-            <h3 className="font-mono text-sm font-semibold text-zinc-100">Model Match</h3>
-            <p className="mt-0.5 text-xs text-zinc-500">Swipe to find your AI coding partner</p>
+            <h3 className="font-mono text-sm font-semibold text-fg-primary">Model Match</h3>
+            <p className="mt-0.5 text-xs text-fg-muted">Swipe to find your AI coding partner</p>
           </div>
           {phase === "swiping" && (
-            <span className="font-mono text-xs text-zinc-600">
+            <span className="font-mono text-xs text-fg-muted">
               {currentIndex + 1} / {MODELS.length}
             </span>
           )}

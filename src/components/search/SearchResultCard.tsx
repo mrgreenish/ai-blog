@@ -7,18 +7,6 @@ import { HighlightedText } from "./HighlightedText";
 
 type RangeTuple = [number, number];
 
-const CATEGORY_HOVER_GLOW: Record<Category, string> = {
-  models: "hover:shadow-[0_8px_40px_-8px_rgba(96,165,250,0.25)]",
-  workflows: "hover:shadow-[0_8px_40px_-8px_rgba(52,211,153,0.25)]",
-  tooling: "hover:shadow-[0_8px_40px_-8px_rgba(167,139,250,0.25)]",
-};
-
-const CATEGORY_ARROW_HOVER: Record<Category, string> = {
-  models: "group-hover:text-blue-400",
-  workflows: "group-hover:text-emerald-400",
-  tooling: "group-hover:text-violet-400",
-};
-
 function getIndicesForKey(matches: SearchResult["matches"], key: string): RangeTuple[] {
   const m = matches.find((x) => x.key === key);
   return (m?.indices as RangeTuple[] | undefined) ?? [];
@@ -28,8 +16,6 @@ export function SearchResultCard({ result }: { result: SearchResult }) {
   const { article, matches } = result;
   const { slug, category, frontmatter } = article;
   const meta = CATEGORY_META[category as Category];
-  const hoverGlow = CATEGORY_HOVER_GLOW[category as Category];
-  const arrowHover = CATEGORY_ARROW_HOVER[category as Category];
 
   const titleIndices = getIndicesForKey(matches, "title");
   const descIndices = getIndicesForKey(matches, "description");
@@ -37,7 +23,7 @@ export function SearchResultCard({ result }: { result: SearchResult }) {
   return (
     <Link
       href={`/${category}/${slug}`}
-      className={`group flex flex-col rounded-2xl border border-white/7 bg-white/2 p-6 shadow-transparent transition-all duration-300 hover:-translate-y-1 hover:border-white/12 hover:bg-white/4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 ${hoverGlow}`}
+      className="card-hover group flex flex-col rounded-2xl p-6 shadow-transparent hover:-translate-y-1 focus-visible:outline-none"
     >
       <div className="mb-4">
         <span
@@ -48,7 +34,9 @@ export function SearchResultCard({ result }: { result: SearchResult }) {
       </div>
 
       <div className="flex items-start justify-between gap-3">
-        <h3 className="font-display text-base font-semibold leading-snug text-zinc-100 transition-colors group-hover:text-white">
+        <h3
+          className="font-display text-base font-semibold leading-snug transition-colors text-fg-primary"
+        >
           {titleIndices.length > 0 ? (
             <HighlightedText text={frontmatter.title} indices={titleIndices} />
           ) : (
@@ -57,17 +45,22 @@ export function SearchResultCard({ result }: { result: SearchResult }) {
         </h3>
         <ArrowRight
           aria-hidden
-          className={`mt-0.5 h-4 w-4 shrink-0 text-zinc-700 transition-[color,transform] ${arrowHover} group-hover:translate-x-0.5`}
+          className="mt-0.5 h-4 w-4 shrink-0 transition-[color,transform] group-hover:translate-x-0.5 text-fg-muted"
         />
       </div>
 
       {frontmatter.story && (
-        <p className="mt-3 border-l-2 border-zinc-800 pl-3 text-sm italic leading-relaxed text-zinc-400 transition-colors group-hover:border-zinc-700">
+        <p
+          className="mt-3 border-l-2 pl-3 text-sm italic leading-relaxed transition-colors text-fg-secondary border-border-default"
+          
+        >
           &ldquo;{frontmatter.story}&rdquo;
         </p>
       )}
 
-      <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-zinc-500 transition-colors group-hover:text-zinc-400">
+      <p
+        className="mt-3 line-clamp-2 text-sm leading-relaxed transition-colors text-fg-muted"
+      >
         {descIndices.length > 0 ? (
           <HighlightedText text={frontmatter.description} indices={descIndices} />
         ) : (
@@ -86,7 +79,10 @@ export function SearchResultCard({ result }: { result: SearchResult }) {
             </span>
           ))}
           {frontmatter.interactiveTools.length > 3 && (
-            <span className="rounded-full border border-zinc-800 px-2 py-0.5 font-mono text-xs text-zinc-600">
+            <span
+              className="rounded-full border px-2 py-0.5 font-mono text-xs text-fg-muted border-border-default"
+              
+            >
               +{frontmatter.interactiveTools.length - 3} more
             </span>
           )}

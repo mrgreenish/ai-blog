@@ -20,10 +20,10 @@ export default async function SearchPage({ searchParams }: Props) {
 
   return (
     <div className="mx-auto max-w-5xl px-6 pt-12">
-      <h1 className="font-display text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl">
+      <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl text-fg-primary">
         Search
       </h1>
-      <p className="mt-3 text-base text-zinc-400">
+      <p className="mt-3 text-base text-fg-secondary">
         Find articles by title, description, story, or tool tags.
       </p>
 
@@ -33,7 +33,7 @@ export default async function SearchPage({ searchParams }: Props) {
         <SearchResults query={query} groupedResults={groupedResults} />
       ) : (
         <div className="py-16">
-          <p className="text-zinc-500">
+          <p className="text-fg-muted">
             Enter a search term in the header to find articles.
           </p>
         </div>

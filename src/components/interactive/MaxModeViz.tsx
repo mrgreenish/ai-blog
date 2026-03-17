@@ -94,12 +94,12 @@ function ContextBar({
     <div className="space-y-1.5">
       <div className="flex items-center justify-between font-mono text-[10px]">
         <span className={limitColor}>{limitLabel}</span>
-        <span className={over ? "text-red-400" : "text-zinc-500"}>
+        <span className={over ? "text-red-400" : ""} style={!over ? { color: "var(--color-fg-secondary)" } : undefined}>
           {fmtTokens(tokens)} / {fmtTokens(limit)} tokens
           {over && " — exceeds limit"}
         </span>
       </div>
-      <div className="relative h-3 w-full overflow-hidden rounded-full bg-zinc-800">
+      <div className="relative h-3 w-full overflow-hidden rounded-full bg-bg-elevated">
         <motion.div
           className={`absolute inset-y-0 left-0 rounded-full ${over ? "bg-red-500" : barColor}`}
           initial={{ width: 0 }}
@@ -107,7 +107,7 @@ function ContextBar({
           transition={{ duration: 0.4, ease: "easeOut" }}
         />
         {/* Limit marker */}
-        <div className="absolute inset-y-0 right-0 w-px bg-zinc-600/50" />
+        <div className="absolute inset-y-0 right-0 w-px bg-border-strong"  />
       </div>
     </div>
   );
@@ -151,23 +151,28 @@ export function MaxModeViz() {
   const StatusIcon = sm.icon;
 
   return (
-    <div className="not-prose my-8 overflow-hidden rounded-xl border border-violet-400/25 bg-zinc-900/60">
+    <div
+      className="not-prose my-8 overflow-hidden rounded-xl border border-violet-400/25 bg-bg-surface"
+    >
       {/* Header */}
-      <div className="flex items-center gap-3 border-b border-zinc-800 px-4 py-4 sm:px-6">
-        <div className="rounded-lg bg-zinc-800 p-2 text-violet-400">
+      <div
+        className="flex items-center gap-3 px-4 py-4 sm:px-6 border-b border-border-default"
+        
+      >
+        <div className="rounded-lg p-2 text-violet-400 bg-bg-elevated">
           <Maximize2 className="h-4 w-4" />
         </div>
         <div>
           <h3 className="font-mono text-sm font-semibold text-violet-400">Cursor Max Mode Calculator</h3>
-          <p className="mt-0.5 text-xs text-zinc-500">
+          <p className="mt-0.5 text-xs text-fg-secondary">
             See when your task needs the 1M-token window — and what it costs
           </p>
         </div>
       </div>
 
       {/* Scenario presets */}
-      <div className="border-b border-zinc-800 px-4 py-4 sm:px-6">
-        <p className="mb-2.5 font-mono text-[11px] font-medium text-zinc-500">Quick presets</p>
+      <div className="px-4 py-4 sm:px-6 border-b border-border-default">
+        <p className="mb-2.5 font-mono text-[11px] font-medium text-fg-secondary">Quick presets</p>
         <div className="flex flex-wrap gap-1.5">
           {SCENARIOS.map((s) => (
             <button
@@ -179,8 +184,9 @@ export function MaxModeViz() {
               className={`rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors ${
                 activeScenario === s.id
                   ? "border-violet-400/50 bg-violet-400/10 text-violet-300"
-                  : "border-zinc-700 text-zinc-500 hover:border-zinc-600 hover:text-zinc-400"
+                  : ""
               }`}
+              style={activeScenario !== s.id ? { borderColor: "var(--color-border-strong)", color: "var(--color-fg-secondary)" } : undefined}
             >
               {s.label}
             </button>
@@ -194,7 +200,7 @@ export function MaxModeViz() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              className="mt-2.5 text-[11px] text-zinc-500"
+              className="mt-2.5 text-[11px] text-fg-secondary"
             >
               {SCENARIOS.find((s) => s.id === activeScenario)?.note}
             </motion.p>
@@ -203,13 +209,13 @@ export function MaxModeViz() {
       </div>
 
       {/* Slider */}
-      <div className="border-b border-zinc-800 px-4 py-4 sm:px-6">
+      <div className="px-4 py-4 sm:px-6 border-b border-border-default">
         <div className="mb-3 flex items-baseline justify-between">
-          <p className="font-mono text-[11px] font-medium text-zinc-500">Files in context</p>
+          <p className="font-mono text-[11px] font-medium text-fg-secondary">Files in context</p>
           <div className="text-right">
             <span className="font-mono text-lg font-bold text-violet-300">{files}</span>
-            <span className="ml-1 font-mono text-xs text-zinc-600">files</span>
-            <span className="ml-2 font-mono text-xs text-zinc-600">
+            <span className="ml-1 font-mono text-xs text-fg-muted">files</span>
+            <span className="ml-2 font-mono text-xs text-fg-muted">
               ≈ {fmtTokens(totalTokens)} tokens
             </span>
           </div>
@@ -227,7 +233,7 @@ export function MaxModeViz() {
           className="w-full cursor-pointer accent-violet-500"
           style={{ height: "4px" }}
         />
-        <div className="mt-1.5 flex justify-between font-mono text-[10px] text-zinc-700">
+        <div className="mt-1.5 flex justify-between font-mono text-[10px] text-fg-muted">
           <span>1</span>
           <span>~77 files = 200K limit</span>
           <span>150</span>
@@ -235,8 +241,8 @@ export function MaxModeViz() {
       </div>
 
       {/* Context window visualization */}
-      <div className="border-b border-zinc-800 px-4 py-5 sm:px-6 space-y-4">
-        <p className="font-mono text-[11px] font-medium text-zinc-500">Context window usage</p>
+      <div className="px-4 py-5 sm:px-6 space-y-4 border-b border-border-default">
+        <p className="font-mono text-[11px] font-medium text-fg-secondary">Context window usage</p>
 
         <ContextBar
           tokens={totalTokens}
@@ -262,31 +268,41 @@ export function MaxModeViz() {
       </div>
 
       {/* Cost comparison */}
-      <div className="border-b border-zinc-800 px-4 py-5 sm:px-6">
-        <p className="font-mono text-[11px] font-medium text-zinc-500 mb-4">Cost per session</p>
+      <div className="px-4 py-5 sm:px-6 border-b border-border-default">
+        <p className="font-mono text-[11px] font-medium mb-4 text-fg-secondary">Cost per session</p>
 
         <div className="grid grid-cols-2 gap-3">
           {/* Auto mode */}
-          <div className={`rounded-lg border px-4 py-3 ${needsMaxMode ? "border-zinc-700/40 bg-zinc-900/30 opacity-50" : "border-zinc-600 bg-zinc-800/40"}`}>
+          <div
+            className={`rounded-lg border px-4 py-3 ${needsMaxMode ? "opacity-50" : ""}`}
+            style={needsMaxMode
+              ? { borderColor: "var(--color-border-default)", background: "var(--color-bg-surface)" }
+              : { borderColor: "var(--color-border-strong)", background: "var(--color-bg-elevated)" }}
+          >
             <div className="flex items-center gap-1.5 mb-2">
-              <Zap className="h-3 w-3 text-zinc-400" />
-              <span className="font-mono text-[11px] font-semibold text-zinc-300">Auto mode</span>
+              <Zap className="h-3 w-3 text-fg-secondary" />
+              <span className="font-mono text-[11px] font-semibold text-fg-primary">Auto mode</span>
             </div>
-            <p className="font-mono text-2xl font-bold text-zinc-200">{formatCost(autoCost)}</p>
-            <p className="mt-1 font-mono text-[10px] text-zinc-600">per session</p>
+            <p className="font-mono text-2xl font-bold text-fg-primary">{formatCost(autoCost)}</p>
+            <p className="mt-1 font-mono text-[10px] text-fg-placeholder">per session</p>
             {needsMaxMode && (
               <p className="mt-1.5 font-mono text-[10px] text-amber-500/80">Context truncated at 200K</p>
             )}
           </div>
 
           {/* Max mode */}
-          <div className={`rounded-lg border px-4 py-3 ${needsMaxMode ? "border-violet-500/40 bg-violet-500/5" : "border-zinc-700/40 bg-zinc-900/30"}`}>
+          <div
+            className="rounded-lg border px-4 py-3"
+            style={needsMaxMode
+              ? { borderColor: "rgba(139, 92, 246, 0.4)", background: "rgba(139, 92, 246, 0.05)" }
+              : { borderColor: "var(--color-border-default)", background: "var(--color-bg-surface)" }}
+          >
             <div className="flex items-center gap-1.5 mb-2">
               <Maximize2 className="h-3 w-3 text-violet-400" />
               <span className="font-mono text-[11px] font-semibold text-violet-300">Max Mode</span>
             </div>
             <p className="font-mono text-2xl font-bold text-violet-200">{formatCost(maxCost)}</p>
-            <p className="mt-1 font-mono text-[10px] text-zinc-600">per session (Sonnet 4.6 API + 20%)</p>
+            <p className="mt-1 font-mono text-[10px] text-fg-placeholder">per session (Sonnet 4.6 API + 20%)</p>
             {needsMaxMode && (
               <p className="mt-1.5 font-mono text-[10px] text-violet-400/80">Full context fits ✓</p>
             )}
@@ -294,18 +310,19 @@ export function MaxModeViz() {
         </div>
 
         {/* Monthly budget impact */}
-        <div className="mt-3 rounded-lg border border-zinc-700/40 bg-zinc-800/30 px-4 py-3">
+        <div className="mt-3 rounded-lg px-4 py-3 bg-bg-elevated border border-border-default">
           <div className="flex items-start gap-2">
-            <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-zinc-500" />
+            <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-fg-muted" />
             <div className="space-y-0.5">
-              <p className="font-mono text-[11px] text-zinc-400">
+              <p className="font-mono text-[11px] text-fg-secondary">
                 Cursor Pro includes{" "}
-                <span className="text-zinc-200 font-semibold">$20/month of API usage</span>
+                <span className="font-semibold text-fg-primary">$20/month of API usage</span>
                 {" "}on the API pool.
               </p>
-              <p className="font-mono text-[11px] text-zinc-500">
+              <p className="font-mono text-[11px] text-fg-muted">
                 At Max Mode rates, that pool covers{" "}
-                <span className={sessionsBeforeBudgetExhausted < 10 ? "text-amber-400 font-semibold" : "text-zinc-300 font-semibold"}>
+                <span className={sessionsBeforeBudgetExhausted < 10 ? "text-amber-400 font-semibold" : "font-semibold"}
+                  style={sessionsBeforeBudgetExhausted >= 10 ? { color: "var(--color-fg-primary)" } : undefined}>
                   ~{sessionsBeforeBudgetExhausted} sessions
                 </span>
                 {sessionsBeforeBudgetExhausted < 10 && " before you run out"}.
@@ -324,14 +341,14 @@ export function MaxModeViz() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -4 }}
           transition={{ duration: 0.2 }}
-          className="bg-zinc-900/40 px-4 py-4 sm:px-6"
+          className="px-4 py-4 sm:px-6 bg-bg-surface"
         >
           {status === "safe" && (
             <>
               <p className="font-mono text-xs font-semibold text-emerald-400 mb-1">
                 Leave Max Mode off
               </p>
-              <p className="text-[11px] leading-relaxed text-zinc-500">
+              <p className="text-[11px] leading-relaxed text-fg-muted">
                 Your context fits comfortably in the default 200K window. Auto mode handles this at a
                 fraction of the cost — no reason to flip the Max Mode switch.
               </p>
@@ -342,7 +359,7 @@ export function MaxModeViz() {
               <p className="font-mono text-xs font-semibold text-amber-400 mb-1">
                 You&apos;re close — consider trimming first
               </p>
-              <p className="text-[11px] leading-relaxed text-zinc-500">
+              <p className="text-[11px] leading-relaxed text-fg-muted">
                 You&apos;re near the default limit. Try removing files that aren&apos;t directly relevant before
                 enabling Max Mode. Often you can stay under 200K with a tighter selection.
               </p>
@@ -353,7 +370,7 @@ export function MaxModeViz() {
               <p className="font-mono text-xs font-semibold text-violet-400 mb-1">
                 Max Mode is the right call here
               </p>
-              <p className="text-[11px] leading-relaxed text-zinc-500">
+              <p className="text-[11px] leading-relaxed text-fg-muted">
                 Your task genuinely needs more than 200K tokens of context. Enable Max Mode for this
                 session — just remember to turn it off when you&apos;re back to focused, single-file work.
               </p>

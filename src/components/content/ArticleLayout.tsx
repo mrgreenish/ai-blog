@@ -33,23 +33,26 @@ export function ArticleLayout({ frontmatter, category, children, nextArticle }: 
     <div className="mx-auto max-w-3xl px-6 py-10">
 
       {/* Breadcrumb */}
-      <nav className="mb-10 flex items-center gap-1.5 font-mono text-xs text-zinc-600">
-        <Link href="/" className="transition-colors hover:text-zinc-400">
+      <nav className="mb-10 flex items-center gap-1.5 font-mono text-xs text-fg-muted">
+        <Link href="/" className="transition-colors hover:opacity-70">
           home
         </Link>
         <ChevronRight className="h-3 w-3" />
         <Link
           href={`/${category}`}
-          className={`transition-colors hover:text-zinc-300 ${meta.accent}`}
+          className={`transition-colors hover:opacity-70 ${meta.accent}`}
         >
           {meta.label.toLowerCase()}
         </Link>
         <ChevronRight className="h-3 w-3" />
-        <span className="truncate max-w-48 text-zinc-500">{frontmatter.title}</span>
+        <span className="truncate max-w-48 text-fg-secondary">{frontmatter.title}</span>
       </nav>
 
       {/* Article header */}
-      <header className="relative mb-12 overflow-hidden rounded-2xl border border-white/7 bg-white/2 p-8 pb-10">
+      <header
+        className="relative mb-12 overflow-hidden rounded-2xl p-8 pb-10 bg-bg-surface border border-border-default"
+        
+      >
         {/* Background glow */}
         <div
           className={`pointer-events-none absolute inset-0 bg-linear-to-br ${glowClass} to-transparent`}
@@ -70,7 +73,7 @@ export function ArticleLayout({ frontmatter, category, children, nextArticle }: 
           </h1>
 
           {/* Description */}
-          <p className="mt-4 text-base leading-relaxed text-zinc-400">
+          <p className="mt-4 text-base leading-relaxed text-fg-secondary">
             {frontmatter.description}
           </p>
 
@@ -105,14 +108,15 @@ export function ArticleLayout({ frontmatter, category, children, nextArticle }: 
           <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
             <Link
               href={`/${category}`}
-              className="inline-flex items-center gap-2 text-sm text-zinc-500 transition-colors hover:text-zinc-300"
+              className="inline-flex items-center gap-2 text-sm transition-colors text-fg-muted"
             >
               <ArrowLeft className="h-4 w-4" />
               Back to {meta.label}
             </Link>
             <Link
               href={`/${category}/${nextArticle.slug}`}
-              className={`group inline-flex items-center gap-4 rounded-2xl border p-5 transition-all hover:-translate-y-0.5 ${meta.accentBg} hover:border-opacity-40`}
+              className={`group inline-flex items-center gap-4 rounded-2xl border p-5 transition-all hover:-translate-y-0.5 ${meta.accentBg}`}
+               className="border-border-default"
             >
               <div className="text-right">
                 <div className="section-label mb-1">Continue to next part</div>

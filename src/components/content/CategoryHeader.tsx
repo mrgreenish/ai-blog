@@ -44,8 +44,8 @@ export function CategoryHeader({
 
       {/* Breadcrumb */}
       {showBreadcrumb && (
-        <nav className="relative mb-6 flex items-center gap-1 font-mono text-xs text-zinc-600">
-          <Link href="/" className="transition-colors hover:text-zinc-400">
+        <nav className="relative mb-6 flex items-center gap-1 font-mono text-xs text-fg-muted">
+          <Link href="/" className="transition-colors hover:opacity-70">
             home
           </Link>
           <ChevronRight className="h-3 w-3" />
@@ -64,7 +64,7 @@ export function CategoryHeader({
           </h1>
 
           {/* Description */}
-          <p className="mt-5 max-w-2xl text-base leading-relaxed text-zinc-400">
+          <p className="mt-5 max-w-2xl text-base leading-relaxed text-fg-secondary">
             {meta.description}
           </p>
         </div>
@@ -75,7 +75,7 @@ export function CategoryHeader({
             <div className={`font-display text-4xl font-bold ${gradientTextClass} opacity-30`}>
               {articleCount}
             </div>
-            <p className="font-mono text-xs text-zinc-600">
+            <p className="font-mono text-xs text-fg-muted">
               {articleCount === 1 ? "article" : "articles"}
             </p>
           </div>

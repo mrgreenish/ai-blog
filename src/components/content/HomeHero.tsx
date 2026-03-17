@@ -12,8 +12,8 @@ export function HomeHero() {
         className="pointer-events-none absolute inset-0 overflow-hidden"
         aria-hidden="true"
       >
-        <div className="absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/4 rounded-full bg-blue-600/[0.07] blur-3xl" />
-        <div className="absolute right-0 top-1/4 h-[300px] w-[400px] rounded-full bg-violet-600/5 blur-3xl" />
+        <div className="absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/4 rounded-full blur-3xl" className="bg-ambient-blue" />
+        <div className="absolute right-0 top-1/4 h-[300px] w-[400px] rounded-full blur-3xl" className="bg-ambient-violet" />
       </div>
 
       <div className="relative mx-auto w-full max-w-5xl">
@@ -22,9 +22,10 @@ export function HomeHero() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/8 bg-white/4 px-4 py-1.5"
+          className="mb-6 inline-flex items-center gap-2 rounded-full px-4 py-1.5 bg-bg-surface border border-border-default"
+          
         >
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-blue-400" />
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full" className="bg-accent-blue" />
           <span className="section-label">developer field notes</span>
         </motion.div>
 
@@ -33,7 +34,7 @@ export function HomeHero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="font-display text-5xl font-bold leading-[1.08] tracking-tight text-zinc-50 sm:text-6xl lg:text-7xl"
+          className="font-display text-5xl font-bold leading-[1.08] tracking-tight sm:text-6xl lg:text-7xl text-fg-primary"
         >
           Working With AI
           <br />
@@ -45,7 +46,7 @@ export function HomeHero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-6 max-w-xl text-lg leading-relaxed text-zinc-400"
+          className="mt-6 max-w-xl text-lg leading-relaxed text-fg-secondary"
         >
           Real notes from shipping with AI — not theory. Models, workflows,
           tooling, and interactive tools to stay calibrated as things change.
@@ -67,7 +68,8 @@ export function HomeHero() {
           </Link>
           <Link
             href="/workflows"
-            className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/4 px-6 py-3 text-sm font-semibold text-zinc-300 transition-all hover:border-white/16 hover:bg-white/7 hover:text-white active:scale-[0.98]"
+            className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition-all active:scale-[0.98] text-fg-secondary bg-bg-surface border border-border-default"
+            
           >
             Explore Workflows
           </Link>
@@ -81,7 +83,7 @@ export function HomeHero() {
         transition={{ delay: 1.2, duration: 0.6 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2"
       >
-        <ChevronDown className="h-5 w-5 animate-scroll-bounce text-zinc-600" />
+        <ChevronDown className="h-5 w-5 animate-scroll-bounce text-fg-muted" />
       </motion.div>
     </section>
   );

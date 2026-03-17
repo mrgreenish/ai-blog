@@ -307,8 +307,8 @@ function BrowseRecipes() {
   return (
     <>
       {/* Recipe selector */}
-      <div className="border-b border-zinc-800 px-3 py-3 sm:px-5 sm:py-4">
-        <p className="mb-2.5 font-mono text-[11px] font-medium text-zinc-500">
+      <div className="px-3 py-3 sm:px-5 sm:py-4 border-b border-border-default">
+        <p className="mb-2.5 font-mono text-[11px] font-medium text-fg-secondary">
           Pick a workflow
         </p>
         <div className="flex flex-wrap gap-1.5 sm:gap-2">
@@ -319,8 +319,9 @@ function BrowseRecipes() {
               className={`rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors sm:px-3 sm:py-1.5 sm:text-xs ${
                 r.id === recipeId
                   ? "border-emerald-400/50 bg-emerald-400/10 text-emerald-300"
-                  : "border-zinc-700 text-zinc-500 hover:border-zinc-600 hover:text-zinc-400"
+                  : ""
               }`}
+              style={r.id !== recipeId ? { borderColor: "var(--color-border-strong)", color: "var(--color-fg-muted)" } : undefined}
             >
               {r.label}
             </button>
@@ -342,8 +343,8 @@ function BrowseRecipes() {
             {/* Prompt */}
             <div>
               <FieldLabel accentColor="emerald">Prompt</FieldLabel>
-              <div className="rounded-lg border border-zinc-700/50 bg-zinc-800/40 px-3 py-2.5">
-                <p className="font-mono text-xs leading-relaxed text-zinc-300">
+              <div className="rounded-lg px-3 py-2.5 bg-bg-elevated border border-border-default">
+                <p className="font-mono text-xs leading-relaxed text-fg-primary">
                   {recipe.prompt}
                 </p>
               </div>
@@ -362,7 +363,8 @@ function BrowseRecipes() {
                 {recipe.tools.map((tool) => (
                   <span
                     key={tool}
-                    className="rounded-md border border-zinc-700 bg-zinc-800 px-2 py-0.5 font-mono text-xs text-zinc-300"
+                    className="rounded-md px-2 py-0.5 font-mono text-xs text-fg-primary bg-bg-elevated border border-border-strong"
+                    
                   >
                     {tool}
                   </span>
@@ -380,7 +382,7 @@ function BrowseRecipes() {
             <div>
               <FieldLabel accentColor="emerald">Expected output</FieldLabel>
               <div className="rounded-lg border border-emerald-400/20 bg-emerald-400/5 px-3 py-2.5">
-                <p className="text-xs leading-relaxed text-zinc-300">
+                <p className="text-xs leading-relaxed text-fg-primary">
                   {recipe.output}
                 </p>
               </div>
@@ -390,8 +392,8 @@ function BrowseRecipes() {
       </div>
 
       {/* Footer */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-zinc-800 bg-zinc-900/40 px-3 py-3 sm:px-5">
-        <p className="text-[11px] text-zinc-600">
+      <div className="flex flex-wrap items-center justify-between gap-3 px-3 py-3 sm:px-5 bg-bg-surface border-t border-border-default">
+        <p className="text-[11px] text-fg-muted">
           Paste into CLAUDE.md, .cursorrules, or your workflow docs
         </p>
         <CopyButton
@@ -421,17 +423,17 @@ function Breadcrumbs({
     <div className="flex flex-wrap items-center gap-1 text-xs">
       <button
         onClick={() => onNavigate(-1)}
-        className="text-zinc-500 transition-colors hover:text-teal-400"
+            className="transition-colors hover:text-teal-400 text-fg-secondary"
       >
         Start
       </button>
       {crumbs.map((crumb, i) => (
         <span key={crumb.optionId} className="flex items-center gap-1">
-          <ChevronRight className="h-3 w-3 text-zinc-600" />
+          <ChevronRight className="h-3 w-3 text-fg-muted" />
           {i < crumbs.length - 1 ? (
             <button
               onClick={() => onNavigate(i)}
-              className="text-zinc-500 transition-colors hover:text-teal-400"
+              className="transition-colors hover:text-teal-400 text-fg-secondary"
             >
               {crumb.label}
             </button>
@@ -460,18 +462,19 @@ function QuestionStep({
       transition={{ duration: 0.22, ease: "easeOut" }}
       className="flex flex-col gap-4"
     >
-      <p className="text-base font-semibold text-zinc-100">{node.question}</p>
+      <p className="text-base font-semibold text-fg-primary">{node.question}</p>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         {node.options.map((opt) => (
           <button
             key={opt.id}
             onClick={() => onAnswer(opt.id)}
-            className="group flex flex-col items-start rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-3 text-left transition-all hover:border-teal-500/50 hover:bg-teal-500/5 active:scale-[0.98]"
+            className="group flex flex-col items-start rounded-lg px-4 py-3 text-left transition-all hover:border-teal-500/50 hover:bg-teal-500/5 active:scale-[0.98]"
+            className="border border-border-strong bg-bg-surface"
           >
-            <span className="text-sm font-medium text-zinc-200 group-hover:text-white">
+            <span className="text-sm font-medium text-fg-primary">
               {opt.label}
             </span>
-            <span className="mt-0.5 text-xs text-zinc-500 group-hover:text-zinc-400">
+            <span className="mt-0.5 text-xs text-fg-secondary">
               {opt.description}
             </span>
           </button>
@@ -496,18 +499,18 @@ function ResultCard({
       className="flex flex-col gap-5"
     >
       {/* Header card */}
-      <div className="overflow-hidden rounded-xl border border-zinc-700 bg-zinc-900">
+      <div className="overflow-hidden rounded-xl bg-bg-surface border border-border-strong">
         <div className="flex h-24 items-center justify-center bg-linear-to-br from-teal-500/20 to-cyan-500/20">
           <span className="text-5xl">{result.emoji}</span>
         </div>
         <div className="p-4">
           <div className="mb-1 flex flex-wrap items-baseline gap-2">
-            <h3 className="text-lg font-bold text-white">{result.title}</h3>
+            <h3 className="text-lg font-bold text-fg-primary">{result.title}</h3>
             <span className="rounded-full border border-teal-400/20 bg-teal-400/10 px-2 py-0.5 text-[10px] font-medium text-teal-400">
               {result.model}
             </span>
           </div>
-          <p className="text-sm leading-relaxed text-zinc-300">
+          <p className="text-sm leading-relaxed text-fg-primary">
             {result.description}
           </p>
         </div>
@@ -526,7 +529,8 @@ function ResultCard({
           {result.tools.map((tool) => (
             <span
               key={tool}
-              className="rounded-md border border-zinc-700 bg-zinc-800 px-2 py-0.5 font-mono text-xs text-zinc-300"
+              className="rounded-md px-2 py-0.5 font-mono text-xs text-fg-primary bg-bg-elevated border border-border-strong"
+              
             >
               {tool}
             </span>
@@ -544,7 +548,7 @@ function ResultCard({
       <div>
         <FieldLabel accentColor="teal">Expected output</FieldLabel>
         <div className="rounded-lg border border-teal-400/20 bg-teal-400/5 px-3 py-2.5">
-          <p className="text-xs leading-relaxed text-zinc-300">
+          <p className="text-xs leading-relaxed text-fg-primary">
             {result.output}
           </p>
         </div>
@@ -556,7 +560,7 @@ function ResultCard({
         className="flex items-center justify-between rounded-lg border border-teal-400/30 bg-teal-400/5 px-4 py-3 transition-colors hover:border-teal-400/50 hover:bg-teal-400/10"
       >
         <div>
-          <p className="text-xs text-zinc-500">Read the full guide</p>
+          <p className="text-xs text-fg-secondary">Read the full guide</p>
           <p className="text-sm font-medium text-teal-300">
             {result.articleLink.label}
           </p>
@@ -567,17 +571,18 @@ function ResultCard({
       {/* Related links */}
       {result.relatedLinks && result.relatedLinks.length > 0 && (
         <div className="space-y-1.5">
-          <p className="text-xs text-zinc-500">Also relevant</p>
+          <p className="text-xs text-fg-secondary">Also relevant</p>
           {result.relatedLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="flex items-center gap-3 rounded-lg border border-zinc-800 bg-zinc-900/60 px-4 py-2.5 transition-colors hover:border-zinc-700 hover:text-white"
+              className="flex items-center gap-3 rounded-lg px-4 py-2.5 transition-colors hover:opacity-80 bg-bg-surface border border-border-default"
+              
             >
-              <span className="min-w-0 flex-1 text-sm text-zinc-400">
+              <span className="min-w-0 flex-1 text-sm text-fg-secondary">
                 {link.label}
               </span>
-              <ChevronRight className="h-4 w-4 shrink-0 text-zinc-600" />
+              <ChevronRight className="h-4 w-4 shrink-0 text-fg-muted" />
             </Link>
           ))}
         </div>
@@ -587,7 +592,8 @@ function ResultCard({
       <div className="flex flex-wrap items-center gap-3">
         <button
           onClick={onRestart}
-          className="flex items-center justify-center gap-2 rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2.5 text-sm text-zinc-300 transition-colors hover:border-zinc-600 hover:text-white"
+          className="flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm transition-colors hover:opacity-80 text-fg-secondary bg-bg-elevated border border-border-strong"
+          
         >
           <RotateCcw className="h-4 w-4" />
           Start over
@@ -632,7 +638,7 @@ function HelpMeChoose() {
     <>
       {/* Breadcrumbs */}
       {breadcrumbs.length > 0 && (
-        <div className="border-b border-zinc-800 px-3 py-2.5 sm:px-5">
+        <div className="px-3 py-2.5 sm:px-5 border-b border-border-default">
           <Breadcrumbs crumbs={breadcrumbs} onNavigate={handleNavigate} />
         </div>
       )}
@@ -658,10 +664,10 @@ function HelpMeChoose() {
 
       {/* Back / footer */}
       {!result && path.length > 0 && (
-        <div className="border-t border-zinc-800 px-3 py-3 sm:px-5">
+        <div className="px-3 py-3 sm:px-5 border-t border-border-default">
           <button
             onClick={handleBack}
-            className="flex items-center gap-1.5 text-xs text-zinc-500 transition-colors hover:text-zinc-300"
+            className="flex items-center gap-1.5 text-xs transition-colors hover:opacity-70 text-fg-secondary"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Back
@@ -680,17 +686,22 @@ export function WorkflowRecipe({ initialMode = "browse" }: { initialMode?: Recip
   const [mode, setMode] = useState<RecipeMode>(initialMode);
 
   return (
-    <div className="not-prose my-8 overflow-hidden rounded-xl border border-emerald-400/30 bg-zinc-950">
+    <div
+      className="not-prose my-8 overflow-hidden rounded-xl border border-emerald-400/30 bg-bg-page"
+    >
       {/* Header */}
-      <div className="flex items-center gap-3 border-b border-zinc-800 px-3 py-3 sm:px-5 sm:py-4">
-        <div className="rounded-lg bg-zinc-800 p-2 text-emerald-400">
+      <div
+        className="flex items-center gap-3 px-3 py-3 sm:px-5 sm:py-4 border-b border-border-default"
+        
+      >
+        <div className="rounded-lg p-2 text-emerald-400 bg-bg-elevated">
           <ChefHat className="h-4 w-4" />
         </div>
         <div className="min-w-0">
           <h3 className="font-mono text-sm font-semibold text-emerald-400">
             Workflow Recipe
           </h3>
-          <p className="mt-0.5 text-xs text-zinc-500">
+          <p className="mt-0.5 text-xs text-fg-secondary">
             Copy-pasteable flows and guided workflow finder
           </p>
         </div>

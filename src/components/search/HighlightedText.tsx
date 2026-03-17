@@ -22,7 +22,10 @@ export function HighlightedText({
       parts.push(text.slice(lastEnd, start));
     }
     parts.push(
-      <mark key={`${start}-${end}`} className="rounded bg-blue-500/20 text-zinc-100">
+      <mark
+        key={`${start}-${end}`}
+        className="rounded bg-blue-500/20 text-fg-primary"
+      >
         {text.slice(start, end + 1)}
       </mark>
     );

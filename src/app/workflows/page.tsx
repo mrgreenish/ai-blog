@@ -26,7 +26,7 @@ export default function WorkflowsPage() {
 
       {/* Section framing */}
       <FadeIn delay={0.05}>
-        <div className="mt-8 mb-2 space-y-4 text-base leading-relaxed text-zinc-400">
+        <div className="mt-8 mb-2 space-y-4 text-base leading-relaxed text-fg-secondary">
           <p>
             Now that you know which model to reach for, the question becomes how to
             structure the work. These articles cover the repeatable flows I run —
@@ -37,12 +37,18 @@ export default function WorkflowsPage() {
 
       {/* Prompting callout */}
       <FadeIn delay={0.1}>
-        <div className="mt-6 mb-2 rounded-2xl border border-emerald-500/20 bg-emerald-950/20 px-6 py-5">
-          <p className="font-mono text-xs font-semibold uppercase tracking-widest text-emerald-400 mb-2">
+        <div
+          className="mt-6 mb-2 rounded-2xl px-6 py-5"
+          style={{
+            border: "1px solid rgba(16, 185, 129, 0.20)",
+            background: "rgba(16, 185, 129, 0.05)",
+          }}
+        >
+          <p className="font-mono text-xs font-semibold uppercase tracking-widest mb-2 text-accent-emerald">
             Start here
           </p>
-          <p className="text-sm leading-relaxed text-zinc-300">
-            <span className="font-semibold text-zinc-100">Prompting &amp; Pitfalls</span>{" "}
+          <p className="text-sm leading-relaxed text-fg-secondary">
+            <span className="font-semibold text-fg-primary">Prompting &amp; Pitfalls</span>{" "}
             covers the habits that produce better output and the failure modes to watch for.
             Everything else builds on it.
           </p>

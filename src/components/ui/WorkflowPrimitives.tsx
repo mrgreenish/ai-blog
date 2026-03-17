@@ -72,13 +72,14 @@ export function StepFlow({
           className={`relative ${i < steps.length - 1 ? "pb-3" : ""}`}
         >
           <div
-            className={`absolute -left-[29px] top-0.5 flex h-5 w-5 items-center justify-center rounded-full border bg-zinc-900 font-mono text-[10px] font-medium ${c.borderDot} ${c.textDot}`}
+            className={`absolute -left-[29px] top-0.5 flex h-5 w-5 items-center justify-center rounded-full border font-mono text-[10px] font-medium ${c.borderDot} ${c.textDot}`}
+            className="bg-bg-surface"
           >
             {i + 1}
           </div>
           <div>
-            <p className="text-sm font-medium text-zinc-200">{step.label}</p>
-            <p className="mt-0.5 text-xs leading-relaxed text-zinc-500">
+            <p className="text-sm font-medium text-fg-primary">{step.label}</p>
+            <p className="mt-0.5 text-xs leading-relaxed text-fg-muted">
               {step.description}
             </p>
           </div>
@@ -102,7 +103,7 @@ export function GuardrailList({
       {items.map((g) => (
         <li
           key={g}
-          className="flex items-start gap-2 text-xs leading-relaxed text-zinc-400"
+          className="flex items-start gap-2 text-xs leading-relaxed text-fg-secondary"
         >
           <span
             className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${accent[accentColor].dotBg}`}
@@ -139,8 +140,8 @@ export function ModeToggle<T extends string>({
   accent?: ToggleAccent;
 }) {
   return (
-    <div className="border-b border-zinc-800 px-3 py-2.5 sm:px-5 sm:py-3">
-      <div className="inline-flex rounded-lg border border-zinc-700/50 bg-zinc-800/40 p-0.5">
+    <div className="px-3 py-2.5 sm:px-5 sm:py-3 border-b border-border-default">
+      <div className="inline-flex rounded-lg p-0.5 bg-bg-elevated border border-border-default">
         {options.map(({ id, label, icon: Icon }) => (
           <button
             key={id}
@@ -148,7 +149,7 @@ export function ModeToggle<T extends string>({
             className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-mono text-[11px] transition-all sm:text-xs ${
               mode === id
                 ? toggleAccent[color].active
-                : "text-zinc-500 hover:text-zinc-300"
+                : "text-fg-muted"
             }`}
           >
             <Icon className="h-3 w-3" />
@@ -189,9 +190,7 @@ export function CopyButton({
     <button
       onClick={handleCopy}
       className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 font-mono text-xs transition-colors ${
-        copied
-          ? c.btnCopied
-          : `border-zinc-700 bg-zinc-800 text-zinc-300 ${c.btnHover}`
+        copied ? c.btnCopied : `${c.btnHover} border-border-strong bg-bg-elevated text-fg-secondary`
       }`}
     >
       {copied ? (

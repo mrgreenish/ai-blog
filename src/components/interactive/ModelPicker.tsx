@@ -34,8 +34,9 @@ function ProgressDots({ total, current }: { total: number; current: number }) {
               ? "w-4 bg-blue-400"
               : i === current
               ? "w-4 bg-blue-400/60"
-              : "w-1.5 bg-zinc-700"
+              : "w-1.5"
           }`}
+          style={i >= current ? { background: "var(--color-border-strong)" } : undefined}
         />
       ))}
     </div>
@@ -64,7 +65,8 @@ function QuestionStep({
           <button
             key={opt.id}
             onClick={() => onAnswer(opt.id)}
-            className="group flex flex-col items-start rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-3 text-left transition-all hover:border-blue-500/50 hover:bg-blue-500/5 active:scale-[0.98]"
+            className="group flex flex-col items-start rounded-lg px-4 py-3 text-left transition-all hover:border-blue-500/50 hover:bg-blue-500/5 active:scale-[0.98]"
+            className="border border-border-strong bg-bg-surface"
           >
             <span className="text-sm font-medium text-zinc-200 group-hover:text-white">
               {opt.label}
@@ -110,7 +112,7 @@ function ScoreBar({ dims }: { dims: DimensionScore[] }) {
           <div className="w-16 shrink-0 text-right font-mono text-[10px] text-zinc-500 capitalize">
             {d.dimension}
           </div>
-          <div className="relative h-3 flex-1 overflow-hidden rounded-full bg-zinc-800">
+          <div className="relative h-3 flex-1 overflow-hidden rounded-full bg-bg-elevated">
             <motion.div
               className="absolute inset-y-0 left-0 rounded-full bg-emerald-400/40"
               initial={{ width: 0 }}
@@ -128,7 +130,7 @@ function ScoreBar({ dims }: { dims: DimensionScore[] }) {
           <div className="w-16 shrink-0 text-right font-mono text-[10px] text-zinc-500 capitalize">
             {d.dimension}
           </div>
-          <div className="relative h-3 flex-1 overflow-hidden rounded-full bg-zinc-800">
+          <div className="relative h-3 flex-1 overflow-hidden rounded-full bg-bg-elevated">
             <motion.div
               className="absolute inset-y-0 left-0 rounded-full bg-red-400/30"
               initial={{ width: 0 }}
@@ -160,10 +162,9 @@ function RankedCard({
   return (
     <div
       className={`overflow-hidden rounded-xl border transition-colors ${
-        isWinner
-          ? "border-blue-500/40 bg-zinc-900"
-          : "border-zinc-800 bg-zinc-900/60"
+        isWinner ? "border-blue-500/40" : ""
       }`}
+      style={!isWinner ? { borderColor: "var(--color-border-default)", background: "var(--color-bg-page)" } : { background: "var(--color-bg-surface)" }}
     >
       {/* Header */}
       <div className="flex items-start gap-3 p-4">
@@ -211,7 +212,7 @@ function RankedCard({
             transition={{ duration: 0.2, ease: "easeOut" }}
             className="overflow-hidden"
           >
-            <div className="border-t border-zinc-800 px-4 pb-4 pt-3 space-y-3">
+            <div className="px-4 pb-4 pt-3 space-y-3 border-t border-border-default">
               {/* Score breakdown */}
               <div>
                 <p className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-zinc-600">
@@ -255,7 +256,7 @@ function RankedCard({
               )}
 
               {/* When wrong */}
-              <div className="rounded-lg border border-zinc-700/60 bg-zinc-800/50 px-3 py-2.5">
+              <div className="rounded-lg px-3 py-2.5 bg-bg-elevated border border-border-default">
                 <p className="mb-1 text-[10px] font-semibold text-zinc-500">
                   When I was wrong
                 </p>
@@ -266,13 +267,13 @@ function RankedCard({
 
               {/* Latency + initiative badges */}
               <div className="flex flex-wrap gap-1.5">
-                <span className="rounded-md border border-zinc-700 bg-zinc-800 px-2 py-0.5 font-mono text-[10px] text-zinc-400">
+                <span className="rounded-md px-2 py-0.5 font-mono text-[10px] text-fg-secondary bg-bg-elevated border border-border-strong">
                   latency: {model.latencyBand}
                 </span>
-                <span className="rounded-md border border-zinc-700 bg-zinc-800 px-2 py-0.5 font-mono text-[10px] text-zinc-400">
+                <span className="rounded-md px-2 py-0.5 font-mono text-[10px] text-fg-secondary bg-bg-elevated border border-border-strong">
                   initiative: {model.initiativeStyle}
                 </span>
-                <span className="rounded-md border border-zinc-700 bg-zinc-800 px-2 py-0.5 font-mono text-[10px] text-zinc-400">
+                <span className="rounded-md px-2 py-0.5 font-mono text-[10px] text-fg-secondary bg-bg-elevated border border-border-strong">
                   scope: {model.scopeDiscipline}
                 </span>
               </div>
@@ -336,7 +337,8 @@ function ResultScreen({
       {/* Restart */}
       <button
         onClick={onRestart}
-        className="flex items-center justify-center gap-2 rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2.5 text-sm text-zinc-300 transition-colors hover:border-zinc-600 hover:text-white"
+        className="flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm transition-colors hover:opacity-80 text-fg-secondary bg-bg-elevated border border-border-strong"
+        
       >
         <RotateCcw className="h-4 w-4" />
         Start over
@@ -379,18 +381,24 @@ export function ModelPicker() {
   };
 
   return (
-    <div className="my-8 overflow-hidden rounded-xl border border-zinc-700 bg-zinc-950">
+    <div
+      className="not-prose my-8 overflow-hidden rounded-xl bg-bg-page border border-border-strong"
+      
+    >
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-zinc-800 px-5 py-4">
+      <div
+        className="flex items-center justify-between px-5 py-4 border-b border-border-default"
+        
+      >
         <div className="flex items-center gap-3">
-          <div className="rounded-lg bg-zinc-800 p-2 text-blue-400">
+          <div className="rounded-lg p-2 text-blue-400 bg-bg-elevated">
             <Compass className="h-4 w-4" />
           </div>
           <div>
             <h3 className="font-mono text-sm font-semibold text-blue-400">
               Model Picker
             </h3>
-            <p className="mt-0.5 text-xs text-zinc-500">
+            <p className="mt-0.5 text-xs text-fg-muted">
               Top-3 recommendations with score breakdowns
             </p>
           </div>
@@ -421,10 +429,10 @@ export function ModelPicker() {
 
       {/* Back / footer */}
       {!isDone && step > 0 && (
-        <div className="border-t border-zinc-800 px-5 py-3">
+        <div className="px-5 py-3 border-t border-border-default">
           <button
             onClick={handleBack}
-            className="flex items-center gap-1.5 text-xs text-zinc-500 transition-colors hover:text-zinc-300"
+            className="flex items-center gap-1.5 text-xs transition-colors hover:opacity-70 text-fg-muted"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Back

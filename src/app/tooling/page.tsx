@@ -21,7 +21,7 @@ export default function ToolingPage() {
 
       {/* Section framing */}
       <FadeIn delay={0.05}>
-        <div className="mt-8 mb-2 space-y-4 text-base leading-relaxed text-zinc-400">
+        <div className="mt-8 mb-2 space-y-4 text-base leading-relaxed text-fg-secondary">
           <p>
             You know the models and the workflows. This section covers the tools
             that make the system repeatable — Figma MCP, guardrails, diff review
@@ -39,17 +39,20 @@ export default function ToolingPage() {
       {/* CTA back to Models */}
       <section className="pb-8 pt-16">
         <FadeIn>
-          <div className="relative overflow-hidden rounded-2xl border border-white/8 bg-linear-to-br from-blue-950/40 via-zinc-900/60 to-violet-950/30 p-10">
-            <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-blue-600/8 via-transparent to-violet-600/6" aria-hidden="true" />
-            <div className="pointer-events-none absolute left-1/4 top-0 h-40 w-80 -translate-y-1/2 rounded-full bg-blue-500/8 blur-3xl" aria-hidden="true" />
+          <div
+            className="relative overflow-hidden rounded-2xl p-10 bg-bg-surface border border-border-default"
+            
+          >
+            <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-blue-600/[0.05] via-transparent to-violet-600/[0.04]" aria-hidden="true" />
+            <div className="pointer-events-none absolute left-1/4 top-0 h-40 w-80 -translate-y-1/2 rounded-full bg-blue-500/[0.06] blur-3xl" aria-hidden="true" />
 
             <div className="relative flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="section-label mb-2">Back to the start</p>
-                <h3 className="font-display text-2xl font-bold tracking-tight text-zinc-100">
+                <h3 className="font-display text-2xl font-bold tracking-tight text-fg-primary">
                   Revisit the models
                 </h3>
-                <p className="mt-2 max-w-sm text-sm leading-relaxed text-zinc-400">
+                <p className="mt-2 max-w-sm text-sm leading-relaxed text-fg-secondary">
                   Now that you know the workflows and the tools, the model selection questions hit differently. Worth another look.
                 </p>
               </div>

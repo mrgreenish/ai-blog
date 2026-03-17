@@ -66,13 +66,13 @@ export default function ModelsPage() {
         <div className="grid grid-cols-1 gap-16 lg:grid-cols-2">
           {/* Left: personal context */}
           <FadeIn delay={0.05}>
-            <div className="space-y-5 text-base leading-relaxed text-zinc-400">
+            <div className="space-y-5 text-base leading-relaxed text-fg-secondary">
               <p>
                 Think of each AI model like a specialist. Some are slow, methodical, expensive —
                 great for hard problems. Others are fast, cheap, and surprisingly capable for
                 well-defined tasks.
               </p>
-              <p className="font-medium text-zinc-300">
+              <p className="font-medium text-fg-primary">
                 Knowing which to reach for is the foundation everything else builds on.
               </p>
             </div>
@@ -83,10 +83,10 @@ export default function ModelsPage() {
             {NARRATIVE_SECTIONS.map((section, i) => (
               <FadeIn key={section.heading} delay={0.1 + i * 0.08}>
                 <div>
-                  <h2 className="font-display text-sm font-semibold tracking-tight text-zinc-200 mb-3">
+                  <h2 className="font-display text-sm font-semibold tracking-tight mb-3 text-fg-primary">
                     {section.heading}
                   </h2>
-                  <div className="space-y-3 text-sm leading-relaxed text-zinc-500">
+                  <div className="space-y-3 text-sm leading-relaxed text-fg-muted">
                     {section.body.map((para, j) => (
                       <p key={j}>{para}</p>
                     ))}
@@ -105,7 +105,7 @@ export default function ModelsPage() {
         <FadeIn>
           <div className="mb-12">
             <p className="section-label mb-3">Reading order</p>
-            <h2 className="font-display text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl">
+            <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl text-fg-primary">
               Here&apos;s how the articles connect
             </h2>
           </div>
@@ -124,7 +124,7 @@ export default function ModelsPage() {
                     <span className="font-mono text-4xl font-bold leading-none text-blue-400 opacity-25">
                       {step}
                     </span>
-                    <p className="mt-2 text-sm leading-relaxed text-zinc-500">{bridge}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-fg-muted">{bridge}</p>
                   </div>
 
                   {/* Article card */}
@@ -145,10 +145,10 @@ export default function ModelsPage() {
         <FadeIn>
           <div className="mb-12">
             <p className="section-label mb-3">Built into the articles</p>
-            <h2 className="font-display text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl">
+            <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl text-fg-primary">
               Interactive tools, not just text
             </h2>
-            <p className="mt-4 max-w-lg text-base leading-relaxed text-zinc-500">
+            <p className="mt-4 max-w-lg text-base leading-relaxed text-fg-muted">
               Each article ships with tools you can actually use — not just read once and forget.
             </p>
           </div>
@@ -158,11 +158,14 @@ export default function ModelsPage() {
           {MODEL_TOOLS.map(({ icon: Icon, name, description }, i) => (
             <FadeIn key={name} delay={0.05 + i * 0.07}>
               <GlassCard hover glow="blue" className="p-5">
-                <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5">
-                  <Icon className="h-4 w-4 text-zinc-400" />
+                <div
+                  className="mb-4 flex h-9 w-9 items-center justify-center rounded-xl bg-bg-elevated border border-border-default"
+                  
+                >
+                  <Icon className="h-4 w-4 text-fg-secondary" />
                 </div>
-                <p className="font-display text-sm font-semibold text-zinc-200">{name}</p>
-                <p className="mt-1 text-xs leading-relaxed text-zinc-600">{description}</p>
+                <p className="font-display text-sm font-semibold text-fg-primary">{name}</p>
+                <p className="mt-1 text-xs leading-relaxed text-fg-muted">{description}</p>
               </GlassCard>
             </FadeIn>
           ))}
@@ -172,17 +175,20 @@ export default function ModelsPage() {
       {/* CTA to Workflows */}
       <section className="pb-8">
         <FadeIn>
-          <div className="relative overflow-hidden rounded-2xl border border-white/8 bg-linear-to-br from-emerald-950/40 via-zinc-900/60 to-blue-950/30 p-10">
-            <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-emerald-600/8 via-transparent to-blue-600/6" aria-hidden="true" />
-            <div className="pointer-events-none absolute left-1/4 top-0 h-40 w-80 -translate-y-1/2 rounded-full bg-emerald-500/8 blur-3xl" aria-hidden="true" />
+          <div
+            className="relative overflow-hidden rounded-2xl p-10 bg-bg-surface border border-border-default"
+            
+          >
+            <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-emerald-600/[0.05] via-transparent to-blue-600/[0.03]" aria-hidden="true" />
+            <div className="pointer-events-none absolute left-1/4 top-0 h-40 w-80 -translate-y-1/2 rounded-full bg-emerald-500/[0.06] blur-3xl" aria-hidden="true" />
 
             <div className="relative flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="section-label mb-2">What&apos;s next</p>
-                <h3 className="font-display text-2xl font-bold tracking-tight text-zinc-100">
+                <h3 className="font-display text-2xl font-bold tracking-tight text-fg-primary">
                   Now put the models to work
                 </h3>
-                <p className="mt-2 max-w-sm text-sm leading-relaxed text-zinc-400">
+                <p className="mt-2 max-w-sm text-sm leading-relaxed text-fg-secondary">
                   Once you know which model to reach for, the next question is how to structure the
                   work. That&apos;s what Workflows covers.
                 </p>

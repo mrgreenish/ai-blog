@@ -41,7 +41,7 @@ const NARRATIVE_SECTIONS = [
       </>,
       <>
         But faster. Wildly faster. And with a persistent hum of{" "}
-        <em className="text-zinc-300 not-italic font-medium">
+        <em className="not-italic font-medium text-fg-primary">
           are we building something we don&apos;t fully control?
         </em>
       </>,
@@ -50,7 +50,7 @@ const NARRATIVE_SECTIONS = [
   {
     heading: "The main question",
     body: [
-      <span key="q" className="block text-lg font-medium text-zinc-200 italic">
+      <span key="q" className="block text-lg font-medium italic text-fg-primary">
         Which model should I use for this task?
       </span>,
       <>
@@ -92,13 +92,13 @@ export default function Home() {
         <div className="grid grid-cols-1 gap-16 lg:grid-cols-2">
           {/* Left: intro paragraph */}
           <FadeIn delay={0.05}>
-            <div className="space-y-5 text-base leading-relaxed text-zinc-400">
+            <div className="space-y-5 text-base leading-relaxed text-fg-secondary">
               <p>
                 Over the past year I&apos;ve been using AI inside real projects —
                 specs, tickets, production code. What started as curiosity turned into
                 a set of habits I now run every day.
               </p>
-              <p className="font-medium text-zinc-300">
+              <p className="font-medium text-fg-primary">
                 This site is the distilled version of what I&apos;ve learned.
               </p>
             </div>
@@ -109,10 +109,10 @@ export default function Home() {
             {NARRATIVE_SECTIONS.map((section, i) => (
               <FadeIn key={section.heading} delay={0.1 + i * 0.08}>
                 <div>
-                  <h2 className="font-display text-sm font-semibold tracking-tight text-zinc-200 mb-3">
+                  <h2 className="font-display text-sm font-semibold tracking-tight mb-3 text-fg-primary">
                     {section.heading}
                   </h2>
-                  <div className="space-y-3 text-sm leading-relaxed text-zinc-500">
+                  <div className="space-y-3 text-sm leading-relaxed text-fg-muted">
                     {section.body.map((para, j) => (
                       <p key={j}>{para}</p>
                     ))}
@@ -132,7 +132,7 @@ export default function Home() {
         <FadeIn>
           <div className="mb-12">
             <p className="section-label mb-3">How to navigate</p>
-            <h2 className="font-display text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl">
+            <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl text-fg-primary">
               Here&apos;s how most people move through it
             </h2>
           </div>
@@ -162,12 +162,12 @@ export default function Home() {
                     </span>
 
                     {/* Tagline */}
-                    <p className="text-sm leading-relaxed text-zinc-400 group-hover:text-zinc-300 transition-colors">
+                    <p className="text-sm leading-relaxed transition-colors text-fg-secondary">
                       {tagline}
                     </p>
 
                     {/* Article count */}
-                    <p className="mt-4 font-mono text-xs text-zinc-700 group-hover:text-zinc-600 transition-colors">
+                    <p className="mt-4 font-mono text-xs transition-colors text-fg-muted">
                       {count} articles
                     </p>
                   </GlassCard>
@@ -186,12 +186,12 @@ export default function Home() {
         <FadeIn>
           <div className="mb-12">
             <p className="section-label mb-3">Built-in tools</p>
-            <h2 className="font-display text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl">
+            <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl text-fg-primary">
               Every article ships with
               <br />
               at least one interactive tool
             </h2>
-            <p className="mt-4 max-w-lg text-base leading-relaxed text-zinc-500">
+            <p className="mt-4 max-w-lg text-base leading-relaxed text-fg-muted">
               Model pickers, cost calculators, prompt labs, workflow recipes — built to stay
               useful as things change, not just read once and forget.
             </p>
@@ -202,11 +202,14 @@ export default function Home() {
           {FEATURED_TOOLS.map(({ icon: Icon, name, description }, i) => (
             <FadeIn key={name} delay={0.05 + i * 0.07}>
               <GlassCard hover className="p-5">
-                <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5">
-                  <Icon className="h-4 w-4 text-zinc-400" />
+                <div
+                  className="mb-4 flex h-9 w-9 items-center justify-center rounded-xl bg-bg-elevated border border-border-default"
+                  
+                >
+                  <Icon className="h-4 w-4 text-fg-secondary" />
                 </div>
-                <p className="font-display text-sm font-semibold text-zinc-200">{name}</p>
-                <p className="mt-1 text-xs leading-relaxed text-zinc-600">{description}</p>
+                <p className="font-display text-sm font-semibold text-fg-primary">{name}</p>
+                <p className="mt-1 text-xs leading-relaxed text-fg-muted">{description}</p>
               </GlassCard>
             </FadeIn>
           ))}
@@ -214,7 +217,7 @@ export default function Home() {
 
         {extraToolCount > 0 && (
           <FadeIn delay={0.35}>
-            <p className="mt-4 font-mono text-xs text-zinc-700">
+            <p className="mt-4 font-mono text-xs text-fg-muted">
               + {extraToolCount} more tool{extraToolCount !== 1 ? "s" : ""} across all articles
             </p>
           </FadeIn>
@@ -224,17 +227,20 @@ export default function Home() {
       {/* CTA */}
       <section className="relative mx-auto max-w-5xl px-6 pb-20">
         <FadeIn>
-          <div className="relative overflow-hidden rounded-2xl border border-white/8 bg-linear-to-br from-blue-950/40 via-zinc-900/60 to-violet-950/30 p-10 text-center">
+          <div
+            className="relative overflow-hidden rounded-2xl p-10 text-center bg-bg-surface border border-border-default"
+            
+          >
             {/* Background glow */}
-            <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-blue-600/8 via-transparent to-violet-600/6" aria-hidden="true" />
-            <div className="pointer-events-none absolute left-1/2 top-0 h-40 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-500/10 blur-3xl" aria-hidden="true" />
+            <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-blue-600/[0.05] via-transparent to-violet-600/[0.04]" aria-hidden="true" />
+            <div className="pointer-events-none absolute left-1/2 top-0 h-40 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-500/[0.06] blur-3xl" aria-hidden="true" />
 
             <div className="relative">
               <p className="section-label mb-4">Ready to dive in?</p>
-              <h2 className="font-display text-3xl font-bold tracking-tight text-zinc-50 sm:text-4xl">
+              <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl text-fg-primary">
                 Start with Models
               </h2>
-              <p className="mx-auto mt-3 max-w-sm text-base text-zinc-400">
+              <p className="mx-auto mt-3 max-w-sm text-base text-fg-secondary">
                 The foundation. Understand the tools before building the workflows.
               </p>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
@@ -245,12 +251,12 @@ export default function Home() {
                   Explore Models
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </Link>
-                <div className="flex items-center gap-3 text-sm text-zinc-500">
-                  <Link href="/workflows" className="transition-colors hover:text-zinc-300">
+                <div className="flex items-center gap-3 text-sm text-fg-muted">
+                  <Link href="/workflows" className="transition-colors hover:opacity-70">
                     Workflows
                   </Link>
-                  <span className="text-zinc-700">·</span>
-                  <Link href="/tooling" className="transition-colors hover:text-zinc-300">
+                  <span  className="text-border-strong">·</span>
+                  <Link href="/tooling" className="transition-colors hover:opacity-70">
                     Tooling
                   </Link>
                 </div>
