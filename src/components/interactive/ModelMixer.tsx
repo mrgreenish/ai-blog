@@ -326,7 +326,7 @@ const TEMPLATES: Template[] = [
       { id: "plan", label: "Plan", description: "Break spec into files, decisions, approach", defaultTier: "reasoning", defaultModelId: "opus-4.6", recommendedModelId: "opus-4.6", inputTokens: 1500, outputTokens: 2000 },
       { id: "implement", label: "Implement", description: "Write the code against the plan", defaultTier: "balanced", defaultModelId: "sonnet-4.6", recommendedModelId: "sonnet-4.6", inputTokens: 2000, outputTokens: 4000 },
       { id: "review-arch", label: "Review", description: "Architecture review, catch mistakes", defaultTier: "balanced", defaultModelId: "sonnet-4.6", recommendedModelId: "sonnet-4.6", inputTokens: 4000, outputTokens: 1500 },
-      { id: "pr-desc", label: "PR description", description: "Write PR description from spec + diff", defaultTier: "balanced", defaultModelId: "composer-1-5", recommendedModelId: "composer-1-5", inputTokens: 2000, outputTokens: 1000 },
+      { id: "pr-desc", label: "PR description", description: "Write PR description from spec + diff", defaultTier: "balanced", defaultModelId: "composer-2", recommendedModelId: "composer-2", inputTokens: 2000, outputTokens: 1000 },
     ],
   },
 ];

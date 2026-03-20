@@ -16,8 +16,8 @@ const MODELS: ModelStub[] = [
   { id: "sonnet-4.6", name: "Sonnet 4.6", why: { multifile: "Great at multi-file", writing: "Strong writing" } },
   { id: "opus-4.6", name: "Opus 4.6", why: { critical: "Best for critical systems", reasoning: "Deep reasoning" } },
   {
-    id: "composer-1-5",
-    name: "Composer-1.5",
+    id: "composer-2",
+    name: "Composer 2",
     why: {
       targeted: "Precise targeted edits with guardrails",
       autonomous: "Runs tasks end-to-end",
@@ -139,9 +139,9 @@ describe("score()", () => {
     });
   });
 
-  describe("composer-1-5", () => {
+  describe("composer-2", () => {
     it("scores high for coding + targeted scope + speed + targeted autonomy", () => {
-      const s = score("composer-1-5", allAnswers({
+      const s = score("composer-2", allAnswers({
         task: "coding", scope: "targeted", priority: "speed", autonomy: "targeted",
       }));
       // coding(3) + targeted(4) + production(2) + speed(3) + targeted-autonomy(4) = 16
@@ -149,7 +149,7 @@ describe("score()", () => {
     });
 
     it("scores high for autonomous scope + drive autonomy", () => {
-      const s = score("composer-1-5", allAnswers({
+      const s = score("composer-2", allAnswers({
         task: "coding", scope: "autonomous", stakes: "prototype", priority: "speed", autonomy: "drive",
       }));
       // coding(3) + autonomous(5) + prototype(2) + speed(3) + drive(5) + interaction(auto+drive: -2) = 16
@@ -157,20 +157,20 @@ describe("score()", () => {
     });
 
     it("prefers autonomous scope over targeted scope", () => {
-      const auto = score("composer-1-5", allAnswers({ scope: "autonomous" }));
-      const targeted = score("composer-1-5", allAnswers({ scope: "targeted" }));
+      const auto = score("composer-2", allAnswers({ scope: "autonomous" }));
+      const targeted = score("composer-2", allAnswers({ scope: "targeted" }));
       expect(targeted).toBeLessThan(auto);
     });
 
     it("penalized for critical stakes", () => {
-      const internal = score("composer-1-5", allAnswers({ stakes: "internal" }));
-      const critical = score("composer-1-5", allAnswers({ stakes: "critical" }));
+      const internal = score("composer-2", allAnswers({ stakes: "internal" }));
+      const critical = score("composer-2", allAnswers({ stakes: "critical" }));
       expect(critical).toBeLessThan(internal);
     });
 
     it("prefers drive autonomy over targeted autonomy", () => {
-      const drive = score("composer-1-5", allAnswers({ autonomy: "drive" }));
-      const targeted = score("composer-1-5", allAnswers({ autonomy: "targeted" }));
+      const drive = score("composer-2", allAnswers({ autonomy: "drive" }));
+      const targeted = score("composer-2", allAnswers({ autonomy: "targeted" }));
       expect(targeted).toBeLessThan(drive);
     });
   });
@@ -186,11 +186,11 @@ describe("score()", () => {
 // Interaction effects
 // ---------------------------------------------------------------------------
 describe("interaction effects", () => {
-  it("dampens composer-1-5 when autonomous + drive overlap", () => {
-    const withoutInteraction = score("composer-1-5", allAnswers({
+  it("dampens composer-2 when autonomous + drive overlap", () => {
+    const withoutInteraction = score("composer-2", allAnswers({
       scope: "autonomous", autonomy: "gaps",
     }));
-    const withInteraction = score("composer-1-5", allAnswers({
+    const withInteraction = score("composer-2", allAnswers({
       scope: "autonomous", autonomy: "drive",
     }));
     // drive gives +5 but interaction removes 2, so net +3 vs gaps +2 = only +1 difference
@@ -211,7 +211,7 @@ describe("interaction effects", () => {
     expect(opusWith).toBeGreaterThan(opusWithout);
   });
 
-  it("boosts opus-4.6 and penalizes composer-1-5 for critical + accuracy", () => {
+  it("boosts opus-4.6 and penalizes composer-2 for critical + accuracy", () => {
     const opusCritAcc = score("opus-4.6", allAnswers({
       stakes: "critical", priority: "accuracy",
     }));
@@ -221,10 +221,10 @@ describe("interaction effects", () => {
     // accuracy(+4) + interaction(+2) vs balance(0) = +6 difference
     expect(opusCritAcc - opusCritBal).toBe(6);
 
-    const compCritAcc = score("composer-1-5", allAnswers({
+    const compCritAcc = score("composer-2", allAnswers({
       stakes: "critical", priority: "accuracy",
     }));
-    const compCritBal = score("composer-1-5", allAnswers({
+    const compCritBal = score("composer-2", allAnswers({
       stakes: "critical", priority: "balance",
     }));
     // accuracy(-1) + interaction(-1) = -2 vs balance(0)
@@ -250,20 +250,20 @@ describe("getRecommendation()", () => {
     expect(rec.runnerUp.id).not.toBe(rec.model.id);
   });
 
-  it("recommends composer-1-5 for targeted + speed + coding", () => {
+  it("recommends composer-2 for targeted + speed + coding", () => {
     const rec = getRecommendation(MODELS, {
       task: "coding", scope: "targeted", stakes: "production",
       priority: "speed", autonomy: "targeted",
     });
-    expect(rec.model.id).toBe("composer-1-5");
+    expect(rec.model.id).toBe("composer-2");
   });
 
-  it("recommends composer-1-5 for autonomous + drive", () => {
+  it("recommends composer-2 for autonomous + drive", () => {
     const rec = getRecommendation(MODELS, {
       task: "coding", scope: "autonomous", stakes: "internal",
       priority: "speed", autonomy: "drive",
     });
-    expect(rec.model.id).toBe("composer-1-5");
+    expect(rec.model.id).toBe("composer-2");
   });
 
   it("recommends sonnet-4.6 for writing + architecture + balance", () => {
@@ -335,12 +335,12 @@ describe("getRecommendation()", () => {
 // Scenario-based integration tests — real-world user journeys
 // ---------------------------------------------------------------------------
 describe("real-world scenarios", () => {
-  it("quick bug fix: coding + targeted + production + speed + targeted autonomy → composer-1-5", () => {
+  it("quick bug fix: coding + targeted + production + speed + targeted autonomy → composer-2", () => {
     const rec = getRecommendation(MODELS, {
       task: "coding", scope: "targeted", stakes: "production",
       priority: "speed", autonomy: "targeted",
     });
-    expect(rec.model.id).toBe("composer-1-5");
+    expect(rec.model.id).toBe("composer-2");
   });
 
   it("writing docs: writing + multifile + internal + balance + gaps → sonnet-4.6", () => {
@@ -359,12 +359,12 @@ describe("real-world scenarios", () => {
     expect(rec.model.id).toBe("opus-4.6");
   });
 
-  it("full autonomous agent task: coding + autonomous + prototype + speed + drive → composer-1-5", () => {
+  it("full autonomous agent task: coding + autonomous + prototype + speed + drive → composer-2", () => {
     const rec = getRecommendation(MODELS, {
       task: "coding", scope: "autonomous", stakes: "prototype",
       priority: "speed", autonomy: "drive",
     });
-    expect(rec.model.id).toBe("composer-1-5");
+    expect(rec.model.id).toBe("composer-2");
   });
 
   it("vision task: vision + targeted + production + accuracy + targeted → gemini-flash", () => {
@@ -388,7 +388,7 @@ describe("scoreDimensions()", () => {
   });
 
   it("total matches score() for all known models", () => {
-    const modelIds = ["gemini-flash", "sonnet-4.6", "opus-4.6", "composer-1-5"];
+    const modelIds = ["gemini-flash", "sonnet-4.6", "opus-4.6", "composer-2"];
     for (const id of modelIds) {
       const answers = allAnswers({ task: "coding", scope: "multifile", stakes: "production" });
       expect(scoreDimensions(id, answers).total).toBe(score(id, answers));
@@ -403,7 +403,7 @@ describe("scoreDimensions()", () => {
   });
 
   it("each dimension has a dimension name and points", () => {
-    const result = scoreDimensions("composer-1-5", allAnswers({ scope: "targeted", autonomy: "targeted" }));
+    const result = scoreDimensions("composer-2", allAnswers({ scope: "targeted", autonomy: "targeted" }));
     for (const d of result.dimensions) {
       expect(d.dimension).toBeTruthy();
       expect(typeof d.points).toBe("number");
@@ -508,11 +508,11 @@ describe("getRanking()", () => {
     }
   });
 
-  it("hasCaution is true when critical stakes + composer-1-5 wins", () => {
-    // Force composer-1-5 to win by using autonomous scope + drive autonomy
+  it("hasCaution is true when critical stakes + composer-2 wins", () => {
+    // Force composer-2 to win by using autonomous scope + drive autonomy
     // but also critical stakes — should trigger caution
     const ranking = getRanking(
-      [{ id: "composer-1-5", name: "Composer-1.5", why: { autonomous: "Runs end-to-end" } }],
+      [{ id: "composer-2", name: "Composer 2", why: { autonomous: "Runs end-to-end" } }],
       allAnswers({ stakes: "critical", scope: "autonomous", autonomy: "drive" })
     );
     expect(ranking.hasCaution).toBe(true);
@@ -535,7 +535,7 @@ describe("getRanking()", () => {
     expect(ranking.top3.length).toBe(3);
     // haiku or gemini-flash should surface for speed + targeted + prototype
     const topIds = ranking.top3.map((r) => r.model.id);
-    const hasFastModel = topIds.some((id) => ["haiku-4.5", "gemini-flash", "deepseek-v3", "composer-1-5"].includes(id));
+    const hasFastModel = topIds.some((id) => ["haiku-4.5", "gemini-flash", "deepseek-v3", "composer-2"].includes(id));
     expect(hasFastModel).toBe(true);
   });
 

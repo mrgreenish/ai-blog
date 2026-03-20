@@ -37,7 +37,7 @@ For each model, use **WebSearch** to verify against the provider's official pric
 | OpenAI | https://openai.com/api/pricing | `"GPT-5.4" API pricing per million tokens 2026` |
 | Google | https://ai.google.dev/gemini-api/docs/pricing | `"Gemini Flash" API pricing per token 2026` |
 | DeepSeek | https://api-docs.deepseek.com/quick_start/pricing | `"DeepSeek-V3.2" "deepseek-reasoner" API pricing 2026` |
-| Cursor | https://cursor.com/docs/models-and-pricing | `Cursor "Composer 1.5" pricing per token 2026` |
+| Cursor | https://cursor.com/docs/models-and-pricing | `Cursor "Composer 2" API pricing per million tokens 2026` |
 
 **For each model, verify:**
 

@@ -251,9 +251,9 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
       autonomy === "drive" ? "Built-in computer-use and tool search make it the strongest OpenAI model for end-to-end agentic tasks" : "");
   }
 
-  if (modelId === "composer-1-5") {
+  if (modelId === "composer-2") {
     dim("task", task === "coding" ? 3 : 0,
-      "Thinking model — reasons deeply on hard problems, fast on easy ones");
+      "Cursor's agentic model — frontier coding quality with tool use and terminal workflows");
     dim("scope", scope === "autonomous" ? 5 : scope === "targeted" ? 4 : scope === "multifile" ? 3 : 0,
       scope === "autonomous" ? "Runs terminal commands, reads output, loops until done — closest thing to a developer who can execute end-to-end"
       : scope === "targeted" ? "Still handles focused edits well when you keep the scope explicit"
@@ -270,14 +270,14 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
 
   // ── Interaction effects ──────────────────────────────────────────────────
   if (scope === "autonomous" && autonomy === "drive") {
-    if (modelId === "composer-1-5") dims.push({ dimension: "interaction", points: -2, reason: "Dampen double-counting: autonomous scope + drive autonomy overlap" });
+    if (modelId === "composer-2") dims.push({ dimension: "interaction", points: -2, reason: "Dampen double-counting: autonomous scope + drive autonomy overlap" });
   }
   if (stakes === "critical" && scope === "autonomous") {
     if (modelId === "opus-4.6") dims.push({ dimension: "interaction", points: 2, reason: "Critical stakes + autonomous scope: frontier reasoning earns its cost" });
   }
   if (stakes === "critical" && priority === "accuracy") {
     if (modelId === "opus-4.6") dims.push({ dimension: "interaction", points: 2, reason: "Critical + accuracy: strongest quality signal — Opus is the right choice" });
-    if (modelId === "composer-1-5") dims.push({ dimension: "interaction", points: -1, reason: "Critical + accuracy: autonomy risk outweighs speed benefit" });
+    if (modelId === "composer-2") dims.push({ dimension: "interaction", points: -1, reason: "Critical + accuracy: autonomy risk outweighs speed benefit" });
   }
 
   const total = dims.reduce((s, d) => s + d.points, 0);
@@ -354,10 +354,10 @@ export function getRanking<
 
   const winner = top3[0];
   if (winner) {
-    if (answers.stakes === "critical" && winner.model.id === "composer-1-5") {
+    if (answers.stakes === "critical" && winner.model.id === "composer-2") {
       hasCaution = true;
       cautionMessage =
-        "Composer 1.5 can go deep down wrong paths before you notice. For critical systems, add explicit checkpoints and review every diff before merging.";
+        "Composer 2 can go deep down wrong paths before you notice. For critical systems, add explicit checkpoints and review every diff before merging.";
     }
     if (answers.stakes === "critical" && winner.model.id === "sonnet-4.6") {
       hasCaution = true;
