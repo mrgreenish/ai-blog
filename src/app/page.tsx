@@ -55,7 +55,7 @@ const NARRATIVE_SECTIONS = [
       </span>,
       <>
         That question shapes everything else — the workflow, the guardrails, the cost.
-        The articles here walk through how I answer it.
+        These notes walk through how I answer it, project by project.
       </>,
     ],
   },
@@ -128,13 +128,16 @@ export default function Home() {
       <div className="gradient-divider mx-auto max-w-5xl" />
 
       {/* Journey */}
-      <section className="mx-auto max-w-5xl px-6 py-20">
+      <section id="navigate" className="mx-auto max-w-5xl px-6 py-20">
         <FadeIn>
           <div className="mb-12">
             <p className="section-label mb-3">How to navigate</p>
             <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl text-fg-primary">
               Here&apos;s how most people move through it
             </h2>
+            <p className="mt-4 max-w-lg text-base leading-relaxed text-fg-muted">
+              The site is built around three topics. Most readers start with models, then explore workflows and tooling.
+            </p>
           </div>
         </FadeIn>
 
@@ -201,7 +204,7 @@ export default function Home() {
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {FEATURED_TOOLS.map(({ icon: Icon, name, description }, i) => (
             <FadeIn key={name} delay={0.05 + i * 0.07}>
-              <GlassCard hover className="p-5">
+              <GlassCard className="p-5">
                 <div
                   className="mb-4 flex h-9 w-9 items-center justify-center rounded-xl bg-bg-elevated border border-border-default"
                   

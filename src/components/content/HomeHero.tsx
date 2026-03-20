@@ -48,8 +48,9 @@ export function HomeHero() {
           transition={{ duration: 0.6, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
           className="mt-6 max-w-xl text-lg leading-relaxed text-fg-secondary"
         >
-          Real notes from shipping with AI — not theory. Models, workflows,
-          tooling, and interactive tools to stay calibrated as things change.
+          Real notes from shipping with AI — not theory. What I&apos;ve learned
+          about picking models, building workflows, and configuring tooling —
+          kept up to date as things change.
         </motion.p>
 
         {/* CTAs */}
@@ -63,15 +64,15 @@ export function HomeHero() {
             href="/models"
             className="group inline-flex items-center gap-2 rounded-xl bg-blue-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition-all hover:bg-blue-400 hover:shadow-blue-400/30 active:scale-[0.98]"
           >
-            Start with Models
+            Start reading
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
           <Link
-            href="/workflows"
+            href="#navigate"
             className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition-all active:scale-[0.98] text-fg-secondary bg-bg-surface border border-border-default"
-            
+
           >
-            Explore Workflows
+            Browse topics
           </Link>
         </motion.div>
       </div>
