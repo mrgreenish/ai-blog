@@ -5,7 +5,7 @@
 
 import type { ArticleFrontmatter, Category, InteractiveTool } from "./types";
 
-const VALID_CATEGORIES: Category[] = ["models", "workflows", "tooling"];
+const VALID_CATEGORIES: Category[] = ["models", "workflows", "tooling", "notes"];
 
 const VALID_INTERACTIVE_TOOLS: InteractiveTool[] = [
   "model-picker",

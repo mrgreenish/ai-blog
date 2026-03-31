@@ -47,7 +47,7 @@ export const getArticle = cache(function getArticle(category: Category, slug: st
 });
 
 export function getAllArticles(): ArticleMeta[] {
-  const categories: Category[] = ["models", "workflows", "tooling"];
+  const categories: Category[] = ["models", "workflows", "tooling", "notes"];
   return categories.flatMap((cat) => getArticlesByCategory(cat));
 }
 
@@ -59,7 +59,7 @@ export function getNextArticle(category: Category, currentSlug: string): Article
 }
 
 export function getAllArticlePaths(): { category: Category; slug: string }[] {
-  const categories: Category[] = ["models", "workflows", "tooling"];
+  const categories: Category[] = ["models", "workflows", "tooling", "notes"];
   return categories.flatMap((category) => {
     const dir = path.join(CONTENT_DIR, category);
     if (!fs.existsSync(dir)) return [];

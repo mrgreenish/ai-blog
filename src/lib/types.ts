@@ -1,4 +1,4 @@
-export type Category = "models" | "workflows" | "tooling";
+export type Category = "models" | "workflows" | "tooling" | "notes";
 
 export type InteractiveTool =
   | "model-picker"
@@ -64,5 +64,12 @@ export const CATEGORY_META: Record<
       "Claude Code, Codex, Figma MCP, agent guardrails, and the skills ecosystem. Configuration, usage patterns, and tradeoffs.",
     accent: "text-violet-400",
     accentBg: "bg-violet-400/10 border-violet-400/20",
+  },
+  notes: {
+    label: "Notes",
+    description:
+      "Things moving fast in agent tooling — hooks, harness design, browser automation, and the emerging infrastructure layer. Currently diving in.",
+    accent: "text-amber-400",
+    accentBg: "bg-amber-400/10 border-amber-400/20",
   },
 };

@@ -15,12 +15,14 @@ const CATEGORY_GLOW: Record<Category, string> = {
   models:    "from-blue-600/[0.08] via-transparent",
   workflows: "from-emerald-600/[0.08] via-transparent",
   tooling:   "from-violet-600/[0.08] via-transparent",
+  notes:     "from-amber-600/[0.08] via-transparent",
 };
 
 const CATEGORY_GRADIENT_TEXT: Record<Category, string> = {
   models:    "gradient-text-blue",
   workflows: "gradient-text-emerald",
   tooling:   "gradient-text-violet",
+  notes:     "gradient-text-amber",
 };
 
 export function CategoryHeader({

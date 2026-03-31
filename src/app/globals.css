@@ -279,6 +279,20 @@ body {
   background-clip: text;
 }
 
+.gradient-text-amber {
+  background: linear-gradient(135deg, #fcd34d 0%, #f59e0b 40%, #d97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+:root .gradient-text-amber {
+  background: linear-gradient(135deg, #92400e 0%, #b45309 40%, #d97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 .gradient-text-hero {
   background: linear-gradient(135deg, #ffffff 0%, #d4d4d8 30%, #a1a1aa 70%, #d4d4d8 100%);
   background-size: 200% auto;

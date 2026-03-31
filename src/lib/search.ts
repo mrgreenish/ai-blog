@@ -23,7 +23,7 @@ export interface SearchResult {
   matches: ReadonlyArray<FuseResultMatch>;
 }
 
-const CATEGORY_ORDER: Category[] = ["models", "workflows", "tooling"];
+const CATEGORY_ORDER: Category[] = ["models", "workflows", "tooling", "notes"];
 
 function toSearchableRecords(articles: ArticleMeta[]): SearchableRecord[] {
   return articles.map((article) => ({

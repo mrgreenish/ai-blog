@@ -8,6 +8,7 @@ const NAV_SECTIONS = [
       { href: "/models", label: "Models" },
       { href: "/workflows", label: "Workflows" },
       { href: "/tooling", label: "Tooling" },
+      { href: "/notes", label: "Notes" },
     ],
   },
 ];

@@ -1,0 +1,113 @@
+---
+title: "On My Radar"
+description: "Things moving fast in agent tooling right now — hooks, harness design, subagents, Next.js MCP, browser automation, and the emerging infrastructure layer."
+category: notes
+order: 1
+---
+
+The tooling layer is moving faster than the model layer right now. Hooks, harnesses, subagent patterns, browser automation — none of this existed in its current form a year ago. These are the areas I'm actively working through, with notes on what's actually useful.
+
+## Hooks move agents from advice to automation
+
+Skills tell an agent what to do. Hooks make certain things happen regardless of what the agent decides.
+
+They're trigger-based automations that fire on specific lifecycle events: before a tool executes, after it finishes, when you send a message, when Claude stops responding, before context compaction, and when a permission request fires. Unlike skills, they're deterministic — the hook runs every time, not when the model judges it relevant.
+
+Practical uses: auto-format files after every edit, block writes to protected paths before they happen, send a desktop notification when Claude is waiting for input, re-inject context after compaction. The [Anthropic hooks guide](https://docs.anthropic.com/en/docs/claude-code/hooks-guide) covers the full event schema and configuration.
+
+The fastest way to start: describe a rule in plain language and let [Hookify](https://claude.com/plugins/hookify) generate it. `/hookify Warn me when I use rm -rf commands` produces a working hook file immediately. Run `/hookify` with no arguments and it analyzes your recent session to auto-generate rules from behaviors you've already corrected.
+
+The mental model shift: skills encode knowledge, hooks enforce behavior. Both belong in a mature agent setup.
+
+## Harness design is now part of the craft
+
+A harness is everything around the model: the system prompts, tools, orchestration logic, context management, and hooks. Anthropic's engineering team published a detailed breakdown of how harness design affects long-running agent performance — and the findings are worth reading carefully.
+
+The core problem: agents lose coherence as the context window fills. Some models exhibit "context anxiety," wrapping up work prematurely as they approach what they perceive as their limit. The solution isn't just compaction (summarizing earlier context in place) — it's context resets: clearing the window entirely and starting a fresh agent with a structured handoff artifact. Compaction preserves continuity but doesn't give the agent a clean slate. A reset does, at the cost of a well-designed handoff.
+
+The second problem: self-evaluation. When asked to grade their own work, agents reliably praise it. The fix is architectural — separate the generator from the evaluator. A standalone evaluator agent, tuned to be skeptical, is far more tractable than making a generator critical of its own output. Once external feedback exists, the generator has something concrete to iterate against.
+
+The practical architecture that emerged: a planner expands a short prompt into a full spec, a generator implements feature by feature, an evaluator uses Playwright to click through the running app and grades each sprint against defined criteria. The evaluator's findings are specific enough to act on without extra investigation.
+
+One calibration note from the Anthropic post: every component in a harness encodes an assumption about what the model can't do on its own. Those assumptions go stale as models improve. When a new model lands, strip out the scaffolding that's no longer load-bearing before adding new pieces. The [full article](https://www.anthropic.com/engineering/harness-design-long-running-apps) has cost and duration breakdowns from real runs.
+
+## Subagents: the Cursor model is worth studying
+
+Cursor's [subagents implementation](https://cursor.com/docs/context/subagents) goes further than the `AGENTS.md` pattern. Each subagent gets its own context window, its own model configuration, and runs either blocking (foreground) or non-blocking (background). Three built-in subagents — Explore, Bash, and Browser — handle the noisiest operations automatically, keeping intermediate output out of the main context.
+
+Custom subagents live in `.cursor/agents/` (or `.claude/agents/` for Claude Code compatibility) as markdown files with YAML frontmatter:
+
+```markdown
+---
+name: security-auditor
+description: Security specialist. Use when implementing auth, payments, or handling sensitive data.
+model: inherit
+readonly: true
+---
+
+You are a security expert auditing code for vulnerabilities.
+```
+
+The `description` field is what determines when the parent agent delegates. Spend time on it. The `model` field lets you assign a faster, cheaper model to high-volume tasks like search or verification, and a more capable model to tasks that need depth.
+
+The anti-pattern to avoid: creating dozens of vague subagents. Five focused subagents with sharp descriptions outperform fifty generic ones the parent agent doesn't know when to use.
+
+## Next.js MCP is becoming practical
+
+Next.js 16 ships with a built-in MCP endpoint at `/_next/mcp`. The `next-devtools-mcp` package connects your agent to the running dev server, giving it live access to build errors, runtime errors, routes, page metadata, server action IDs, and development logs — without screenshots or manual copy-paste.
+
+Add it to `.mcp.json` at the project root:
+
+```json
+{
+  "mcpServers": {
+    "next-devtools": {
+      "command": "npx",
+      "args": ["-y", "next-devtools-mcp@latest"]
+    }
+  }
+}
+```
+
+The useful tools once connected: `get_errors` for current build and runtime errors with source-mapped stacks, `get_routes` for the full filesystem-scanned route list, `get_page_metadata` for layout and component hierarchy on a specific page, and `get_server_action_by_id` for tracing a server action back to its source file. The agent can diagnose a hydration error, trace a broken server action, and suggest a fix without you describing what's on screen.
+
+For Next.js versions below 16, enable it with `experimental.mcpServer: true` in `next.config.js`.
+
+## Browser control is getting lighter-weight
+
+The fastest way for an agent to use a browser is to let it write code. `dev-browser` takes this approach: install it globally, tell your agent to use it, and it runs Playwright-style scripts in a sandboxed QuickJS WASM environment with no host filesystem access.
+
+```bash
+npm i -g dev-browser
+dev-browser install
+```
+
+The agent writes a script, `dev-browser` executes it in the sandbox, and returns the result. Persistent named pages mean you navigate once and interact across multiple scripts without re-loading. The help output includes a full LLM usage guide, so no plugin installation is needed — just point the agent at `dev-browser --help`.
+
+Benchmark comparison from the repo: Dev Browser completes a representative browser task in 3m 53s at $0.88 with 29 turns. Playwright MCP takes 4m 31s at $1.45 with 51 turns. The code-writing approach is faster and cheaper because it batches interactions into scripts rather than issuing one tool call per action.
+
+Pre-approve it in `.claude/settings.json` to skip permission prompts: `"allow": ["Bash(dev-browser *)"]`.
+
+## Infra is becoming part of the product
+
+Cursor's [self-hosted cloud agents](https://www.cursor.com/blog/self-hosted-cloud-agents) are now generally available. The model: a worker process connects outbound via HTTPS to Cursor's cloud — no inbound ports, no firewall changes, no VPN. When a session starts, Cursor handles inference and planning, sends tool calls to the worker for execution on your machine, and results flow back for the next inference round.
+
+Each session gets its own dedicated worker. For organizations scaling to many workers, a Helm chart and Kubernetes operator manage the pool. The practical benefit: agents can access internal caches, dependencies, and network endpoints that can't leave the environment. Code, secrets, and build artifacts stay in your infrastructure.
+
+"Agent infrastructure" is becoming a real architectural concern, not just a cloud API call. Teams at Brex, Money Forward, and Notion are running this at scale — Notion cited the ability to access more tools more securely as the reason for adopting it over maintaining their own background agent stack.
+
+## Harnesses are becoming shareable infrastructure
+
+[everything-claude-code](https://github.com/affaan-m/everything-claude-code) is worth studying as an example of where this is heading. It's not a config pack — it's a harness performance system: 30 specialized subagents, hooks for memory persistence across sessions, verification loops, continuous learning that extracts patterns from sessions into reusable instincts, and security scanning. It ships across Claude Code, Cursor, Codex, and OpenCode.
+
+The interesting part is the instinct system: the agent observes patterns from your sessions, extracts them as structured instinct files, and `/evolve` clusters related instincts into skills. The harness learns from use.
+
+The community is converging on a shared vocabulary — skills, subagents, hooks, harnesses, evals — and building reusable infrastructure around it. The primitives are stabilizing even as the specific tools change.
+
+## The packaging pattern works for design too
+
+The same pattern that works for code conventions works for design. [ux-ui-agent-skills](https://github.com/plugin87/ux-ui-agent-skills) is a starter kit that turns Claude into a design-aware agent: DTCG-format design tokens in a three-tier hierarchy (primitive → semantic → component), component specs from atoms to templates following Atomic Design, WCAG 2.2 accessibility checklists, Nielsen heuristic review rubrics, and framework-specific implementation patterns for React + Tailwind v4 and Next.js 15.
+
+Drop it into a project and the agent has structured design knowledge it can apply consistently — token mapping, state documentation, edge case checklists, accessibility scoring — rather than improvising from scratch on each task.
+
+The pattern generalizes: any domain with enough accumulated knowledge can be packaged this way. Design is just a clear example because the gap between "AI generates UI" and "AI generates good UI" is so visible.

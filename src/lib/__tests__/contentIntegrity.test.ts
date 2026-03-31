@@ -26,7 +26,7 @@ import matter from "gray-matter";
 
 const ROOT = path.resolve(__dirname, "../../../");
 const CONTENT_DIR = path.join(ROOT, "content");
-const CATEGORIES = ["models", "workflows", "tooling"] as const;
+const CATEGORIES = ["models", "workflows", "tooling", "notes"] as const;
 
 type Category = (typeof CATEGORIES)[number];
 

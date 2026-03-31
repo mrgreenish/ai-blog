@@ -4,11 +4,12 @@ import { CATEGORY_META } from "@/lib/types";
 import type { SearchResult } from "@/lib/search";
 import { SearchResultCard } from "./SearchResultCard";
 
-const CATEGORY_ORDER: Category[] = ["models", "workflows", "tooling"];
+const CATEGORY_ORDER: Category[] = ["models", "workflows", "tooling", "notes"];
 const CATEGORY_GRADIENT: Record<Category, string> = {
   models: "gradient-text-blue",
   workflows: "gradient-text-emerald",
   tooling: "gradient-text-violet",
+  notes: "gradient-text-amber",
 };
 
 interface SearchResultsProps {
