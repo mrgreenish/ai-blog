@@ -20,9 +20,7 @@ export default function NotesPage() {
       <FadeIn delay={0.05}>
         <div className="mt-8 mb-2 space-y-4 text-base leading-relaxed text-fg-secondary">
           <p>
-            Not finished thinking — just thinking out loud. These are areas I'm
-            actively exploring: new tools, patterns, and infrastructure that
-            haven't settled into full articles yet.
+            {`Not finished thinking — just thinking out loud. These are areas I'm actively exploring: new tools, patterns, and infrastructure that haven't settled into full articles yet.`}
           </p>
         </div>
       </FadeIn>
