@@ -1,7 +1,18 @@
 import Link from "next/link";
-import { ArrowRight, Compass, Calculator, Beaker, Terminal } from "lucide-react";
+import {
+  ArrowRight,
+  Compass,
+  Calculator,
+  Beaker,
+  Terminal,
+  Heart,
+  Layers,
+  GitBranch,
+  Maximize2,
+  AlertTriangle,
+} from "lucide-react";
 import { CATEGORY_META } from "@/lib/types";
-import { getArticlesByCategory, getAllArticles } from "@/lib/content";
+import { getArticlesByCategory } from "@/lib/content";
 import { HomeHero } from "@/components/content/HomeHero";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { GlassCard } from "@/components/ui/GlassCard";
@@ -24,11 +35,16 @@ const JOURNEY = [
   },
 ];
 
-const FEATURED_TOOLS = [
-  { icon: Compass, name: "Model Picker", description: "Find the right model for any task" },
-  { icon: Calculator, name: "Cost Calculator", description: "Compare token costs at scale" },
-  { icon: Beaker, name: "Scenario Lab", description: "Real tasks, real outputs — see which model wins" },
-  { icon: Terminal, name: "Config Generator", description: "Generate tool configurations" },
+const TOOLS = [
+  { icon: Compass, name: "Model Picker", description: "Which model fits your task? Answer a few questions, get a recommendation.", href: "/models/reasoning-vs-fast" },
+  { icon: Calculator, name: "Cost Calculator", description: "Compare token pricing across models at your actual usage scale.", href: "/models/reasoning-vs-fast" },
+  { icon: Beaker, name: "Scenario Lab", description: "Same task, different models — see real output comparisons side by side.", href: "/models/reasoning-vs-fast" },
+  { icon: Heart, name: "Model Tinder", description: "Swipe through model personalities and find your match.", href: "/models/model-personalities" },
+  { icon: Layers, name: "Model Mixer", description: "Assign the right model to each step of a multi-stage pipeline.", href: "/models/reasoning-vs-fast" },
+  { icon: GitBranch, name: "Workflow Recipes", description: "Step-by-step dev flows: spec-to-PR, bug-to-fix, design-to-code.", href: "/workflows/spec-to-pr" },
+  { icon: Maximize2, name: "Max Mode Calculator", description: "See when you actually need a 1M-token context window.", href: "/tooling/max-mode" },
+  { icon: AlertTriangle, name: "Failure Gallery", description: "Common AI mistakes and how to avoid them.", href: "/tooling/agent-guardrails" },
+  { icon: Terminal, name: "Config Generator", description: "Generate .cursorrules, CLAUDE.md, or AGENTS.md for your project.", href: "/tooling/agents-and-skills" },
 ];
 
 const NARRATIVE_SECTIONS = [
@@ -67,13 +83,6 @@ export default function Home() {
     workflows: getArticlesByCategory("workflows").length,
     tooling: getArticlesByCategory("tooling").length,
   };
-
-  const allArticles = getAllArticles();
-  const uniqueToolCount = new Set(
-    allArticles.flatMap((a) => a.frontmatter.interactiveTools ?? [])
-  ).size;
-  const featuredToolCount = FEATURED_TOOLS.length;
-  const extraToolCount = Math.max(0, uniqueToolCount - featuredToolCount);
 
   return (
     <div>
@@ -188,43 +197,34 @@ export default function Home() {
       <section className="mx-auto max-w-5xl px-6 py-20">
         <FadeIn>
           <div className="mb-12">
-            <p className="section-label mb-3">Built-in tools</p>
+            <p className="section-label mb-3">Interactive tools</p>
             <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl text-fg-primary">
-              Every article ships with
-              <br />
-              at least one interactive tool
+              Jump straight to what you need
             </h2>
             <p className="mt-4 max-w-lg text-base leading-relaxed text-fg-muted">
-              Model pickers, cost calculators, prompt labs, workflow recipes — built to stay
-              useful as things change, not just read once and forget.
+              Pick a model, compare costs, explore workflows — no need to read the full article first.
             </p>
           </div>
         </FadeIn>
 
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {FEATURED_TOOLS.map(({ icon: Icon, name, description }, i) => (
-            <FadeIn key={name} delay={0.05 + i * 0.07}>
-              <GlassCard className="p-5">
-                <div
-                  className="mb-4 flex h-9 w-9 items-center justify-center rounded-xl bg-bg-elevated border border-border-default"
-                  
-                >
-                  <Icon className="h-4 w-4 text-fg-secondary" />
-                </div>
-                <p className="font-display text-sm font-semibold text-fg-primary">{name}</p>
-                <p className="mt-1 text-xs leading-relaxed text-fg-muted">{description}</p>
-              </GlassCard>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {TOOLS.map(({ icon: Icon, name, description, href }, i) => (
+            <FadeIn key={name} delay={0.05 + i * 0.05}>
+              <Link href={href} className="group block h-full">
+                <GlassCard hover className="h-full p-5 transition-all duration-300">
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-bg-elevated border border-border-default">
+                      <Icon className="h-4 w-4 text-fg-secondary" />
+                    </div>
+                    <ArrowRight className="ml-auto h-4 w-4 text-fg-muted opacity-0 -translate-x-1 transition-all group-hover:opacity-100 group-hover:translate-x-0" />
+                  </div>
+                  <p className="font-display text-sm font-semibold text-fg-primary">{name}</p>
+                  <p className="mt-1 text-xs leading-relaxed text-fg-muted">{description}</p>
+                </GlassCard>
+              </Link>
             </FadeIn>
           ))}
         </div>
-
-        {extraToolCount > 0 && (
-          <FadeIn delay={0.35}>
-            <p className="mt-4 font-mono text-xs text-fg-muted">
-              + {extraToolCount} more tool{extraToolCount !== 1 ? "s" : ""} across all articles
-            </p>
-          </FadeIn>
-        )}
       </section>
 
       {/* CTA */}
