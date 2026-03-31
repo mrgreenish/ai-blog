@@ -1,6 +1,7 @@
 ---
 title: "Diff Review Loops"
 description: "Iterating on AI-generated diffs effectively. Review patterns and habits for catching edge cases before merge."
+story: "The diff looks right. Code is clean, tests pass. You approve it. Two days later, bug in production — sitting right there in the code you skimmed."
 category: tooling
 order: 2
 interactiveTools: [scenario-lab]
@@ -13,6 +14,18 @@ AI-generated code has a specific failure mode — correct for the happy path, wr
 ## The diff review mindset
 
 Reviewing an AI diff requires a different mindset than reviewing a human-written one. With human code, you're checking for mistakes. With AI code, you're checking for *plausible-looking mistakes* — code that looks right but isn't.
+
+A concrete example: you ask the model to add pagination to a list. It returns this:
+
+```ts
+const start = (page - 1) * pageSize;
+const end = start + pageSize;
+return items.slice(start, end);
+```
+
+Looks right. Works for every page except the last one, where `end` overshoots the array length — `slice` handles that gracefully, so no error, just silently truncated results. The test passes because the test uses a full page of data. The bug only appears when the last page has fewer items than `pageSize`.
+
+The code is clean, the logic is almost right, and nothing in the diff signals the problem. That's the failure mode.
 
 Questions I ask:
 

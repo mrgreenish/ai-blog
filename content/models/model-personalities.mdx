@@ -45,11 +45,11 @@ GPT-5.4 also lets you dial in reasoning depth. High reasoning kicks in for ambig
 
 Where it falls short: rarely surprises you with insight. Gives you what you asked for, not necessarily what you need. With 5.4's agentic capabilities, autonomy is powerful but guardrails matter.
 
-## Claude Sonnet 4.6: the proactive one
+## Claude 4.6 Sonnet: the proactive one
 
 <ModelLabels provider="Anthropic" tier="Proactive" bestFor="Feature design" />
 
-Claude has opinions and isn't shy about sharing them. Pushes back on your approach, suggests alternatives, notices bugs you didn't ask about, restructures code to be "better" — even when you just wanted a simple change. With 4.6, Sonnet scores within 1.2 points of Opus on SWE-bench at one-fifth the cost, now with a 1M context window and automatic compaction for long sessions.
+Claude has opinions and isn't shy about sharing them. Pushes back on your approach, suggests alternatives, notices bugs you didn't ask about, restructures code to be "better" — even when you just wanted a simple change. Sonnet 4.6 scores within 1.2 points of Opus on SWE-bench at one-fifth the cost, with a 1M context window available in Max Mode and automatic compaction for long sessions.
 
 It might suggest a better API surface, flag that your data model will break at scale, or restructure code in a way you hadn't considered. Creative by instinct.
 
@@ -61,13 +61,13 @@ On the upside, it gives the clearest explanations of any model. Connects your sp
 
 Where it falls short: scope creep. Its instinct to be helpful means it expands tasks. Fix it with explicit constraints in your prompt or `CLAUDE.md`.
 
-## Claude Opus 4.6: the deep thinker
+## Claude 4.6 Opus: the deep thinker
 
 <PersonalFavorite />
 
 <ModelLabels provider="Anthropic" tier="Deep" bestFor="Hard problems & architecture" />
 
-Opus isn't Sonnet with the volume up. Where Sonnet notices things, Opus *understands* them — traces actual logic rather than pattern-matching, reasons about systems rather than files. The 4.6 update sharpened it: industry-leading agentic coding, a 1M token context window, and long-context retrieval that jumped from 18.5% to 76%.
+Opus isn't Sonnet with the volume up. Where Sonnet notices things, Opus *understands* them — traces actual logic rather than pattern-matching, reasons about systems rather than files. Opus 4.6 requires Max Mode on request-based plans and supports up to 1M tokens in Max Mode at standard per-token rates with no long-context surcharge.
 
 Where other models pattern-match, Opus traces actual logic. Catches bugs three levels of indirection deep, identifies race conditions by simulating concurrent execution, spots type issues TypeScript misses.
 
@@ -81,19 +81,19 @@ Opus supports high and extra high reasoning — and unlike lighter models, it us
 
 Where it falls short: cost and latency. For routine tasks (scaffolding, simple refactors, boilerplate) you're burning money without proportional value. Save it for problems that actually need it.
 
-## Cursor Composer 2: the agentic & fast one
+## Composer 2: the agentic one
 
 <PersonalFavorite />
 
 <ModelLabels provider="Cursor" tier="Agentic" bestFor="End-to-end tasks" />
 
-Composer 2 doesn't just edit files — it acts. Terminal commands, reading output, making more edits, looping until the task is done. Closest thing to an AI developer that can execute end-to-end.
+Composer 2 is Cursor's own model, trained specifically for agentic coding. It doesn't just edit files — it acts. Terminal commands, reading output, making more edits, looping until the task is done. Closest thing to an AI developer that can execute end-to-end.
 
 Give it a task spanning multiple files with verification — "add this feature, make sure tests pass, fix type errors" — and it works through the steps autonomously. Runs the build, reads errors, fixes them, reruns.
 
 It also self-corrects. Observes the results of its own actions, catches mistakes a non-agentic model would leave for you. Sees the TypeScript error, understands it in context, fixes it — no copy-pasting errors back into a prompt.
 
-Not limited to open files either. It navigates the project, finds relevant files, makes coordinated changes across many of them.
+Not limited to open files either. It navigates the project, finds relevant files, makes coordinated changes across many of them. Draws from the Auto + Composer pool, which includes more usage than the API pool — making it cost-efficient for everyday agentic work.
 
 Where it falls short: autonomy has a cost. It can go down wrong paths and make a lot of changes before you realize it's off track. Short task scopes and frequent checkpoints are essential.
 

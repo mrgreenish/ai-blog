@@ -1,6 +1,6 @@
 ---
 title: "Cursor Max Mode: When to Flip the Switch"
-description: "Max Mode can expand Cursor's standard context window up to 1M tokens — and on individual plans it bills at API rates + 20%. Here's when it earns that cost and when to leave it off."
+description: "Max Mode expands Cursor's context window to the model's maximum — up to 1M tokens on supported models. It bills at API rates plus a 20% upcharge on individual plans. Here's when it earns that cost and when to leave it off."
 story: "You paste in six files, Cursor reads half of them, and the refactor is wrong because it missed the other half. That's the moment Max Mode starts making sense."
 category: tooling
 order: 4
@@ -13,7 +13,7 @@ That's the problem Max Mode solves.
 
 ## What Max Mode actually does
 
-By default, Cursor keeps you on the standard context window for the selected model — in practice often the 200K band, roughly 15,000 lines of code, which covers most single-feature work. Max Mode extends that to the model's maximum context window (GPT-5.4, Claude Sonnet 4.6, Claude Opus 4.6, Gemini 3.1 Pro).
+By default, Cursor keeps you on the standard context window for the selected model — in practice often the 200K band, roughly 15,000 lines of code, which covers most single-feature work. Max Mode extends that to the model's maximum context window. The models that support Max Mode include Claude 4.6 Sonnet, Claude 4.6 Opus, GPT-5.4, GPT-5.3 Codex, and Gemini 3.1 Pro, among others.
 
 The catch: on individual plans, it switches that session onto API-rate billing plus a 20% upcharge. A few heavy queries can chew through your included API usage fast.
 
