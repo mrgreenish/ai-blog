@@ -1,13 +1,13 @@
 ---
 title: "Reasoning vs Fast Models"
-description: "When to choose reasoning models (Opus 4.6, GPT-5.4) vs fast models (Haiku, Flash) for different coding tasks."
-story: "You fire up o3 for a simple rename refactor. 40 seconds later, you get a perfect result — and a bill 15× higher than Sonnet. Was it worth it?"
+description: "When to choose reasoning models (Claude 4.6 Opus, GPT-5.4) vs fast models (Haiku, Flash) for different coding tasks."
+story: "Same task, two models, wildly different bills. Knowing which model to reach for — and when to mix them — is the fastest way to cut cost without cutting quality."
 category: models
 order: 1
 interactiveTools: [scenario-lab, model-picker, model-mixer, cost-calculator]
 ---
 
-The first time I used o3 for a coding task, I was impressed — then I checked the latency and the bill. 40 seconds and 15× more than Sonnet, for a task where Sonnet would have been fine. That's when I started keeping notes on *when* the expensive reasoning models actually earn their cost.
+The first time I used o3 for a coding task, I was impressed — then I checked the latency and the bill. 40 seconds and 15× the cost of Sonnet, for a task Sonnet would have nailed. That moment is what started me keeping notes on *when* the expensive reasoning models actually earn their cost — and when they're just burning money.
 
 ## When reasoning models actually earn it
 
@@ -15,31 +15,45 @@ If the task follows a well-known pattern — "write a React form," "add a REST e
 
 - **Architecture decisions with real tradeoffs.** I asked Sonnet to choose between three caching strategies for a Next.js app — it picked the most common one. o3 identified that my specific access pattern made the "common" choice wrong and explained why.
 - **Complex refactors with many constraints.** "Refactor this without changing the public API, keeping backward compatibility, and not touching the test files" — the more constraints you stack, the more reasoning models pull ahead.
+- **Debugging non-obvious failures.** A flaky integration test that only broke in CI. Sonnet suggested the usual suspects — timing, environment variables, missing mocks. Opus traced the actual execution path, found a shared database connection that leaked state between parallel test runs, and explained *why* it only surfaced in CI where tests run concurrently.
 
 ## When fast models win
 
-Fast models are often *better* at constrained tasks because they don't overthink them. Ask Haiku to "convert this array of objects to CSV" and it just does it. Ask o3 and it might add error handling you didn't want.
+Fast models are often *better* at constrained tasks because they don't overthink them. I needed to convert 200 webhook payloads from one shape to another — straightforward field mapping, no ambiguity. Haiku did it in 2 seconds flat, correct on the first pass. o3 took 12 seconds per payload and added defensive null checks, fallback defaults, and logging I never asked for. Same output quality for the actual mapping, 6× slower, 10× more expensive.
 
-Haiku or Flash for:
+Reach for Haiku or Flash when:
 
-- Boilerplate (component scaffolding, test stubs, migration files)
-- Extracting structured data from text (JSON extraction, classification)
-- Anything running in a loop or pipeline where latency compounds
+- **Boilerplate generation.** Component scaffolding, test stubs, migration files — anything where the structure is known and the model just needs to fill in the blanks.
+- **Structured data extraction.** Pulling JSON from unstructured text, classifying support tickets, parsing log lines. Fast models follow extraction schemas reliably without "improving" them.
+- **Pipeline steps where latency compounds.** If the model runs in a loop — processing files, transforming records, generating variants — even small per-call overhead adds up fast. A 3-second Haiku call vs. a 30-second o3 call, repeated 50 times, is the difference between 2.5 minutes and 25.
 
 ## The model mixer approach
 
-I don't pick one model — I use different models for different steps in the same task. Claude 4.6 Opus to think through the plan, Claude 4.6 Sonnet to implement, Composer 2 to build the test suite, GPT-5.4 to review for edge cases. Each model playing to its strengths, total cost a fraction of running the heaviest model end-to-end.
+I don't pick one model for a task — I use different models for different *steps* in the same task. Here's a real example: building a new API endpoint with auth, validation, and tests.
+
+1. **Opus for the plan.** I described the feature and constraints. Opus mapped out the data model, identified where the new endpoint fit in the existing auth middleware, and flagged a potential race condition with concurrent writes. 45 seconds, but it caught a design issue I would have hit two hours into implementation.
+2. **Sonnet for implementation.** With the plan locked, Sonnet wrote the route handler, validation logic, and database queries. Fast, correct, no scope creep — because the architecture decisions were already made.
+3. **Composer 2 for the test suite.** Gave it the implementation and said "full test coverage, including the race condition Opus flagged." It generated the tests, ran them, caught two failures from its own output, and fixed them autonomously.
+4. **GPT-5.4 for review.** Asked it to review the final diff for edge cases and security issues. It spotted a missing rate limit on the new endpoint and a permissive CORS header I'd copied from another route.
+
+Total cost: roughly a third of running Opus end-to-end. Each model played to its strength — deep reasoning where it mattered, speed where it didn't.
 
 <ModelMixer />
 
 ## See it in practice
 
+Pick a coding scenario below and watch how different models handle it. Pay attention to where reasoning models spend their token budget — and whether that extra thinking actually improves the output.
+
 <ScenarioLab />
 
 ## Pick the right model for your task
 
+Not sure which model fits? Describe what you're building and how complex the task is. The picker weighs tradeoffs you might not think about — latency sensitivity, number of constraints, whether the task needs creativity or compliance.
+
 <ModelPicker />
 
 ## What does it actually cost?
+
+The price gap between model tiers is real, but it's not as simple as "expensive = better." Run your own numbers below — adjust task count, model choice, and context size to see how costs shift across a realistic workload.
 
 <CostCalculator />
