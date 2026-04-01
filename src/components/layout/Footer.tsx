@@ -13,6 +13,12 @@ const NAV_SECTIONS = [
   },
 ];
 
+// TODO: replace with your own handles
+const CONNECT_LINKS = [
+  { href: "https://x.com/YOUR_HANDLE", label: "X / Twitter" },
+  { href: "https://github.com/mrgreenish", label: "GitHub" },
+];
+
 export function Footer() {
   return (
     <footer className="relative mt-32 overflow-hidden">
@@ -29,7 +35,7 @@ export function Footer() {
       <div className="relative mx-auto max-w-5xl px-6 py-16">
         <div className="grid grid-cols-1 gap-12 sm:grid-cols-3">
           {/* Brand column */}
-          <div className="sm:col-span-2">
+          <div>
             <Link href="/" className="group inline-flex items-center gap-2">
               <div
                 className="flex h-7 w-7 items-center justify-center rounded-lg transition-colors"
@@ -79,6 +85,25 @@ export function Footer() {
               </ul>
             </div>
           ))}
+
+          {/* Connect / contact column */}
+          <div>
+            <p className="section-label mb-4">Connect</p>
+            <ul className="space-y-2.5">
+              {CONNECT_LINKS.map(({ href, label }) => (
+                <li key={href}>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm transition-colors text-fg-muted"
+                  >
+                    {label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
         {/* Bottom bar */}
