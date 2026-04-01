@@ -11,7 +11,7 @@ The first time I used o3 for a coding task, I was impressed — then I checked t
 
 ## When reasoning models actually earn it
 
-If you can describe the task in one sentence and the expected output is obvious, you don't need a reasoning model. But "design the data model for this feature given these constraints" or "find the bug in this async code that only fails under load" — that's where reasoning earns its cost.
+If the task follows a well-known pattern — "write a React form," "add a REST endpoint" — a fast model will nail it because there's nothing novel to figure out. Reasoning models earn their cost when the task requires weighing tradeoffs or holding multiple constraints in tension. "Design the data model for this feature given these constraints" or "find the bug in this async code that only fails under load" — those need the model to actually *think*, not just pattern-match.
 
 - **Architecture decisions with real tradeoffs.** I asked Sonnet to choose between three caching strategies for a Next.js app — it picked the most common one. o3 identified that my specific access pattern made the "common" choice wrong and explained why.
 - **Complex refactors with many constraints.** "Refactor this without changing the public API, keeping backward compatibility, and not touching the test files" — the more constraints you stack, the more reasoning models pull ahead.
