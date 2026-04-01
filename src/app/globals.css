@@ -489,45 +489,45 @@ body {
 /* Override hardcoded zinc colors everywhere inside .not-prose tool wrappers  */
 
 /* Backgrounds */
-:root .not-prose [class*="bg-zinc-950"] {
+:root:not(.dark) .not-prose [class*="bg-zinc-950"] {
   background-color: var(--color-bg-page) !important;
 }
-:root .not-prose [class*="bg-zinc-900"] {
+:root:not(.dark) .not-prose [class*="bg-zinc-900"] {
   background-color: var(--color-bg-surface) !important;
 }
-:root .not-prose [class*="bg-zinc-800"] {
+:root:not(.dark) .not-prose [class*="bg-zinc-800"] {
   background-color: var(--color-bg-elevated) !important;
 }
 
 /* Borders */
-:root .not-prose [class*="border-zinc-800"],
-:root .not-prose [class*="border-zinc-700\/"] {
+:root:not(.dark) .not-prose [class*="border-zinc-800"],
+:root:not(.dark) .not-prose [class*="border-zinc-700\/"] {
   border-color: var(--color-border-default) !important;
 }
-:root .not-prose [class*="border-zinc-700"] {
+:root:not(.dark) .not-prose [class*="border-zinc-700"] {
   border-color: var(--color-border-strong) !important;
 }
 
 /* Text */
-:root .not-prose [class*="text-white"],
-:root .not-prose [class*="text-zinc-100"],
-:root .not-prose [class*="text-zinc-200"],
-:root .not-prose [class*="text-zinc-300"] {
+:root:not(.dark) .not-prose [class*="text-white"],
+:root:not(.dark) .not-prose [class*="text-zinc-100"],
+:root:not(.dark) .not-prose [class*="text-zinc-200"],
+:root:not(.dark) .not-prose [class*="text-zinc-300"] {
   color: var(--color-fg-primary) !important;
 }
-:root .not-prose [class*="text-zinc-400"] {
+:root:not(.dark) .not-prose [class*="text-zinc-400"] {
   color: var(--color-fg-secondary) !important;
 }
-:root .not-prose [class*="text-zinc-500"] {
+:root:not(.dark) .not-prose [class*="text-zinc-500"] {
   color: var(--color-fg-muted) !important;
 }
-:root .not-prose [class*="text-zinc-600"],
-:root .not-prose [class*="text-zinc-700"] {
+:root:not(.dark) .not-prose [class*="text-zinc-600"],
+:root:not(.dark) .not-prose [class*="text-zinc-700"] {
   color: var(--color-fg-placeholder) !important;
 }
 
 /* Score bar tracks */
-:root .not-prose [class*="bg-zinc-800"][class*="rounded-full"] {
+:root:not(.dark) .not-prose [class*="bg-zinc-800"][class*="rounded-full"] {
   background-color: var(--color-bg-elevated) !important;
 }
 
