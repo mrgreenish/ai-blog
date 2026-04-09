@@ -9,9 +9,13 @@ illustrationPlaceholders:
   - "Anatomy of a spec file: annotated .spec.md showing each section with callouts."
 ---
 
-The [Spec → PR workflow](/workflows/spec-to-pr) covers writing a spec in chat before asking the model to plan and code. Works well for a single session. Problem is, the spec disappears when the conversation ends.
+You spend the first twenty minutes of a session explaining your component to the model. The constraints. The edge cases. The things you explicitly decided not to build. By the end you have something that works — and a chat transcript that vanishes the moment you close the tab.
 
-A `.spec.md` file solves that. Markdown file that lives next to the component it describes, gets committed to the repo, becomes the durable source of truth for what that component does — and what it doesn't do.
+Next session, you start over.
+
+A `.spec.md` file breaks the cycle. It's a markdown file that lives next to the component, gets committed to the repo, and becomes the durable source of truth for what that component does — and what it deliberately doesn't do. Every future session can read it with an `@` mention and pick up where you left off.
+
+(The [Spec → PR workflow](/workflows/spec-to-pr) covers writing a spec in chat before implementation — this chapter is about making that spec survive beyond the session.)
 
 ## Why spec files beat chat-only specs
 

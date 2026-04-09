@@ -10,9 +10,11 @@ illustrationPlaceholders:
   - "MCP connection diagram: Figma to MCP server to code editor. Show what data flows in each direction."
 ---
 
-The [Figma MCP](https://developers.figma.com/docs/figma-mcp-server/) (Model Context Protocol server) gives AI models structured access to your Figma designs — not screenshots, but design context such as variables, component mappings, variants, and layout constraints. This moves design-to-code closer to direct implementation than screenshot-only interpretation.
+When you send a screenshot, the model looks at pixels. It guesses the button padding is around 12px, estimates the font size from surrounding context, decides the border radius looks like about 6px. Then it builds the component from those estimates.
 
-The difference matters. When you send a screenshot, the model has to infer spacing values, guess at color tokens, and interpret layout intent. When you use the Figma MCP, the model gets structured design context directly, which usually improves first-pass accuracy.
+When you use the [Figma MCP](https://developers.figma.com/docs/figma-mcp-server/), it reads the actual values. `padding: 12px`. `font-size: 14px`. `border-radius: 6px`. Not a guess — the number that was typed into Figma.
+
+That difference shows up immediately in the output. First-pass accuracy is noticeably better because the model isn't interpolating from an image — it's reading structured data.
 
 ## What the Figma MCP provides
 

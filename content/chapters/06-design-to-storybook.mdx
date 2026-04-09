@@ -11,7 +11,11 @@ illustrationPlaceholders:
   - "Before/after: component built without design token context vs with token mapping skill file."
 ---
 
-The traditional design-to-code workflow is slow and lossy: designer exports specs, developer interprets them, implementation drifts from design, designer reviews and finds issues, repeat. The Figma MCP can compress this loop significantly.
+You're building a new component. Three sessions in, and every time you start a fresh chat the model asks you to explain how your tokens work. What does `Primary/500` map to? Is the spacing scale custom or Tailwind's default? Which font is the display font?
+
+You explain it. The model builds the component. Next session, you explain it again.
+
+A token-mapping skill file solves this. Write it once — Figma variable names to Tailwind classes, spacing scale, font tokens — commit it to the repo, and every future session has the context from the start. First-session setup, permanent payoff.
 
 For how the Figma MCP provides structured design data instead of screenshots, see [Figma MCP Workflows](/tooling/figma-mcp).
 

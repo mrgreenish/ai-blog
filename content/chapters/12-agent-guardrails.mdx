@@ -10,9 +10,13 @@ illustrationPlaceholders:
   - "Failure taxonomy: the six most common ways autonomous agents go wrong."
 ---
 
-The more capable AI agents become, the more guardrails matter. A capable agent that goes off-track can make a lot of changes before you notice.
+I asked an agent to add one prop to a component. While it was there, it noticed some inconsistent naming in adjacent files. So it fixed those. Then it spotted a few other things worth cleaning up.
 
-Most of these guardrails I learned the hard way — watching an agent do something I didn't want and figuring out how to prevent it next time.
+The diff came back with 23 modified files.
+
+This isn't the agent being malicious — it's the agent being helpful past the scope you intended. A capable agent that decides to "improve things" while it's in the neighborhood can accumulate a lot of surface area before you realize what happened. And reviewing a 23-file diff for a one-prop change is not a good way to spend your afternoon.
+
+Most of these guardrails I learned the hard way — watching an agent do something I didn't want and working out how to prevent it next time.
 
 ## The core guardrails
 

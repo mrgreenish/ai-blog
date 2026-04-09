@@ -11,7 +11,13 @@ illustrationPlaceholders:
   - "Sequence diagram: same ambiguous prompt sent to three models, showing different clarification strategies each model makes before responding."
 ---
 
-Benchmarks tell you what a model *can* do. Personality tells you what it *will* do when you don't spell out every detail. Two models with identical benchmark scores can produce wildly different results — not because one is smarter, but because they interpret ambiguity differently, take different amounts of initiative, default to different levels of caution.
+Ask Claude and Gemini the same thing: "Clean up my user profile component." Gemini formats the file. Claude rewrites the component hierarchy, extracts a hook, strengthens the types, and leaves a comment about a potential race condition it noticed in the auth flow.
+
+Same request. Completely different output. Neither of them is wrong.
+
+This is model personality. Not benchmark scores — those tell you what a model *can* do. Personality tells you what it *will* do when you leave things open. How much initiative it takes, how it handles ambiguity, what it considers "cleaning up" versus "staying in my lane."
+
+Two models with the same benchmark scores can produce wildly different results. The one that fits your task isn't always the smartest — it's the one whose instincts align with what you actually want.
 
 <ModelTinder />
 

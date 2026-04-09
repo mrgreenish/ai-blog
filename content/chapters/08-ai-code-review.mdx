@@ -10,9 +10,11 @@ illustrationPlaceholders:
   - "Review pipeline: PR submitted to BugBot to Codex review to human review. Show what each layer catches."
 ---
 
-AI code review has gone from novelty to a genuine part of my PR workflow. Not replacing human review — it's a first pass that catches mechanical issues before a human reviewer has to spend time on them.
+Before any human looks at my PR, two tools already have. One checks the diff for type errors, missing null checks, and edge cases the tests didn't cover. The other looks at whether the implementation actually matches what the PR description says it does.
 
-Two tools I use: **Cursor BugBot** for PR review in Cursor workflows, and **Codex on GitHub** as an automatic PR reviewer.
+Sometimes they catch real issues. Sometimes they flag things that don't matter. Either way, by the time a human sees the code, the mechanical first pass is already done.
+
+The two tools: **Cursor BugBot** for PR review in Cursor workflows, and **Codex on GitHub** as an automatic PR reviewer.
 
 ## Cursor BugBot
 

@@ -10,9 +10,13 @@ illustrationPlaceholders:
   - "Skill composition diagram: three small skills composing into a larger workflow."
 ---
 
-One of the most underrated developments in AI tooling: the emergence of reusable "skills" — packages of domain knowledge that agents can apply automatically. Instead of writing the same instructions in every prompt, you encode them once as a skill and the agent applies them whenever relevant.
+Every session, the same instructions. "Use our `Button` component from `@/components/ui`, not a custom one." "Spacing uses Tailwind's scale, no arbitrary values." "New components get a Storybook story."
 
-The concept is simple but the implications are significant. Skills turn one-off prompt engineering into versioned, shareable, team-wide knowledge.
+It works fine. But you're typing it every time, and the model forgets the moment the session ends. Repeat this across a team and you've got the same conventions being re-explained in every chat, differently each time.
+
+Skills are a different approach: encode the instructions once in a markdown file. The agent reads the relevant skill when it's working in that domain and applies the knowledge — without you re-explaining. Write it once, use it everywhere. Update it once, everyone benefits.
+
+The concept is simple. The difference it makes in a team context is not small.
 
 ## What skills actually are
 
