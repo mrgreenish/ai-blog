@@ -6,7 +6,7 @@ export default function Home() {
     <div className="relative">
       <DotField className="absolute inset-x-0 top-0 h-[600px] z-0" />
 
-      <div className="relative z-10 mx-auto max-w-4xl px-6 py-16 pointer-events-none">
+      <div className="relative z-10 mx-auto max-w-4xl px-6 py-16">
         {/* Title block */}
         <div className="mb-16">
           <p className="font-mono text-xs uppercase tracking-widest text-fg-muted mb-6">
@@ -44,9 +44,7 @@ export default function Home() {
         <div className="section-divider mb-16" />
 
         {/* Table of Contents */}
-        <div className="pointer-events-auto">
-          <TableOfContents />
-        </div>
+        <TableOfContents />
       </div>
     </div>
   );

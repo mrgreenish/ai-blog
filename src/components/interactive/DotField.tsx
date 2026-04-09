@@ -186,7 +186,7 @@ export function DotField({ className = "" }: { className?: string }) {
       attentionEvents.push({
         sourceIdx,
         targetIndices: targets.map(t => t.idx),
-        weights: targets.map(t => 0.4 + Math.random() * 0.6),
+        weights: targets.map(t => (1 - t.dist / maxDist) * 0.6 + Math.random() * 0.4),
         life: 0,
         duration: ATTENTION_DURATION,
         age: 0,
@@ -310,8 +310,8 @@ export function DotField({ className = "" }: { className?: string }) {
           if (idx < 0 || idx >= t.path.length) continue;
           const dotIdx = t.path[idx];
           const fade = 1 - j / t.tailLength;
-          // Fractional fade for the head
-          const headFade = j === 0 ? (t.progress - t.current) : 1;
+          // Head dot is fully bright on arrival and fades as progress moves past it
+          const headFade = j === 0 ? (1 - (t.progress - t.current)) : 1;
           dotBoost[dotIdx] = Math.max(dotBoost[dotIdx], fade * headFade * 0.8);
         }
       }
