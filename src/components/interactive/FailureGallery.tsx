@@ -174,7 +174,7 @@ function FailureCard({ failure }: { failure: FailureCase }) {
           </pre>
           {/* Reveal overlay — shown before reveal */}
           {!revealed && (
-            <div className="absolute inset-x-0 bottom-0 flex items-end justify-center pb-3 pt-8" style={{ background: "linear-gradient(to top, var(--color-bg-page) 0%, color-mix(in srgb, var(--color-bg-page) 80%, transparent) 60%, transparent 100%)" }}>
+            <div className="absolute inset-x-0 bottom-0 flex items-end justify-center pb-3 pt-8" style={{ background: "linear-gradient(to top, var(--color-bg-surface) 0%, color-mix(in srgb, var(--color-bg-surface) 80%, transparent) 60%, transparent 100%)" }}>
               <button
                 onClick={() => setRevealed(true)}
                 className="flex items-center gap-1.5 rounded-lg border border-red-400/30 bg-red-500/10 px-3 py-1.5 font-mono text-xs font-medium text-red-600 transition-all hover:border-red-400/50 hover:bg-red-500/15 active:scale-95"

@@ -3,7 +3,7 @@
 
 @theme {
   --font-sans:    "Source Serif 4", Georgia, "Times New Roman", serif;
-  --font-display: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-display: var(--font-sans);
   --font-mono:    "JetBrains Mono", "Fira Code", ui-monospace, monospace;
 
   /* ─── Stone palette — light only ──────────────────────────────────────── */
