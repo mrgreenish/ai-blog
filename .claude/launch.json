@@ -3,9 +3,10 @@
   "configurations": [
     {
       "name": "next-dev",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "--port", "3001"],
-      "port": 3001
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "source ~/.nvm/nvm.sh && nvm use 22 > /dev/null 2>&1 && pnpm dev --port $PORT"],
+      "port": 3001,
+      "autoPort": true
     },
     {
       "name": "storybook",
