@@ -98,13 +98,21 @@ Teams at Brex, Money Forward, and Notion are running this at scale. Notion cited
 
 ## Cloud agents run on your hardware now
 
-Cursor's [My Machines](https://cursor.com/docs/cloud-agent/my-machines) takes self-hosted agents from an enterprise feature to an individual one. Instead of running in Cursor's managed VMs, your agent executes on hardware you control — your laptop, a devbox, a remote VM. One command: `agent worker start`.
+Cursor's [My Machines](https://cursor.com/docs/cloud-agent/my-machines) takes self-hosted agents from an enterprise feature to an individual one. Instead of running in Cursor's managed VMs, your agent executes on hardware you control — your laptop, a devbox, a remote VM. Three commands to get there:
 
-The split is clean. Cursor handles inference and planning, sends tool calls to the worker process on your machine, results flow back over outbound HTTPS. The agent gets your local environment, your dependency caches, your internal network access. No repo syncing to a cloud sandbox, no missing internal packages, no secrets leaving your box.
+```bash
+curl https://cursor.com/install -fsS | bash
+agent login
+agent worker start
+```
 
-Workers can be long-lived or single-use — handling sessions indefinitely or tearing down after each task. For teams, the Kubernetes operator and fleet management API handle scaling. For an individual developer, it's just a process running on a machine you already have.
+The worker opens an outbound connection to Cursor — no inbound ports, no firewall changes, just HTTPS to `api2.cursor.sh`. Cursor handles inference and planning, sends tool calls to the worker, and terminal commands, file edits, and browser actions all execute on your machine. Your local repo, dependency caches, build artifacts, internal network — the agent gets all of it.
 
-"Cloud agent" used to mean "runs in a cloud VM." Now the cloud part is just the inference layer. Execution goes wherever makes sense — Cursor's sandboxes for isolation, your laptop for local deps, your company's cluster for compliance. The abstraction is pulling apart, and that's the interesting shift.
+The MCP routing is worth noting. Stdio-transport MCP servers run on your machine, so they can reach private endpoints your network can access. HTTP/SSE-transport servers run on Cursor's backend, where Cursor handles OAuth and session caching. If your MCP server needs to hit an internal API, use stdio.
+
+Workers are long-lived by default — they stay connected until you stop them and pick up future sessions automatically. Name them with `--name "my-devbox"` when you have multiple machines. For org-wide fleets, Cursor has a separate [Self-Hosted Pool](https://cursor.com/docs/cloud-agent/self-hosted) with Kubernetes operators. My Machines is the individual-developer version: one process, one machine, immediate access.
+
+The shift underneath is conceptual. "Cloud agent" used to mean "runs in a cloud VM." Now the cloud part is just inference. Execution goes wherever makes sense — Cursor's sandboxes for isolation, your laptop for local deps, your company's cluster for compliance.
 
 ## Harnesses are becoming shareable infrastructure
 
@@ -219,7 +227,7 @@ Sorted roughly by how much foundational leverage they provide.
   Official documentation for Cursor's subagent system — context window isolation, foreground/background execution, built-in Explore/Bash/Browser agents. The `description` field guidance is especially practical.
 
 - **[Cursor My Machines](https://cursor.com/docs/cloud-agent/my-machines)**
-  Connect your own laptop, devbox, or remote VM as a cloud agent worker. One command (`agent worker start`) turns any machine into an agent backend with local deps and network access.
+  Run cloud agents on your own hardware — laptop, devbox, or remote VM. Three commands to set up; stdio MCP servers run locally with full network access. The individual-developer path to self-hosted agents.
 
 - **[next-devtools-mcp](https://github.com/vercel/next-devtools-mcp)**
   MCP server that gives agents live access to Next.js build errors, runtime errors, routes, and server action IDs. Replaces screenshot-based debugging.
