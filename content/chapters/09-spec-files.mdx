@@ -1,0 +1,243 @@
+---
+title: "Spec Files"
+subtitle: "AI-readable documentation that survives context window resets"
+chapter: 9
+part: shipping-workflows
+partNumber: 2
+illustrationPlaceholders:
+  - "Comparison: chat-only context (lost when session ends) vs spec file context (persists, version-controlled)."
+  - "Anatomy of a spec file: annotated .spec.md showing each section with callouts."
+---
+
+The [Spec → PR workflow](/workflows/spec-to-pr) covers writing a spec in chat before asking the model to plan and code. Works well for a single session. Problem is, the spec disappears when the conversation ends.
+
+A `.spec.md` file solves that. Markdown file that lives next to the component it describes, gets committed to the repo, becomes the durable source of truth for what that component does — and what it doesn't do.
+
+## Why spec files beat chat-only specs
+
+Write a spec in chat, it exists for one session. Next time you open a new conversation about the same component, the AI has no memory of the decisions you made. You either re-explain everything or the model makes assumptions.
+
+A spec file persists:
+
+- **Survives session end** — every future chat can read it with an `@` mention
+- **Version-controlled** — git history shows when requirements changed and why
+- **Team-shareable** — a teammate opening the file gets the same context you have
+- **Prevents scope creep** — a "Not in scope" section is explicit and durable, not buried in a chat transcript
+- **Onboarding aid** — new developers read the spec to understand the component without digging through the code
+
+The most underrated benefit: the "Not in scope" section. Tell the model in chat "don't add a mobile menu" — that constraint lives for one message. Put it in the spec file, and it's enforced every time you reference the spec.
+
+## Anatomy of a spec file
+
+Here's a real example — the spec for the `Header` component in this codebase:
+
+```markdown
+# Spec: `Header` component
+
+**File:** `src/components/layout/Header.tsx`
+
+---
+
+## Overview
+
+A sticky, floating navigation bar rendered at the top of every page.
+Uses the current pathname to highlight the active route.
+
+---
+
+## Inputs
+
+| Input | Type | Source | Notes |
+|---|---|---|---|
+| `pathname` | `string` | `usePathname()` hook | Read from Next.js router; no prop |
+| `NAV_LINKS` | `{ href: string; label: string }[]` | Module-level constant | Hardcoded — not a prop |
+
+---
+
+## Outputs
+
+Renders a `<header>` element containing:
+
+1. **Logo link** — navigates to `/`, displays `field notes / ai` with a `Terminal` icon
+2. **Nav links** — one `<Link>` per entry in `NAV_LINKS`, each with active/inactive visual state
+3. **Active indicator** — a horizontal gradient line rendered below the active nav item
+
+---
+
+## Behaviour / Logic
+
+**Active state detection:**
+
+const isActive = pathname === href || pathname.startsWith(`${href}/`);
+
+A link is active if the pathname exactly matches or is a sub-path
+(e.g. `/models/gpt-4` activates `/models`).
+
+---
+
+## Constraints
+
+- Must be a **Client Component** (`"use client"`) — required for `usePathname()`
+- Sticky positioning (`sticky top-0 z-50`) — assumes no other `z-50` element conflicts
+- Max content width is capped at `max-w-5xl` — must match the page layout container width
+- `NAV_LINKS` is a module constant — adding/removing nav items requires a code change
+
+---
+
+## Edge Cases
+
+| Scenario | Behaviour |
+|---|---|
+| Pathname is `/` (home) | No nav link is active |
+| Pathname is `/models/some-slug` | `/models` link is active (prefix match) |
+| Pathname is `/modelsfoo` | `/models` link is **not** active — `startsWith("/models/")` prevents false positives |
+| `NAV_LINKS` is empty | Nav renders an empty `<nav>` — no links, no errors |
+
+---
+
+## Not in scope
+
+- Mobile/hamburger menu — no responsive collapse behaviour
+- Authentication state — header has no user/session awareness
+- Dark/light mode toggle — theme is hardcoded dark
+```
+
+Each section does specific work for the AI:
+
+**Overview** gives the model a one-sentence mental model before it reads anything else.
+
+**Inputs** tells the model what data the component consumes and where it comes from.
+
+**Outputs** describes the rendered structure.
+
+**Behaviour / Logic** captures the non-obvious logic — the kind that looks arbitrary in code but has a specific reason.
+
+**Constraints** is where you encode architectural decisions.
+
+**Edge Cases** is the section that most specs skip and most bugs come from.
+
+**Not in scope** tells the model what you've deliberately chosen not to build.
+
+## Two workflows for making changes
+
+### Spec-first: when you know what you want
+
+Use this when you have a clear requirement.
+
+1. Open the spec file and edit it — add the new behaviour, update constraints, move items out of "Not in scope"
+2. In chat: `@Header.spec.md @Header.tsx` → "Update the component to match the spec"
+
+The spec becomes the instruction. The model implements exactly what's written, nothing more. You're making the design decision before any code is touched.
+
+### Chat-first: when you're exploring
+
+Use this when you're not sure what you want yet.
+
+1. Chat: "I'm thinking about adding a mobile hamburger menu to the Header — what's the simplest approach given `@Header.tsx`?"
+2. Discuss, decide on the approach
+3. "Great. Now update `@Header.spec.md` to reflect what we decided, then implement it in `@Header.tsx`"
+
+Chat is the design scratchpad. The spec is where the decision gets crystallised before code is written.
+
+**The rule of thumb: spec leads code, chat leads spec.**
+
+Never let the code drift ahead of the spec. After any change — whether you drove it or the AI did — the spec should be updated to match.
+
+## Worked example: adding a mobile menu
+
+Say you want to add a hamburger menu to the Header. Here's what changes in the spec:
+
+**Before** (in "Not in scope"):
+```markdown
+## Not in scope
+
+- Mobile/hamburger menu — no responsive collapse behaviour
+- Authentication state — header has no user/session awareness
+- Dark/light mode toggle — theme is hardcoded dark
+```
+
+**After** (mobile menu moved into Behaviour, Not in scope updated):
+```markdown
+## Behaviour / Logic
+
+**Active state detection:**
+(unchanged)
+
+**Mobile menu:**
+- Visible below `md` breakpoint; desktop nav hidden below `md`
+- Toggle button renders a `Menu` icon (closed) or `X` icon (open)
+- Menu state is local — `useState(false)`, resets on route change via `useEffect`
+- Open menu renders nav links stacked vertically in a full-width dropdown below the header bar
+
+---
+
+## Edge Cases
+
+| Scenario | Behaviour |
+|---|---|
+| (existing rows unchanged) |  |
+| Mobile menu open, user navigates | Menu closes — `useEffect` watches `pathname` |
+| Mobile menu open, user resizes to desktop | Desktop nav becomes visible; mobile menu state is irrelevant |
+
+---
+
+## Not in scope
+
+- Authentication state — header has no user/session awareness
+- Dark/light mode toggle — theme is hardcoded dark
+```
+
+Then the prompt:
+
+```
+@Header.spec.md @Header.tsx
+
+The spec has been updated to include a mobile hamburger menu.
+Update the component to match the spec. Do not touch anything
+outside the Header component.
+```
+
+The model has everything it needs: what to build (the updated Behaviour section), what to preserve (the unchanged sections), what not to touch (the remaining Not in scope items), and the edge cases to handle.
+
+## Where to put spec files
+
+Co-locate them with the file they describe:
+
+```
+src/components/layout/
+├── Header.tsx
+├── Header.spec.md   ← lives next to the component
+```
+
+For a page or route:
+
+```
+src/app/workflows/
+├── page.tsx
+├── page.spec.md
+```
+
+For a utility module:
+
+```
+src/lib/
+├── content.ts
+├── content.spec.md
+```
+
+The naming convention `{filename}.spec.md` makes the relationship obvious — not a test file, not a config file, just documentation that travels with the code.
+
+## Keeping specs in sync
+
+A spec is only useful if it's accurate. One that describes what the component *used* to do is worse than no spec — it actively misleads the model.
+
+If you're using AI to make the change, have it update the spec as part of the same task:
+
+```
+@Header.spec.md @Header.tsx
+
+Add a "Workflows" link to NAV_LINKS. Update the spec to reflect
+the new nav link, then update the component.
+```
+
+Both files update in one pass. Spec stays accurate without extra effort.

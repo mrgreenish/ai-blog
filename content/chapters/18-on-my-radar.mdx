@@ -1,0 +1,182 @@
+---
+title: "On My Radar"
+subtitle: "What is moving fast in agent tooling right now"
+chapter: 18
+part: tools-infrastructure
+partNumber: 4
+illustrationPlaceholders:
+  - "Landscape map: current agent tooling ecosystem plotted by maturity and focus area."
+  - "Timeline: predicted maturity curve for hooks, harness design, browser automation, and multi-agent orchestration."
+---
+
+The tooling layer is moving faster than the model layer right now. These are the areas I'm actively working through.
+
+## Hooks move agents from advice to automation
+
+Skills tell an agent what to do. Hooks make certain things happen regardless of what the agent decides.
+
+They fire on lifecycle events — before a tool executes, after it finishes, on message submit, on stop, before compaction, on permission requests. Unlike skills, they're deterministic: the hook runs every time, not when the model judges it relevant.
+
+Practical uses: auto-format after edits, block writes to protected paths, desktop notifications when Claude is waiting, re-inject context after compaction. Full schema in the [Anthropic hooks guide](https://docs.anthropic.com/en/docs/claude-code/hooks-guide).
+
+The fastest way to start: [Hookify](https://claude.com/plugins/hookify). `/hookify Warn me when I use rm -rf commands` produces a working hook file immediately. Run it with no arguments and it auto-generates rules from behaviors you've already corrected in the current session.
+
+Skills encode knowledge. Hooks enforce behavior. Both belong in a mature setup.
+
+## Harness design is now part of the craft
+
+A harness is everything around the model: prompts, tools, orchestration, context management, hooks. Anthropic published a detailed breakdown of how it affects long-running agent performance — two findings stood out.
+
+First: agents lose coherence as context fills. Some models exhibit "context anxiety," wrapping up prematurely. The fix isn't compaction (summarizing in place) — it's context resets: clear the window, start a fresh agent with a structured handoff. Compaction preserves continuity but doesn't give the agent a clean slate.
+
+Second: agents reliably praise their own work when asked to evaluate it. The fix is architectural — separate the generator from the evaluator. A standalone evaluator tuned to be skeptical is far more tractable than making a generator self-critical.
+
+The architecture that emerged: planner → generator → evaluator with Playwright clicking through the running app. Every component encodes an assumption about what the model can't do alone — those assumptions go stale as models improve. Strip non-load-bearing scaffolding when a new model lands. The [full article](https://www.anthropic.com/engineering/harness-design-long-running-apps) has cost and duration breakdowns.
+
+## Subagents: the Cursor model is worth studying
+
+Cursor's [subagents](https://cursor.com/docs/context/subagents) go further than the `AGENTS.md` pattern. Each gets its own context window and model config, runs foreground or background, and three built-ins (Explore, Bash, Browser) handle the noisiest operations automatically.
+
+Custom subagents are markdown files with YAML frontmatter in `.cursor/agents/` (or `.claude/agents/`):
+
+```markdown
+---
+name: security-auditor
+description: Security specialist. Use when implementing auth, payments, or handling sensitive data.
+model: inherit
+readonly: true
+---
+
+You are a security expert auditing code for vulnerabilities.
+```
+
+The `description` field determines when the parent delegates — spend time on it. The `model` field lets you route high-volume tasks to a faster model and depth tasks to a more capable one.
+
+Anti-pattern: dozens of vague subagents. Five focused ones with sharp descriptions outperform fifty the parent doesn't know when to use.
+
+## Next.js MCP is becoming practical
+
+Next.js 16 ships with a built-in MCP endpoint at `/_next/mcp`. Add `next-devtools-mcp` to `.mcp.json` and your agent gets live access to build errors, runtime errors, routes, page metadata, and server action IDs — no screenshots, no copy-paste.
+
+```json
+{
+  "mcpServers": {
+    "next-devtools": {
+      "command": "npx",
+      "args": ["-y", "next-devtools-mcp@latest"]
+    }
+  }
+}
+```
+
+Useful tools: `get_errors` (source-mapped stacks), `get_routes`, `get_page_metadata`, `get_server_action_by_id`. The agent can diagnose a hydration error and suggest a fix without you describing what's on screen.
+
+Below Next.js 16: `experimental.mcpServer: true` in `next.config.js`.
+
+## Browser control is getting lighter-weight
+
+The fastest way for an agent to use a browser is to let it write code. `dev-browser` runs Playwright-style scripts in a sandboxed QuickJS WASM environment — install it globally, point the agent at `dev-browser --help`, and it handles the rest.
+
+```bash
+npm i -g dev-browser
+dev-browser install
+```
+
+From the repo benchmarks: Dev Browser finishes a representative task in 3m 53s at $0.88 with 29 turns. Playwright MCP takes 4m 31s at $1.45 with 51 turns. Batching interactions into scripts beats one-tool-call-per-action.
+
+Pre-approve in `.claude/settings.json`: `"allow": ["Bash(dev-browser *)"]`.
+
+## Infra is becoming part of the product
+
+Cursor's [self-hosted cloud agents](https://www.cursor.com/blog/self-hosted-cloud-agents) are now generally available. A worker process connects outbound via HTTPS — no inbound ports, no firewall changes. Cursor handles inference and planning, sends tool calls to the worker, results flow back. Each session gets its own dedicated worker; Kubernetes operator available for scale.
+
+The practical benefit: agents can access internal caches, dependencies, and network endpoints that can't leave the environment. Code and secrets stay in your infrastructure.
+
+Teams at Brex, Money Forward, and Notion are running this at scale. Notion cited access to more tools more securely as the reason for adopting it over maintaining their own background agent stack. "Agent infrastructure" is now a real architectural decision.
+
+## Harnesses are becoming shareable infrastructure
+
+[everything-claude-code](https://github.com/affaan-m/everything-claude-code) is a useful example of where this is heading: 30 specialized subagents, hooks for memory persistence, verification loops, continuous learning, and security scanning — shipping across Claude Code, Cursor, Codex, and OpenCode.
+
+The instinct system is the interesting part: the agent extracts patterns from your sessions into structured files, and `/evolve` clusters them into skills. The harness learns from use.
+
+The community is converging on a shared vocabulary — skills, subagents, hooks, harnesses, evals. The primitives are stabilizing even as the specific tools change.
+
+## The packaging pattern works for design too
+
+The same pattern that works for code conventions works for design. [ux-ui-agent-skills](https://github.com/plugin87/ux-ui-agent-skills) packages DTCG design tokens, Atomic Design component specs, WCAG 2.2 checklists, Nielsen heuristic rubrics, and React + Tailwind v4 / Next.js 15 patterns into a single skill set.
+
+Drop it into a project and the agent applies consistent design knowledge — token mapping, accessibility scoring, state documentation — instead of improvising each time.
+
+Any domain with enough accumulated knowledge can be packaged this way. Design is just a clear example because the gap between "AI generates UI" and "AI generates good UI" is so visible.
+
+## Where to start
+
+If you're setting up a serious agent harness for the first time, the order matters:
+
+1. **Get hooks working first.** A single hook that blocks writes to `node_modules/` or auto-formats after edits gives you immediate, observable value. Use Hookify's zero-argument mode to bootstrap from your own session history.
+2. **Write one focused subagent before writing ten.** Pick the task where your current setup most often loses context — security review, database migrations, API contract checks — and build one sharp subagent for it. Refine the `description` field until the parent routes to it reliably.
+3. **Read the harness article before building evaluators.** The generator/evaluator split is the insight with the most practical leverage. Get that architecture right before optimising anything else.
+4. **Add `next-devtools-mcp` if you're on a Next.js project.** The signal-to-noise improvement on error diagnosis is immediate and costs nothing.
+5. **Check `everything-claude-code` for patterns, not prescriptions.** It's a reference harness, not a starter kit. Extract the ideas that fit your context.
+
+## Resources
+
+Sorted roughly by how much foundational leverage they provide.
+
+### Core reading
+
+- **[Harness Design for Long-Running Applications](https://www.anthropic.com/engineering/harness-design-long-running-apps)** — Anthropic Engineering
+  The reference article on harness architecture: context anxiety, generator/evaluator splits, context resets vs. compaction, and cost/duration breakdowns. Read this before designing any multi-step agent.
+
+- **[everything-claude-code](https://github.com/affaan-m/everything-claude-code)**
+  30 specialised subagents, memory hooks, verification loops, and an instinct system that learns from your sessions. The most complete reference harness available publicly. Works across Claude Code, Cursor, Codex, and OpenCode.
+
+- **[Anatomy of the Claude Folder](https://blog.dailydoseofds.com/p/anatomy-of-the-claude-folder)**
+  Clear breakdown of what goes where in `.claude/` — settings, hooks, subagents, skills, memory. Essential orientation if you're building a harness from scratch.
+
+- **[3 Principles for Designing Agent Skills](https://engineering.block.xyz/blog/3-principles-for-designing-agent-skills)** — Block Engineering
+  Composability, observability, and minimal footprint. A tight framework for evaluating whether a skill is worth extracting.
+
+- **[claude-code-best-practice](https://github.com/shanraisshan/claude-code-best-practice)**
+  Community-curated collection of CLAUDE.md patterns, workflow configs, and prompt strategies. Good place to see what's converged as convention.
+
+### Tooling
+
+- **[Hookify plugin](https://github.com/anthropics/claude-code/tree/main/plugins/hookify)** — Official Claude Code plugin
+  Source for the Hookify plugin. The zero-argument mode (auto-generates rules from your session history) is the fastest way to start building a hook library.
+
+- **[Cursor Subagents](https://cursor.com/docs/subagents)**
+  Official documentation for Cursor's subagent system — context window isolation, foreground/background execution, built-in Explore/Bash/Browser agents. The `description` field guidance is especially practical.
+
+- **[next-devtools-mcp](https://github.com/vercel/next-devtools-mcp)**
+  MCP server that gives agents live access to Next.js build errors, runtime errors, routes, and server action IDs. Replaces screenshot-based debugging.
+
+- **[dev-browser](https://github.com/SawyerHood/dev-browser)**
+  Runs Playwright-style scripts in a sandboxed QuickJS WASM environment. Benchmarks show ~30% fewer turns and ~40% lower cost vs. Playwright MCP for representative browser tasks.
+
+- **[ux-ui-agent-skills](https://github.com/plugin87/ux-ui-agent-skills)**
+  Design system skills packaging: DTCG tokens, Atomic Design specs, WCAG 2.2 checklists, and React + Tailwind v4 patterns. A concrete example of the domain-packaging pattern applied to UI.
+
+- **[Cursor Marketplace](https://cursor.com/marketplace)**
+  Browsable registry of community plugins and skill packs. Useful for finding what's already been packaged before building your own.
+
+### Context and background
+
+- **[superpowers](https://github.com/obra/superpowers)**
+  A collection of Claude Code skills and hooks by Jesse Vincent. Good real-world reference for how an experienced developer structures a personal harness — useful for seeing what someone actually keeps vs. discards.
+
+- **[gsap-skills](https://github.com/greensock/gsap-skills)**
+  Official GSAP skill pack for AI agents. A clean example of first-party library authors packaging their own knowledge for agent use — the likely direction for more ecosystems.
+
+- **[Vercel React Best Practices](https://vercel.com/blog/introducing-react-best-practices)**
+  Vercel Engineering's guide to React performance: RSC boundaries, data fetching patterns, and component composition. Useful context when agents are generating or reviewing React code.
+
+- **[Tweet: bcherny on Claude Code](https://x.com/bcherny/status/2038454336355999749)**
+  Short, worth reading for the framing on where the tooling layer is heading.
+
+- **[Tweet: vtrivedy10 on agent setups](https://x.com/vtrivedy10/status/2037203679997018362)**
+  Practical notes on structuring multi-agent setups in production.
+
+- **[Shared conversation: harness patterns](https://claude.ai/share/a51033d4-3d80-4b89-b797-c4eacd01eee6)**
+  A real session showing harness design decisions in context.

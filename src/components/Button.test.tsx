@@ -12,13 +12,13 @@ describe("Button", () => {
   it("applies primary variant styles", () => {
     render(<Button label="Primary" variant="primary" />);
     const button = screen.getByText("Primary");
-    expect(button).toHaveClass("bg-blue-600");
+    expect(button).toHaveClass("bg-accent-500");
   });
 
   it("applies secondary variant styles", () => {
     render(<Button label="Secondary" variant="secondary" />);
     const button = screen.getByText("Secondary");
-    expect(button).toHaveClass("bg-gray-200");
+    expect(button).toHaveClass("bg-bg-alt");
   });
 
   it("applies size styles", () => {
@@ -48,7 +48,7 @@ describe("Button", () => {
   it("applies disabled styles when disabled", () => {
     render(<Button label="Disabled" disabled />);
     const button = screen.getByText("Disabled");
-    expect(button).toHaveClass("opacity-50", "cursor-not-allowed");
+    expect(button).toHaveClass("opacity-40", "cursor-not-allowed");
     expect(button).toBeDisabled();
   });
 });

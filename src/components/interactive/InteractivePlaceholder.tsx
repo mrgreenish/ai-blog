@@ -16,8 +16,8 @@ export function InteractivePlaceholder({
   tagline,
   description,
   preview,
-  accentColor = "text-blue-400",
-  borderColor = "border-blue-400/30",
+  accentColor = "text-blue-600",
+  borderColor = "border-blue-600/30",
 }: InteractivePlaceholderProps) {
   return (
     <div

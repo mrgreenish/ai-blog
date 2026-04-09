@@ -59,7 +59,7 @@ function QuestionStep({
       transition={{ duration: 0.22, ease: "easeOut" }}
       className="flex flex-col gap-4"
     >
-      <p className="text-base font-semibold text-zinc-100">{question.text}</p>
+      <p className="text-base font-semibold text-stone-900">{question.text}</p>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         {question.options.map((opt) => (
           <button
@@ -67,11 +67,11 @@ function QuestionStep({
             onClick={() => onAnswer(opt.id)}
             className="group flex flex-col items-start rounded-lg border border-border-strong bg-bg-surface px-4 py-3 text-left transition-all hover:border-blue-500/50 hover:bg-blue-500/5 active:scale-[0.98]"
           >
-            <span className="text-sm font-medium text-zinc-200 group-hover:text-white">
+            <span className="text-sm font-medium text-stone-800 group-hover:text-stone-900">
               {opt.label}
             </span>
             {opt.description && (
-              <span className="mt-0.5 text-xs text-zinc-500 group-hover:text-zinc-400">
+              <span className="mt-0.5 text-xs text-stone-500 group-hover:text-stone-500">
                 {opt.description}
               </span>
             )}
@@ -85,7 +85,7 @@ function QuestionStep({
 const CONFIDENCE_STYLES: Record<Confidence, { label: string; classes: string }> = {
   strong: {
     label: "Strong match",
-    classes: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20",
+    classes: "text-emerald-600 bg-emerald-400/10 border-emerald-500/20",
   },
   good: {
     label: "Good match",
@@ -93,7 +93,7 @@ const CONFIDENCE_STYLES: Record<Confidence, { label: string; classes: string }> 
   },
   close: {
     label: "Close call",
-    classes: "text-amber-400 bg-amber-400/10 border-amber-400/20",
+    classes: "text-amber-600 bg-amber-400/10 border-amber-400/20",
   },
 };
 
@@ -108,7 +108,7 @@ function ScoreBar({ dims }: { dims: DimensionScore[] }) {
     <div className="space-y-1">
       {positive.slice(0, 3).map((d) => (
         <div key={d.dimension} className="flex items-center gap-2">
-          <div className="w-16 shrink-0 text-right font-mono text-[10px] text-zinc-500 capitalize">
+          <div className="w-16 shrink-0 text-right font-mono text-[10px] text-stone-500 capitalize">
             {d.dimension}
           </div>
           <div className="relative h-3 flex-1 overflow-hidden rounded-full bg-bg-elevated">
@@ -119,14 +119,14 @@ function ScoreBar({ dims }: { dims: DimensionScore[] }) {
               transition={{ duration: 0.4, ease: "easeOut" }}
             />
           </div>
-          <span className="w-4 shrink-0 font-mono text-[10px] text-emerald-400">
+          <span className="w-4 shrink-0 font-mono text-[10px] text-emerald-600">
             +{d.points}
           </span>
         </div>
       ))}
       {negative.slice(0, 2).map((d) => (
         <div key={d.dimension} className="flex items-center gap-2">
-          <div className="w-16 shrink-0 text-right font-mono text-[10px] text-zinc-500 capitalize">
+          <div className="w-16 shrink-0 text-right font-mono text-[10px] text-stone-500 capitalize">
             {d.dimension}
           </div>
           <div className="relative h-3 flex-1 overflow-hidden rounded-full bg-bg-elevated">
@@ -137,7 +137,7 @@ function ScoreBar({ dims }: { dims: DimensionScore[] }) {
               transition={{ duration: 0.4, ease: "easeOut" }}
             />
           </div>
-          <span className="w-4 shrink-0 font-mono text-[10px] text-red-400">
+          <span className="w-4 shrink-0 font-mono text-[10px] text-red-600">
             {d.points}
           </span>
         </div>
@@ -174,7 +174,7 @@ function RankedCard({
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-            <span className="font-display text-sm font-bold text-white">
+            <span className="font-display text-sm font-bold text-stone-900">
               {model.name}
             </span>
             <span className={`text-xs font-medium ${model.accentColor}`}>
@@ -186,11 +186,11 @@ function RankedCard({
               </span>
             )}
           </div>
-          <p className="mt-1 text-xs leading-relaxed text-zinc-400">{reason}</p>
+          <p className="mt-1 text-xs leading-relaxed text-stone-500">{reason}</p>
         </div>
         <button
           onClick={() => setExpanded((e) => !e)}
-          className="shrink-0 rounded-md p-1 text-zinc-600 transition-colors hover:text-zinc-400"
+          className="shrink-0 rounded-md p-1 text-stone-400 transition-colors hover:text-stone-500"
           aria-label={expanded ? "Collapse" : "Expand"}
         >
           {expanded ? (
@@ -214,7 +214,7 @@ function RankedCard({
             <div className="px-4 pb-4 pt-3 space-y-3 border-t border-border-default">
               {/* Score breakdown */}
               <div>
-                <p className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-zinc-600">
+                <p className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-stone-400">
                   Score breakdown
                 </p>
                 <ScoreBar dims={dimensions} />
@@ -223,13 +223,13 @@ function RankedCard({
               {/* Why it wins */}
               {topReasons.length > 0 && (
                 <div>
-                  <p className="mb-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-zinc-600">
+                  <p className="mb-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-stone-400">
                     Why it fits
                   </p>
                   <ul className="space-y-1">
                     {topReasons.map((r) => (
-                      <li key={r.dimension} className="flex items-start gap-1.5 text-xs text-zinc-400">
-                        <span className="mt-0.5 shrink-0 text-emerald-400">▸</span>
+                      <li key={r.dimension} className="flex items-start gap-1.5 text-xs text-stone-500">
+                        <span className="mt-0.5 shrink-0 text-emerald-600">▸</span>
                         {r.reason || r.dimension}
                       </li>
                     ))}
@@ -240,13 +240,13 @@ function RankedCard({
               {/* Cautions */}
               {cautions.length > 0 && (
                 <div>
-                  <p className="mb-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-zinc-600">
+                  <p className="mb-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-stone-400">
                     Watch out for
                   </p>
                   <ul className="space-y-1">
                     {cautions.map((c) => (
-                      <li key={c.dimension} className="flex items-start gap-1.5 text-xs text-zinc-500">
-                        <span className="mt-0.5 shrink-0 text-amber-400">▸</span>
+                      <li key={c.dimension} className="flex items-start gap-1.5 text-xs text-stone-500">
+                        <span className="mt-0.5 shrink-0 text-amber-600">▸</span>
                         {c.reason || c.dimension}
                       </li>
                     ))}
@@ -256,10 +256,10 @@ function RankedCard({
 
               {/* When wrong */}
               <div className="rounded-lg px-3 py-2.5 bg-bg-elevated border border-border-default">
-                <p className="mb-1 text-[10px] font-semibold text-zinc-500">
+                <p className="mb-1 text-[10px] font-semibold text-stone-500">
                   When I was wrong
                 </p>
-                <p className="text-xs leading-relaxed text-zinc-400">
+                <p className="text-xs leading-relaxed text-stone-500">
                   {model.whenWrong}
                 </p>
               </div>
@@ -308,7 +308,7 @@ function ResultScreen({
         >
           {badge.label}
         </span>
-        <span className="text-xs text-zinc-500">
+        <span className="text-xs text-stone-500">
           Top {top3.length} recommendations for your answers
         </span>
       </div>
@@ -316,7 +316,7 @@ function ResultScreen({
       {/* Caution banner */}
       {hasCaution && cautionMessage && (
         <div className="flex items-start gap-2.5 rounded-lg border border-amber-400/20 bg-amber-400/5 px-3 py-2.5">
-          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
           <p className="text-xs leading-relaxed text-amber-300">{cautionMessage}</p>
         </div>
       )}
@@ -381,7 +381,7 @@ export function ModelPicker() {
 
   return (
     <div
-      className="not-prose my-8 overflow-hidden rounded-xl bg-bg-page border border-border-strong"
+      className="not-prose my-8 overflow-hidden rounded-xl bg-bg-surface border border-border-strong"
       
     >
       {/* Header */}

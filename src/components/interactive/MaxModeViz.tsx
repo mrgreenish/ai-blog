@@ -94,7 +94,7 @@ function ContextBar({
     <div className="space-y-1.5">
       <div className="flex items-center justify-between font-mono text-[10px]">
         <span className={limitColor}>{limitLabel}</span>
-        <span className={over ? "text-red-400" : ""} style={!over ? { color: "var(--color-fg-secondary)" } : undefined}>
+        <span className={over ? "text-red-600" : ""} style={!over ? { color: "var(--color-fg-secondary)" } : undefined}>
           {fmtTokens(tokens)} / {fmtTokens(limit)} tokens
           {over && " — exceeds limit"}
         </span>
@@ -143,27 +143,27 @@ export function MaxModeViz() {
       : "overflow";
 
   const STATUS_META = {
-    safe: { label: "Within default limits", icon: CheckCircle2, color: "text-emerald-400" },
-    warning: { label: "Approaching 200K limit", icon: AlertTriangle, color: "text-amber-400" },
-    overflow: { label: "Exceeds default — needs Max Mode", icon: Maximize2, color: "text-violet-400" },
+    safe: { label: "Within default limits", icon: CheckCircle2, color: "text-emerald-600" },
+    warning: { label: "Approaching 200K limit", icon: AlertTriangle, color: "text-amber-600" },
+    overflow: { label: "Exceeds default — needs Max Mode", icon: Maximize2, color: "text-violet-600" },
   };
   const sm = STATUS_META[status];
   const StatusIcon = sm.icon;
 
   return (
     <div
-      className="not-prose my-8 overflow-hidden rounded-xl border border-violet-400/25 bg-bg-surface"
+      className="not-prose my-8 overflow-hidden rounded-xl border border-violet-500/25 bg-bg-surface"
     >
       {/* Header */}
       <div
         className="flex items-center gap-3 px-4 py-4 sm:px-6 border-b border-border-default"
         
       >
-        <div className="rounded-lg p-2 text-violet-400 bg-bg-elevated">
+        <div className="rounded-lg p-2 text-violet-600 bg-bg-elevated">
           <Maximize2 className="h-4 w-4" />
         </div>
         <div>
-          <h3 className="font-mono text-sm font-semibold text-violet-400">Cursor Max Mode Calculator</h3>
+          <h3 className="font-mono text-sm font-semibold text-violet-600">Cursor Max Mode Calculator</h3>
           <p className="mt-0.5 text-xs text-fg-secondary">
             See when your task needs the 1M-token window — and what it costs
           </p>
@@ -183,7 +183,7 @@ export function MaxModeViz() {
               }}
               className={`rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors ${
                 activeScenario === s.id
-                  ? "border-violet-400/50 bg-violet-400/10 text-violet-300"
+                  ? "border-violet-500/50 bg-violet-400/10 text-violet-300"
                   : ""
               }`}
               style={activeScenario !== s.id ? { borderColor: "var(--color-border-strong)", color: "var(--color-fg-secondary)" } : undefined}
@@ -248,8 +248,8 @@ export function MaxModeViz() {
           tokens={totalTokens}
           limit={DEFAULT_LIMIT_TOKENS}
           limitLabel="Default mode (200K tokens)"
-          barColor="bg-zinc-500"
-          limitColor="text-zinc-400"
+          barColor="bg-stone-400"
+          limitColor="text-stone-500"
         />
 
         <ContextBar
@@ -257,7 +257,7 @@ export function MaxModeViz() {
           limit={MAX_MODE_LIMIT_TOKENS}
           limitLabel="Max Mode (1M tokens)"
           barColor="bg-violet-500"
-          limitColor="text-violet-400"
+          limitColor="text-violet-600"
         />
 
         {/* Status badge */}
@@ -298,13 +298,13 @@ export function MaxModeViz() {
               : { borderColor: "var(--color-border-default)", background: "var(--color-bg-surface)" }}
           >
             <div className="flex items-center gap-1.5 mb-2">
-              <Maximize2 className="h-3 w-3 text-violet-400" />
+              <Maximize2 className="h-3 w-3 text-violet-600" />
               <span className="font-mono text-[11px] font-semibold text-violet-300">Max Mode</span>
             </div>
             <p className="font-mono text-2xl font-bold text-violet-200">{formatCost(maxCost)}</p>
             <p className="mt-1 font-mono text-[10px] text-fg-placeholder">per session (Sonnet 4.6 API + 20%)</p>
             {needsMaxMode && (
-              <p className="mt-1.5 font-mono text-[10px] text-violet-400/80">Full context fits ✓</p>
+              <p className="mt-1.5 font-mono text-[10px] text-violet-600/80">Full context fits ✓</p>
             )}
           </div>
         </div>
@@ -321,7 +321,7 @@ export function MaxModeViz() {
               </p>
               <p className="font-mono text-[11px] text-fg-muted">
                 At Max Mode rates, that pool covers{" "}
-                <span className={sessionsBeforeBudgetExhausted < 10 ? "text-amber-400 font-semibold" : "font-semibold"}
+                <span className={sessionsBeforeBudgetExhausted < 10 ? "text-amber-600 font-semibold" : "font-semibold"}
                   style={sessionsBeforeBudgetExhausted >= 10 ? { color: "var(--color-fg-primary)" } : undefined}>
                   ~{sessionsBeforeBudgetExhausted} sessions
                 </span>
@@ -345,7 +345,7 @@ export function MaxModeViz() {
         >
           {status === "safe" && (
             <>
-              <p className="font-mono text-xs font-semibold text-emerald-400 mb-1">
+              <p className="font-mono text-xs font-semibold text-emerald-600 mb-1">
                 Leave Max Mode off
               </p>
               <p className="text-[11px] leading-relaxed text-fg-muted">
@@ -356,7 +356,7 @@ export function MaxModeViz() {
           )}
           {status === "warning" && (
             <>
-              <p className="font-mono text-xs font-semibold text-amber-400 mb-1">
+              <p className="font-mono text-xs font-semibold text-amber-600 mb-1">
                 You&apos;re close — consider trimming first
               </p>
               <p className="text-[11px] leading-relaxed text-fg-muted">
@@ -367,7 +367,7 @@ export function MaxModeViz() {
           )}
           {status === "overflow" && (
             <>
-              <p className="font-mono text-xs font-semibold text-violet-400 mb-1">
+              <p className="font-mono text-xs font-semibold text-violet-600 mb-1">
                 Max Mode is the right call here
               </p>
               <p className="text-[11px] leading-relaxed text-fg-muted">

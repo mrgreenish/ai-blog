@@ -1,14 +1,14 @@
 import type { MetadataRoute } from "next";
-import { getAllArticles } from "@/lib/content";
+import { getAllChapters } from "@/lib/content";
 
 const BASE_URL = "https://ai-field-notes.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const articles = getAllArticles();
+  const chapters = getAllChapters();
 
-  const articleEntries: MetadataRoute.Sitemap = articles.map((article) => ({
-    url: `${BASE_URL}/${article.category}/${article.slug}`,
-    lastModified: article.frontmatter.updatedAt ?? article.frontmatter.publishedAt,
+  const chapterEntries: MetadataRoute.Sitemap = chapters.map((chapter) => ({
+    url: `${BASE_URL}/chapters/${chapter.slug}`,
+    lastModified: chapter.frontmatter.updatedAt ?? chapter.frontmatter.publishedAt,
     changeFrequency: "monthly",
     priority: 0.8,
   }));
@@ -19,26 +19,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 1,
     },
-    {
-      url: `${BASE_URL}/models`,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: `${BASE_URL}/workflows`,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: `${BASE_URL}/tooling`,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: `${BASE_URL}/notes`,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    ...articleEntries,
+    ...chapterEntries,
   ];
 }

@@ -1,0 +1,80 @@
+---
+title: "Bug Report to Fix"
+subtitle: "A repeatable AI-assisted debugging flow, centered on minimal reproduction"
+chapter: 5
+part: shipping-workflows
+partNumber: 2
+wonderQuestion: "Have you ever pasted a stack trace into a model and gotten a fix that worked for the error but broke something else?"
+interactiveTools: [workflow-recipe]
+illustrationPlaceholders:
+  - "Four-stage funnel: Bug Report (noisy) to Minimal Repro (isolated) to Fix (targeted) to Regression Tests (protective)."
+  - "Comparison: debugging with and without a minimal repro. Show context window usage and fix accuracy."
+---
+
+Debugging with AI has a clear failure mode: paste a stack trace, ask "what's wrong?", get a plausible-sounding but wrong answer. The model doesn't have enough context to diagnose the real issue, so it pattern-matches to the most common cause of that error.
+
+The fix is the same as good debugging in general: minimal reproduction first. Once you have that, the model has enough context to actually help.
+
+## The minimal repro step
+
+Most people skip this. It's the most important step. A minimal repro is the smallest amount of code that demonstrates the bug — and creating it forces you to understand the bug well enough to isolate it. Often you find the bug yourself in the process.
+
+When you do need model help, "here's a 10-line example that reproduces the bug" is dramatically more useful than "here's my 500-line component that has a bug somewhere."
+
+## When the bug lives in the browser
+
+For frontend bugs, don't debug from a pasted error string alone. Open the app in Cursor's browser, reproduce the bug there, and look at actual runtime signals: console logs, failed network requests, warnings, visible DOM state, whether the UI breaks before or after an interaction.
+
+A lot of bugs are only obvious in the browser — hydration mismatches, broken form submissions, race conditions after navigation, event handlers that never fire, client-side state that diverges from what the server rendered. A terminal stack trace often misses the part you actually need.
+
+If you have Browser MCP connected, the debugging loop gets tighter. Instead of saying "the page looks broken," you can ask the model to open the page, reproduce the issue, inspect the browser state, and use that evidence as part of the diagnosis. That's much better context than screenshots or vague descriptions.
+
+<InfoBlock title="Browser-first debugging in Cursor">
+
+For bugs on `localhost`, I want the model to use the browser as evidence, not just intuition.
+
+**In Cursor:** open the page in Cursor's built-in browser and reproduce the issue with the console and network information visible.
+
+**With Browser MCP:** let the model navigate the page, inspect the rendered UI, and reason from actual browser state instead of guessed behavior.
+
+The useful prompt shape is: "Open `http://localhost:3000/...`, reproduce the bug, check console errors / network failures / visible UI state, then explain the likely cause before changing code."
+
+</InfoBlock>
+
+## Cursor's Debug Mode
+
+When standard Agent interactions struggle with a bug — especially ones you can reproduce but can't explain, race conditions, timing issues, or regressions — [Debug Mode](https://cursor.com/docs/agent/debug-mode) takes a different approach. Instead of guessing at fixes, the agent generates hypotheses, adds log instrumentation, and uses runtime evidence to pinpoint the root cause before making a targeted fix. The loop is: explore and hypothesize → add instrumentation → reproduce the bug → analyze logs → fix → verify and remove instrumentation. Switch to it via the mode picker dropdown in Agent or press Shift+Tab.
+
+<InfoBlock title="When to use Debug Mode">
+
+Use Debug Mode when the cause isn't obvious from reading the code: race conditions, performance issues, memory leaks, or regressions where something used to work.
+
+**How to activate:** Mode picker dropdown in Agent, or Shift+Tab.
+
+**The useful prompt shape:** Describe the bug, how to reproduce it, and what you expect vs. what happens. Include error messages and stack traces if you have them. Follow the agent's reproduction steps exactly so it captures real runtime behavior.
+
+</InfoBlock>
+
+## The debugging flow
+
+**Step 1: Reproduce.** Can you reliably reproduce the bug? If not, start there. A bug you can't reproduce is much harder to fix. For UI bugs, reproduce it in Cursor's browser instead of describing it from memory.
+
+**Step 2: Inspect runtime evidence.** Before changing code, check what the browser is telling you: console output, failed requests, warnings, broken DOM state, and whether the bug appears on load or only after interaction.
+
+**Step 3: Isolate.** Strip away everything that isn't necessary to reproduce the bug. Remove dependencies, simplify data, reduce to the smallest case.
+
+**Step 4: Diagnose.** With the minimal repro in hand, ask the model to explain what's happening and why. "Here's a minimal example that demonstrates the bug. What's causing it?" If Browser MCP is available, include what it saw in the browser as part of the prompt.
+
+**Step 5: Fix.** Implement the fix. Keep it narrow — fix the specific bug, don't refactor adjacent code.
+
+**Step 6: Regression test.** Write a test that would have caught this bug. "Write a test that verifies this specific behavior." This is the most valuable step — it prevents the bug from coming back.
+
+## What I've learned about AI-assisted debugging
+
+Models are good at pattern recognition — they've seen most common bugs before. Less good at reasoning about your specific system's behavior. More context (the minimal repro, expected vs actual behavior, the relevant code) = better results.
+
+Browser context helps too. A model that can see the runtime evidence is less likely to invent a plausible-sounding cause that doesn't match what's actually happening.
+
+The failure mode to watch for: a fix that addresses the symptom but not the cause. Always ask "why does this fix work?" If the explanation doesn't hold up, the fix might be wrong.
+
+<WorkflowRecipe />

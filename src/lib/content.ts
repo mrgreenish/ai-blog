@@ -2,70 +2,40 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import { cache } from "react";
-import type { Article, ArticleMeta, Category } from "./types";
-import { parseFrontmatter } from "./contentSchema";
+import type { Chapter, ChapterFrontmatter, Part } from "./types";
 
-const CONTENT_DIR = path.join(process.cwd(), "content");
+// ─── Chapter loading (v2) ────────────────────────────────────────────────────
 
-export function getArticlesByCategory(category: Category): ArticleMeta[] {
-  const dir = path.join(CONTENT_DIR, category);
-  if (!fs.existsSync(dir)) return [];
+const CHAPTERS_DIR = path.join(process.cwd(), "content/chapters");
 
-  const files = fs.readdirSync(dir).filter((f) => f.endsWith(".mdx"));
+export const getAllChapters = cache(function getAllChapters(): Chapter[] {
+  if (!fs.existsSync(CHAPTERS_DIR)) return [];
+  const files = fs.readdirSync(CHAPTERS_DIR).filter((f) => f.endsWith(".mdx"));
+  return files
+    .map((file) => {
+      const raw = fs.readFileSync(path.join(CHAPTERS_DIR, file), "utf-8");
+      const { data, content } = matter(raw);
+      // Slug strips the leading number prefix: "01-reasoning-vs-fast" → "reasoning-vs-fast"
+      const slug = file.replace(/^\d+-/, "").replace(/\.mdx$/, "");
+      return { slug, frontmatter: data as ChapterFrontmatter, content };
+    })
+    .sort((a, b) => (a.frontmatter.chapter ?? 0) - (b.frontmatter.chapter ?? 0));
+});
 
-  const articles = files.map((filename) => {
-    const slug = filename.replace(/\.mdx$/, "");
-    const filePath = path.join(dir, filename);
-    const raw = fs.readFileSync(filePath, "utf-8");
-    const { data } = matter(raw);
+export const getChapter = cache(function getChapter(slug: string): Chapter | null {
+  return getAllChapters().find((c) => c.slug === slug) ?? null;
+});
 
-    return {
-      slug,
-      category,
-      frontmatter: parseFrontmatter(data, slug, category),
-    };
-  });
+export const getChaptersByPart = cache(function getChaptersByPart(part: Part): Chapter[] {
+  return getAllChapters().filter((c) => c.frontmatter.part === part);
+});
 
-  return articles.sort(
-    (a, b) => (a.frontmatter.order ?? 99) - (b.frontmatter.order ?? 99)
-  );
-}
-
-export const getArticle = cache(function getArticle(category: Category, slug: string): Article | null {
-  const filePath = path.join(CONTENT_DIR, category, `${slug}.mdx`);
-  if (!fs.existsSync(filePath)) return null;
-
-  const raw = fs.readFileSync(filePath, "utf-8");
-  const { data, content } = matter(raw);
-
+export const getAdjacentChapters = cache(function getAdjacentChapters(slug: string) {
+  const all = getAllChapters();
+  const idx = all.findIndex((c) => c.slug === slug);
   return {
-    slug,
-    category,
-    frontmatter: parseFrontmatter(data, slug, category),
-    content,
+    prev: idx > 0 ? all[idx - 1] : null,
+    next: idx < all.length - 1 ? all[idx + 1] : null,
   };
 });
 
-export function getAllArticles(): ArticleMeta[] {
-  const categories: Category[] = ["models", "workflows", "tooling", "notes"];
-  return categories.flatMap((cat) => getArticlesByCategory(cat));
-}
-
-export function getNextArticle(category: Category, currentSlug: string): ArticleMeta | null {
-  const articles = getArticlesByCategory(category);
-  const currentIndex = articles.findIndex((a) => a.slug === currentSlug);
-  if (currentIndex === -1 || currentIndex === articles.length - 1) return null;
-  return articles[currentIndex + 1];
-}
-
-export function getAllArticlePaths(): { category: Category; slug: string }[] {
-  const categories: Category[] = ["models", "workflows", "tooling", "notes"];
-  return categories.flatMap((category) => {
-    const dir = path.join(CONTENT_DIR, category);
-    if (!fs.existsSync(dir)) return [];
-    return fs
-      .readdirSync(dir)
-      .filter((f) => f.endsWith(".mdx"))
-      .map((f) => ({ category, slug: f.replace(/\.mdx$/, "") }));
-  });
-}

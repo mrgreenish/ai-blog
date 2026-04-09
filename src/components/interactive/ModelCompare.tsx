@@ -33,7 +33,7 @@ const COLUMNS = getDevBenchmarkColumns();
 
 function Pass({ val }: { val: boolean }) {
   return (
-    <span className={`font-mono text-xs ${val ? "text-red-400" : "text-emerald-400"}`}>
+    <span className={`font-mono text-xs ${val ? "text-red-600" : "text-emerald-600"}`}>
       {val ? "✗ fail" : "✓ pass"}
     </span>
   );
@@ -67,9 +67,9 @@ function CombinedPreview() {
             {SEGMENTS.map((s) => (
               <div key={s.label} className="flex items-center gap-1.5">
                 <span className={`h-2 w-2 rounded-sm ${s.color}`} />
-                <span className="text-zinc-400">
+                <span className="text-stone-500">
                   {s.label}{" "}
-                  <span className="font-mono text-zinc-500">({formatK(s.tokens)})</span>
+                  <span className="font-mono text-stone-500">({formatK(s.tokens)})</span>
                 </span>
               </div>
             ))}
@@ -81,12 +81,12 @@ function CombinedPreview() {
               return (
                 <div key={m.name}>
                   <div className="mb-1 flex items-center justify-between text-xs">
-                    <span className="font-mono text-zinc-300">{m.name}</span>
-                    <span className="text-zinc-500">
+                    <span className="font-mono text-stone-700">{m.name}</span>
+                    <span className="text-stone-500">
                       {formatK(TOTAL)} / {formatK(m.limit)} ({Math.round(pct)}%)
                     </span>
                   </div>
-                  <div className="h-4 w-full overflow-hidden rounded bg-zinc-800">
+                  <div className="h-4 w-full overflow-hidden rounded bg-stone-200">
                     <div className="flex h-full" style={{ width: `${pct}%` }}>
                       {SEGMENTS.map((s) => (
                         <div
@@ -101,7 +101,7 @@ function CombinedPreview() {
               );
             })}
           </div>
-          <p className="mt-2 text-xs text-zinc-600">
+          <p className="mt-2 text-xs text-stone-400">
             Answers &quot;will this fit?&quot; before you hit the limit mid-task.
           </p>
         </div>
@@ -110,8 +110,8 @@ function CombinedPreview() {
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className="border-b border-zinc-800">
-                  <th className="pb-2 text-left font-mono text-zinc-500 pr-4">Check</th>
+                <tr className="border-b border-stone-200">
+                  <th className="pb-2 text-left font-mono text-stone-500 pr-4">Check</th>
                   {COLUMNS.map((col) => (
                     <th key={col.id} className={`pb-2 text-center font-mono ${col.color} px-3`}>
                       {col.label}
@@ -121,8 +121,8 @@ function CombinedPreview() {
               </thead>
               <tbody className="space-y-1">
                 {BENCHMARK_CHECKS.map((c) => (
-                  <tr key={c.check} className="border-b border-zinc-800/50">
-                    <td className="py-2 pr-4 text-zinc-400 leading-tight">{c.check}</td>
+                  <tr key={c.check} className="border-b border-stone-200/50">
+                    <td className="py-2 pr-4 text-stone-500 leading-tight">{c.check}</td>
                     {COLUMNS.map((col) => (
                       <td key={col.id} className="py-2 text-center px-3">
                         <Pass val={col.benchmark[c.key]} />
@@ -133,7 +133,7 @@ function CombinedPreview() {
               </tbody>
             </table>
           </div>
-          <p className="mt-2 text-xs text-zinc-600">
+          <p className="mt-2 text-xs text-stone-400">
             Not leaderboard scores — checks that matter when shipping.
           </p>
         </div>
@@ -154,7 +154,7 @@ export function ModelCompare() {
       tagline="Context windows and developer benchmarks side by side"
       description="Compare model context limits and real-world developer checks — not abstract leaderboard scores, but tests that matter when shipping production code."
       preview={<CombinedPreview />}
-      accentColor="text-cyan-400"
+      accentColor="text-cyan-600"
       borderColor="border-cyan-400/30"
     />
   );

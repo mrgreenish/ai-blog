@@ -23,10 +23,10 @@ const MODEL_BY_ID = Object.fromEntries(LAB_MODELS.map((m) => [m.id, m]));
 // ---------------------------------------------------------------------------
 
 function verdictIcon(verdict: Verdict) {
-  if (verdict === "best") return <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />;
+  if (verdict === "best") return <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />;
   if (verdict === "good") return <CheckCircle2 className="h-3.5 w-3.5 text-blue-400" />;
-  if (verdict === "caution") return <AlertCircle className="h-3.5 w-3.5 text-amber-400" />;
-  return <XCircle className="h-3.5 w-3.5 text-red-400" />;
+  if (verdict === "caution") return <AlertCircle className="h-3.5 w-3.5 text-amber-600" />;
+  return <XCircle className="h-3.5 w-3.5 text-red-600" />;
 }
 
 // ---------------------------------------------------------------------------
@@ -65,22 +65,22 @@ function ModelResultCard({
 
   return (
     <div
-      className={`overflow-hidden rounded-xl border transition-colors ${meta.borderClass} ${isRecommended ? "bg-bg-surface" : "bg-bg-page"}`}
+      className={`overflow-hidden rounded-xl border transition-colors ${meta.borderClass} ${isRecommended ? "bg-white" : "bg-bg-surface"}`}
     >
       {/* Card header */}
       <div className="flex items-center gap-3 px-4 py-3">
         {modelSpec && (
           <div
             className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-linear-to-br ${
-              (modelSpec as { gradientFrom?: string }).gradientFrom ?? "from-zinc-700"
-            } ${(modelSpec as { gradientTo?: string }).gradientTo ?? "to-zinc-600"}`}
+              (modelSpec as { gradientFrom?: string }).gradientFrom ?? "from-stone-400"
+            } ${(modelSpec as { gradientTo?: string }).gradientTo ?? "to-stone-300"}`}
           >
             <span className="text-base">{modelSpec.emoji}</span>
           </div>
         )}
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="font-display text-sm font-semibold text-zinc-100">
+            <span className="font-display text-sm font-semibold text-stone-900">
               {modelSpec?.name ?? result.modelId}
             </span>
             <span
@@ -90,7 +90,7 @@ function ModelResultCard({
               {meta.label}
             </span>
             {isRecommended && (
-              <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2 py-0.5 font-mono text-[10px] font-medium text-emerald-400">
+              <span className="rounded-full border border-emerald-500/20 bg-emerald-400/10 px-2 py-0.5 font-mono text-[10px] font-medium text-emerald-600">
                 recommended
               </span>
             )}
@@ -123,7 +123,7 @@ function ModelResultCard({
             <div className="px-4 pb-4 pt-3 space-y-3 border-t border-border-default">
               {/* Output excerpt */}
               <div>
-                <p className="mb-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-zinc-600">
+                <p className="mb-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-stone-400">
                   What it produced
                 </p>
                 <div
@@ -137,13 +137,13 @@ function ModelResultCard({
               {/* Strengths */}
               {result.strengths.length > 0 && (
                 <div>
-                  <p className="mb-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-zinc-600">
+                  <p className="mb-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-stone-400">
                     What went right
                   </p>
                   <ul className="space-y-1">
                     {result.strengths.map((s) => (
-                      <li key={s} className="flex items-start gap-1.5 text-xs text-zinc-400">
-                        <span className="mt-0.5 shrink-0 text-emerald-400">▸</span>
+                      <li key={s} className="flex items-start gap-1.5 text-xs text-stone-500">
+                        <span className="mt-0.5 shrink-0 text-emerald-600">▸</span>
                         {s}
                       </li>
                     ))}
@@ -154,13 +154,13 @@ function ModelResultCard({
               {/* Weaknesses */}
               {result.weaknesses.length > 0 && (
                 <div>
-                  <p className="mb-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-zinc-600">
+                  <p className="mb-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-stone-400">
                     What to watch for
                   </p>
                   <ul className="space-y-1">
                     {result.weaknesses.map((w) => (
-                      <li key={w} className="flex items-start gap-1.5 text-xs text-zinc-500">
-                        <span className="mt-0.5 shrink-0 text-amber-400">▸</span>
+                      <li key={w} className="flex items-start gap-1.5 text-xs text-stone-500">
+                        <span className="mt-0.5 shrink-0 text-amber-600">▸</span>
                         {w}
                       </li>
                     ))}
@@ -172,14 +172,14 @@ function ModelResultCard({
               <div className="rounded-lg px-3 py-2.5 space-y-2 bg-bg-elevated border border-border-default">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="text-[10px] font-semibold text-zinc-500">Cost note</p>
-                    <p className="mt-0.5 text-xs leading-relaxed text-zinc-400">
+                    <p className="text-[10px] font-semibold text-stone-500">Cost note</p>
+                    <p className="mt-0.5 text-xs leading-relaxed text-stone-500">
                       {result.costCommentary}
                     </p>
                   </div>
                   {cost !== null && (
                     <div className="shrink-0 text-right">
-                      <p className="text-[10px] text-zinc-600">token cost</p>
+                      <p className="text-[10px] text-stone-400">token cost</p>
                       <p className={`font-mono text-xs font-semibold ${meta.textClass}`}>
                         {formatCost(cost)}/run
                       </p>
@@ -190,8 +190,8 @@ function ModelResultCard({
                 {(ratio !== null || (effectiveRuns > 1 && effectiveCost !== null)) && (
                   <div className="flex flex-wrap gap-x-4 gap-y-1 pt-2 border-t border-border-default">
                     {ratio !== null && compareSpec && (
-                      <p className="font-mono text-[10px] text-zinc-500">
-                        <span className={ratio > 1 ? "text-amber-400" : "text-emerald-400"}>
+                      <p className="font-mono text-[10px] text-stone-500">
+                        <span className={ratio > 1 ? "text-amber-600" : "text-emerald-600"}>
                           {ratio >= 2
                             ? `${ratio.toFixed(1)}× `
                             : ratio > 1
@@ -202,9 +202,9 @@ function ModelResultCard({
                       </p>
                     )}
                     {effectiveRuns > 1 && effectiveCost !== null && (
-                      <p className="font-mono text-[10px] text-zinc-500">
+                      <p className="font-mono text-[10px] text-stone-500">
                         effective:{" "}
-                        <span className="text-amber-400">{formatCost(effectiveCost)}</span>
+                        <span className="text-amber-600">{formatCost(effectiveCost)}</span>
                         {" "}({effectiveRuns} rounds)
                       </p>
                     )}
@@ -229,8 +229,8 @@ function WorkflowIndicator({ planMode }: { planMode: PlanModeData }) {
   const planSpec = MODEL_BY_ID[planMode.planModelId];
   const execSpec = MODEL_BY_ID[planMode.executeModelId];
   return (
-    <div className="flex items-center gap-2 rounded-lg border border-violet-400/20 bg-violet-400/5 px-3 py-2">
-      <span className="font-mono text-[10px] font-semibold text-violet-400">workflow</span>
+    <div className="flex items-center gap-2 rounded-lg border border-violet-500/20 bg-violet-400/5 px-3 py-2">
+      <span className="font-mono text-[10px] font-semibold text-violet-600">workflow</span>
       <span className="font-mono text-[11px] text-fg-primary">
         {planSpec?.name ?? planMode.planModelId}
       </span>
@@ -275,8 +275,8 @@ function ScenarioView({ scenario }: { scenario: Scenario }) {
     >
       {/* Scenario description + insight */}
       <div className="rounded-xl border px-4 py-3 space-y-2 bg-bg-surface border-border-default">
-        <p className="text-sm leading-relaxed text-zinc-300">{scenario.description}</p>
-        <div className="flex flex-wrap gap-3 text-xs text-zinc-500">
+        <p className="text-sm leading-relaxed text-stone-700">{scenario.description}</p>
+        <div className="flex flex-wrap gap-3 text-xs text-stone-500">
           <span className="font-mono">~{scenario.inputTokens / 1000}k in</span>
           <span className="font-mono">~{scenario.outputTokens / 1000}k out</span>
           <span className="capitalize">signal: {scenario.primarySignal}</span>
@@ -306,7 +306,7 @@ function ScenarioView({ scenario }: { scenario: Scenario }) {
               onClick={() => setMode("planMode")}
               className={`rounded-md px-3 py-1 font-mono text-[11px] transition-colors ${
                 mode === "planMode"
-                  ? "bg-violet-400/15 text-violet-300 border border-violet-400/30"
+                  ? "bg-violet-400/15 text-violet-300 border border-violet-500/30"
                   : "border border-transparent"
               }`}
               style={mode !== "planMode" ? { color: "var(--color-fg-secondary)" } : undefined}
@@ -333,7 +333,7 @@ function ScenarioView({ scenario }: { scenario: Scenario }) {
       </div>
 
       {/* Recommendation callout */}
-      <div className="rounded-xl border border-emerald-400/20 bg-emerald-400/5 px-4 py-3">
+      <div className="rounded-xl border border-emerald-500/20 bg-emerald-400/5 px-4 py-3">
         <p className="mb-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-emerald-500">
           Bottom line
         </p>
@@ -362,11 +362,11 @@ export function ScenarioLab() {
         className="flex items-center gap-3 px-3 py-3 sm:px-5 sm:py-4 border-b border-border-default"
         
       >
-        <div className="rounded-lg p-2 text-amber-400 bg-bg-elevated">
+        <div className="rounded-lg p-2 text-amber-600 bg-bg-elevated">
           <FlaskConical className="h-4 w-4" />
         </div>
         <div className="min-w-0">
-          <h3 className="font-mono text-sm font-semibold text-amber-400">Scenario Lab</h3>
+          <h3 className="font-mono text-sm font-semibold text-amber-600">Scenario Lab</h3>
           <p className="mt-0.5 text-xs text-fg-secondary">
             Real tasks, real model outputs — see which model wins and why
           </p>
@@ -402,7 +402,7 @@ export function ScenarioLab() {
 
       {/* Footer */}
       <div className="px-3 py-3 sm:px-5 bg-bg-surface border-t border-border-default">
-        <p className="text-[11px] text-zinc-600">
+        <p className="text-[11px] text-stone-400">
           Outputs are curated from real usage. Prices from official API docs, verified{" "}
           {PRICING_META.verifiedDate}.{" "}
           {(Object.entries(PRICING_META.urls) as [string, string][]).map(([provider, url], i, arr) => (
@@ -411,7 +411,7 @@ export function ScenarioLab() {
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-zinc-500 underline decoration-zinc-700 underline-offset-2 hover:text-zinc-400"
+                className="text-stone-500 underline decoration-stone-700 underline-offset-2 hover:text-stone-500"
               >
                 {provider}
               </a>

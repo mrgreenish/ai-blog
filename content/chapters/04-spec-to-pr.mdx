@@ -1,0 +1,78 @@
+---
+title: "Spec to PR"
+subtitle: "The full AI-assisted development loop, from spec file to merged pull request"
+chapter: 4
+part: shipping-workflows
+partNumber: 2
+wonderQuestion: "Have you ever skipped the planning step and spent two hours correcting code instead of reviewing a plan?"
+interactiveTools: [workflow-recipe, model-mixer]
+illustrationPlaceholders:
+  - "Six-step flow diagram: Spec to Plan to Code to Review to Tests to PR, with model recommendations and estimated token cost at each stage."
+  - "Annotated sample spec file structure with callouts explaining each section."
+---
+
+This is what I run for most non-trivial features. Not the fastest path to working code — the path that produces code I'm comfortable shipping. The extra steps (planning, review, explicit test generation) catch the bugs that are hardest to find in code review.
+
+Not sure this is the right workflow for your task? Use the finder to get a recommendation in a few clicks.
+
+<WorkflowRecipe initialMode="choose" />
+
+## The full flow
+
+**Step 1: Spec.** Write a clear description of what you're building. Not a user story — a developer spec. Inputs, outputs, edge cases, constraints. The more specific, the better the plan.
+
+A weak spec: "Add a search feature to the products page."
+
+A useful spec: "Add a search input to the products page that filters the visible product list client-side. The input should debounce at 300ms. Filtering should match against product name and SKU. Empty query shows all products. No server requests — filter the already-loaded list."
+
+The difference isn't length — it's specificity. The second spec tells the model what data is available, what the performance expectation is, and what's out of scope (server requests). That's what prevents a wrong plan.
+
+**Step 2: Plan.** Ask the model to produce a plan before writing any code:
+
+```
+Given this spec, what files will you create or modify, and what are the key implementation decisions?
+```
+
+Review the plan. This is where you catch misunderstandings before they become code. If the plan mentions files you didn't expect, or skips something you care about, correct it here.
+
+**Step 3: Code.** Implement against the plan. Keep the scope tight — one feature, one PR. If the model starts touching things outside the scope, pull it back:
+
+```
+Implement step 1 from the plan only. Don't touch anything outside the files you listed.
+```
+
+**Step 4: Review.** Ask the model to review its own code:
+
+```
+Review this implementation. What edge cases might it miss? What inputs would cause it to fail?
+```
+
+This sounds redundant but it works — the model often catches things in review mode that it missed in generation mode. Different prompt, different output.
+
+**Step 5: Tests.** Generate tests explicitly, not as an afterthought:
+
+```
+Write tests for the edge cases you identified in the review.
+```
+
+This produces better tests than "add tests to this code" because it's targeting the specific failure modes, not just exercising the happy path.
+
+**Step 6: PR description.** Ask the model to write the PR description from the spec and the diff. It produces better descriptions than most humans write because it has the full context.
+
+## Why the plan step matters
+
+Most common failure mode: skipping the plan and going straight to code. The model produces something that works for the happy path but misses the constraints you had in mind. Then you're correcting code instead of reviewing a plan — much slower.
+
+The plan step also surfaces ambiguities in your spec. If the model asks a clarifying question during planning, that's a question you'd have had to answer anyway — better to answer it before code is written.
+
+One way to make this explicit: before asking for the plan, add **"If anything in the spec is unclear or leaves room for multiple interpretations, ask me before planning."** Turns it into a two-pass process (clarify, then plan) and consistently produces tighter output.
+
+## Model strategy
+
+Different steps benefit from different models. Planning and review are where reasoning models earn their cost. Code generation and test writing? Fast models are often sufficient.
+
+<ModelMixer />
+
+## The full recipe
+
+<WorkflowRecipe />

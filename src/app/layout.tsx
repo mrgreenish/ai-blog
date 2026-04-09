@@ -2,25 +2,18 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import "./globals.css";
 
-const inter = localFont({
-  src: "../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2",
+const sourceSerif = localFont({
+  src: "../../node_modules/@fontsource-variable/source-serif-4/files/source-serif-4-latin-wght-normal.woff2",
   variable: "--font-sans",
-  weight: "100 900",
+  weight: "200 900",
   display: "swap",
 });
 const jetbrainsMono = localFont({
   src: "../../node_modules/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2",
   variable: "--font-mono",
   weight: "100 800",
-  display: "swap",
-});
-const spaceGrotesk = localFont({
-  src: "../../node_modules/@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2",
-  variable: "--font-display",
-  weight: "300 700",
   display: "swap",
 });
 
@@ -44,18 +37,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${jetbrainsMono.variable} ${spaceGrotesk.variable}`}>
+    <html lang="en" className={`${sourceSerif.variable} ${jetbrainsMono.variable}`}>
       <body className="min-h-screen antialiased text-fg-primary bg-bg-page">
-        <ThemeProvider>
-          {/* Ambient background glows */}
-          <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
-            <div className="absolute -top-40 left-1/2 h-[600px] w-[900px] -translate-x-1/2 rounded-full blur-3xl" style={{ background: "radial-gradient(ellipse, var(--color-ambient-blue) 0%, transparent 70%)" }} />
-            <div className="absolute top-1/3 right-0 h-[400px] w-[500px] rounded-full blur-3xl" style={{ background: "radial-gradient(ellipse, var(--color-ambient-violet) 0%, transparent 70%)" }} />
-          </div>
-          <Header />
-          <main className="relative">{children}</main>
-          <Footer />
-        </ThemeProvider>
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-bg-surface focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-fg-primary focus:shadow-md focus:ring-2 focus:ring-fg-muted"
+        >
+          Skip to content
+        </a>
+        <Header />
+        <main id="main" className="relative pt-14">{children}</main>
+        <Footer />
       </body>
     </html>
   );

@@ -1,38 +1,32 @@
 import Fuse, { type FuseResultMatch } from "fuse.js";
-import { getAllArticles } from "./content";
-import type { ArticleMeta, Category } from "./types";
-import { CATEGORY_META } from "./types";
+import { getAllChapters } from "./content";
+import type { Chapter } from "./types";
 
-/** Normalize tool slugs for search: "model-picker" -> "model picker" */
 function toolsToSearchText(tools: string[] | undefined): string {
   if (!tools?.length) return "";
   return tools.map((t) => t.replace(/-/g, " ")).join(" ");
 }
 
 export interface SearchableRecord {
-  article: ArticleMeta;
+  chapter: Chapter;
   title: string;
-  description: string;
-  story: string;
+  subtitle: string;
   toolsSearchText: string;
-  categoryLabel: string;
+  partLabel: string;
 }
 
 export interface SearchResult {
-  article: ArticleMeta;
+  chapter: Chapter;
   matches: ReadonlyArray<FuseResultMatch>;
 }
 
-const CATEGORY_ORDER: Category[] = ["models", "workflows", "tooling", "notes"];
-
-function toSearchableRecords(articles: ArticleMeta[]): SearchableRecord[] {
-  return articles.map((article) => ({
-    article,
-    title: article.frontmatter.title,
-    description: article.frontmatter.description,
-    story: article.frontmatter.story ?? "",
-    toolsSearchText: toolsToSearchText(article.frontmatter.interactiveTools),
-    categoryLabel: CATEGORY_META[article.category].label,
+function toSearchableRecords(chapters: Chapter[]): SearchableRecord[] {
+  return chapters.map((chapter) => ({
+    chapter,
+    title: chapter.frontmatter.title,
+    subtitle: chapter.frontmatter.subtitle ?? "",
+    toolsSearchText: toolsToSearchText(chapter.frontmatter.interactiveTools),
+    partLabel: chapter.frontmatter.part ?? "",
   }));
 }
 
@@ -40,13 +34,12 @@ let fuseInstance: Fuse<SearchableRecord> | null = null;
 
 function getFuse(): Fuse<SearchableRecord> {
   if (!fuseInstance) {
-    const records = toSearchableRecords(getAllArticles());
+    const records = toSearchableRecords(getAllChapters());
     fuseInstance = new Fuse(records, {
       keys: [
-        { name: "title", weight: 0.4 },
-        { name: "description", weight: 0.3 },
-        { name: "story", weight: 0.2 },
-        { name: "toolsSearchText", weight: 0.1 },
+        { name: "title", weight: 0.5 },
+        { name: "subtitle", weight: 0.35 },
+        { name: "toolsSearchText", weight: 0.15 },
       ],
       threshold: 0.4,
       includeMatches: true,
@@ -55,10 +48,7 @@ function getFuse(): Fuse<SearchableRecord> {
   return fuseInstance;
 }
 
-/**
- * Run fuzzy search over article metadata. Returns results with match indices for highlighting.
- */
-export function searchArticles(query: string): SearchResult[] {
+export function searchChapters(query: string): SearchResult[] {
   const q = query.trim();
   if (!q) return [];
 
@@ -66,24 +56,20 @@ export function searchArticles(query: string): SearchResult[] {
   const results = fuse.search(q);
 
   return results.map((r) => ({
-    article: r.item.article,
+    chapter: r.item.chapter,
     matches: r.matches ?? [],
   }));
 }
 
-/**
- * Group search results by category (Models, Workflows, Tooling order).
- */
-export function groupResultsByCategory(
-  results: SearchResult[]
-): Map<Category, SearchResult[]> {
-  const map = new Map<Category, SearchResult[]>();
-  for (const cat of CATEGORY_ORDER) {
-    map.set(cat, []);
-  }
-  for (const result of results) {
-    const list = map.get(result.article.category)!;
-    list.push(result);
-  }
-  return map;
+// Keep old name as alias for search page compatibility
+export const searchArticles = searchChapters;
+
+export function groupResultsByPart(results: SearchResult[]): SearchResult[] {
+  return results.sort(
+    (a, b) => a.chapter.frontmatter.chapter - b.chapter.frontmatter.chapter
+  );
 }
+
+// Keep for search page compatibility
+export const groupResultsByCategory = (results: SearchResult[]) =>
+  groupResultsByPart(results);
