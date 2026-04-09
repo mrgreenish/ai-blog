@@ -18,6 +18,18 @@ Skills are a different approach: encode the instructions once in a markdown file
 
 The concept is simple. The difference it makes in a team context is not small.
 
+## The building blocks
+
+Three concepts, so the rest of this chapter makes sense.
+
+**An agent** is an AI that doesn't just answer questions — it takes actions. It reads files, writes code, runs commands, and makes decisions in a loop until the task is done. You give it a goal; it figures out the steps. Think of it as the AI actually doing the work, not just describing how.
+
+**A skill** is a markdown file that teaches an agent how to handle something specific. It's a set of instructions the agent reads at the right moment: "when working with our design system, follow these conventions." You write it once; every session gets the benefit. Update it once; everyone benefits.
+
+**A subagent** is an agent running inside another agent. When a task gets complex, the main agent can spin up a specialized worker — "handle the CMS data fetching" or "verify this component against the design tokens" — and delegate. The subagent works in its own context, with its own tools and constraints, then hands back the result.
+
+That's the whole model. An agent does the work. Skills tell it how. Subagents let it split up complicated jobs.
+
 ## What skills actually are
 
 A skill is a markdown file (or set of files) that contains instructions, context, and conventions for a specific domain. When an agent is working on a task in that domain, it reads the relevant skill and applies the knowledge.
