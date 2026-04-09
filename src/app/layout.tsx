@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import { Analytics } from "@vercel/analytics/next";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import "./globals.css";
@@ -48,6 +49,7 @@ export default function RootLayout({
         <Header />
         <main id="main" className="relative pt-14">{children}</main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );

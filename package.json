@@ -17,6 +17,7 @@
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
     "@fontsource-variable/source-serif-4": "^5.2.9",
     "@gsap/react": "2.1.2",
+    "@vercel/analytics": "2.0.1",
     "framer-motion": "12.34.2",
     "fuse.js": "^7.0.0",
     "gray-matter": "4.0.3",
