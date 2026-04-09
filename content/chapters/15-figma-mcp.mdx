@@ -1,0 +1,61 @@
+---
+title: "Figma MCP Workflows"
+subtitle: "Design context in the coding loop - from interpretation to direct translation"
+chapter: 15
+part: tools-infrastructure
+partNumber: 4
+interactiveTools: [workflow-recipe]
+illustrationPlaceholders:
+  - "Before/after: design-to-code without Figma MCP (screenshot, guessed spacing) vs with MCP (exact tokens extracted)."
+  - "MCP connection diagram: Figma to MCP server to code editor. Show what data flows in each direction."
+---
+
+When you send a screenshot, the model looks at pixels. It guesses the button padding is around 12px, estimates the font size from surrounding context, decides the border radius looks like about 6px. Then it builds the component from those estimates.
+
+When you use the [Figma MCP](https://developers.figma.com/docs/figma-mcp-server/), it reads the actual values. `padding: 12px`. `font-size: 14px`. `border-radius: 6px`. Not a guess — the number that was typed into Figma.
+
+That difference shows up immediately in the output. First-pass accuracy is noticeably better because the model isn't interpolating from an image — it's reading structured data.
+
+## What the Figma MCP provides
+
+The MCP gives models access to:
+
+- **Design tokens**: exact color values, spacing, typography, shadows — mapped to your token names
+- **Component properties**: component mappings and variant/property metadata (detail level depends on component setup)
+- **Variants**: all the variant combinations defined in the component
+- **Layout data**: auto-layout settings, constraints, padding, gap values
+- **Asset exports**: icons, images, and other exportable assets
+
+## The design-to-code workflow
+
+With the Figma MCP connected (see the [setup guide](https://help.figma.com/hc/en-us/articles/32132100833559-Guide-to-the-Figma-MCP-server) for Cursor and other clients), the workflow becomes:
+
+1. Share the Figma node URL or node ID in your prompt
+2. The model reads the design data directly
+3. Ask it to implement the component
+4. The output uses your actual token values, not guessed ones
+
+The model can also answer questions about the design: "What's the hover state for this button?" "What variants does this card component have?" "What's the spacing between these elements?"
+
+## Design tokens to Tailwind config
+
+One of the most useful applications: mapping Figma variables to your Tailwind config. Give the model access to your Figma variables and your `tailwind.config.ts`, and ask it to keep them in sync. When a designer updates a color token in Figma, the model can update the Tailwind config to match.
+
+## Iterating with designers
+
+The Figma MCP enables a tighter design-developer loop. Instead of the designer exporting specs and the developer interpreting them, you can:
+
+1. Developer implements from Figma data
+2. Designer reviews the implementation in the browser
+3. Designer makes adjustments in Figma
+4. Developer pulls the updated design data and makes the corresponding code changes
+
+The model mediates the translation in both directions.
+
+## The reverse direction: Code to Figma
+
+The loop runs both ways. Figma's [Claude Code to Figma](https://www.figma.com/blog/introducing-claude-code-to-figma/) capability lets you capture a live rendered UI and push it into Figma as editable frames for design review. See [Code to Canvas](/tooling/code-to-canvas) for the full reverse-loop workflow.
+
+Together, the two directions create a complete design-developer loop — no manual export, screenshot interpretation, or spec handoff required.
+
+<WorkflowRecipe />

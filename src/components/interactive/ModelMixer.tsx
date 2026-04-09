@@ -143,7 +143,7 @@ export function QuickEstimate() {
               onClick={() => setScenarioId(s.id)}
               className={`rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors sm:px-3 sm:py-1.5 sm:text-xs ${
                 s.id === scenarioId
-                  ? "border-emerald-400/50 bg-emerald-400/10 text-emerald-300"
+                  ? "border-emerald-500/50 bg-emerald-400/10 text-emerald-300"
                   : ""
               }`}
               style={s.id !== scenarioId ? { borderColor: "var(--color-border-strong)", color: "var(--color-fg-secondary)" } : undefined}
@@ -171,7 +171,7 @@ export function QuickEstimate() {
                 onClick={() => setFrequencyId(f.id)}
                 className={`rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors ${
                   f.id === frequencyId
-                    ? "border-emerald-400/50 bg-emerald-400/10 text-emerald-300"
+                    ? "border-emerald-500/50 bg-emerald-400/10 text-emerald-300"
                     : ""
                 }`}
                 style={f.id !== frequencyId ? { borderColor: "var(--color-border-strong)", color: "var(--color-fg-secondary)" } : undefined}
@@ -223,7 +223,7 @@ export function QuickEstimate() {
             <p className="text-[11px] leading-relaxed text-fg-secondary">
               <span className={`font-medium ${cheapest.color}`}>{cheapest.name}</span>
               {" is "}
-              <span className="font-medium text-emerald-400">{savingsPct}% cheaper</span>
+              <span className="font-medium text-emerald-600">{savingsPct}% cheaper</span>
               {" than "}
               <span className={`font-medium ${mostExpensive.color}`}>{mostExpensive.name}</span>
               {" for this task — "}
@@ -248,7 +248,7 @@ export function QuickEstimate() {
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-zinc-500 underline decoration-zinc-700 underline-offset-2 hover:text-zinc-400"
+                className="text-stone-500 underline decoration-stone-700 underline-offset-2 hover:text-stone-500"
               >
                 {provider}
               </a>
@@ -334,9 +334,9 @@ const TEMPLATES: Template[] = [
 // --- Helpers ---
 
 const TIER_COLORS: Record<Tier, { text: string; bg: string; border: string; label: string }> = {
-  fast: { text: "text-emerald-400", bg: "bg-emerald-400/10", border: "border-emerald-400/30", label: "fast" },
+  fast: { text: "text-emerald-600", bg: "bg-emerald-400/10", border: "border-emerald-500/30", label: "fast" },
   balanced: { text: "text-blue-400", bg: "bg-blue-400/10", border: "border-blue-400/30", label: "balanced" },
-  reasoning: { text: "text-violet-400", bg: "bg-violet-400/10", border: "border-violet-400/30", label: "reasoning" },
+  reasoning: { text: "text-violet-600", bg: "bg-violet-400/10", border: "border-violet-500/30", label: "reasoning" },
 };
 
 function calcStepCost(model: Model, step: PipelineStep): number {
@@ -425,7 +425,7 @@ function StepCard({
         <p className="font-mono text-xs font-semibold text-fg-primary">{step.label}</p>
         <div className="ml-auto flex shrink-0 items-center gap-1">
           {modelId === step.recommendedModelId && (
-            <span className="rounded px-1 py-0.5 font-mono text-[10px] font-medium leading-none text-pink-400 bg-pink-400/10">
+            <span className="rounded px-1 py-0.5 font-mono text-[10px] font-medium leading-none text-pink-600 bg-pink-400/10">
               my pick
             </span>
           )}
@@ -548,7 +548,7 @@ function PipelineBuilder() {
               onClick={() => setTemplateId(t.id)}
               className={`rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors sm:px-3 sm:py-1.5 sm:text-xs ${
                 t.id === templateId
-                  ? "border-violet-400/50 bg-violet-400/10 text-violet-300"
+                  ? "border-violet-500/50 bg-violet-400/10 text-violet-300"
                   : ""
               }`}
               style={t.id !== templateId ? { borderColor: "var(--color-border-strong)", color: "var(--color-fg-secondary)" } : undefined}
@@ -636,24 +636,24 @@ function PipelineBuilder() {
             label={retries === 1 ? "All Opus 4.6" : `All Opus (${retries} attempts)`}
             cost={opusCost}
             maxCost={maxCost}
-            colorClass="bg-zinc-400"
+            colorClass="bg-stone-300"
           />
         </div>
         <div className="mt-3 flex flex-wrap gap-4 text-xs text-fg-secondary">
           {savingsVsSonnet > 0 ? (
             <span>
-              <span className="font-medium text-emerald-400">{savingsVsSonnet}% cheaper</span> than all-Sonnet
+              <span className="font-medium text-emerald-600">{savingsVsSonnet}% cheaper</span> than all-Sonnet
             </span>
           ) : savingsVsSonnet < 0 ? (
             <span>
-              <span className="font-medium text-red-400">{Math.abs(savingsVsSonnet)}% more expensive</span> than all-Sonnet
+              <span className="font-medium text-red-600">{Math.abs(savingsVsSonnet)}% more expensive</span> than all-Sonnet
             </span>
           ) : (
             <span className="text-fg-muted">Same cost as all-Sonnet</span>
           )}
           {savingsVsOpus > 0 && (
             <span>
-              <span className="font-medium text-emerald-400">{savingsVsOpus}% cheaper</span> than all-Opus
+              <span className="font-medium text-emerald-600">{savingsVsOpus}% cheaper</span> than all-Opus
             </span>
           )}
         </div>
@@ -664,7 +664,7 @@ function PipelineBuilder() {
             <label htmlFor="retry-slider" className="text-[11px] font-medium text-fg-primary">
               How many attempts does one-model-for-everything need?
             </label>
-            <span className="font-mono text-[11px] text-violet-400">
+            <span className="font-mono text-[11px] text-violet-600">
               {retries === 1 ? "1 attempt" : `${retries} attempts`}
             </span>
           </div>
@@ -703,18 +703,18 @@ export function ModelMixer({ initialMode = "estimate" }: { initialMode?: MixerMo
 
   return (
     <div
-      className="not-prose my-8 overflow-hidden rounded-xl border border-violet-400/30 bg-bg-surface"
+      className="not-prose my-8 overflow-hidden rounded-xl border border-violet-500/30 bg-bg-surface"
     >
       {/* Header */}
       <div
         className="flex items-center gap-3 px-3 py-3 sm:px-5 sm:py-4 border-b border-border-default"
         
       >
-        <div className="rounded-lg p-2 text-violet-400 bg-bg-elevated">
+        <div className="rounded-lg p-2 text-violet-600 bg-bg-elevated">
           <Shuffle className="h-4 w-4" />
         </div>
         <div className="min-w-0">
-          <h3 className="font-mono text-sm font-semibold text-violet-400">Model Mixer</h3>
+          <h3 className="font-mono text-sm font-semibold text-violet-600">Model Mixer</h3>
           <p className="mt-0.5 text-xs text-fg-secondary">
             Compare costs and build optimized model pipelines
           </p>

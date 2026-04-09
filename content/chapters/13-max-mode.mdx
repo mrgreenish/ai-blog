@@ -1,0 +1,68 @@
+---
+title: "Cursor Max Mode"
+subtitle: "When the 1M token context window earns its cost"
+chapter: 13
+part: tools-infrastructure
+partNumber: 4
+wonderQuestion: "Have you ever had a model refactor the wrong function because it could only see half your codebase at once?"
+interactiveTools: [max-mode-viz]
+illustrationPlaceholders:
+  - "Context window comparison: standard mode vs Max Mode. Show what fits in each and annotate with task types."
+  - "Cost/benefit chart: token cost per session in standard vs Max Mode across five task types."
+---
+
+You paste in six files. Cursor reads some of them. The refactor comes back plausible but wrong — it missed the context that was sitting just past the cutoff. You re-run it with less context and it works fine, which tells you exactly what happened.
+
+That's the problem Max Mode solves.
+
+## What Max Mode actually does
+
+By default, Cursor keeps you on the standard context window for the selected model — in practice often the 200K band, roughly 15,000 lines of code, which covers most single-feature work. Max Mode extends that to the model's maximum context window. The models that support Max Mode include Claude 4.6 Sonnet, Claude 4.6 Opus, GPT-5.4, GPT-5.3 Codex, and Gemini 3.1 Pro, among others.
+
+The catch: on individual plans, it switches that session onto API-rate billing plus a 20% upcharge. A few heavy queries can chew through your included API usage fast.
+
+Not a "better" mode. A "bigger context" mode. The model doesn't reason differently — it just sees more of your codebase at once.
+
+## When it earns its cost
+
+**Multi-file refactors where relationships matter.** When you're restructuring something that spans 20+ files — shared types, cascading interface changes, a module extraction — the model needs to hold the whole picture. If it can only see half the affected files, it'll miss dependencies and the output will be wrong. Max Mode is the right call here, not because the model is smarter, but because it can actually read all the relevant code.
+
+**Debugging across a large call chain.** Some bugs only appear when you trace execution across multiple layers: a UI component, an API route, a service, a database query. Feeding the full chain into context is what lets the model spot the issue. Under the default limit, you're either cutting the chain short or making multiple fragmented requests.
+
+**Initial codebase comprehension.** The first time you ask Cursor to explain or audit a large, unfamiliar codebase, feeding it a broad slice helps. You do this once, not on every query.
+
+## When to leave it off
+
+**Single-file tasks.** Renaming a function, adding a prop, writing a test for one module — none of this needs 1M tokens. Like renting a truck to carry a laptop.
+
+**When Auto handles it.** Cursor's Auto mode picks a cost-efficient model automatically and draws from the separate Auto + Composer pool. If Auto gives you a correct result, no reason to switch.
+
+**Rapid iteration.** "Tweak this", "make it shorter", "add a case" — each exchange processes your full context again at full token rates. Keep Max Mode off during iteration, flip it on when you need the full picture.
+
+**When cost matters.** A few extended Max Mode sessions can exhaust a Pro plan's $20 of included API usage surprisingly fast. Budget-conscious? Auto for everyday work, Max Mode surgically.
+
+## The cost reality
+
+Cursor Pro includes $20/month of API usage. Max Mode draws from that API pool at the selected model's rate, plus a 20% upcharge on individual plans. The numbers compound quickly:
+
+- A session processing 400K tokens of context can cost well under a dollar on Gemini 3 Flash and several dollars on Sonnet or GPT-5.4 once Max Mode pricing kicks in
+- Run that three or four times a day and you've consumed your monthly pool in a week
+- Overages charge at raw API rates — there's no cap unless you turn off pay-as-you-go
+
+The calculator below shows how context size and frequency affect when Max Mode makes sense.
+
+<MaxModeViz />
+
+## The actual pattern
+
+I keep Max Mode off by default and flip it on for specific sessions: initial codebase exploration on a new project, large cross-file refactors, and debugging that spans multiple layers. Everything else stays on Auto.
+
+The useful mental shift: think of Max Mode as a session-level decision, not a default setting. When you're starting work on a large, interconnected change, turn it on. When you're doing focused, contained edits, leave it off.
+
+The failure mode is leaving it on because you're not sure whether you need it. If you're not actively working with more than 15K lines of context in a session, you're burning credits for no benefit.
+
+## What doesn't change
+
+Max Mode doesn't make the model smarter, more accurate, or better at reasoning. It makes the model aware of more code. If your task doesn't require broad awareness — and most tasks don't — the extra context is just cost.
+
+The cases where Max Mode actually moves the needle are the ones where the model was producing wrong answers *because* it was reading an incomplete picture of your codebase. Those cases exist, and they're worth paying for. The rest of the time, Auto is the better call.

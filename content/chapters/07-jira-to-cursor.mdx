@@ -1,0 +1,51 @@
+---
+title: "Jira Ticket to Cursor to PR"
+subtitle: "Turning a Jira ticket into a structured Cursor task with Figma design context"
+chapter: 7
+part: shipping-workflows
+partNumber: 2
+interactiveTools: [workflow-recipe, model-mixer]
+illustrationPlaceholders:
+  - "End-to-end flow: Jira ticket plus Figma frame to structured prompt to Cursor task to PR."
+  - "Ticket anatomy diagram: a Jira ticket annotated to show which fields feed into the AI prompt."
+---
+
+At iO, we use an internal AI tool to generate first-draft Jira tickets from a feature description. Scope, acceptance criteria, edge cases, analytics requirements. Sounds like a small thing — but a well-structured ticket is excellent context for Cursor, and that changes the entire development workflow.
+
+## The ticket generation step
+
+A good AI-generated ticket has:
+- **Scope**: what's in, what's explicitly out
+- **Acceptance criteria**: specific, testable conditions
+- **Edge cases**: the scenarios that are easy to miss
+- **Analytics**: what events to track, what properties to include
+
+These are generated from a brief description, not written from scratch. The model fills in the structure and forces you to think about edge cases you might have skipped.
+
+## Using the ticket as Cursor context
+
+Once you have a well-structured ticket, paste it into your Cursor session, add the relevant code files, and the model has everything it needs.
+
+Acceptance criteria become test cases. Edge cases become guardrails. Scope definition prevents the model from going off on tangents.
+
+For UI tasks, grab the Figma link for the component you're implementing. In Figma, select the component or frame you want to build, right-click and choose **Copy/paste → Copy link to selection** (or press **⌘L**). Add it to your Cursor prompt as:
+
+> Figma design: https://www.figma.com/design/abc123/...?node-id=12-34
+
+Keep **Figma Desktop** open during your session — Cursor's Figma MCP server connects to the running desktop app to pull design tokens, component properties, and layout data directly into your prompt context.
+
+<InfoBlock title="Setting up the Figma MCP">
+
+**Figma MCP** gives Cursor direct access to design tokens, component variants, and layout data. Keep Figma Desktop open during your session. See [Figma MCP Workflows](/tooling/figma-mcp) for setup.
+
+</InfoBlock>
+
+The flow: ticket context + Figma design link + Figma MCP → plan → implementation → PR. The PR description writes itself from the ticket's acceptance criteria.
+
+## Model strategy
+
+Ticket generation benefits from a capable model — you want it to think carefully about edge cases. Implementation can use a faster model once the context is set. Final review? A reasoning model.
+
+<ModelMixer />
+
+<WorkflowRecipe />

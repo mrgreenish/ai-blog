@@ -5,15 +5,12 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
-  '@fontsource-variable/inter':
-    specifier: ^5.2.8
-    version: 5.2.8
   '@fontsource-variable/jetbrains-mono':
     specifier: ^5.2.8
     version: 5.2.8
-  '@fontsource-variable/space-grotesk':
-    specifier: ^5.2.10
-    version: 5.2.10
+  '@fontsource-variable/source-serif-4':
+    specifier: ^5.2.9
+    version: 5.2.9
   '@gsap/react':
     specifier: 2.1.2
     version: 2.1.2(gsap@3.14.2)(react@19.2.4)
@@ -38,9 +35,6 @@ dependencies:
   next-mdx-remote:
     specifier: 6.0.0
     version: 6.0.0(@types/react@19.2.14)(react@19.2.4)
-  next-themes:
-    specifier: 0.4.6
-    version: 0.4.6(react-dom@19.2.4)(react@19.2.4)
   react:
     specifier: ^19.0.0
     version: 19.2.4
@@ -1982,16 +1976,12 @@ packages:
         optional: true
     dev: true
 
-  /@fontsource-variable/inter@5.2.8:
-    resolution: {integrity: sha512-kOfP2D+ykbcX/P3IFnokOhVRNoTozo5/JxhAIVYLpea/UBmCQ/YWPBfWIDuBImXX/15KH+eKh4xpEUyS2sQQGQ==}
-    dev: false
-
   /@fontsource-variable/jetbrains-mono@5.2.8:
     resolution: {integrity: sha512-WBA9elru6Jdp5df2mES55wuOO0WIrn3kpXnI4+W2ek5u3ZgLS9XS4gmIlcQhiZOWEKl95meYdvK7xI+ETLCq/Q==}
     dev: false
 
-  /@fontsource-variable/space-grotesk@5.2.10:
-    resolution: {integrity: sha512-yJQO/o35/hAP3CFnpdFTwQku2yzJOae2HIpBmqkOVoxhhXJaQP3g+b6Jrz7u+eI7A5ZdCIf88uMWpBJdFiGr5w==}
+  /@fontsource-variable/source-serif-4@5.2.9:
+    resolution: {integrity: sha512-PPcxjLFk/fS0WHg79pDM2YNvz61kC+oYZ5cWZZyCS0DHpJncmuYOuiZAsvj4tDxlWPBEvxxcRLQQNmSaRbPkqw==}
     dev: false
 
   /@gsap/react@2.1.2(gsap@3.14.2)(react@19.2.4):
@@ -8257,16 +8247,6 @@ packages:
     transitivePeerDependencies:
       - '@types/react'
       - supports-color
-    dev: false
-
-  /next-themes@0.4.6(react-dom@19.2.4)(react@19.2.4):
-    resolution: {integrity: sha512-pZvgD5L0IEvX5/9GWyHMf3m8BKiVQwsCMHfoFosXtXBMnaS0ZnIJ9ST4b4NqLVKDEm8QBxoNNGNaBv2JNF6XNA==}
-    peerDependencies:
-      react: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
-      react-dom: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
-    dependencies:
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
     dev: false
 
   /next@15.5.12(@babel/core@7.29.0)(react-dom@19.2.4)(react@19.2.4):

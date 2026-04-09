@@ -393,12 +393,12 @@ function ModelCard({
           <div className="swipe-tint-like pointer-events-none absolute inset-0 z-20 rounded-2xl" />
           <div className="swipe-tint-pass pointer-events-none absolute inset-0 z-20 rounded-2xl" />
           <div className="swipe-label-like pointer-events-none absolute inset-0 z-30 flex items-start justify-start rounded-2xl p-5 opacity-0">
-            <span className="-rotate-12 rounded-lg border-4 border-green-400 bg-green-400/10 px-3 py-1 font-mono text-2xl font-black text-green-400">
+            <span className="-rotate-12 rounded-lg border-4 border-green-400 bg-green-400/10 px-3 py-1 font-mono text-2xl font-black text-green-600">
               LIKE
             </span>
           </div>
           <div className="swipe-label-pass pointer-events-none absolute inset-0 z-30 flex items-start justify-end rounded-2xl p-5 opacity-0">
-            <span className="rotate-12 rounded-lg border-4 border-red-400 bg-red-400/10 px-3 py-1 font-mono text-2xl font-black text-red-400">
+            <span className="rotate-12 rounded-lg border-4 border-red-400 bg-red-400/10 px-3 py-1 font-mono text-2xl font-black text-red-600">
               PASS
             </span>
           </div>
@@ -411,29 +411,29 @@ function ModelCard({
 
 function CardContent({ model }: { model: Model }) {
   return (
-    <div className="flex w-full flex-col overflow-hidden rounded-2xl border border-zinc-700 bg-zinc-900 shadow-2xl">
+    <div className="flex w-full flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-2xl">
       <div
         className={`relative shrink-0 flex h-44 items-center justify-center bg-linear-to-br ${model.gradientFrom} ${model.gradientTo} sm:h-48`}
       >
         <span className="select-none text-7xl sm:text-8xl">{model.emoji}</span>
-        <div className="absolute inset-0 bg-black/10" />
+        <div className="absolute inset-0 bg-stone-900/5" />
       </div>
       <div className="p-5">
         <div className="mb-3 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-          <h3 className="text-xl font-bold text-white">{model.name}</h3>
+          <h3 className="text-xl font-bold text-stone-900">{model.name}</h3>
           <span className={`text-sm font-medium ${model.accentColor}`}>{model.tagline}</span>
         </div>
         <ul className="mb-4 space-y-1.5">
           {model.traits.map((trait) => (
-            <li key={trait} className="flex items-start gap-2 text-sm text-zinc-300">
+            <li key={trait} className="flex items-start gap-2 text-sm text-stone-700">
               <span className={`mt-0.5 shrink-0 ${model.accentColor}`}>▸</span>
               {trait}
             </li>
           ))}
         </ul>
-        <div className="rounded-lg border border-zinc-700 bg-zinc-800/60 px-3 py-2">
-          <p className="text-xs font-semibold text-zinc-400">Best for</p>
-          <p className="mt-0.5 text-xs text-zinc-300">{model.bestFor}</p>
+        <div className="rounded-lg border border-stone-200 bg-stone-200/60 px-3 py-2">
+          <p className="text-xs font-semibold text-stone-500">Best for</p>
+          <p className="mt-0.5 text-xs text-stone-700">{model.bestFor}</p>
         </div>
       </div>
     </div>
@@ -469,13 +469,13 @@ function LoadingScreen() {
   return (
     <div ref={containerRef} className="flex flex-col items-center justify-center gap-4 py-16">
       <div className="loading-icon">
-        <Sparkles className="h-10 w-10 text-violet-400" />
+        <Sparkles className="h-10 w-10 text-violet-600" />
       </div>
-      <div className="loading-text flex items-center gap-1.5 font-mono text-sm text-zinc-400">
+      <div className="loading-text flex items-center gap-1.5 font-mono text-sm text-stone-500">
         <span>Finding your matches</span>
-        <span className="loading-dot inline-block h-1 w-1 rounded-full bg-zinc-400" />
-        <span className="loading-dot inline-block h-1 w-1 rounded-full bg-zinc-400" />
-        <span className="loading-dot inline-block h-1 w-1 rounded-full bg-zinc-400" />
+        <span className="loading-dot inline-block h-1 w-1 rounded-full bg-stone-300" />
+        <span className="loading-dot inline-block h-1 w-1 rounded-full bg-stone-300" />
+        <span className="loading-dot inline-block h-1 w-1 rounded-full bg-stone-300" />
       </div>
     </div>
   );
@@ -528,7 +528,7 @@ function MatchCard({
       onMouseLeave={handleMouseLeave}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
-      className="group overflow-hidden rounded-xl border border-zinc-700 bg-zinc-900 text-left transition-colors hover:border-zinc-500"
+      className="group overflow-hidden rounded-xl border border-stone-200 bg-white text-left transition-colors hover:border-stone-400"
     >
       <div
         className={`flex h-24 items-center justify-center bg-linear-to-br ${model.gradientFrom} ${model.gradientTo}`}
@@ -536,9 +536,9 @@ function MatchCard({
         <span className="text-5xl">{model.emoji}</span>
       </div>
       <div className="p-3 text-center">
-        <p className="font-bold text-white">{model.name}</p>
+        <p className="font-bold text-stone-900">{model.name}</p>
         <p className={`text-xs ${model.accentColor}`}>{model.tagline}</p>
-        <p className="mt-2 text-xs text-zinc-500 group-hover:text-zinc-400 transition-colors">
+        <p className="mt-2 text-xs text-stone-500 group-hover:text-stone-500 transition-colors">
           Tap to chat →
         </p>
       </div>
@@ -615,13 +615,13 @@ function ResultsScreen({
       {matches.length > 0 ? (
         <>
           <div className="text-center">
-            <div className="match-badge mb-3 inline-flex items-center gap-2 rounded-full border border-pink-500/30 bg-pink-500/10 px-4 py-1.5">
-              <Heart className="match-heart h-4 w-4 fill-pink-400 text-pink-400" />
-              <span className="font-mono text-sm font-semibold text-pink-400">
+            <div className="match-badge mb-3 inline-flex items-center gap-2 rounded-full border border-pink-500/50 bg-pink-500/10 px-4 py-1.5">
+              <Heart className="match-heart h-4 w-4 fill-pink-400 text-pink-600" />
+              <span className="font-mono text-sm font-semibold text-pink-600">
                 {matches.length === 1 ? "It's a match!" : `${matches.length} matches!`}
               </span>
             </div>
-            <p className="match-subtitle text-sm text-zinc-400">
+            <p className="match-subtitle text-sm text-stone-500">
               {matches.length === 1
                 ? "One model is ready to work with you."
                 : "These models are ready to work with you."}
@@ -637,7 +637,7 @@ function ResultsScreen({
           </div>
 
           {liked.length > matches.length && (
-            <p className="text-center text-xs text-zinc-600">
+            <p className="text-center text-xs text-stone-400">
               {liked.length - matches.length} model
               {liked.length - matches.length > 1 ? "s" : ""} didn&apos;t match back this time.
             </p>
@@ -646,8 +646,8 @@ function ResultsScreen({
       ) : (
         <div className="flex flex-col items-center gap-3 py-8 text-center">
           <span className="text-5xl">😶</span>
-          <p className="font-semibold text-white">No matches this time</p>
-          <p className="max-w-xs text-sm text-zinc-400">
+          <p className="font-semibold text-stone-900">No matches this time</p>
+          <p className="max-w-xs text-sm text-stone-500">
             You passed on all the models. Maybe give one a chance?
           </p>
         </div>
@@ -655,7 +655,7 @@ function ResultsScreen({
 
       <button
         onClick={onRestart}
-        className="restart-btn flex items-center gap-2 rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-600 hover:text-white"
+        className="restart-btn flex items-center gap-2 rounded-lg border border-stone-200 bg-stone-200 px-4 py-2 text-sm text-stone-700 transition-colors hover:border-stone-300 hover:text-stone-900"
       >
         <RotateCcw className="h-4 w-4" />
         Try again
@@ -693,12 +693,12 @@ function TypingIndicator({ emoji }: { emoji: string }) {
 
   return (
     <div ref={containerRef} className="flex items-end gap-2">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-zinc-800 text-base">
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-stone-200 text-base">
         {emoji}
       </div>
-      <div className="flex items-center gap-1 rounded-2xl rounded-bl-sm bg-zinc-800 px-4 py-3">
+      <div className="flex items-center gap-1 rounded-2xl rounded-bl-sm bg-stone-200 px-4 py-3">
         {[0, 1, 2].map((i) => (
-          <span key={i} className="typing-dot block h-1.5 w-1.5 rounded-full bg-zinc-400" />
+          <span key={i} className="typing-dot block h-1.5 w-1.5 rounded-full bg-stone-300" />
         ))}
       </div>
     </div>
@@ -806,11 +806,11 @@ function ChatScreen({
     <div className="flex h-[min(520px,70dvh)] flex-col sm:h-[560px]">
       {/* Chat header */}
       <div
-        className={`flex shrink-0 items-center gap-3 border-b border-zinc-800 bg-linear-to-r ${model.gradientFrom} ${model.gradientTo} px-4 py-3`}
+        className={`flex shrink-0 items-center gap-3 border-b border-stone-200 bg-linear-to-r ${model.gradientFrom} ${model.gradientTo} px-4 py-3`}
       >
         <button
           onClick={onBack}
-          className="flex shrink-0 items-center gap-1.5 rounded-full bg-black/25 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-black/45 active:scale-95"
+          className="flex shrink-0 items-center gap-1.5 rounded-full bg-black/25 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-black/40 active:scale-95"
           aria-label="Back to matches"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
@@ -837,15 +837,15 @@ function ChatScreen({
             className={`chat-bubble flex items-end gap-2 ${msg.from === "user" ? "flex-row-reverse" : "flex-row"}`}
           >
             {msg.from === "model" && (
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-zinc-800 text-base">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-stone-200 text-base">
                 {model.emoji}
               </div>
             )}
             <div
               className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
                 msg.from === "model"
-                  ? "rounded-bl-sm bg-zinc-800 text-zinc-100"
-                  : "rounded-br-sm bg-pink-500 text-white"
+                  ? "rounded-bl-sm bg-stone-200 text-stone-900"
+                  : "rounded-br-sm bg-pink-500 text-stone-900"
               }`}
             >
               {msg.text}
@@ -857,13 +857,13 @@ function ChatScreen({
       </div>
 
       {/* Reply area */}
-      <div className="shrink-0 border-t border-zinc-800 px-4 py-3">
+      <div className="shrink-0 border-t border-stone-200 px-4 py-3">
         {isDone ? (
           <div className="flex flex-col items-center gap-3 py-1 text-center">
-            <p className="text-xs text-zinc-500">End of conversation</p>
+            <p className="text-xs text-stone-500">End of conversation</p>
             <button
               onClick={onBack}
-              className="flex items-center gap-2 rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-600 hover:text-white"
+              className="flex items-center gap-2 rounded-lg border border-stone-200 bg-stone-200 px-4 py-2 text-sm text-stone-700 transition-colors hover:border-stone-300 hover:text-stone-900"
             >
               <ArrowLeft className="h-4 w-4" />
               Back to matches
@@ -875,7 +875,7 @@ function ChatScreen({
               <button
                 key={reply}
                 onClick={() => handleReply(reply)}
-                className="reply-btn flex items-center gap-1.5 rounded-full border border-zinc-600 bg-zinc-800 px-3 py-1.5 text-sm text-zinc-200 transition-all hover:border-pink-500/60 hover:bg-pink-500/10 hover:text-pink-300 active:scale-95"
+                className="reply-btn flex items-center gap-1.5 rounded-full border border-stone-300 bg-stone-200 px-3 py-1.5 text-sm text-stone-800 transition-all hover:border-pink-500/60 hover:bg-pink-500/10 hover:text-pink-600 active:scale-95"
               >
                 <Send className="h-3 w-3 opacity-60" />
                 {reply}
@@ -884,9 +884,9 @@ function ChatScreen({
           </div>
         ) : (
           <div className="flex items-center gap-2 opacity-40">
-            <div className="h-9 flex-1 rounded-full border border-zinc-700 bg-zinc-800" />
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-zinc-700">
-              <Send className="h-4 w-4 text-zinc-400" />
+            <div className="h-9 flex-1 rounded-full border border-stone-200 bg-stone-200" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-stone-300">
+              <Send className="h-4 w-4 text-stone-500" />
             </div>
           </div>
         )}
@@ -969,7 +969,7 @@ export function ModelTinder() {
   return (
     <div
       id="model-match"
-      className="not-prose my-8 overflow-x-clip rounded-xl bg-bg-page border border-border-strong"
+      className="not-prose my-8 overflow-x-clip rounded-xl bg-bg-surface border border-border-strong"
       
     >
       {/* Header — hidden during chat (chat has its own header) */}
@@ -1026,8 +1026,8 @@ export function ModelTinder() {
                 />
               ))}
               {visibleModels.length === 0 && (
-                <div className="absolute inset-0 flex items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900">
-                  <p className="text-sm text-zinc-500">All done!</p>
+                <div className="absolute inset-0 flex items-center justify-center rounded-2xl border border-stone-200 bg-white">
+                  <p className="text-sm text-stone-500">All done!</p>
                 </div>
               )}
             </div>
@@ -1037,16 +1037,16 @@ export function ModelTinder() {
               <button
                 onClick={() => handleSwipe("left")}
                 disabled={isAnimating.current}
-                className="btn-pass flex h-14 w-14 items-center justify-center rounded-full border-2 border-red-500/40 bg-zinc-900 text-red-400 shadow-lg transition-colors hover:border-red-500 hover:bg-red-500/10 disabled:opacity-40"
+                className="btn-pass flex h-14 w-14 items-center justify-center rounded-full border-2 border-red-500/40 bg-white text-red-600 shadow-lg transition-colors hover:border-red-500 hover:bg-red-500/10 disabled:opacity-40"
                 aria-label="Pass"
               >
                 <X className="h-6 w-6" />
               </button>
-              <p className="text-xs text-zinc-600">swipe or tap</p>
+              <p className="text-xs text-stone-400">swipe or tap</p>
               <button
                 onClick={() => handleSwipe("right")}
                 disabled={isAnimating.current}
-                className="btn-like flex h-14 w-14 items-center justify-center rounded-full border-2 border-green-500/40 bg-zinc-900 text-green-400 shadow-lg transition-colors hover:border-green-500 hover:bg-green-500/10 disabled:opacity-40"
+                className="btn-like flex h-14 w-14 items-center justify-center rounded-full border-2 border-green-500/40 bg-white text-green-600 shadow-lg transition-colors hover:border-green-500 hover:bg-green-500/10 disabled:opacity-40"
                 aria-label="Like"
               >
                 <Heart className="h-6 w-6" />

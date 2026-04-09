@@ -38,17 +38,17 @@ function getSusceptibleModels(
 
 function highlightBug(output: string, highlight: string): React.ReactNode {
   const idx = output.indexOf(highlight);
-  if (idx === -1) return <span className="text-zinc-300">{output}</span>;
+  if (idx === -1) return <span className="text-stone-700">{output}</span>;
 
   return (
     <>
-      <span className="text-zinc-300">{output.slice(0, idx)}</span>
+      <span className="text-stone-700">{output.slice(0, idx)}</span>
       <span className="relative">
         <span className="relative z-10 rounded bg-red-500/20 px-0.5 text-red-300 ring-1 ring-red-500/40">
           {highlight}
         </span>
       </span>
-      <span className="text-zinc-300">{output.slice(idx + highlight.length)}</span>
+      <span className="text-stone-700">{output.slice(idx + highlight.length)}</span>
     </>
   );
 }
@@ -135,7 +135,7 @@ function FailureCard({ failure }: { failure: FailureCase }) {
   const difficultyMeta = DIFFICULTY_META[failure.spotDifficulty];
 
   return (
-    <div className="overflow-hidden rounded-xl border transition-colors bg-bg-page border-border-default">
+    <div className="overflow-hidden rounded-xl border transition-colors bg-white border-border-default">
       {/* Card header */}
       <div className="flex items-start gap-3 px-4 py-3">
         <div className="mt-0.5 shrink-0">
@@ -146,17 +146,17 @@ function FailureCard({ failure }: { failure: FailureCase }) {
           </span>
         </div>
         <div className="min-w-0 flex-1">
-          <p className="font-display text-sm font-semibold leading-snug text-zinc-100">
+          <p className="font-display text-sm font-semibold leading-snug text-stone-900">
             {failure.title}
           </p>
-          <p className="mt-1 text-xs leading-relaxed text-zinc-500">{failure.scenario}</p>
+          <p className="mt-1 text-xs leading-relaxed text-stone-500">{failure.scenario}</p>
         </div>
       </div>
 
       {/* Code block — spot the bug zone */}
-      <div className="border-t border-zinc-800 px-4 pb-3 pt-3">
+      <div className="border-t border-stone-200 px-4 pb-3 pt-3">
         <div className="mb-2 flex items-center justify-between">
-          <p className="font-mono text-[10px] font-semibold uppercase tracking-wider text-zinc-600">
+          <p className="font-mono text-[10px] font-semibold uppercase tracking-wider text-stone-400">
             What the model produced
           </p>
           {!revealed && (
@@ -165,7 +165,7 @@ function FailureCard({ failure }: { failure: FailureCase }) {
             </span>
           )}
         </div>
-        <div className="relative overflow-hidden rounded-lg bg-bg-page border border-border-default">
+        <div className="relative overflow-hidden rounded-lg bg-bg-surface border border-border-default">
           <pre className="overflow-x-auto px-3 py-2.5 font-mono text-xs leading-relaxed text-fg-primary">
             {revealed
               ? highlightBug(failure.badOutput, failure.bugHighlight)
@@ -174,10 +174,10 @@ function FailureCard({ failure }: { failure: FailureCase }) {
           </pre>
           {/* Reveal overlay — shown before reveal */}
           {!revealed && (
-            <div className="absolute inset-x-0 bottom-0 flex items-end justify-center pb-3 pt-8" style={{ background: "linear-gradient(to top, var(--color-bg-page) 0%, color-mix(in srgb, var(--color-bg-page) 80%, transparent) 60%, transparent 100%)" }}>
+            <div className="absolute inset-x-0 bottom-0 flex items-end justify-center pb-3 pt-8" style={{ background: "linear-gradient(to top, var(--color-bg-surface) 0%, color-mix(in srgb, var(--color-bg-surface) 80%, transparent) 60%, transparent 100%)" }}>
               <button
                 onClick={() => setRevealed(true)}
-                className="flex items-center gap-1.5 rounded-lg border border-red-400/30 bg-red-500/10 px-3 py-1.5 font-mono text-xs font-medium text-red-400 transition-all hover:border-red-400/50 hover:bg-red-500/15 active:scale-95"
+                className="flex items-center gap-1.5 rounded-lg border border-red-400/30 bg-red-500/10 px-3 py-1.5 font-mono text-xs font-medium text-red-600 transition-all hover:border-red-400/50 hover:bg-red-500/15 active:scale-95"
               >
                 <Eye className="h-3.5 w-3.5" />
                 Show what&apos;s wrong
@@ -196,7 +196,7 @@ function FailureCard({ failure }: { failure: FailureCase }) {
               className="mt-3 space-y-2"
             >
               <div className="flex items-start gap-2 rounded-lg border border-red-400/15 bg-red-400/5 px-3 py-2.5">
-                <Skull className="mt-0.5 h-3.5 w-3.5 shrink-0 text-red-400" />
+                <Skull className="mt-0.5 h-3.5 w-3.5 shrink-0 text-red-600" />
                 <p className="text-xs leading-relaxed text-fg-primary">{failure.whyWrong}</p>
               </div>
               <button
@@ -238,7 +238,7 @@ function FailureCard({ failure }: { failure: FailureCase }) {
               <div className="px-4 pb-3 space-y-2">
                 <p className="text-xs leading-relaxed text-fg-secondary">{failure.fix}</p>
                 {failure.fixExample && (
-                  <pre className="overflow-x-auto rounded-lg border border-emerald-400/15 bg-emerald-400/5 px-3 py-2.5 font-mono text-[11px] leading-relaxed text-emerald-300/80 whitespace-pre-wrap">
+                  <pre className="overflow-x-auto rounded-lg border border-emerald-500/15 bg-emerald-400/5 px-3 py-2.5 font-mono text-[11px] leading-relaxed text-emerald-300/80 whitespace-pre-wrap">
                     {failure.fixExample}
                   </pre>
                 )}
@@ -268,10 +268,10 @@ function StatsBar() {
       <span className="font-mono text-[11px] text-fg-muted">
         {total} failures catalogued
       </span>
-      <span className="font-mono text-[11px] text-red-400">
+      <span className="font-mono text-[11px] text-red-600">
         {critical} critical
       </span>
-      <span className="font-mono text-[11px] text-amber-400">
+      <span className="font-mono text-[11px] text-amber-600">
         {high} high
       </span>
     </div>
@@ -297,11 +297,11 @@ export function FailureGallery() {
         className="flex items-center gap-3 px-3 py-3 sm:px-5 sm:py-4 border-b border-border-default"
         
       >
-        <div className="rounded-lg p-2 text-red-400 bg-bg-elevated">
+        <div className="rounded-lg p-2 text-red-600 bg-bg-elevated">
           <AlertTriangle className="h-4 w-4" />
         </div>
         <div className="min-w-0">
-          <h3 className="font-mono text-sm font-semibold text-red-400">Failure Gallery</h3>
+          <h3 className="font-mono text-sm font-semibold text-red-600">Failure Gallery</h3>
           <p className="mt-0.5 text-xs text-fg-secondary">
             My bruises, your benefit — real failures with exact fixes
           </p>
@@ -356,9 +356,9 @@ export function FailureGallery() {
 
       {/* Footer */}
       <div className="px-3 py-3 sm:px-5 bg-bg-surface border-t border-border-default">
-        <p className="text-[11px] text-zinc-600">
+        <p className="text-[11px] text-stone-400">
           Failures are curated from real usage. Susceptibility indicators are derived from model traits in{" "}
-          <span className="font-mono text-zinc-500">modelSpecs.ts</span> — not hardcoded.
+          <span className="font-mono text-stone-500">modelSpecs.ts</span> — not hardcoded.
         </p>
       </div>
     </div>

@@ -1,0 +1,56 @@
+---
+title: "Diff Review Loops"
+subtitle: "Avoiding the looks-fine trap in AI-generated code"
+chapter: 11
+part: review-quality
+partNumber: 3
+wonderQuestion: "Have you ever approved a diff that looked clean, only to find a subtle bug two days later?"
+interactiveTools: [scenario-lab]
+illustrationPlaceholders:
+  - "Annotated diff showing what human eyes typically skip vs what AI-generated bugs often look like."
+  - "Review loop diagram: model generates diff to fast skim to structured re-read to targeted questions."
+---
+
+The most dangerous moment in AI-assisted development: you're looking at a diff that looks correct. Code is clean, logic seems right, tests pass. You approve it. Two days later, bug in production.
+
+AI-generated code has a specific failure mode — correct for the happy path, wrong for the edge cases. The code *looks* right because the structure is right. The bug is in the behavior.
+
+## The diff review mindset
+
+Reviewing an AI diff requires a different mindset than reviewing a human-written one. With human code, you're checking for mistakes. With AI code, you're checking for *plausible-looking mistakes* — code that looks right but isn't.
+
+A concrete example: you ask the model to add pagination to a list. It returns this:
+
+```ts
+const start = (page - 1) * pageSize;
+const end = start + pageSize;
+return items.slice(start, end);
+```
+
+Looks right. Works for every page except the last one, where `end` overshoots the array length — `slice` handles that gracefully, so no error, just silently truncated results. The test passes because the test uses a full page of data. The bug only appears when the last page has fewer items than `pageSize`.
+
+The code is clean, the logic is almost right, and nothing in the diff signals the problem. That's the failure mode.
+
+Questions I ask:
+
+- **What edge cases does this not handle?** The model tends to handle the cases it was asked about and miss the ones it wasn't.
+- **Does this change the behavior in ways that aren't visible in the diff?** Changing a function's return type, modifying shared state, altering execution order.
+- **Are the tests testing the right things?** AI-generated tests often test the happy path and miss the edge cases.
+- **Does this introduce any implicit dependencies?** New imports, global state, environment variables.
+
+## Ask the model to break it
+
+After the model generates code, ask it to try to break it. "What inputs would cause this to fail? What edge cases does this miss?"
+
+Works because the model is in a different mode — looking for problems rather than generating solutions. It often finds issues it missed during generation.
+
+## Patterns that indicate risky diffs
+
+Patterns I've learned to scrutinize:
+
+- **Simplified conditionals.** The model often simplifies complex conditions. Sometimes correct, sometimes it removes an edge case handler.
+- **Changed function signatures.** Even small signature changes can break callers in non-obvious ways.
+- **New async/await patterns.** Async code is where subtle bugs hide. Any change here deserves extra attention.
+- **Modified error handling.** The model tends to add or remove error handling in ways that change behavior silently.
+
+<ScenarioLab />

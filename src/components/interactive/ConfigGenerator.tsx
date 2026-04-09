@@ -25,15 +25,15 @@ function Preview() {
           { label: "Output", value: "CLAUDE.md" },
         ].map((q) => (
           <div key={q.label} className="flex items-center gap-3 text-xs">
-            <span className="w-20 shrink-0 text-zinc-500">{q.label}</span>
-            <span className="rounded border border-zinc-700 bg-zinc-800 px-2 py-0.5 font-mono text-zinc-300">
+            <span className="w-20 shrink-0 text-stone-500">{q.label}</span>
+            <span className="rounded border border-stone-200 bg-stone-200 px-2 py-0.5 font-mono text-stone-700">
               {q.value}
             </span>
           </div>
         ))}
       </div>
-      <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-3">
-        <pre className="overflow-x-auto font-mono text-xs leading-relaxed text-zinc-400 whitespace-pre-wrap">
+      <div className="rounded-lg border border-stone-200 bg-stone-50 p-3">
+        <pre className="overflow-x-auto font-mono text-xs leading-relaxed text-stone-500 whitespace-pre-wrap">
           {MOCK_OUTPUT}
         </pre>
       </div>

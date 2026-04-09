@@ -1,13 +1,6 @@
 // ---------------------------------------------------------------------------
 // Shared MDX component registry — single source of truth for every JSX
-// component available inside MDX articles. All three article page routes
-// import from here so coverage stays in sync automatically.
-//
-// When you add a new interactive component:
-//   1. Add the import below
-//   2. Add it to MDX_COMPONENTS
-//   3. Add its slug to InteractiveTool in src/lib/types.ts
-//   4. The integrity suite will verify the mapping automatically
+// component available inside MDX articles.
 // ---------------------------------------------------------------------------
 
 import { ModelPicker } from "@/components/interactive/ModelPicker";
@@ -23,10 +16,7 @@ import { ConfigGenerator } from "@/components/interactive/ConfigGenerator";
 import { CostCalculator } from "@/components/interactive/CostCalculator";
 import { MaxModeViz } from "@/components/interactive/MaxModeViz";
 import { InfoBlock } from "@/components/content/InfoBlock";
-import { PersonalFavorite } from "@/components/content/PersonalFavorite";
-import { ModelLabels } from "@/components/content/ModelLabels";
-import { WorkflowsCTA } from "@/components/content/WorkflowsCTA";
-import { ToolingCTA } from "@/components/content/ToolingCTA";
+import { IllustrationPlaceholder } from "@/components/content/IllustrationPlaceholder";
 
 export const MDX_COMPONENTS = {
   // Interactive tools
@@ -44,10 +34,7 @@ export const MDX_COMPONENTS = {
   MaxModeViz,
   // Content components
   InfoBlock,
-  PersonalFavorite,
-  ModelLabels,
-  WorkflowsCTA,
-  ToolingCTA,
+  IllustrationPlaceholder,
 } as const;
 
 export type MdxComponentName = keyof typeof MDX_COMPONENTS;

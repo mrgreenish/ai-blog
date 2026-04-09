@@ -93,13 +93,13 @@ export const TREE_NODES: Record<string, TreeNode> = {
           output:
             "Clean PR with mechanical issues resolved before human review begins.",
           articleLink: {
-            href: "/workflows/ai-code-review",
+            href: "/chapters/ai-code-review",
             label: "AI Code Review",
           },
           relatedLinks: [
-            { href: "/tooling/diff-review-loops", label: "Diff Review Loops" },
+            { href: "/chapters/diff-review-loops", label: "Diff Review Loops" },
             {
-              href: "/tooling/agent-guardrails",
+              href: "/chapters/agent-guardrails",
               label: "Agent Guardrails",
             },
           ],
@@ -153,16 +153,16 @@ export const TREE_NODES: Record<string, TreeNode> = {
           output:
             "Mental model for AI-assisted development and a first successful AI-powered task.",
           articleLink: {
-            href: "/workflows/ai-mindset",
+            href: "/chapters/prompting-and-pitfalls",
             label: "The AI Mindset",
           },
           relatedLinks: [
             {
-              href: "/models/reasoning-vs-fast",
+              href: "/chapters/reasoning-vs-fast",
               label: "Reasoning vs Fast Models",
             },
             {
-              href: "/models/model-personalities",
+              href: "/chapters/model-personalities",
               label: "Model Personalities",
             },
           ],
@@ -227,13 +227,13 @@ export const TREE_NODES: Record<string, TreeNode> = {
           output:
             "Token-mapping skill plus a production component with typed props, matching design tokens, and Storybook stories for every variant.",
           articleLink: {
-            href: "/workflows/design-to-storybook",
+            href: "/chapters/design-to-storybook",
             label: "Design \u2192 Storybook",
           },
           relatedLinks: [
-            { href: "/tooling/figma-mcp", label: "Figma MCP" },
+            { href: "/chapters/figma-mcp", label: "Figma MCP" },
             {
-              href: "/tooling/design-to-code-and-back",
+              href: "/chapters/design-to-code-and-back",
               label: "Design to Code and Back",
             },
           ],
@@ -286,16 +286,16 @@ export const TREE_NODES: Record<string, TreeNode> = {
           output:
             "PR that maps directly to ticket acceptance criteria with design-accurate implementation.",
           articleLink: {
-            href: "/workflows/jira-to-cursor",
+            href: "/chapters/jira-to-cursor",
             label: "Jira \u2192 PR",
           },
           relatedLinks: [
             {
-              href: "/tooling/agents-and-skills",
+              href: "/chapters/agents-and-skills",
               label: "Agents & Skills",
             },
             {
-              href: "/tooling/max-mode",
+              href: "/chapters/max-mode",
               label: "Cursor Max Mode",
             },
           ],
@@ -353,16 +353,16 @@ export const TREE_NODES: Record<string, TreeNode> = {
           output:
             "Working PR with passing CI, clear description, and tests covering the identified edge cases.",
           articleLink: {
-            href: "/workflows/spec-to-pr",
+            href: "/chapters/spec-to-pr",
             label: "Spec \u2192 PR",
           },
           relatedLinks: [
             {
-              href: "/workflows/spec-files",
+              href: "/chapters/spec-files",
               label: "Spec Files",
             },
             {
-              href: "/tooling/diff-review-loops",
+              href: "/chapters/diff-review-loops",
               label: "Diff Review Loops",
             },
           ],
@@ -415,12 +415,12 @@ export const TREE_NODES: Record<string, TreeNode> = {
           output:
             "New component composed from existing building blocks with typed props, defined variants, and Storybook coverage.",
           articleLink: {
-            href: "/workflows/building-blocks",
+            href: "/chapters/building-blocks",
             label: "Building Blocks",
           },
           relatedLinks: [
             {
-              href: "/tooling/agents-and-skills",
+              href: "/chapters/agents-and-skills",
               label: "Agents & Skills",
             },
           ],
@@ -475,12 +475,12 @@ export const TREE_NODES: Record<string, TreeNode> = {
           output:
             "Targeted fix with a regression test that would have caught the original bug.",
           articleLink: {
-            href: "/workflows/bug-to-fix",
+            href: "/chapters/bug-to-fix",
             label: "Bug \u2192 Fix",
           },
           relatedLinks: [
             {
-              href: "/tooling/diff-review-loops",
+              href: "/chapters/diff-review-loops",
               label: "Diff Review Loops",
             },
           ],
@@ -533,12 +533,12 @@ export const TREE_NODES: Record<string, TreeNode> = {
           output:
             "Reliable repro, targeted fix, and a regression test that would have caught the original bug.",
           articleLink: {
-            href: "/workflows/bug-to-fix",
+            href: "/chapters/bug-to-fix",
             label: "Bug \u2192 Fix",
           },
           relatedLinks: [
             {
-              href: "/tooling/diff-review-loops",
+              href: "/chapters/diff-review-loops",
               label: "Diff Review Loops",
             },
           ],
@@ -586,12 +586,12 @@ export const TREE_NODES: Record<string, TreeNode> = {
           output:
             "Cursor configured with project rules tailored to your workflow.",
           articleLink: {
-            href: "/tooling/agents-and-skills",
+            href: "/chapters/agents-and-skills",
             label: "Agents & Skills",
           },
           relatedLinks: [
             {
-              href: "/tooling/agents-and-skills",
+              href: "/chapters/agents-and-skills",
               label: "Agents & Skills",
             },
           ],
@@ -639,12 +639,12 @@ export const TREE_NODES: Record<string, TreeNode> = {
           output:
             "Claude Code configured with project context, safe permissions, and a working workflow.",
           articleLink: {
-            href: "/tooling/agent-guardrails",
+            href: "/chapters/agent-guardrails",
             label: "Agent Guardrails",
           },
           relatedLinks: [
             {
-              href: "/tooling/diff-review-loops",
+              href: "/chapters/diff-review-loops",
               label: "Diff Review Loops",
             },
           ],
@@ -692,16 +692,16 @@ export const TREE_NODES: Record<string, TreeNode> = {
           output:
             "Figma MCP connected and verified with a successful design-to-code workflow.",
           articleLink: {
-            href: "/tooling/figma-mcp",
+            href: "/chapters/figma-mcp",
             label: "Figma MCP",
           },
           relatedLinks: [
             {
-              href: "/workflows/design-to-storybook",
+              href: "/chapters/design-to-storybook",
               label: "Design \u2192 Storybook",
             },
             {
-              href: "/tooling/code-to-canvas",
+              href: "/chapters/code-to-canvas",
               label: "Code to Canvas",
             },
           ],
@@ -749,12 +749,12 @@ export const TREE_NODES: Record<string, TreeNode> = {
           output:
             "Agents configured with guardrails and reusable skills for safe autonomous development.",
           articleLink: {
-            href: "/tooling/agents-and-skills",
+            href: "/chapters/agents-and-skills",
             label: "Agents & Skills",
           },
           relatedLinks: [
             {
-              href: "/tooling/agent-guardrails",
+              href: "/chapters/agent-guardrails",
               label: "Agent Guardrails",
             },
           ],

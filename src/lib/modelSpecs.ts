@@ -89,7 +89,7 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     emoji: "💎",
     gradientFrom: "from-blue-600",
     gradientTo: "to-cyan-500",
-    accentColor: "text-cyan-400",
+    accentColor: "text-cyan-600",
     contextBarColor: "bg-yellow-500",
     costColor: "text-yellow-400",
     why: {
@@ -141,7 +141,7 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     emoji: "🔓",
     gradientFrom: "from-slate-600",
     gradientTo: "to-slate-500",
-    accentColor: "text-slate-400",
+    accentColor: "text-slate-600",
     contextBarColor: "bg-slate-500",
     costColor: "text-slate-300",
     why: {},
@@ -177,9 +177,9 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     emoji: "🌸",
     gradientFrom: "from-rose-600",
     gradientTo: "to-pink-500",
-    accentColor: "text-rose-400",
+    accentColor: "text-rose-600",
     contextBarColor: "bg-rose-500",
-    costColor: "text-emerald-400",
+    costColor: "text-emerald-600",
     why: {},
     whenWrong: "When the task needs deep reasoning or architectural judgment.",
     traits: [
@@ -215,7 +215,7 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     emoji: "🚀",
     gradientFrom: "from-emerald-600",
     gradientTo: "to-green-500",
-    accentColor: "text-emerald-400",
+    accentColor: "text-emerald-600",
     contextBarColor: "bg-emerald-500",
     costColor: "text-emerald-300",
     why: {
@@ -263,7 +263,7 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     emoji: "✨",
     gradientFrom: "from-violet-600",
     gradientTo: "to-purple-500",
-    accentColor: "text-violet-400",
+    accentColor: "text-violet-600",
     contextBarColor: "bg-blue-500",
     costColor: "text-blue-400",
     why: {
@@ -313,7 +313,7 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     emoji: "🧠",
     gradientFrom: "from-orange-600",
     gradientTo: "to-amber-500",
-    accentColor: "text-amber-400",
+    accentColor: "text-amber-600",
     contextBarColor: "bg-orange-500",
     costColor: "text-zinc-300",
     why: {
@@ -368,9 +368,9 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     emoji: "🤖",
     gradientFrom: "from-fuchsia-600",
     gradientTo: "to-pink-500",
-    accentColor: "text-fuchsia-400",
+    accentColor: "text-fuchsia-600",
     contextBarColor: "bg-fuchsia-500",
-    costColor: "text-fuchsia-400",
+    costColor: "text-fuchsia-600",
     why: {
       autonomous:
         "Composer 2 runs terminal commands, reads the output, makes more edits, and loops until the task is done. It's the closest thing to a developer who can actually execute end-to-end.",
