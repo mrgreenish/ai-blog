@@ -96,6 +96,16 @@ The practical benefit: agents can access internal caches, dependencies, and netw
 
 Teams at Brex, Money Forward, and Notion are running this at scale. Notion cited access to more tools more securely as the reason for adopting it over maintaining their own background agent stack. "Agent infrastructure" is now a real architectural decision.
 
+## Cloud agents run on your hardware now
+
+Cursor's [My Machines](https://cursor.com/docs/cloud-agent/my-machines) takes self-hosted agents from an enterprise feature to an individual one. Instead of running in Cursor's managed VMs, your agent executes on hardware you control — your laptop, a devbox, a remote VM. One command: `agent worker start`.
+
+The split is clean. Cursor handles inference and planning, sends tool calls to the worker process on your machine, results flow back over outbound HTTPS. The agent gets your local environment, your dependency caches, your internal network access. No repo syncing to a cloud sandbox, no missing internal packages, no secrets leaving your box.
+
+Workers can be long-lived or single-use — handling sessions indefinitely or tearing down after each task. For teams, the Kubernetes operator and fleet management API handle scaling. For an individual developer, it's just a process running on a machine you already have.
+
+"Cloud agent" used to mean "runs in a cloud VM." Now the cloud part is just the inference layer. Execution goes wherever makes sense — Cursor's sandboxes for isolation, your laptop for local deps, your company's cluster for compliance. The abstraction is pulling apart, and that's the interesting shift.
+
 ## Harnesses are becoming shareable infrastructure
 
 [everything-claude-code](https://github.com/affaan-m/everything-claude-code) is a useful example of where this is heading: 30 specialized subagents, hooks for memory persistence, verification loops, continuous learning, and security scanning — shipping across Claude Code, Cursor, Codex, and OpenCode.
@@ -207,6 +217,9 @@ Sorted roughly by how much foundational leverage they provide.
 
 - **[Cursor Subagents](https://cursor.com/docs/subagents)**
   Official documentation for Cursor's subagent system — context window isolation, foreground/background execution, built-in Explore/Bash/Browser agents. The `description` field guidance is especially practical.
+
+- **[Cursor My Machines](https://cursor.com/docs/cloud-agent/my-machines)**
+  Connect your own laptop, devbox, or remote VM as a cloud agent worker. One command (`agent worker start`) turns any machine into an agent backend with local deps and network access.
 
 - **[next-devtools-mcp](https://github.com/vercel/next-devtools-mcp)**
   MCP server that gives agents live access to Next.js build errors, runtime errors, routes, and server action IDs. Replaces screenshot-based debugging.
