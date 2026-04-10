@@ -1,5 +1,28 @@
+import type { Metadata } from "next";
 import { TableOfContents } from "@/components/content/TableOfContents";
 import { DotField } from "@/components/interactive/DotField";
+
+export const metadata: Metadata = {
+  title: "Working With AI as a Developer",
+  description:
+    "Field notes on shipping with AI — models, workflows, and tooling. What actually works in production, kept up to date as the space moves.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    title: "Working With AI as a Developer | AI Field Notes",
+    description:
+      "Field notes on shipping with AI — models, workflows, and tooling. What actually works in production, kept up to date as the space moves.",
+    url: "/",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Working With AI as a Developer | AI Field Notes",
+    description:
+      "Field notes on shipping with AI — models, workflows, and tooling.",
+  },
+};
 
 export default function Home() {
   return (
