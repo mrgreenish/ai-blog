@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { TableOfContents } from "@/components/content/TableOfContents";
 import { DotField } from "@/components/interactive/DotField";
+import { ASCIIBrain } from "@/components/interactive/ASCIIBrain";
 
 export const metadata: Metadata = {
   title: "Working With AI as a Developer",
@@ -65,6 +66,24 @@ export default function Home() {
         </div>
 
         <div className="section-divider mb-16" />
+
+        {/* ASCII brain transition — animated visualization inline in the intro */}
+        <section className="relative mb-16 min-h-[520px]">
+          <ASCIIBrain className="absolute inset-0 z-0" />
+
+          <div className="relative z-10 py-16 pointer-events-none">
+            <p className="font-mono text-xs uppercase tracking-widest text-fg-muted mb-4">
+              Under the hood
+            </p>
+            <h2 className="font-sans text-3xl font-semibold tracking-tight text-fg-primary max-w-xl leading-tight">
+              A brain made of tokens.
+            </h2>
+            <p className="editorial-lead max-w-md mt-4">
+              Everything in these notes runs on a model that thinks in
+              characters — one probability at a time.
+            </p>
+          </div>
+        </section>
 
         {/* Table of Contents */}
         <TableOfContents />
