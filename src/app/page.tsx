@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { TableOfContents } from "@/components/content/TableOfContents";
 import { DotField } from "@/components/interactive/DotField";
+import { ASCIIBrain } from "@/components/interactive/ASCIIBrain";
 
 export const metadata: Metadata = {
   title: "Working With AI as a Developer",
@@ -69,6 +70,24 @@ export default function Home() {
         {/* Table of Contents */}
         <TableOfContents />
       </div>
+
+      {/* ASCII brain outro — animated ascii visualization */}
+      <section className="relative mt-24 min-h-[560px]">
+        <ASCIIBrain className="absolute inset-0 z-0" />
+
+        <div className="relative z-10 mx-auto max-w-4xl px-6 py-24 pointer-events-none">
+          <p className="font-mono text-xs uppercase tracking-widest text-fg-muted mb-4">
+            Under the hood
+          </p>
+          <h2 className="font-sans text-3xl font-semibold tracking-tight text-fg-primary max-w-xl leading-tight">
+            A brain made of tokens.
+          </h2>
+          <p className="editorial-lead max-w-lg mt-4">
+            Every chapter in this book is a pattern I&apos;ve tested against a
+            model that thinks in characters. This is what that looks like.
+          </p>
+        </div>
+      </section>
     </div>
   );
 }
