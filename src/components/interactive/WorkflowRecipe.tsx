@@ -318,7 +318,7 @@ function BrowseRecipes() {
               onClick={() => setRecipeId(r.id)}
               className={`rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors sm:px-3 sm:py-1.5 sm:text-xs ${
                 r.id === recipeId
-                  ? "border-emerald-500/50 bg-emerald-400/10 text-emerald-300"
+                  ? "border-emerald-500/50 bg-emerald-400/10 text-emerald-600"
                   : ""
               }`}
               style={r.id !== recipeId ? { borderColor: "var(--color-border-strong)", color: "var(--color-fg-muted)" } : undefined}
@@ -560,7 +560,7 @@ function ResultCard({
       >
         <div>
           <p className="text-xs text-fg-secondary">Read the full guide</p>
-          <p className="text-sm font-medium text-teal-300">
+          <p className="text-sm font-medium text-teal-600">
             {result.articleLink.label}
           </p>
         </div>

@@ -24,9 +24,10 @@ const PRO_MONTHLY_CREDITS = 20; // USD
 // Auto mode (cursor-small / balanced model)
 const AUTO_INPUT_PER_M = 1.25;
 const AUTO_OUTPUT_PER_M = 6.0;
-// Max Mode example pricing (Claude Sonnet 4.6 API rate + 20% margin)
-const MAX_INPUT_PER_M = 3.0 * 1.2; // $3 + 20% margin
-const MAX_OUTPUT_PER_M = 15.0 * 1.2; // $15 + 20% margin
+// Cursor Max Mode: Claude Sonnet 4.6 API rate ($3/$15 per 1M) + ~20% Cursor margin
+// Source: cursor.com/pricing — verify when running validate-model-specs
+const MAX_INPUT_PER_M = 3.0 * 1.2;
+const MAX_OUTPUT_PER_M = 15.0 * 1.2;
 
 // Output tokens ≈ 15% of input for refactor/analysis tasks
 const OUTPUT_RATIO = 0.15;
@@ -183,7 +184,7 @@ export function MaxModeViz() {
               }}
               className={`rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors ${
                 activeScenario === s.id
-                  ? "border-violet-500/50 bg-violet-400/10 text-violet-300"
+                  ? "border-violet-500/50 bg-violet-400/10 text-violet-600"
                   : ""
               }`}
               style={activeScenario !== s.id ? { borderColor: "var(--color-border-strong)", color: "var(--color-fg-secondary)" } : undefined}
@@ -213,7 +214,7 @@ export function MaxModeViz() {
         <div className="mb-3 flex items-baseline justify-between">
           <p className="font-mono text-[11px] font-medium text-fg-secondary">Files in context</p>
           <div className="text-right">
-            <span className="font-mono text-lg font-bold text-violet-300">{files}</span>
+            <span className="font-mono text-lg font-bold text-violet-600">{files}</span>
             <span className="ml-1 font-mono text-xs text-fg-muted">files</span>
             <span className="ml-2 font-mono text-xs text-fg-muted">
               ≈ {fmtTokens(totalTokens)} tokens
@@ -299,7 +300,7 @@ export function MaxModeViz() {
           >
             <div className="flex items-center gap-1.5 mb-2">
               <Maximize2 className="h-3 w-3 text-violet-600" />
-              <span className="font-mono text-[11px] font-semibold text-violet-300">Max Mode</span>
+              <span className="font-mono text-[11px] font-semibold text-violet-600">Max Mode</span>
             </div>
             <p className="font-mono text-2xl font-bold text-violet-200">{formatCost(maxCost)}</p>
             <p className="mt-1 font-mono text-[10px] text-fg-placeholder">per session (Sonnet 4.6 API + 20%)</p>

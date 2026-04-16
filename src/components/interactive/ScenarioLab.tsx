@@ -24,7 +24,7 @@ const MODEL_BY_ID = Object.fromEntries(LAB_MODELS.map((m) => [m.id, m]));
 
 function verdictIcon(verdict: Verdict) {
   if (verdict === "best") return <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />;
-  if (verdict === "good") return <CheckCircle2 className="h-3.5 w-3.5 text-blue-400" />;
+  if (verdict === "good") return <CheckCircle2 className="h-3.5 w-3.5 text-blue-600" />;
   if (verdict === "caution") return <AlertCircle className="h-3.5 w-3.5 text-amber-600" />;
   return <XCircle className="h-3.5 w-3.5 text-red-600" />;
 }
@@ -282,8 +282,8 @@ function ScenarioView({ scenario }: { scenario: Scenario }) {
           <span className="capitalize">signal: {scenario.primarySignal}</span>
         </div>
         <div className="flex items-start gap-2 rounded-lg border border-blue-400/15 bg-blue-400/5 px-3 py-2">
-          <span className="mt-0.5 shrink-0 text-blue-400 text-xs">→</span>
-          <p className="text-xs leading-relaxed text-blue-300">{activeInsight}</p>
+          <span className="mt-0.5 shrink-0 text-blue-600 text-xs">→</span>
+          <p className="text-xs leading-relaxed text-blue-600">{activeInsight}</p>
         </div>
       </div>
 
@@ -295,7 +295,7 @@ function ScenarioView({ scenario }: { scenario: Scenario }) {
               onClick={() => setMode("direct")}
               className={`rounded-md px-3 py-1 font-mono text-[11px] transition-colors ${
                 mode === "direct"
-                  ? "bg-amber-400/15 text-amber-300 border border-amber-400/30"
+                  ? "bg-amber-400/15 text-amber-600 border border-amber-400/30"
                   : "border border-transparent"
               }`}
               style={mode !== "direct" ? { color: "var(--color-fg-secondary)" } : undefined}
@@ -306,7 +306,7 @@ function ScenarioView({ scenario }: { scenario: Scenario }) {
               onClick={() => setMode("planMode")}
               className={`rounded-md px-3 py-1 font-mono text-[11px] transition-colors ${
                 mode === "planMode"
-                  ? "bg-violet-400/15 text-violet-300 border border-violet-500/30"
+                  ? "bg-violet-400/15 text-violet-600 border border-violet-500/30"
                   : "border border-transparent"
               }`}
               style={mode !== "planMode" ? { color: "var(--color-fg-secondary)" } : undefined}
@@ -382,7 +382,7 @@ export function ScenarioLab() {
               onClick={() => setActiveId(s.id)}
               className={`rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors sm:px-3 sm:py-1.5 sm:text-xs ${
                 s.id === activeId
-                  ? "border-amber-400/50 bg-amber-400/10 text-amber-300"
+                  ? "border-amber-400/50 bg-amber-400/10 text-amber-600"
                   : ""
               }`}
               style={s.id !== activeId ? { borderColor: "var(--color-border-strong)", color: "var(--color-fg-secondary)" } : undefined}

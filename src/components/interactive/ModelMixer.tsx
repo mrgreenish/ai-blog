@@ -143,7 +143,7 @@ export function QuickEstimate() {
               onClick={() => setScenarioId(s.id)}
               className={`rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors sm:px-3 sm:py-1.5 sm:text-xs ${
                 s.id === scenarioId
-                  ? "border-emerald-500/50 bg-emerald-400/10 text-emerald-300"
+                  ? "border-emerald-500/50 bg-emerald-400/10 text-emerald-600"
                   : ""
               }`}
               style={s.id !== scenarioId ? { borderColor: "var(--color-border-strong)", color: "var(--color-fg-secondary)" } : undefined}
@@ -171,7 +171,7 @@ export function QuickEstimate() {
                 onClick={() => setFrequencyId(f.id)}
                 className={`rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors ${
                   f.id === frequencyId
-                    ? "border-emerald-500/50 bg-emerald-400/10 text-emerald-300"
+                    ? "border-emerald-500/50 bg-emerald-400/10 text-emerald-600"
                     : ""
                 }`}
                 style={f.id !== frequencyId ? { borderColor: "var(--color-border-strong)", color: "var(--color-fg-secondary)" } : undefined}
@@ -335,7 +335,7 @@ const TEMPLATES: Template[] = [
 
 const TIER_COLORS: Record<Tier, { text: string; bg: string; border: string; label: string }> = {
   fast: { text: "text-emerald-600", bg: "bg-emerald-400/10", border: "border-emerald-500/30", label: "fast" },
-  balanced: { text: "text-blue-400", bg: "bg-blue-400/10", border: "border-blue-400/30", label: "balanced" },
+  balanced: { text: "text-blue-600", bg: "bg-blue-400/10", border: "border-blue-400/30", label: "balanced" },
   reasoning: { text: "text-violet-600", bg: "bg-violet-400/10", border: "border-violet-500/30", label: "reasoning" },
 };
 
@@ -425,7 +425,7 @@ function StepCard({
         <p className="font-mono text-xs font-semibold text-fg-primary">{step.label}</p>
         <div className="ml-auto flex shrink-0 items-center gap-1">
           {modelId === step.recommendedModelId && (
-            <span className="rounded px-1 py-0.5 font-mono text-[10px] font-medium leading-none text-pink-600 bg-pink-400/10">
+            <span className="rounded px-1 py-0.5 font-mono text-[10px] font-medium leading-none text-violet-600 bg-violet-400/10">
               my pick
             </span>
           )}
@@ -548,7 +548,7 @@ function PipelineBuilder() {
               onClick={() => setTemplateId(t.id)}
               className={`rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors sm:px-3 sm:py-1.5 sm:text-xs ${
                 t.id === templateId
-                  ? "border-violet-500/50 bg-violet-400/10 text-violet-300"
+                  ? "border-violet-500/50 bg-violet-400/10 text-violet-600"
                   : ""
               }`}
               style={t.id !== templateId ? { borderColor: "var(--color-border-strong)", color: "var(--color-fg-secondary)" } : undefined}
