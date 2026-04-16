@@ -69,7 +69,7 @@ export default function Home() {
 
         {/* ASCII brain transition — animated visualization inline in the intro */}
         <section className="relative -mb-24 min-h-[520px]">
-          <ASCIIBrain className="absolute inset-0 z-0" />
+          <ASCIIBrain className="absolute inset-0 z-0 pointer-events-none" />
         </section>
 
         {/* Table of Contents */}
