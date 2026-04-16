@@ -16,20 +16,20 @@ const accent = {
   teal: {
     borderLine: "border-teal-400/20",
     borderDot: "border-teal-400/30",
-    textDot: "text-teal-400",
-    labelText: "text-teal-400/70",
+    textDot: "text-teal-600",
+    labelText: "text-teal-600/70",
     dotBg: "bg-teal-400/40",
-    btnCopied: "border-teal-400/50 bg-teal-400/10 text-teal-300",
-    btnHover: "hover:border-teal-400/50 hover:text-teal-300",
+    btnCopied: "border-teal-500/50 bg-teal-400/10 text-teal-600",
+    btnHover: "hover:border-teal-500/50 hover:text-teal-600",
   },
   emerald: {
     borderLine: "border-emerald-400/20",
     borderDot: "border-emerald-400/30",
-    textDot: "text-emerald-400",
-    labelText: "text-emerald-400/70",
+    textDot: "text-emerald-600",
+    labelText: "text-emerald-600/70",
     dotBg: "bg-emerald-400/40",
-    btnCopied: "border-emerald-400/50 bg-emerald-400/10 text-emerald-300",
-    btnHover: "hover:border-emerald-400/50 hover:text-emerald-300",
+    btnCopied: "border-emerald-500/50 bg-emerald-400/10 text-emerald-600",
+    btnHover: "hover:border-emerald-500/50 hover:text-emerald-600",
   },
 } satisfies Record<AccentColor, Record<string, string>>;
 
@@ -120,9 +120,9 @@ export function GuardrailList({
 
 // Full Tailwind class strings for toggle accent colors.
 const toggleAccent = {
-  violet: { active: "bg-violet-400/15 text-violet-300 shadow-sm" },
-  emerald: { active: "bg-emerald-400/15 text-emerald-300 shadow-sm" },
-  cyan: { active: "bg-cyan-400/15 text-cyan-300 shadow-sm" },
+  violet: { active: "bg-violet-400/15 text-violet-600 shadow-sm" },
+  emerald: { active: "bg-emerald-400/15 text-emerald-600 shadow-sm" },
+  cyan: { active: "bg-cyan-400/15 text-cyan-600 shadow-sm" },
 } as const;
 
 export type ToggleAccent = keyof typeof toggleAccent;

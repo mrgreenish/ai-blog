@@ -278,7 +278,7 @@ export function ASCIIBrain({ className = "", charSize = 12 }: ASCIIBrainProps) {
           "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
       }}
     >
-      <canvas ref={canvasRef} className="block w-full h-full" />
+      <canvas ref={canvasRef} className="block w-full h-full pointer-events-none" />
     </div>
   );
 }

@@ -423,7 +423,7 @@ function Breadcrumbs({
     <div className="flex flex-wrap items-center gap-1 text-xs">
       <button
         onClick={() => onNavigate(-1)}
-            className="transition-colors hover:text-teal-400 text-fg-secondary"
+            className="transition-colors hover:text-teal-600 text-fg-secondary"
       >
         Start
       </button>
@@ -433,12 +433,12 @@ function Breadcrumbs({
           {i < crumbs.length - 1 ? (
             <button
               onClick={() => onNavigate(i)}
-              className="transition-colors hover:text-teal-400 text-fg-secondary"
+              className="transition-colors hover:text-teal-600 text-fg-secondary"
             >
               {crumb.label}
             </button>
           ) : (
-            <span className="text-teal-400">{crumb.label}</span>
+            <span className="text-teal-600">{crumb.label}</span>
           )}
         </span>
       ))}
@@ -505,7 +505,7 @@ function ResultCard({
         <div className="p-4">
           <div className="mb-1 flex flex-wrap items-baseline gap-2">
             <h3 className="text-lg font-bold text-fg-primary">{result.title}</h3>
-            <span className="rounded-full border border-teal-400/20 bg-teal-400/10 px-2 py-0.5 text-[10px] font-medium text-teal-400">
+            <span className="rounded-full border border-teal-400/20 bg-teal-400/10 px-2 py-0.5 text-[10px] font-medium text-teal-600">
               {result.model}
             </span>
           </div>
@@ -560,11 +560,11 @@ function ResultCard({
       >
         <div>
           <p className="text-xs text-fg-secondary">Read the full guide</p>
-          <p className="text-sm font-medium text-teal-300">
+          <p className="text-sm font-medium text-teal-600">
             {result.articleLink.label}
           </p>
         </div>
-        <ArrowRight className="h-4 w-4 text-teal-400" />
+        <ArrowRight className="h-4 w-4 text-teal-600" />
       </Link>
 
       {/* Related links */}
