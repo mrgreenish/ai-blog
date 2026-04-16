@@ -98,28 +98,13 @@ interactiveTools: ["model-picker", "model-tinder"]
 ## Component Patterns
 
 ### Interactive Tool Wrappers
-All 13 interactive tools follow this pattern:
-```tsx
-<div className="not-prose my-8 rounded-xl border border-border-default bg-bg-surface p-6">
-  {/* Tool content */}
-</div>
-```
-- Wrapper: `bg-bg-surface` (stone-100)
+All interactive tools follow the pattern in `src/components/interactive/` — read any component there for the canonical structure.
+- Wrapper: `bg-bg-surface` with `rounded-xl border border-border-default`
 - Inner cards: `bg-white` to stand out from wrapper
 - Inner code/detail blocks: `bg-bg-surface` or `bg-bg-elevated`
 
 ### InfoBlock
-```tsx
-<div className="not-prose my-6 rounded-lg border border-border-default bg-bg-surface p-4">
-  <div className="flex items-start gap-3">
-    <Info className="mt-0.5 h-5 w-5 shrink-0 text-fg-muted" />
-    <div>
-      {title && <p className="mb-2 font-semibold text-fg-primary">{title}</p>}
-      <div className="text-sm leading-relaxed text-fg-secondary">{children}</div>
-    </div>
-  </div>
-</div>
-```
+See `src/components/InfoBlock.tsx` for the canonical implementation.
 
 ### ChapterLayout
 - Breadcrumb: `← Contents` link to homepage
@@ -149,8 +134,8 @@ All 13 interactive tools follow this pattern:
 
 ## Testing
 
-- Build: `pnpm build` (must produce 26+ static pages)
-- Tests: `pnpm test` (89 tests across 4 suites)
+- Build: `pnpm build` (all static pages must generate)
+- Tests: `pnpm test` (all suites must pass)
 - Content integrity: `src/lib/__tests__/contentIntegrity.test.ts`
   - Validates chapter frontmatter, slug uniqueness, chapter number uniqueness
   - Checks interactive tool slugs, MDX component registration

@@ -89,7 +89,7 @@ const CONFIDENCE_STYLES: Record<Confidence, { label: string; classes: string }> 
   },
   good: {
     label: "Good match",
-    classes: "text-blue-400 bg-blue-400/10 border-blue-400/20",
+    classes: "text-blue-600 bg-blue-400/10 border-blue-400/20",
   },
   close: {
     label: "Close call",
@@ -181,7 +181,7 @@ function RankedCard({
               {model.tagline}
             </span>
             {isWinner && (
-              <span className="rounded-full border border-blue-400/20 bg-blue-400/10 px-2 py-0.5 font-mono text-[10px] font-medium text-blue-400">
+              <span className="rounded-full border border-blue-400/20 bg-blue-400/10 px-2 py-0.5 font-mono text-[10px] font-medium text-blue-600">
                 #1 pick
               </span>
             )}
@@ -317,7 +317,7 @@ function ResultScreen({
       {hasCaution && cautionMessage && (
         <div className="flex items-start gap-2.5 rounded-lg border border-amber-400/20 bg-amber-400/5 px-3 py-2.5">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
-          <p className="text-xs leading-relaxed text-amber-300">{cautionMessage}</p>
+          <p className="text-xs leading-relaxed text-amber-600">{cautionMessage}</p>
         </div>
       )}
 
@@ -390,11 +390,11 @@ export function ModelPicker() {
         
       >
         <div className="flex items-center gap-3">
-          <div className="rounded-lg p-2 text-blue-400 bg-bg-elevated">
+          <div className="rounded-lg p-2 text-blue-600 bg-bg-elevated">
             <Compass className="h-4 w-4" />
           </div>
           <div>
-            <h3 className="font-mono text-sm font-semibold text-blue-400">
+            <h3 className="font-mono text-sm font-semibold text-blue-600">
               Model Picker
             </h3>
             <p className="mt-0.5 text-xs text-fg-muted">

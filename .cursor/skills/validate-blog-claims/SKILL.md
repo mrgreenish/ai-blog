@@ -22,7 +22,7 @@ Copy this checklist and track progress:
 
 **First, read `src/lib/modelSpecs.ts`.** This is the canonical source of truth for all model-specific data in this blog — names, pricing, context windows, tiers, and personality. Use it as the baseline when validating model-related claims. Any discrepancy between a blog post and `modelSpecs.ts` is a candidate issue.
 
-Then read all `.mdx` files in `content/models/`, `content/tooling/`, and `content/workflows/`. Extract every verifiable factual claim. Focus on:
+Then read all `.mdx` files in `content/chapters/`. Extract every verifiable factual claim. Focus on:
 
 1. **Model names and versions** — check against the `name` and `id` fields in `MODEL_REGISTRY` in `src/lib/modelSpecs.ts`. Also check if any models in the registry have been renamed, deprecated, or superseded since the registry was last updated.
 2. **Context window sizes** — check against `contextWindowTokens` in `MODEL_REGISTRY`. Also verify these are still current via web search.
@@ -89,7 +89,7 @@ Group findings by file. If a post has no outdated claims, don't mention it.
 
 ### Summary
 
-After all findings, add a summary. Derive the total post count by listing `content/models/`, `content/workflows/`, and `content/tooling/` — do not hardcode a number.
+After all findings, add a summary. Derive the total post count by listing `content/chapters/` — do not hardcode a number.
 
 ```
 ## Summary

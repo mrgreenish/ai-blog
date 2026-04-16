@@ -50,7 +50,7 @@ After all steps complete, output a unified summary:
 ## Validation Summary
 
 ### Step 1 — Structural integrity
-- pnpm test:integrity: X/17 tests passed
+- pnpm test:integrity: X tests passed
 - Manual checks: X issues found
 
 ### Step 2 — Model specs

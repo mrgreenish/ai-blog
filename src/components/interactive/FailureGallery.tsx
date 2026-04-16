@@ -44,7 +44,7 @@ function highlightBug(output: string, highlight: string): React.ReactNode {
     <>
       <span className="text-stone-700">{output.slice(0, idx)}</span>
       <span className="relative">
-        <span className="relative z-10 rounded bg-red-500/20 px-0.5 text-red-300 ring-1 ring-red-500/40">
+        <span className="relative z-10 rounded bg-red-500/20 px-0.5 text-red-700 ring-1 ring-red-500/40">
           {highlight}
         </span>
       </span>
@@ -238,7 +238,7 @@ function FailureCard({ failure }: { failure: FailureCase }) {
               <div className="px-4 pb-3 space-y-2">
                 <p className="text-xs leading-relaxed text-fg-secondary">{failure.fix}</p>
                 {failure.fixExample && (
-                  <pre className="overflow-x-auto rounded-lg border border-emerald-500/15 bg-emerald-400/5 px-3 py-2.5 font-mono text-[11px] leading-relaxed text-emerald-300/80 whitespace-pre-wrap">
+                  <pre className="overflow-x-auto rounded-lg border border-emerald-500/15 bg-emerald-400/5 px-3 py-2.5 font-mono text-[11px] leading-relaxed text-emerald-700 whitespace-pre-wrap">
                     {failure.fixExample}
                   </pre>
                 )}
@@ -320,7 +320,7 @@ export function FailureGallery() {
               onClick={() => setActiveCategory(cat)}
               className={`rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors sm:px-3 sm:py-1.5 sm:text-xs ${
                 cat === activeCategory
-                  ? "border-red-400/50 bg-red-400/10 text-red-300"
+                  ? "border-red-400/50 bg-red-400/10 text-red-600"
                   : ""
               }`}
               style={cat !== activeCategory ? { borderColor: "var(--color-border-strong)", color: "var(--color-fg-secondary)" } : undefined}

@@ -25,7 +25,7 @@ Run the integrity test suite. It covers all the checks below automatically:
 pnpm test:integrity
 ```
 
-If all 17 tests pass, structural integrity is confirmed. Skip to Step 3 and report "no issues found."
+If all tests pass, structural integrity is confirmed. Skip to Step 3 and report "no issues found."
 
 If any tests fail, read the failure output carefully — each assertion names the specific file and value that failed.
 
