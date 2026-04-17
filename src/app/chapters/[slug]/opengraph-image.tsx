@@ -2,28 +2,12 @@ import { ImageResponse } from "next/og";
 import { getAllChapters, getChapter } from "@/lib/content";
 import { PART_META } from "@/lib/types";
 
+export const alt = "AI Field Notes — chapter cover";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export async function generateStaticParams() {
   return getAllChapters().map((c) => ({ slug: c.slug }));
-}
-
-export async function generateImageMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
-  const chapter = getChapter(slug);
-  const title = chapter?.frontmatter.title ?? "AI Field Notes";
-  return [
-    {
-      contentType: "image/png",
-      size,
-      alt: `${title} — AI Field Notes`,
-    },
-  ];
 }
 
 export default async function ChapterOgImage({
