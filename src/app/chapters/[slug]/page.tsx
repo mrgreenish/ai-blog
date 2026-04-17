@@ -5,12 +5,27 @@ import { ChapterLayout } from "@/components/content/ChapterLayout";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { MDX_COMPONENTS } from "@/lib/mdxComponents";
 import { PART_META } from "@/lib/types";
+import {
+  SITE_URL,
+  SITE_NAME,
+  SITE_LOCALE,
+  SITE_LANGUAGE,
+  AUTHOR_NAME,
+  AUTHOR_URL,
+  AUTHOR_TWITTER,
+} from "@/lib/siteConfig";
 import rehypePrettyCode from "rehype-pretty-code";
 import type { Metadata } from "next";
 
-const SITE_URL = "https://ai-field-notes.com";
-const AUTHOR_NAME = "Filip van Harreveld";
-const AUTHOR_URL = "https://filipvanharreveld.com/";
+function countWords(markdown: string): number {
+  // Strip code fences, then count whitespace-separated tokens.
+  const withoutCode = markdown.replace(/```[\s\S]*?```/g, " ");
+  const stripped = withoutCode
+    .replace(/[#>*_`~\-[\]()!]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return stripped ? stripped.split(" ").length : 0;
+}
 
 export async function generateStaticParams() {
   return getAllChapters().map((c) => ({ slug: c.slug }));
@@ -39,8 +54,8 @@ export async function generateMetadata({
       title,
       description: subtitle,
       url: canonicalPath,
-      siteName: "AI Field Notes",
-      locale: "en_US",
+      siteName: SITE_NAME,
+      locale: SITE_LOCALE,
       publishedTime: publishedAt,
       modifiedTime: updatedAt ?? publishedAt,
       section: partLabel,
@@ -50,7 +65,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title,
       description: subtitle,
-      creator: "@fvanharreveld",
+      creator: AUTHOR_TWITTER,
     },
     authors: [{ name: AUTHOR_NAME, url: AUTHOR_URL }],
   };
@@ -68,13 +83,21 @@ export default async function ChapterPage({
   const { prev, next } = getAdjacentChapters(slug);
   const partMeta = PART_META[chapter.frontmatter.part];
   const canonicalUrl = `${SITE_URL}/chapters/${slug}`;
+  const wordCount = countWords(chapter.content);
 
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: chapter.frontmatter.title,
     description: chapter.frontmatter.subtitle,
-    image: [`${canonicalUrl}/opengraph-image`],
+    image: [
+      {
+        "@type": "ImageObject",
+        url: `${canonicalUrl}/opengraph-image`,
+        width: 1200,
+        height: 630,
+      },
+    ],
     datePublished: chapter.frontmatter.publishedAt,
     dateModified:
       chapter.frontmatter.updatedAt ?? chapter.frontmatter.publishedAt,
@@ -85,7 +108,7 @@ export default async function ChapterPage({
     },
     publisher: {
       "@type": "Organization",
-      name: "AI Field Notes",
+      name: SITE_NAME,
       url: SITE_URL,
     },
     mainEntityOfPage: {
@@ -93,10 +116,11 @@ export default async function ChapterPage({
       "@id": canonicalUrl,
     },
     articleSection: partMeta?.label,
-    inLanguage: "en-US",
+    inLanguage: SITE_LANGUAGE,
+    wordCount,
     isPartOf: {
       "@type": "Book",
-      name: "AI Field Notes",
+      name: SITE_NAME,
       url: SITE_URL,
     },
   };
@@ -114,12 +138,6 @@ export default async function ChapterPage({
       {
         "@type": "ListItem",
         position: 2,
-        name: partMeta?.label ?? "Contents",
-        item: `${SITE_URL}/#contents`,
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
         name: chapter.frontmatter.title,
         item: canonicalUrl,
       },

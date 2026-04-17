@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getAllChapters } from "@/lib/content";
-
-const BASE_URL = "https://ai-field-notes.com";
+import { SITE_URL as BASE_URL } from "@/lib/siteConfig";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const chapters = getAllChapters();
