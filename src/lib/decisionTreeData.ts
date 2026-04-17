@@ -310,7 +310,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F4DD}",
           description:
             "Go from a developer spec to a working PR with tests, following a plan-first approach.",
-          model: "Claude Opus 4.6",
+          model: "Claude Opus 4.7",
           tools: ["Cursor", "Claude Code", "GitHub Actions"],
           steps: [
             {
@@ -606,7 +606,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F4BB}",
           description:
             "Set up Claude Code CLI and Codex for terminal-based AI development with CLAUDE.md project context.",
-          model: "Claude Opus 4.6 / Sonnet 4.6",
+          model: "Claude Opus 4.7 / Sonnet 4.6",
           tools: ["Claude Code CLI", "CLAUDE.md", "GitHub Codex"],
           steps: [
             {
@@ -716,7 +716,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F916}",
           description:
             "Set up AI agents with proper guardrails and learn the skills ecosystem for safe autonomous operation.",
-          model: "Claude Opus 4.6",
+          model: "Claude Opus 4.7",
           tools: ["Claude Code", "SKILL.md", "GitHub Actions"],
           steps: [
             {

@@ -219,7 +219,7 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
       autonomy === "gaps" ? "Fills in reasonable gaps and notices things you didn't ask about" : "");
   }
 
-  if (modelId === "opus-4.6") {
+  if (modelId === "opus-4.7") {
     dim("task", task === "coding" ? 3 : task === "reasoning" ? 4 : task === "analysis" ? 3 : task === "writing" ? 2 : 0,
       task === "reasoning" ? "Doesn't pattern-match — actually reasons through the problem"
       : task === "coding" ? "Traces actual logic, catches bugs three levels of indirection deep"
@@ -273,10 +273,10 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
     if (modelId === "composer-2") dims.push({ dimension: "interaction", points: -2, reason: "Dampen double-counting: autonomous scope + drive autonomy overlap" });
   }
   if (stakes === "critical" && scope === "autonomous") {
-    if (modelId === "opus-4.6") dims.push({ dimension: "interaction", points: 2, reason: "Critical stakes + autonomous scope: frontier reasoning earns its cost" });
+    if (modelId === "opus-4.7") dims.push({ dimension: "interaction", points: 2, reason: "Critical stakes + autonomous scope: frontier reasoning earns its cost" });
   }
   if (stakes === "critical" && priority === "accuracy") {
-    if (modelId === "opus-4.6") dims.push({ dimension: "interaction", points: 2, reason: "Critical + accuracy: strongest quality signal — Opus is the right choice" });
+    if (modelId === "opus-4.7") dims.push({ dimension: "interaction", points: 2, reason: "Critical + accuracy: strongest quality signal — Opus is the right choice" });
     if (modelId === "composer-2") dims.push({ dimension: "interaction", points: -1, reason: "Critical + accuracy: autonomy risk outweighs speed benefit" });
   }
 

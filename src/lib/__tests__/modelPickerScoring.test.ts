@@ -14,7 +14,7 @@ type ModelStub = { id: string; name: string; why: Record<string, string> };
 const MODELS: ModelStub[] = [
   { id: "gemini-flash", name: "Gemini Flash", why: { targeted: "Fast targeted edits", vision: "Best vision model" } },
   { id: "sonnet-4.6", name: "Sonnet 4.6", why: { multifile: "Great at multi-file", writing: "Strong writing" } },
-  { id: "opus-4.6", name: "Opus 4.6", why: { critical: "Best for critical systems", reasoning: "Deep reasoning" } },
+  { id: "opus-4.7", name: "Opus 4.7", why: { critical: "Best for critical systems", reasoning: "Deep reasoning" } },
   {
     id: "composer-2",
     name: "Composer 2",
@@ -117,9 +117,9 @@ describe("score()", () => {
     });
   });
 
-  describe("opus-4.6", () => {
+  describe("opus-4.7", () => {
     it("scores highest for reasoning + architecture + critical + accuracy", () => {
-      const s = score("opus-4.6", allAnswers({
+      const s = score("opus-4.7", allAnswers({
         task: "reasoning", scope: "architecture", stakes: "critical", priority: "accuracy", autonomy: "gaps",
       }));
       // reasoning(4) + architecture(4) + critical(5) + accuracy(4) + gaps(2) + interaction(critical+accuracy: +2) = 21
@@ -127,14 +127,14 @@ describe("score()", () => {
     });
 
     it("penalized for prototype + speed", () => {
-      const best = score("opus-4.6", allAnswers({ stakes: "critical", priority: "accuracy" }));
-      const worst = score("opus-4.6", allAnswers({ stakes: "prototype", priority: "speed" }));
+      const best = score("opus-4.7", allAnswers({ stakes: "critical", priority: "accuracy" }));
+      const worst = score("opus-4.7", allAnswers({ stakes: "prototype", priority: "speed" }));
       expect(worst).toBeLessThan(best);
     });
 
     it("gets prototype penalty", () => {
-      const prod = score("opus-4.6", allAnswers({ stakes: "production" }));
-      const proto = score("opus-4.6", allAnswers({ stakes: "prototype" }));
+      const prod = score("opus-4.7", allAnswers({ stakes: "production" }));
+      const proto = score("opus-4.7", allAnswers({ stakes: "prototype" }));
       expect(proto).toBeLessThan(prod);
     });
   });
@@ -199,11 +199,11 @@ describe("interaction effects", () => {
     expect(diff).toBeLessThan(3);
   });
 
-  it("boosts opus-4.6 for critical + autonomous scope", () => {
-    const opusWithout = score("opus-4.6", allAnswers({
+  it("boosts opus-4.7 for critical + autonomous scope", () => {
+    const opusWithout = score("opus-4.7", allAnswers({
       stakes: "critical", scope: "multifile",
     }));
-    const opusWith = score("opus-4.6", allAnswers({
+    const opusWith = score("opus-4.7", allAnswers({
       stakes: "critical", scope: "autonomous",
     }));
     // autonomous scope gives +1 base + +2 interaction = +3 vs multifile +2
@@ -211,11 +211,11 @@ describe("interaction effects", () => {
     expect(opusWith).toBeGreaterThan(opusWithout);
   });
 
-  it("boosts opus-4.6 and penalizes composer-2 for critical + accuracy", () => {
-    const opusCritAcc = score("opus-4.6", allAnswers({
+  it("boosts opus-4.7 and penalizes composer-2 for critical + accuracy", () => {
+    const opusCritAcc = score("opus-4.7", allAnswers({
       stakes: "critical", priority: "accuracy",
     }));
-    const opusCritBal = score("opus-4.6", allAnswers({
+    const opusCritBal = score("opus-4.7", allAnswers({
       stakes: "critical", priority: "balance",
     }));
     // accuracy(+4) + interaction(+2) vs balance(0) = +6 difference
@@ -237,12 +237,12 @@ describe("interaction effects", () => {
 // ---------------------------------------------------------------------------
 describe("getRecommendation()", () => {
   it("returns the highest-scoring model as the winner", () => {
-    // This combo strongly favors opus-4.6
+    // This combo strongly favors opus-4.7
     const rec = getRecommendation(MODELS, {
       task: "reasoning", scope: "architecture", stakes: "critical",
       priority: "accuracy", autonomy: "gaps",
     });
-    expect(rec.model.id).toBe("opus-4.6");
+    expect(rec.model.id).toBe("opus-4.7");
   });
 
   it("returns a runner-up different from the winner", () => {
@@ -351,12 +351,12 @@ describe("real-world scenarios", () => {
     expect(rec.model.id).toBe("sonnet-4.6");
   });
 
-  it("critical system design: reasoning + architecture + critical + accuracy + gaps → opus-4.6", () => {
+  it("critical system design: reasoning + architecture + critical + accuracy + gaps → opus-4.7", () => {
     const rec = getRecommendation(MODELS, {
       task: "reasoning", scope: "architecture", stakes: "critical",
       priority: "accuracy", autonomy: "gaps",
     });
-    expect(rec.model.id).toBe("opus-4.6");
+    expect(rec.model.id).toBe("opus-4.7");
   });
 
   it("full autonomous agent task: coding + autonomous + prototype + speed + drive → composer-2", () => {
@@ -388,7 +388,7 @@ describe("scoreDimensions()", () => {
   });
 
   it("total matches score() for all known models", () => {
-    const modelIds = ["gemini-flash", "sonnet-4.6", "opus-4.6", "composer-2"];
+    const modelIds = ["gemini-flash", "sonnet-4.6", "opus-4.7", "composer-2"];
     for (const id of modelIds) {
       const answers = allAnswers({ task: "coding", scope: "multifile", stakes: "production" });
       expect(scoreDimensions(id, answers).total).toBe(score(id, answers));
@@ -397,7 +397,7 @@ describe("scoreDimensions()", () => {
 
   it("dimensions sum to total", () => {
     const answers = allAnswers({ task: "reasoning", scope: "architecture", stakes: "critical", priority: "accuracy" });
-    const result = scoreDimensions("opus-4.6", answers);
+    const result = scoreDimensions("opus-4.7", answers);
     const sum = result.dimensions.reduce((s, d) => s + d.points, 0);
     expect(sum).toBe(result.total);
   });
