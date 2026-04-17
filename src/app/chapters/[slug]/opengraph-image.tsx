@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { getAllChapters, getChapter } from "@/lib/content";
 import { PART_META } from "@/lib/types";
 
-export const alt = "AI Field Notes chapter cover";
+export const alt = "AI Field Notes — chapter cover";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -138,7 +138,7 @@ export default async function ChapterOgImage({
               color: "#71717a",
             }}
           >
-            ai-field-notes.com
+            aifieldnotes.dev
           </span>
         </div>
       </div>

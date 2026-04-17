@@ -20,6 +20,12 @@ export function Header() {
             Contents
           </Link>
           <Link
+            href="/chapters/what-is-happening"
+            className="font-mono text-xs uppercase tracking-widest text-fg-muted hover:text-fg-primary transition-colors"
+          >
+            What&apos;s Happening
+          </Link>
+          <Link
             href="/search"
             className="font-mono text-xs uppercase tracking-widest text-fg-muted hover:text-fg-primary transition-colors"
           >

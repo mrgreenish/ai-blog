@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
-
-const BASE_URL = "https://ai-field-notes.com";
+import { SITE_URL as BASE_URL } from "@/lib/siteConfig";
 
 export default function robots(): MetadataRoute.Robots {
   return {

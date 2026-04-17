@@ -4,6 +4,17 @@ import { Analytics } from "@vercel/analytics/next";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { JsonLd } from "@/components/seo/JsonLd";
+import {
+  SITE_URL,
+  SITE_NAME,
+  SITE_TAGLINE,
+  SITE_DESCRIPTION,
+  SITE_LOCALE,
+  SITE_LANGUAGE,
+  AUTHOR_NAME,
+  AUTHOR_URL,
+  AUTHOR_TWITTER,
+} from "@/lib/siteConfig";
 import "./globals.css";
 
 const sourceSerif = localFont({
@@ -19,11 +30,6 @@ const jetbrainsMono = localFont({
   display: "swap",
 });
 
-const SITE_URL = "https://ai-field-notes.com";
-const SITE_NAME = "AI Field Notes";
-const SITE_DESCRIPTION =
-  "Developer field notes on AI tooling: what actually worked, what broke, and what I'd do differently. Interactive tools, workflow recipes, and real benchmarks.";
-
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   verification: {
@@ -35,10 +41,8 @@ export const metadata: Metadata = {
   },
   description: SITE_DESCRIPTION,
   applicationName: SITE_NAME,
-  authors: [
-    { name: "Filip van Harreveld", url: "https://filipvanharreveld.com/" },
-  ],
-  creator: "Filip van Harreveld",
+  authors: [{ name: AUTHOR_NAME, url: AUTHOR_URL }],
+  creator: AUTHOR_NAME,
   publisher: SITE_NAME,
   alternates: {
     canonical: "/",
@@ -52,13 +56,13 @@ export const metadata: Metadata = {
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
     url: SITE_URL,
-    locale: "en_US",
+    locale: SITE_LOCALE,
   },
   twitter: {
     card: "summary_large_image",
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
-    creator: "@fvanharreveld",
+    creator: AUTHOR_TWITTER,
   },
   robots: {
     index: true,
@@ -88,14 +92,20 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: SITE_NAME,
-    alternateName: "Working With AI as a Developer",
+    alternateName: SITE_TAGLINE,
     url: SITE_URL,
     description: SITE_DESCRIPTION,
-    inLanguage: "en-US",
+    inLanguage: SITE_LANGUAGE,
+    image: {
+      "@type": "ImageObject",
+      url: `${SITE_URL}/opengraph-image`,
+      width: 1200,
+      height: 630,
+    },
     publisher: {
       "@type": "Person",
-      name: "Filip van Harreveld",
-      url: "https://filipvanharreveld.com/",
+      name: AUTHOR_NAME,
+      url: AUTHOR_URL,
     },
     potentialAction: {
       "@type": "SearchAction",

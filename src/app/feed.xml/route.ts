@@ -1,11 +1,12 @@
 import { getAllChapters } from "@/lib/content";
 import { PART_META } from "@/lib/types";
-
-const SITE_URL = "https://ai-field-notes.com";
-const SITE_NAME = "AI Field Notes";
-const SITE_DESCRIPTION =
-  "Developer field notes on AI tooling: what actually worked, what broke, and what I'd do differently.";
-const AUTHOR = "Filip van Harreveld";
+import {
+  SITE_URL,
+  SITE_NAME,
+  SITE_DESCRIPTION,
+  AUTHOR_NAME as AUTHOR,
+  AUTHOR_EMAIL,
+} from "@/lib/siteConfig";
 
 function escapeXml(unsafe: string): string {
   return unsafe
@@ -38,7 +39,7 @@ export function GET() {
       <guid isPermaLink="true">${url}</guid>
       <description>${escapeXml(subtitle)}</description>
       <pubDate>${pubDate}</pubDate>
-      <author>noreply@ai-field-notes.com (${escapeXml(AUTHOR)})</author>
+      <author>${AUTHOR_EMAIL} (${escapeXml(AUTHOR)})</author>
       <category>${escapeXml(category)}</category>
     </item>`;
     })
@@ -50,7 +51,7 @@ export function GET() {
     <title>${escapeXml(SITE_NAME)}</title>
     <link>${SITE_URL}</link>
     <description>${escapeXml(SITE_DESCRIPTION)}</description>
-    <language>en-us</language>
+    <language>en-US</language>
     <lastBuildDate>${lastBuildDate}</lastBuildDate>
     <atom:link href="${SITE_URL}/feed.xml" rel="self" type="application/rss+xml" />
 ${items}
