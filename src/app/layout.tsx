@@ -26,6 +26,9 @@ const SITE_DESCRIPTION =
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  verification: {
+    google: 'DSxzN72M1D6zBRCYXu4IzX0qj7Tj5zBeU5fxOi4qD9w'
+  },
   title: {
     default: SITE_NAME,
     template: `%s | ${SITE_NAME}`,
