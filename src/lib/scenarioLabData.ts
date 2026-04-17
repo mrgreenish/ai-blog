@@ -124,7 +124,7 @@ export const SCENARIOS: Scenario[] = [
         costContext: { compareToModelId: "haiku-4.5" },
       },
       {
-        modelId: "opus-4.6",
+        modelId: "opus-4.7",
         verdict: "avoid",
         summary: "Thorough but massively over-engineered for this task",
         outputExcerpt:
@@ -333,7 +333,7 @@ export const SCENARIOS: Scenario[] = [
         costCommentary: "Worth it if the suite catches real bugs in CI",
       },
       {
-        modelId: "opus-4.6",
+        modelId: "opus-4.7",
         verdict: "good",
         summary: "Excellent coverage, but slower and more expensive than Sonnet",
         outputExcerpt:
@@ -404,7 +404,7 @@ export const SCENARIOS: Scenario[] = [
           costCommentary: "Works fine, but Haiku is still the better executor here",
         },
         {
-          modelId: "opus-4.6",
+          modelId: "opus-4.7",
           verdict: "caution",
           summary: "Overkill as planner — Sonnet catches the same edge cases",
           outputExcerpt:
@@ -507,7 +507,7 @@ export const SCENARIOS: Scenario[] = [
         costCommentary: "Composer 2's API rates are low — with zero correction rounds, effective cost still wins",
       },
       {
-        modelId: "opus-4.6",
+        modelId: "opus-4.7",
         verdict: "caution",
         summary: "Excellent quality but slow — better for design than implementation",
         outputExcerpt:
@@ -526,7 +526,7 @@ export const SCENARIOS: Scenario[] = [
       },
     ],
     planMode: {
-      planModelId: "opus-4.6",
+      planModelId: "opus-4.7",
       executeModelId: "composer-2",
       insight:
         "Multi-file features fail when the executor doesn't understand the big picture. Plan mode flips the direct approach: Opus maps the architecture and file changes, then a fast model executes each file edit. The plan prevents the cross-file inconsistencies that plague cheap models working alone.",
@@ -534,7 +534,7 @@ export const SCENARIOS: Scenario[] = [
         "Opus plans the full feature — which files to touch, what patterns to follow, how the layers connect. Composer 2 executes against that plan with less wandering and better verification than working fully autonomously from scratch.",
       results: [
         {
-          modelId: "opus-4.6",
+          modelId: "opus-4.7",
           verdict: "best",
           summary: "Maps the architecture before a single line is written",
           outputExcerpt:
@@ -579,7 +579,7 @@ export const SCENARIOS: Scenario[] = [
             "Plan was less specific about which patterns to follow",
           ],
           costCommentary: "Good enough for simpler features — use Opus for complex multi-layer work",
-          costContext: { compareToModelId: "opus-4.6" },
+          costContext: { compareToModelId: "opus-4.7" },
         },
         {
           modelId: "gemini-flash",
@@ -610,7 +610,7 @@ export const SCENARIOS: Scenario[] = [
     primarySignal: "accuracy",
     insight:
       "This is where Opus earns its cost. Architecture decisions have long-term consequences — a model that pattern-matches to the most common answer can lead you to the wrong choice.",
-    recommendedModelId: "opus-4.6",
+    recommendedModelId: "opus-4.7",
     recommendationReason:
       "Opus traces actual logic, not patterns. It identified that the 'common' caching strategy was wrong for the specific access pattern described — something Sonnet missed.",
     results: [
@@ -644,7 +644,7 @@ export const SCENARIOS: Scenario[] = [
           "Less detailed reasoning trace than Opus",
         ],
         costCommentary: "Strong value when you configure reasoning effort correctly",
-        costContext: { compareToModelId: "opus-4.6" },
+        costContext: { compareToModelId: "opus-4.7" },
       },
       {
         modelId: "sonnet-4.6",
@@ -661,10 +661,10 @@ export const SCENARIOS: Scenario[] = [
           "Missed that write-heavy patterns make SWR a poor fit",
         ],
         costCommentary: "Good analysis, but missed the key insight",
-        costContext: { compareToModelId: "opus-4.6" },
+        costContext: { compareToModelId: "opus-4.7" },
       },
       {
-        modelId: "opus-4.6",
+        modelId: "opus-4.7",
         verdict: "best",
         summary: "Identified that the common recommendation was wrong for this case",
         outputExcerpt:
@@ -694,7 +694,7 @@ export const SCENARIOS: Scenario[] = [
           "Architecture decisions need reasoning, not implementation speed",
         ],
         costCommentary: "Wrong tool for a design question",
-        costContext: { compareToModelId: "opus-4.6" },
+        costContext: { compareToModelId: "opus-4.7" },
       },
     ],
   },

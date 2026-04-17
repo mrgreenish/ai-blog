@@ -15,7 +15,12 @@
       "Bash(curl -sL \"https://api.fxtwitter.com/kirillk_web3/status/2043037616979759465\")",
       "Bash(python3 -m json.tool)",
       "WebSearch",
-      "WebFetch(domain:www.ai.engineer)"
+      "WebFetch(domain:www.ai.engineer)",
+      "WebFetch(domain:api-docs.deepseek.com)",
+      "Bash(pnpm exec *)",
+      "Bash(npx tsc *)",
+      "Bash(./node_modules/.bin/tsc --noEmit)",
+      "Bash(pnpm test:ci)"
     ]
   }
 }

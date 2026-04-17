@@ -302,8 +302,8 @@ export const MODEL_REGISTRY: ModelSpec[] = [
 
   // ── Reasoning tier ─────────────────────────────────────────────────────────
   {
-    id: "opus-4.6",
-    name: "Claude Opus 4.6",
+    id: "opus-4.7",
+    name: "Claude Opus 4.7",
     provider: "Anthropic",
     inputPer1M: 5.00,
     outputPer1M: 25.00,
@@ -436,7 +436,7 @@ export function getMixerModels() {
 // ---------------------------------------------------------------------------
 
 export const PRICING_META = {
-  verifiedDate: "2026-03-20", // re-verified: Cursor Composer 2 replaces Composer 1.5 (API rates); other models unchanged this pass
+  verifiedDate: "2026-04-17", // re-verified: Opus 4.6 → Opus 4.7 (Apr 16 release, pricing unchanged at $5/$25); other models verified unchanged
   source: "Official API pricing pages",
   urls: {
     Anthropic: "https://docs.anthropic.com/en/docs/about-claude/pricing",
@@ -457,7 +457,7 @@ export function getCostCalculatorModels() {
     "gpt-5.4",
     "sonnet-4.6",
     "composer-2",
-    "opus-4.6",
+    "opus-4.7",
   ];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
@@ -495,7 +495,7 @@ export function getPickerModels() {
   const ids = [
     "gemini-flash",
     "sonnet-4.6",
-    "opus-4.6",
+    "opus-4.7",
     "composer-2",
   ];
   return ids.map((id) => {
@@ -550,7 +550,7 @@ export function getScenarioLabModels() {
     "gpt-5.4",
     "sonnet-4.6",
     "composer-2",
-    "opus-4.6",
+    "opus-4.7",
   ];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
@@ -592,7 +592,7 @@ export function getTinderModels() {
   const ids = [
     "gemini-flash",
     "sonnet-4.6",
-    "opus-4.6",
+    "opus-4.7",
     "composer-2",
   ];
   return ids.map((id) => {
@@ -633,7 +633,7 @@ export function getDevBenchmarkColumns() {
     const m = MODEL_BY_ID[id];
     return {
       id: m.id,
-      label: m.name.replace("Claude ", "").replace(" 4.6", "").replace(" 4.5", ""),
+      label: m.name.replace("Claude ", "").replace(" 4.7", "").replace(" 4.6", "").replace(" 4.5", ""),
       color: m.accentColor,
       benchmark: m.benchmark,
     };

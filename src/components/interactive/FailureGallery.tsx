@@ -97,7 +97,7 @@ function SusceptibilityRow({
                     <div className="flex items-center gap-1 rounded-full px-2 py-0.5 text-xs transition-colors bg-bg-elevated border border-border-strong">
                       <span className="text-sm leading-none">{m.emoji}</span>
                       <span className={`font-mono text-[11px] ${m.accentColor}`}>
-                        {m.name.replace("Claude ", "").replace(" 4.6", "").replace(" 4.5", "").replace("Cursor ", "")}
+                        {m.name.replace("Claude ", "").replace(" 4.7", "").replace(" 4.6", "").replace(" 4.5", "").replace("Cursor ", "")}
                       </span>
                     </div>
                   </div>

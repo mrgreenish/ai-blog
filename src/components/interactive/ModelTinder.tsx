@@ -162,7 +162,7 @@ const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
     },
   ],
 
-  "opus-4.6": [
+  "opus-4.7": [
     {
       modelMessage:
         "Hello. Before we begin, I want to acknowledge that this conversation itself is a kind of system — inputs, outputs, feedback loops. What are we really trying to solve here?",

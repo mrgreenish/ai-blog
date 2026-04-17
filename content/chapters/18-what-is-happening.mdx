@@ -15,6 +15,14 @@ Something's shifted in the last few months. The interesting problems aren't "whi
 
 The models are good. The question is how you harness them. That's where things are moving fast, and where most of my attention is right now. Here's what's actually made a difference.
 
+## Claude Opus 4.7 lands — same price, narrow lead
+
+Anthropic shipped [Claude Opus 4.7](https://www.anthropic.com/news/claude-opus-4-7) on April 16. It's generally available on the Claude API, Amazon Bedrock, Google Cloud Vertex AI, and Microsoft Foundry from day one — pricing held steady at **$5 / $25 per million tokens**, unchanged from 4.6.
+
+Early reception is cautiously positive. [VentureBeat](https://venturebeat.com/technology/anthropic-releases-claude-opus-4-7-narrowly-retaking-lead-for-most-powerful-generally-available-llm) frames it as narrowly retaking the lead for the most powerful generally available LLM, with measurable gains on agentic coding and long-horizon reasoning benchmarks rather than a step-change. The [Finout pricing breakdown](https://www.finout.io/blog/claude-opus-4.7-pricing-the-real-cost-story-behind-the-unchanged-price-tag) flags the caveat worth watching: Opus 4.7 ships with a new tokenizer that can produce up to ~35% more tokens for the same input. The rate card didn't change, but your real bill per request can still go up.
+
+Practical read: if you're already using Opus for hard problems, upgrade and re-measure your own cost curve before assuming parity. For routine work, nothing about this release changes the "don't reach for Opus unless you need it" calculus.
+
 ## Hooks move agents from advice to automation
 
 Skills tell an agent what to do. Hooks make certain things happen regardless of what the agent decides.
