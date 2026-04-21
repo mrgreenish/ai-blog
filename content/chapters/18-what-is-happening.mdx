@@ -190,6 +190,12 @@ The insight: agents are already generating UI. The problem was never capability 
 
 Browse the collection at [getdesign.md](https://getdesign.md).
 
+Stitch just open-sourced the DESIGN.md specification itself — Apache 2.0, formal schema, CLI with a linter, differ, and exporter. Any tool can implement it now, not just Stitch.
+
+The additions that matter: semantic color intent, so agents know what a color is *for* rather than just its hex value. And built-in WCAG validation — the linter catches contrast failures at lint time, before anything ships. The `export` command converts tokens to Tailwind config or W3C DTCG JSON simultaneously, so one file feeds your CSS, your build system, and your agent.
+
+Spec at [google-labs-code/design.md](https://github.com/google-labs-code/design.md).
+
 ## Knowledge bases are replacing notebooks
 
 Andrej Karpathy shared a pattern worth paying attention to: instead of using LLMs to write code, use them to build personal knowledge bases.
@@ -294,6 +300,9 @@ Sorted roughly by how much foundational leverage they provide.
 
 - **[agent-skills](https://github.com/addyosmani/agent-skills)** — Addy Osmani
   20 production-grade engineering skills with 7 slash commands, encoding Google's engineering practices (Hyrum's Law, Chesterton's Fence, test pyramids) as structured agent workflows.
+
+- **[DESIGN.md Specification](https://github.com/google-labs-code/design.md)** — Google Labs
+  The open-source spec for DESIGN.md: Apache 2.0, formal YAML/markdown schema, CLI with linter (including WCAG contrast validation), differ, and exporter to Tailwind and W3C DTCG JSON. Any tool can implement it.
 
 - **[awesome-design-md](https://github.com/VoltAgent/awesome-design-md)**
   58+ DESIGN.md files extracted from real companies — agent-readable design systems in plain markdown. Browse at [getdesign.md](https://getdesign.md).
