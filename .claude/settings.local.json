@@ -24,8 +24,7 @@
       "WebFetch(domain:red.anthropic.com)",
       "WebFetch(domain:www.anthropic.com)",
       "WebFetch(domain:www.reddit.com)",
-      "WebFetch(domain:news.ycombinator.com)",
-      "Bash(git push *)"
+      "WebFetch(domain:news.ycombinator.com)"
     ]
   }
 }
