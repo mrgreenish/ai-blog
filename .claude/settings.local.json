@@ -25,7 +25,6 @@
       "WebFetch(domain:www.anthropic.com)",
       "WebFetch(domain:www.reddit.com)",
       "WebFetch(domain:news.ycombinator.com)",
-      "Bash(git checkout *)",
       "Bash(git push *)"
     ]
   }
