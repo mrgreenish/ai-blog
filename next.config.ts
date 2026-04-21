@@ -25,6 +25,8 @@ const nextConfig: NextConfig = {
       { source: "/workflows/:slug",  destination: "/chapters/:slug", permanent: true },
       { source: "/tooling/:slug",    destination: "/chapters/:slug", permanent: true },
       { source: "/notes/:slug",      destination: "/chapters/:slug", permanent: true },
+      // Renamed chapters
+      { source: "/chapters/on-my-radar", destination: "/chapters/what-is-happening", permanent: true },
       // Category landing pages → home
       { source: "/models",    destination: "/", permanent: true },
       { source: "/workflows", destination: "/", permanent: true },
