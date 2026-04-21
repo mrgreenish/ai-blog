@@ -15,13 +15,43 @@ Something's shifted in the last few months. The interesting problems aren't "whi
 
 The models are good. The question is how you harness them. That's where things are moving fast, and where most of my attention is right now. Here's what's actually made a difference.
 
-## Claude Opus 4.7 lands — same price, narrow lead
+## Claude Opus 4.7 lands — and the reception is split
 
-Anthropic shipped [Claude Opus 4.7](https://www.anthropic.com/news/claude-opus-4-7) on April 16. It's generally available on the Claude API, Amazon Bedrock, Google Cloud Vertex AI, and Microsoft Foundry from day one — pricing held steady at **$5 / $25 per million tokens**, unchanged from 4.6.
+Anthropic shipped [Claude Opus 4.7](https://www.anthropic.com/news/claude-opus-4-7) on April 16. Generally available on the Claude API, Amazon Bedrock, Google Cloud Vertex AI, and Microsoft Foundry from day one, with pricing held steady at **$5 / $25 per million tokens** — unchanged from 4.6.
 
-Early reception is cautiously positive. [VentureBeat](https://venturebeat.com/technology/anthropic-releases-claude-opus-4-7-narrowly-retaking-lead-for-most-powerful-generally-available-llm) frames it as narrowly retaking the lead for the most powerful generally available LLM, with measurable gains on agentic coding and long-horizon reasoning benchmarks rather than a step-change. The [Finout pricing breakdown](https://www.finout.io/blog/claude-opus-4.7-pricing-the-real-cost-story-behind-the-unchanged-price-tag) flags the caveat worth watching: Opus 4.7 ships with a new tokenizer that can produce up to ~35% more tokens for the same input. The rate card didn't change, but your real bill per request can still go up.
+The headline benchmarks move in the right direction. 70% on CursorBench vs 58% for 4.6. 3× more production tasks resolved on Rakuten-SWE-Bench. 13% gain on a 93-task coding suite, state-of-the-art on GDPval-AA. Vision is the standout: 98.5% on XBOW's autonomous pentest visual-acuity benchmark vs 54.5% for 4.6, with image input now up to ~3.75 megapixels.
 
-Practical read: if you're already using Opus for hard problems, upgrade and re-measure your own cost curve before assuming parity. For routine work, nothing about this release changes the "don't reach for Opus unless you need it" calculus.
+But the developer reception is sharper than the numbers suggest. On MRCR v2 at 1M tokens, **Opus 4.7 scores 32.2% — down from 78.3% on 4.6**. A 46-point collapse in long-context retrieval. BrowseComp dropped from 83.7% to 79.3%. Developers on Hacker News and X are reporting argumentative loops in Claude Code where the model re-raises concerns it already acknowledged as resolved, more frequent hallucinations on long documents, and stub implementations where 4.6 produced complete ones. One independent run had Sonnet 4.6 beat Opus 4.7 on a custom terminal-UI task.
+
+Anthropic's own release notes hint at the tradeoff in softer language: "prompts written for earlier models can sometimes now produce unexpected results" as 4.7 interprets instructions more literally. The [Finout pricing breakdown](https://www.finout.io/blog/claude-opus-4.7-pricing-the-real-cost-story-behind-the-unchanged-price-tag) flags the other caveat: a new tokenizer can produce up to ~35% more tokens for the same input. The rate card didn't change, but your real bill per request can still go up.
+
+Practical read: if your work is primarily agentic coding, vision, or document reasoning, upgrade and measure. If you're doing long-document Q&A, needle-in-a-haystack retrieval, or agentic browsing over very long contexts, stay on 4.6 until a patch release. "Narrowly retaking the lead" is an accurate but incomplete summary — on the specific things some teams built their workflows around, 4.7 is a step back.
+
+## Mythos Preview finds zero-days at scale
+
+On April 7, Anthropic previewed [Claude Mythos](https://red.anthropic.com/2026/mythos-preview/) — an unreleased research model that's dramatically better at exploiting software than anything shipped before. On a Firefox vulnerability set where Opus 4.6 built working JavaScript shell exploits **2 times** in several hundred attempts, Mythos built them **181 times**. On OSS-Fuzz, it produced 595 tier-1/2 crashes versus Opus 4.6's 150–175, with full control flow hijacking demonstrated on ten targets.
+
+The bugs it found are the kind that normally take years of expert attention. A 27-year-old OpenBSD TCP flaw enabling remote DoS. A 16-year-old FFmpeg H.264 codec bug that OSS-Fuzz missed after roughly 5 million fuzzing attempts. A 17-year-old FreeBSD NFS remote code execution, now tracked as CVE-2026-4747. Thousands of additional critical and high-severity findings across major open-source projects. On cybersecurity vulnerability reproduction, Mythos scores 83.1% against Opus 4.6's 66.6%.
+
+Anthropic frames this as a "watershed moment," with their own caveat that "most security tooling has historically benefited defenders more than attackers" but the transition period may be "tumultuous." The practical read for anyone shipping software is blunt: patching cycles that were fine six months ago are not fine now. Threat models that assumed expert attackers were a scarce resource need revisiting. The offensive floor just moved, and it moved a lot.
+
+## Glasswing: defenders get the model first
+
+Mythos doesn't ship alone. [Project Glasswing](https://www.anthropic.com/glasswing) is the coordinated deployment — a partnership with 12 founding organisations (AWS, Apple, Google, Microsoft, NVIDIA, Linux Foundation, JPMorgan Chase, CrowdStrike, Palo Alto Networks, Cisco, Broadcom, and Anthropic itself) plus 40+ additional critical-infrastructure organisations, plus dedicated funding for open-source maintainers.
+
+The financial commitment: **$100M in Mythos model credits** for defensive use, $2.5M to Alpha-Omega and OpenSSF, and $1.5M to the Apache Software Foundation. The goal is months of concentrated patch work on the dependencies everything else rests on before anything similar becomes broadly available. The model itself isn't on the public API — access is gated to consortium members and vetted maintainers.
+
+The interesting precedent isn't the money. It's the deployment pattern. A model capable enough to shift the offence/defence balance ships to defenders first, through a consortium, with funded upstream patch work targeted at the libraries that form the trust root of modern software. No broad API release. No public methodology paper. The strategy assumes that if you give this capability to defenders at scale, they can close the window before attackers reach parity. Whether that bet pays off is the open question — but it's the first time a frontier capability has been deliberately held back from general availability for a coordinated defensive push. Worth watching how the pattern generalises.
+
+## Claude Design joins Anthropic Labs
+
+[Claude Design](https://www.anthropic.com/news/claude-design-anthropic-labs) shipped April 17 as a research preview — Anthropic's first dedicated visual creation tool, running on Opus 4.7, with direct handoff to Claude Code for development.
+
+What you actually do with it: point it at a codebase and it picks up the design system, import a doc, image, or URL and it generates designs, prototypes, slides, or one-pagers, then refine inline with fine-grained controls. Export to Canva, PDF, PPTX, or HTML. Organization-scoped sharing for teams. The target audience is wider than designers — product managers doing wireframes, founders building pitch decks, marketers making campaign materials, non-designers who need visual output and normally punt the work.
+
+Brilliant cited in the launch: complex prototyping dropped from 20+ prompts to 2. The more interesting detail is the Claude Code handoff. Design and code are usually connected by a lossy export step — a Figma file becomes hand-written React, with drift appearing immediately. Claude Design treats them as one continuous surface: generate in Design, refine in Design, hand the component tree directly to Claude Code for implementation. If that pipeline holds up in practice, it's a different workflow, not just a faster one.
+
+Available now on Pro, Max, Team, and Enterprise with gradual rollout from April 17.
 
 ## Hooks move agents from advice to automation
 

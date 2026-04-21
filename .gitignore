@@ -49,6 +49,10 @@ next-env.d.ts
 # Storybook
 storybook-static/
 
+# Claude Code
+.claude/settings.local.json
+.claude/worktrees/
+
 # IDE
 .vscode/
 .idea/
