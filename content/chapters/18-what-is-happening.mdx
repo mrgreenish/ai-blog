@@ -15,6 +15,18 @@ Something's shifted in the last few months. The interesting problems aren't "whi
 
 The models are good. The question is how you harness them. That's where things are moving fast, and where most of my attention is right now. Here's what's actually made a difference.
 
+## GPT-5.5 lands a week after Opus 4.7 — and the vibe flips
+
+OpenAI shipped [GPT-5.5](https://openai.com/index/introducing-gpt-5-5/) on April 23, seven weeks after 5.4 and seven days after Anthropic's Opus 4.7. It's rolling out on ChatGPT Plus, Pro, Business, and Enterprise, in Codex, and in the API — with a higher-tier GPT-5.5 Pro alongside it. API pricing is **$5 / $30 per million tokens**, roughly 2× GPT-5.4, with a 1M-token context window and per-token latency that matches 5.4 in real-world serving.
+
+The quiet detail is that this is the first fully retrained base model since GPT-4.5. The "5.4 → 5.5" version bump undersells the delta — developers poking at it on launch day kept repeating some version of "it just gets it" and "much less hand-holding." It's better at multi-step tool use, at staying in the loop until a task finishes, and at writing and debugging code without being steered every turn.
+
+Against Opus 4.7 the picture splits cleanly by workload. GPT-5.5 wins the autonomous-loop benchmarks: **Terminal-Bench 2.0 at 82.7% vs 69.4%**, plus leads on BrowseComp (+5.1pp) and CyberGym (+8.7pp). Opus 4.7 wins the reasoning-and-review cluster: **SWE-bench Pro 64.3% vs 58.6%**, **HLE 46.9% vs 41.4%**, and MCP-Atlas 79.1% vs 75.3%. Of the ten benchmarks both labs report, Opus leads on six and GPT-5.5 leads on four — but GPT-5.5's four are the ones closest to "agent that runs a shell for an hour."
+
+Reception is sharply warmer than Opus 4.7's, which landed with a 46-point MRCR regression and loud complaints about argumentative coding loops. GPT-5.5 feels like a clean upgrade at comparable speed, which is why devs are calling it a "revival" of the 5.x line. The pushback is almost entirely about price: at 2× GPT-5.4 for the base tier and more for Pro, teams with cost ceilings are staying on 5.4 for anything that doesn't need the extra agentic range. Output pricing is also $5/M more than Opus 4.7, though GPT-5.5 tends to emit fewer tokens per task, which partially offsets on the bill.
+
+Practical read: for agentic coding, browser automation, and long tool-use loops, GPT-5.5 is the default this week. For long-document reasoning, review-grade correctness, and anything close to HLE territory, Opus 4.7 still edges it. If you were burned by the Opus 4.7 release and parked on 4.6 or 5.4, 5.5 is the first model since 4.5 where the jump is worth the retest.
+
 ## Claude Opus 4.7 lands — and the reception is split
 
 Anthropic shipped [Claude Opus 4.7](https://www.anthropic.com/news/claude-opus-4-7) on April 16. Generally available on the Claude API, Amazon Bedrock, Google Cloud Vertex AI, and Microsoft Foundry from day one, with pricing held steady at **$5 / $25 per million tokens** — unchanged from 4.6.
