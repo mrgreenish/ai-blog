@@ -355,6 +355,54 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       hiddenBugsInRefactor: false,
     },
   },
+  {
+    id: "gpt-5.5",
+    name: "GPT-5.5",
+    provider: "OpenAI",
+    inputPer1M: 5.00,
+    outputPer1M: 30.00,
+    tier: "reasoning",
+    contextWindowTokens: 1_050_000,
+    tagline: "The Autonomous Loop",
+    emoji: "🔁",
+    gradientFrom: "from-teal-600",
+    gradientTo: "to-emerald-500",
+    accentColor: "text-teal-600",
+    contextBarColor: "bg-teal-500",
+    costColor: "text-teal-300",
+    why: {
+      autonomous:
+        "GPT-5.5 is the strongest model released so far for long-running tool-use loops. 82.7% on Terminal-Bench 2.0 (vs Opus 4.7's 69.4%), plus leads on BrowseComp and CyberGym — it keeps going until the task is actually finished instead of handing back a plan.",
+      coding:
+        "First fully retrained base model since GPT-4.5. Developers describe it as needing much less hand-holding: you state the goal, it picks the right files, edits them, runs them, and corrects itself without a dozen follow-up prompts.",
+      multifile:
+        "1M token context plus strong tool-use means GPT-5.5 can coordinate changes across a large codebase while actually executing and verifying them, not just producing a diff.",
+      hard:
+        "Closer to 'agent that can run a shell for an hour' than 'model that returns an answer.' For tasks where the answer is a working artifact, not a block of text, 5.5 is the default pick.",
+      architecture:
+        "GPT-5.5 matches GPT-5.4's per-token latency despite the capability jump, so you can put it behind agentic workflows without the usual speed tax.",
+    },
+    whenWrong:
+      "For review-grade reasoning, long-document Q&A, or anything close to HLE territory. Opus 4.7 still wins on SWE-bench Pro (64.3% vs 58.6%), HLE (46.9% vs 41.4%), and MCP-Atlas — if the task is 'reason deeply once' rather than 'run a loop,' pick Opus.",
+    traits: [
+      "1M token context with GPT-5.4-matching latency",
+      "State-of-the-art on autonomous tool-use and terminal benchmarks",
+      "First fully retrained base model since GPT-4.5",
+    ],
+    bestFor: "Agentic coding, browser automation, and long tool-use loops",
+    worstFor: "Review-grade reasoning and long-document Q&A — Opus 4.7 still edges it there",
+    latencyBand: "moderate",
+    initiativeStyle: "autonomous",
+    scopeDiscipline: "good",
+    pickWhen: "The task is a multi-step loop — run commands, read output, edit files, verify — and you want it finished, not planned",
+    avoidWhen: "You're paying for output tokens at volume and the task doesn't need the extra agentic range — GPT-5.4 at half the price is usually enough",
+    benchmark: {
+      correctServerAction: true,
+      followedConstraints: true,
+      madeUpDocs: false,
+      hiddenBugsInRefactor: false,
+    },
+  },
   // ── Cursor agentic ─────────────────────────────────────────────────────────
   {
     id: "composer-2",
@@ -432,11 +480,11 @@ export function getMixerModels() {
 
 // ---------------------------------------------------------------------------
 // Pricing metadata — single source of truth for data attribution
-// Prices verified against official API pricing pages on 2026-02-19
+// Prices verified against official API pricing pages on 2026-04-24
 // ---------------------------------------------------------------------------
 
 export const PRICING_META = {
-  verifiedDate: "2026-04-17", // re-verified: Opus 4.6 → Opus 4.7 (Apr 16 release, pricing unchanged at $5/$25); other models verified unchanged
+  verifiedDate: "2026-04-24", // re-verified: GPT-5.5 added (Apr 23 release, $5/$30); Opus 4.7 pricing unchanged at $5/$25; other models verified unchanged
   source: "Official API pricing pages",
   urls: {
     Anthropic: "https://docs.anthropic.com/en/docs/about-claude/pricing",
@@ -458,6 +506,7 @@ export function getCostCalculatorModels() {
     "sonnet-4.6",
     "composer-2",
     "opus-4.7",
+    "gpt-5.5",
   ];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
@@ -551,6 +600,7 @@ export function getScenarioLabModels() {
     "sonnet-4.6",
     "composer-2",
     "opus-4.7",
+    "gpt-5.5",
   ];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
