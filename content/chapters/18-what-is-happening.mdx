@@ -2,7 +2,7 @@
 title: "What Is Happening"
 subtitle: "The fastest-moving areas in AI agent tooling right now — hooks, harness design, browser automation, and multi-agent orchestration"
 publishedAt: "2026-04-17"
-updatedAt: "2026-04-17"
+updatedAt: "2026-04-24"
 chapter: 18
 part: tools-infrastructure
 partNumber: 4
@@ -228,6 +228,16 @@ The shift is in the output format. Most agent responses are text. Canvases let t
 
 This matters because some information is fundamentally better explored than read. A table of API response times is less useful than a chart you can filter by endpoint. A list of component dependencies is less useful than a graph you can zoom into. Canvases give the agent a richer output vocabulary.
 
+## Cursor 3: parallel agents and worktrees
+
+Cursor 3 ships two changes that address the same problem — waiting.
+
+The first is `/multitask`. Instead of queuing requests and running them serially, Cursor can now spin up async subagents to handle them in parallel. For requests already in the queue, you can ask Cursor to multitask mid-run rather than waiting for the current task to finish.
+
+The second is improved worktrees in the agents window. Run isolated tasks in the background across different branches simultaneously. When you're ready to test changes, bring any branch into your local foreground with one click.
+
+Combined, these features move Cursor toward a model where you describe work across multiple tasks and let the editor figure out execution order. The interface is catching up to what the agents can already do.
+
 ## Open models keep closing the gap
 
 Gemma 4 landed on April 2. Four variants: E2B (2.3B effective), E4B (4.5B effective), 26B MoE (4B active), and 31B dense. All Apache 2.0 — a real license change from Google's previous, more restrictive terms for open models.
@@ -315,6 +325,9 @@ Sorted roughly by how much foundational leverage they provide.
 
 - **[Cursor 3.0 changelog](https://cursor.com/changelog/3-0)**
   Design Mode, Agents Window, and the architectural shift to agent-first IDE. The Design Mode feature is the standout addition.
+
+- **[Tweet: cursor_ai on /multitask and worktrees](https://x.com/cursor_ai/status/2047764651363180839)**
+  Official announcement of parallel agent execution via `/multitask` and the new worktrees UI in Cursor 3.
 
 ### Context and background
 
