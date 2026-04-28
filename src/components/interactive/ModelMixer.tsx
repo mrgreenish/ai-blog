@@ -313,7 +313,7 @@ const TEMPLATES: Template[] = [
     id: "bugfix",
     label: "Bug investigation",
     steps: [
-      { id: "reproduce", label: "Reproduce", description: "Isolate the failing case, minimal repro", defaultTier: "fast", defaultModelId: "gpt-5.4", recommendedModelId: "gpt-5.4", inputTokens: 1000, outputTokens: 1000 },
+      { id: "reproduce", label: "Reproduce", description: "Isolate the failing case, minimal repro", defaultTier: "reasoning", defaultModelId: "gpt-5.5", recommendedModelId: "gpt-5.5", inputTokens: 1000, outputTokens: 1000 },
       { id: "diagnose", label: "Diagnose", description: "Trace root cause through execution path", defaultTier: "reasoning", defaultModelId: "opus-4.7", recommendedModelId: "opus-4.7", inputTokens: 2500, outputTokens: 2000 },
       { id: "fix", label: "Fix", description: "Implement the targeted fix", defaultTier: "balanced", defaultModelId: "sonnet-4.6", recommendedModelId: "sonnet-4.6", inputTokens: 2000, outputTokens: 2500 },
       { id: "verify", label: "Verify", description: "Confirm fix, check for regressions", defaultTier: "fast", defaultModelId: "haiku-4.5", recommendedModelId: "haiku-4.5", inputTokens: 1500, outputTokens: 1000 },

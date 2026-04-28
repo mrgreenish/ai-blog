@@ -130,13 +130,13 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     },
   },
   {
-    id: "deepseek-v3",
-    name: "DeepSeek-V3.2",
+    id: "deepseek-v4-flash",
+    name: "DeepSeek-V4-Flash",
     provider: "DeepSeek",
-    inputPer1M: 0.28,
-    outputPer1M: 0.42,
+    inputPer1M: 0.14,
+    outputPer1M: 0.28,
     tier: "fast",
-    contextWindowTokens: 128_000,
+    contextWindowTokens: 1_000_000,
     tagline: "The Open One",
     emoji: "🔓",
     gradientFrom: "from-slate-600",
@@ -211,7 +211,7 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     outputPer1M: 15.00,
     tier: "balanced",
     contextWindowTokens: 1_050_000,
-    tagline: "The Agentic Frontier",
+    tagline: "The Affordable Frontier",
     emoji: "🚀",
     gradientFrom: "from-emerald-600",
     gradientTo: "to-green-500",
@@ -220,9 +220,9 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     costColor: "text-emerald-300",
     why: {
       coding:
-        "GPT-5.4 reasons through code with high token efficiency — it uses fewer reasoning tokens than earlier models to reach the same answer, which means faster and cheaper results on hard problems.",
+        "GPT-5.4 remains the cheaper GPT-5.x frontier option — strong reasoning and tool use at half the per-token price of GPT-5.5.",
       autonomous:
-        "Built-in computer-use and native tool support make GPT-5.4 the strongest OpenAI model for agentic workflows that need to operate UIs, run code, and verify results end-to-end.",
+        "Built-in computer-use and native tool support still make GPT-5.4 useful for agentic workflows that need to operate UIs, run code, and verify results end-to-end.",
       architecture:
         "The 1M token context window lets GPT-5.4 hold an entire large codebase in context while reasoning about architectural decisions — without chunking or summarization.",
       hard:
@@ -380,12 +380,12 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       hard:
         "Closer to 'agent that can run a shell for an hour' than 'model that returns an answer.' For tasks where the answer is a working artifact, not a block of text, 5.5 is the default pick.",
       architecture:
-        "GPT-5.5 matches GPT-5.4's per-token latency despite the capability jump, so you can put it behind agentic workflows without the usual speed tax.",
+        "GPT-5.5 matches earlier GPT-5.x latency despite the capability jump, so you can put it behind agentic workflows without the usual speed tax.",
     },
     whenWrong:
       "For review-grade reasoning, long-document Q&A, or anything close to HLE territory. Opus 4.7 still wins on SWE-bench Pro (64.3% vs 58.6%), HLE (46.9% vs 41.4%), and MCP-Atlas — if the task is 'reason deeply once' rather than 'run a loop,' pick Opus.",
     traits: [
-      "1M token context with GPT-5.4-matching latency",
+      "1M token context with earlier GPT-5.x latency",
       "State-of-the-art on autonomous tool-use and terminal benchmarks",
       "First fully retrained base model since GPT-4.5",
     ],
@@ -395,7 +395,7 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     initiativeStyle: "autonomous",
     scopeDiscipline: "good",
     pickWhen: "The task is a multi-step loop — run commands, read output, edit files, verify — and you want it finished, not planned",
-    avoidWhen: "You're paying for output tokens at volume and the task doesn't need the extra agentic range — GPT-5.4 at half the price is usually enough",
+    avoidWhen: "You're paying for output tokens at volume and the task doesn't need the extra agentic range — a cheaper GPT-5.x model may be enough",
     benchmark: {
       correctServerAction: true,
       followedConstraints: true,
@@ -480,11 +480,11 @@ export function getMixerModels() {
 
 // ---------------------------------------------------------------------------
 // Pricing metadata — single source of truth for data attribution
-// Prices verified against official API pricing pages on 2026-04-24
+// Prices verified against official API pricing pages on 2026-04-28
 // ---------------------------------------------------------------------------
 
 export const PRICING_META = {
-  verifiedDate: "2026-04-24", // re-verified: GPT-5.5 added (Apr 23 release, $5/$30); Opus 4.7 pricing unchanged at $5/$25; other models verified unchanged
+  verifiedDate: "2026-04-28", // re-verified: GPT-5.5 is current at $5/$30; DeepSeek updated to V4 Flash; Anthropic, Google, and Cursor rates checked unchanged
   source: "Official API pricing pages",
   urls: {
     Anthropic: "https://docs.anthropic.com/en/docs/about-claude/pricing",
@@ -500,9 +500,8 @@ export function getCostCalculatorModels() {
   // Only include models that are meaningful for cost comparison in the blog
   const ids = [
     "gemini-flash",
-    "deepseek-v3",
+    "deepseek-v4-flash",
     "haiku-4.5",
-    "gpt-5.4",
     "sonnet-4.6",
     "composer-2",
     "opus-4.7",
@@ -524,7 +523,7 @@ export function getCostCalculatorModels() {
 /** Models shown in ContextWindowViz */
 export function getContextWindowModels() {
   const ids = [
-    "gpt-5.4",
+    "gpt-5.5",
     "gemini-flash",
     "sonnet-4.6",
     "composer-2",
@@ -596,7 +595,7 @@ export function getScenarioLabModels() {
   const ids = [
     "gemini-flash",
     "haiku-4.5",
-    "gpt-5.4",
+    "deepseek-v4-flash",
     "sonnet-4.6",
     "composer-2",
     "opus-4.7",

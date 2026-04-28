@@ -31,7 +31,8 @@ const MODELS: ModelStub[] = [
 const ALL_MODELS: ModelStub[] = [
   ...MODELS,
   { id: "haiku-4.5", name: "Claude Haiku 4.5", why: {} },
-  { id: "deepseek-v3", name: "DeepSeek-V3.2", why: {} },
+  { id: "deepseek-v4-flash", name: "DeepSeek-V4-Flash", why: {} },
+  { id: "gpt-5.5", name: "GPT-5.5", why: { autonomous: "Runs the loop" } },
 ];
 
 function allAnswers(overrides: Partial<Answers> = {}): Answers {
@@ -423,11 +424,18 @@ describe("scoreDimensions()", () => {
     expect(result.total).toBeGreaterThan(0);
   });
 
-  it("deepseek-v3 scores positively for internal + speed", () => {
-    const result = scoreDimensions("deepseek-v3", allAnswers({
+  it("deepseek-v4-flash scores positively for internal + speed", () => {
+    const result = scoreDimensions("deepseek-v4-flash", allAnswers({
       stakes: "internal", priority: "speed",
     }));
     expect(result.total).toBeGreaterThan(0);
+  });
+
+  it("gpt-5.5 scores strongly for autonomous coding loops", () => {
+    const result = scoreDimensions("gpt-5.5", allAnswers({
+      task: "coding", scope: "autonomous", autonomy: "drive", stakes: "production", priority: "accuracy",
+    }));
+    expect(result.total).toBeGreaterThan(15);
   });
 });
 
@@ -535,7 +543,7 @@ describe("getRanking()", () => {
     expect(ranking.top3.length).toBe(3);
     // haiku or gemini-flash should surface for speed + targeted + prototype
     const topIds = ranking.top3.map((r) => r.model.id);
-    const hasFastModel = topIds.some((id) => ["haiku-4.5", "gemini-flash", "deepseek-v3", "composer-2"].includes(id));
+    const hasFastModel = topIds.some((id) => ["haiku-4.5", "gemini-flash", "deepseek-v4-flash", "composer-2"].includes(id));
     expect(hasFastModel).toBe(true);
   });
 

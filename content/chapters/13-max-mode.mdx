@@ -2,7 +2,7 @@
 title: "Cursor Max Mode"
 subtitle: "When the 1M token context window earns its cost"
 publishedAt: "2026-04-17"
-updatedAt: "2026-04-17"
+updatedAt: "2026-04-28"
 chapter: 13
 part: tools-infrastructure
 partNumber: 4
@@ -19,7 +19,7 @@ That's the problem Max Mode solves.
 
 ## What Max Mode actually does
 
-By default, Cursor keeps you on the standard context window for the selected model — in practice often the 200K band, roughly 15,000 lines of code, which covers most single-feature work. Max Mode extends that to the model's maximum context window. The models that support Max Mode include Claude 4.6 Sonnet, Claude 4.7 Opus, GPT-5.4, GPT-5.3 Codex, and Gemini 3.1 Pro, among others.
+By default, Cursor keeps you on the standard context window for the selected model — in practice often the 200K band, roughly 15,000 lines of code, which covers most single-feature work. Max Mode extends that to the model's maximum context window. The models that support Max Mode include Claude 4.6 Sonnet, Claude 4.7 Opus, GPT-5.5, GPT-5.3 Codex, and Gemini 3.1 Pro, among others.
 
 The catch: on individual plans, it switches that session onto API-rate billing plus a 20% upcharge. A few heavy queries can chew through your included API usage fast.
 
@@ -47,7 +47,7 @@ Not a "better" mode. A "bigger context" mode. The model doesn't reason different
 
 Cursor Pro includes $20/month of API usage. Max Mode draws from that API pool at the selected model's rate, plus a 20% upcharge on individual plans. The numbers compound quickly:
 
-- A session processing 400K tokens of context can cost well under a dollar on Gemini 3 Flash and several dollars on Sonnet or GPT-5.4 once Max Mode pricing kicks in
+- A session processing 400K tokens of context can cost well under a dollar on Gemini 3 Flash and several dollars on Sonnet or GPT-5.5 once Max Mode pricing kicks in
 - Run that three or four times a day and you've consumed your monthly pool in a week
 - Overages charge at raw API rates — there's no cap unless you turn off pay-as-you-go
 

@@ -267,7 +267,7 @@ export const SCENARIOS: Scenario[] = [
       "Sonnet notices edge cases you didn't think to mention. For test generation, that proactiveness is a feature — you want the model to think about failure modes.",
     results: [
       {
-        modelId: "deepseek-v3",
+        modelId: "deepseek-v4-flash",
         verdict: "caution",
         summary: "Cheap and capable, but still missed the nastier edge cases",
         outputExcerpt:
@@ -298,21 +298,21 @@ export const SCENARIOS: Scenario[] = [
         costCommentary: "Fast but shallow — budget option for basic coverage",
       },
       {
-        modelId: "gpt-5.4",
+        modelId: "gpt-5.5",
         verdict: "good",
-        summary: "Strong reasoning — catches edge cases when effort is dialed up",
+        summary: "Strong agentic reasoning — catches edge cases and follows through",
         outputExcerpt:
-          "At high reasoning effort: identified the concurrent payment race condition and generated a test using Promise.all. Also covered timeout, partial failure, and idempotency scenarios.",
+          "Identified the concurrent payment race condition and generated a test using Promise.all. Also covered timeout, partial failure, and idempotency scenarios, then suggested running the suite to verify the behavior.",
         strengths: [
-          "Reasoning effort levels let you dial thoroughness vs speed",
-          "At high effort, caught the concurrent payment edge case",
-          "Token-efficient — uses fewer reasoning tokens than earlier models",
+          "Caught the concurrent payment edge case",
+          "Stronger follow-through than earlier GPT-5.x models on verification loops",
+          "High reasoning effort is available when the test plan gets subtle",
         ],
         weaknesses: [
-          "At default effort, coverage is shallower than Sonnet",
-          "Needs explicit effort configuration for best results",
+          "More expensive than Sonnet for high-volume test generation",
+          "Can over-invest in verification unless you set scope",
         ],
-        costCommentary: "Comparable to Sonnet, but effort levels let you trade cost for speed",
+        costCommentary: "Expensive per token, but one verified pass can beat multiple correction rounds",
         costContext: { compareToModelId: "sonnet-4.6" },
       },
       {
@@ -389,7 +389,7 @@ export const SCENARIOS: Scenario[] = [
           costCommentary: "Negligible execution cost — the plan did the heavy lifting",
         },
         {
-          modelId: "deepseek-v3",
+        modelId: "deepseek-v4-flash",
           verdict: "good",
           summary: "Solid executor from a clear plan, but Haiku is still the cleaner fast path",
           outputExcerpt:
@@ -453,21 +453,22 @@ export const SCENARIOS: Scenario[] = [
         costContext: { effectiveRuns: 3 },
       },
       {
-        modelId: "gpt-5.4",
+        modelId: "gpt-5.5",
         verdict: "good",
-        summary: "1M context holds the whole project — strong but less IDE-native",
+        summary: "1M context plus stronger tool loops — powerful but less IDE-native",
         outputExcerpt:
-          "Read the entire project structure into context. Implemented the feature across all three layers following existing patterns. Used native tool search to find the service layer conventions. One manual adjustment needed for the project's custom error handling.",
+          "Read the project structure into context, implemented the feature across all three layers, used native tool search to follow service conventions, then ran verification and corrected one custom error-handling mismatch.",
         strengths: [
           "1M context window — no chunking or summarization needed",
+          "Stronger autonomous follow-through than earlier GPT-5.x models",
           "Native tool use found existing patterns without manual guidance",
         ],
         weaknesses: [
           "Less IDE-native than Composer 2 — requires more setup",
-          "Missed a project-specific convention that Composer 2 picked up from editor context",
+          "Higher per-token cost means scope control matters",
         ],
         costCommentary:
-          "Higher per-token API cost than Composer 2 — you pay for GPT-5.4's breadth and reasoning stack, not Cursor's native agent loop",
+          "Higher per-token API cost than Composer 2 — you pay for GPT-5.5's breadth and autonomous verification, not Cursor's native agent loop",
         costContext: { compareToModelId: "composer-2" },
       },
       {
@@ -629,21 +630,21 @@ export const SCENARIOS: Scenario[] = [
         costCommentary: "Cheap, but the wrong answer is expensive",
       },
       {
-        modelId: "gpt-5.4",
+        modelId: "gpt-5.5",
         verdict: "good",
-        summary: "Strong reasoning at xhigh effort — cheaper than Opus but less depth",
+        summary: "Strong reasoning with better follow-through — still less review-focused than Opus",
         outputExcerpt:
-          "At xhigh reasoning effort: Your write-heavy access pattern makes SWR problematic — stale data will be served immediately after writes. Cache invalidation on write with Redis is the better fit here, despite the operational complexity.",
+          "At high reasoning effort: Your write-heavy access pattern makes SWR problematic — stale data will be served immediately after writes. Cache invalidation on write with Redis is the better fit here, despite the operational complexity.",
         strengths: [
-          "At xhigh effort, caught the same key insight as Opus",
-          "Cheaper than Opus for similar analysis quality",
-          "Reasoning effort levels let you right-size the cost",
+          "Caught the same key architectural issue as Opus",
+          "Better at turning analysis into an implementation loop than earlier GPT-5.x models",
+          "Reasoning effort levels let you right-size latency and cost",
         ],
         weaknesses: [
-          "Needs explicit xhigh effort — at default, it recommended SWR",
-          "Less detailed reasoning trace than Opus",
+          "Costs more than earlier GPT-5.x models, so cheap analysis loops add up",
+          "Less detailed review-grade reasoning trace than Opus",
         ],
-        costCommentary: "Strong value when you configure reasoning effort correctly",
+        costCommentary: "Strong value when the decision feeds directly into implementation and verification",
         costContext: { compareToModelId: "opus-4.7" },
       },
       {

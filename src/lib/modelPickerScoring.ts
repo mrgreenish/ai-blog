@@ -191,7 +191,7 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
       autonomy === "targeted" ? "Best for quick structured tasks in a loop" : "");
   }
 
-  if (modelId === "deepseek-v3") {
+  if (modelId === "deepseek-v4-flash") {
     dim("task", task === "coding" ? 2 : task === "reasoning" ? 2 : 0,
       "Strong reasoning at low cost — open-source weights");
     dim("scope", scope === "targeted" ? 1 : scope === "multifile" ? 1 : 0, "");
@@ -249,6 +249,25 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
       priority === "accuracy" ? "Set reasoning effort to high or xhigh for maximum accuracy on hard problems" : "");
     dim("autonomy", autonomy === "drive" ? 3 : autonomy === "gaps" ? 2 : 0,
       autonomy === "drive" ? "Built-in computer-use and tool search make it the strongest OpenAI model for end-to-end agentic tasks" : "");
+  }
+
+  if (modelId === "gpt-5.5") {
+    dim("task", task === "coding" ? 4 : task === "reasoning" ? 3 : task === "analysis" ? 2 : task === "vision" ? 2 : 0,
+      task === "coding" ? "Strongest OpenAI model for coding loops — better persistence and less hand-holding than earlier GPT-5.x models"
+      : task === "reasoning" ? "Highest reasoning effort plus stronger agentic follow-through for multi-step problems"
+      : "");
+    dim("scope", scope === "autonomous" ? 5 : scope === "multifile" ? 4 : scope === "architecture" ? 3 : 0,
+      scope === "autonomous" ? "Built for long tool-use loops — keeps working until the task is verified"
+      : scope === "multifile" ? "1M context plus stronger tool use for coordinating changes across a large codebase"
+      : scope === "architecture" ? "Large context and high reasoning effort make it strong for broad technical decisions" : "");
+    dim("stakes", stakes === "production" ? 3 : stakes === "critical" ? 3 : stakes === "prototype" ? -2 : 0,
+      stakes === "production" ? "Improved persistence helps it self-check production changes before handing them back"
+      : stakes === "critical" ? "Frontier agentic capability, but review-grade reasoning may still belong to Opus" : "");
+    dim("priority", priority === "accuracy" ? 3 : priority === "balance" ? 1 : priority === "speed" ? -2 : 0,
+      priority === "accuracy" ? "Worth the spend when a finished, verified artifact matters more than raw token cost" : "");
+    dim("autonomy", autonomy === "drive" ? 5 : autonomy === "gaps" ? 3 : autonomy === "targeted" ? -1 : 0,
+      autonomy === "drive" ? "Best fit when you want the model to run the loop, inspect output, edit, and verify"
+      : autonomy === "targeted" ? "Overkill for pointed edits — use a cheaper, more controlled model" : "");
   }
 
   if (modelId === "composer-2") {

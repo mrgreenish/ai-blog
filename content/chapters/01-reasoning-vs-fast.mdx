@@ -2,7 +2,7 @@
 title: "Reasoning vs Fast Models"
 subtitle: "When to choose reasoning models vs fast models for different coding tasks"
 publishedAt: "2026-04-17"
-updatedAt: "2026-04-17"
+updatedAt: "2026-04-28"
 chapter: 1
 part: understanding-models
 partNumber: 1
@@ -42,7 +42,7 @@ I don't pick one model for a task — I use different models for different *step
 1. **Opus for the plan.** I described the feature and constraints. Opus mapped out the data model, identified where the new endpoint fit in the existing auth middleware, and flagged a potential race condition with concurrent writes. 45 seconds, but it caught a design issue I would have hit two hours into implementation.
 2. **Sonnet for implementation.** With the plan locked, Sonnet wrote the route handler, validation logic, and database queries. Fast, correct, no scope creep — because the architecture decisions were already made.
 3. **Composer 2 for the test suite.** Gave it the implementation and said "full test coverage, including the race condition Opus flagged." It generated the tests, ran them, caught two failures from its own output, and fixed them autonomously.
-4. **GPT-5.4 for review.** Asked it to review the final diff for edge cases and security issues. It spotted a missing rate limit on the new endpoint and a permissive CORS header I'd copied from another route.
+4. **GPT-5.5 for review.** Asked it to review the final diff for edge cases and security issues. It spotted a missing rate limit on the new endpoint and a permissive CORS header I'd copied from another route.
 
 Total cost: roughly a third of running Opus end-to-end. Each model played to its strength — deep reasoning where it mattered, speed where it didn't.
 
