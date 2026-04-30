@@ -2,7 +2,7 @@
 title: "What Is Happening"
 subtitle: "The fastest-moving areas in AI agent tooling right now — hooks, harness design, browser automation, and multi-agent orchestration"
 publishedAt: "2026-04-17"
-updatedAt: "2026-04-28"
+updatedAt: "2026-04-30"
 chapter: 18
 part: tools-infrastructure
 partNumber: 4
@@ -250,6 +250,26 @@ The second is improved worktrees in the agents window. Run isolated tasks in the
 
 Combined, these features move Cursor toward a model where you describe work across multiple tasks and let the editor figure out execution order. The interface is catching up to what the agents can already do.
 
+## Cursor SDK opens the harness up
+
+Cursor [shipped a TypeScript SDK](https://cursor.com/blog/typescript-sdk) on April 29 — the same runtime, harness, and models that power the desktop app, CLI, and web client, now available programmatically via `npm install @cursor/sdk`. Public beta, token-based pricing, default model is Composer 2 (Cursor's in-house coding model — roughly 10× cheaper per input token than both Opus 4.7 and GPT-5.5).
+
+Agents created through the SDK get the full stack: codebase indexing with semantic search and instant grep, MCP servers, skills from `.cursor/skills/`, and hooks from `.cursor/hooks.json`. Execution can target sandboxed cloud VMs (Cursor-managed), self-hosted workers (your network), or your local machine. Subagents, streaming, and the same harness primitives that ship in the IDE are exposed as composable APIs.
+
+The [cookbook](https://github.com/cursor/cookbook) is the part to look at. Four reference projects: a minimal quickstart, a web-based prototyping tool that scaffolds new projects in a sandbox, a lightweight coding-agent CLI, and the [agent-kanban](https://github.com/cursor/cookbook/tree/main/sdk/agent-kanban) board — a Linear-style UI where each card represents a Cloud Agent. Drag a card to "in progress" and the agent picks the work up, runs to completion in a sandbox, opens a PR, and posts the result back to the card as an attachment. The board lists running agents, groups them into columns, previews artifacts inline, and creates new agents from a repo + prompt.
+
+Practical read: the SDK turns Cursor from "an editor with agents" into "agent runtime you can build on." If you've been wiring up your own agent loops over the Anthropic or OpenAI APIs, the SDK is shorter — you inherit indexing, hooks, subagents, and sandboxing instead of reinventing them. The kanban example is the cleanest demonstration of where this lands: tickets become agent invocations, drag-and-drop becomes scheduling, and PRs become the artifact.
+
+## Cursor ships agentic security review
+
+Cursor open-sourced its [Agentic Security Review](https://cursor.com/docs/security-review) — a security-tuned automation that runs on every pull request, posts findings as PR comments, and can block CI on high-severity issues. It audits diffs for exploitable vulnerabilities (auth, input validation, permission checks), skips items already discussed in the PR, and routes high-risk findings to a private Slack channel.
+
+The review agent ships alongside three other security agents Cursor runs internally — Vuln Hunter (segments the repo and hunts for vulnerabilities), Anybump (handles dependency patching, runs tests, opens a PR if they pass), and Invariant Sentinel (runs daily to detect drift against a list of compliance and privacy invariants). Templates and Terraform for all four are public, with a custom MCP server deployed as a serverless Lambda handling persistent state, deduplication, and Slack formatting. The [Cursor blog post](https://cursor.com/blog/security-agents) has the full architecture.
+
+In Cursor's own deployment, the review agent has run on thousands of PRs and prevented hundreds of issues from reaching production in the last two months. The rollout sequence they used is worth copying: silent mode to a private Slack channel first, then PR comments once precision was high enough, then a blocking CI gate.
+
+Practical read: security review used to be a `/security-review` slash command you remembered to run. As an always-on automation tied to CI, it stops being a discipline problem and starts being infrastructure. Worth pairing with hooks — the hook blocks bad writes locally, the review agent catches what makes it through.
+
 ## Open models keep closing the gap
 
 Gemma 4 landed on April 2. Four variants: E2B (2.3B effective), E4B (4.5B effective), 26B MoE (4B active), and 31B dense. All Apache 2.0 — a real license change from Google's previous, more restrictive terms for open models.
@@ -334,6 +354,12 @@ Sorted roughly by how much foundational leverage they provide.
 
 - **[Cursor Canvas](https://cursor.com/blog/canvas)**
   Agents create interactive visual dashboards and custom interfaces inline. The output format shift from text to explorable visualizations.
+
+- **[Cursor SDK](https://cursor.com/blog/typescript-sdk)**
+  TypeScript SDK exposing Cursor's runtime, harness, models, codebase indexing, MCP, skills, and hooks. Public beta via `npm install @cursor/sdk`. Default model is Composer 2. Pair with the [cookbook](https://github.com/cursor/cookbook) — the [agent-kanban](https://github.com/cursor/cookbook/tree/main/sdk/agent-kanban) example is the clearest demo of agents-as-tickets.
+
+- **[Cursor Security Review](https://cursor.com/docs/security-review)**
+  Official docs for Cursor's Agentic Security Review automation. Open-source templates and Terraform on Cursor Automations, plus three companion security agents (Vuln Hunter, Anybump, Invariant Sentinel). The [blog post](https://cursor.com/blog/security-agents) covers the architecture and rollout strategy.
 
 - **[Cursor 3.0 changelog](https://cursor.com/changelog/3-0)**
   Design Mode, Agents Window, and the architectural shift to agent-first IDE. The Design Mode feature is the standout addition.
