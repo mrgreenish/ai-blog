@@ -252,7 +252,7 @@ Combined, these features move Cursor toward a model where you describe work acro
 
 ## Cursor SDK opens the harness up
 
-Cursor [shipped a TypeScript SDK](https://cursor.com/blog/typescript-sdk) on April 29 — the same runtime, harness, and models that power the desktop app, CLI, and web client, now available programmatically via `npm install @cursor/sdk`. Public beta, token-based pricing, default model is Composer 2 (Cursor's in-house coding model — roughly 10× cheaper per input token than Opus 4.7 and 5× cheaper than GPT-5.5).
+Cursor [shipped a TypeScript SDK](https://cursor.com/blog/typescript-sdk) on April 29 — the same runtime, harness, and models that power the desktop app, CLI, and web client, now available programmatically via `npm install @cursor/sdk`. Public beta, token-based pricing, default model is Composer 2 (Cursor's in-house coding model — roughly 10× cheaper per input token than both Opus 4.7 and GPT-5.5).
 
 Agents created through the SDK get the full stack: codebase indexing with semantic search and instant grep, MCP servers, skills from `.cursor/skills/`, and hooks from `.cursor/hooks.json`. Execution can target sandboxed cloud VMs (Cursor-managed), self-hosted workers (your network), or your local machine. Subagents, streaming, and the same harness primitives that ship in the IDE are exposed as composable APIs.
 
