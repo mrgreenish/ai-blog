@@ -480,11 +480,11 @@ export function getMixerModels() {
 
 // ---------------------------------------------------------------------------
 // Pricing metadata — single source of truth for data attribution
-// Prices verified against official API pricing pages on 2026-04-28
+// Prices verified against official API pricing pages on 2026-05-02
 // ---------------------------------------------------------------------------
 
 export const PRICING_META = {
-  verifiedDate: "2026-04-28", // re-verified: GPT-5.5 is current at $5/$30; DeepSeek updated to V4 Flash; Anthropic, Google, and Cursor rates checked unchanged
+  verifiedDate: "2026-05-02", // Full MODEL_REGISTRY cross-check vs provider pricing pages; no rate or context changes
   source: "Official API pricing pages",
   urls: {
     Anthropic: "https://docs.anthropic.com/en/docs/about-claude/pricing",
