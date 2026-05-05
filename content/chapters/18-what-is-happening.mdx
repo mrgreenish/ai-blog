@@ -270,6 +270,18 @@ In Cursor's own deployment, the review agent has run on thousands of PRs and pre
 
 Practical read: security review used to be a `/security-review` slash command you remembered to run. As an always-on automation tied to CI, it stops being a discipline problem and starts being infrastructure. Worth pairing with hooks — the hook blocks bad writes locally, the review agent catches what makes it through.
 
+## CI failures are becoming self-healing
+
+The review agent catches what shouldn't merge. The CI Autofix automation catches what breaks after it does.
+
+[Cursor's CI Autofix](https://cursor.com/marketplace/automations/ci-autofix) is a first-party automation in the Marketplace. Install it on a repo and a cloud agent wakes up every time your CI pipeline fails — reads the workflow logs, traces the failing change through git history, assesses whether the root cause lives in a handful of files and involves code-level changes, then either pushes a fix commit to the branch or posts a comment with a root cause hypothesis and the relevant commits to investigate.
+
+The execution model is the same as Bugbot Autofix: isolated VM, full dev environment, type checker and linter pass before anything gets pushed. The trigger is different. Bugbot fires on PR creation and reviews the code ahead of time. CI Autofix fires on CI failure and responds to what broke. One is proactive, one is reactive — both run without you.
+
+The Sentry integration shows the same pattern working across external signals. An Issue updated event triggers the automation, the agent reads the full stack trace and breadcrumbs via the Sentry MCP, traces the regression vector through `git log`, and opens a fix PR. Memories is wired in so the agent doesn't open duplicate PRs for the same issue. The [full cookbook](https://sentry.io/cookbook/regressed-issue-to-pr-cursor/) covers the setup in detail — including the fixability heuristic: the agent skips anything requiring architectural changes or touching more than five files.
+
+Practical read: the interrupt is the expensive part. A CI failure that used to mean "get a Slack notification, context-switch, diagnose it, fix it, push, wait for CI again" can now land as "review this commit the agent pushed." Install it, watch the first ten runs to calibrate fix quality for your codebase, then decide whether to let it auto-push or keep a review gate. The Sentry cookbook's rollout sequence — silent mode first, then comments, then a real PR — applies here too.
+
 ## Open models keep closing the gap
 
 Gemma 4 landed on April 2. Four variants: E2B (2.3B effective), E4B (4.5B effective), 26B MoE (4B active), and 31B dense. All Apache 2.0 — a real license change from Google's previous, more restrictive terms for open models.
@@ -360,6 +372,15 @@ Sorted roughly by how much foundational leverage they provide.
 
 - **[Cursor Security Review](https://cursor.com/docs/security-review)**
   Official docs for Cursor's Agentic Security Review automation. Open-source templates and Terraform on Cursor Automations, plus three companion security agents (Vuln Hunter, Anybump, Invariant Sentinel). The [blog post](https://cursor.com/blog/security-agents) covers the architecture and rollout strategy.
+
+- **[Cursor CI Autofix](https://cursor.com/marketplace/automations/ci-autofix)**
+  First-party Marketplace automation that wakes on CI failures, reads workflow logs, traces root cause through git history, and pushes fix commits or posts a diagnosis comment. One-click install. Pairs naturally with the security review automation — security review catches vulnerabilities, CI Autofix catches broken builds.
+
+- **[Cursor Automations](https://cursor.com/blog/automations)**
+  The launch post for always-on cloud agents: trigger types, cloud sandbox mechanics, Memories, and how Bugbot Autofix was the first instantiation of the pattern. Worth reading before building custom automations.
+
+- **[Sentry × Cursor Automations cookbook](https://sentry.io/cookbook/regressed-issue-to-pr-cursor/)**
+  Step-by-step setup for auto-fixing Sentry regressions with Cursor Automations. Shows the full pattern: trigger config, Sentry MCP scopes, git regression tracing, fixability assessment, and PR creation. The most concrete reference for building event-driven fix automations against external signals.
 
 - **[Cursor 3.0 changelog](https://cursor.com/changelog/3-0)**
   Design Mode, Agents Window, and the architectural shift to agent-first IDE. The Design Mode feature is the standout addition.
