@@ -274,13 +274,15 @@ Practical read: security review used to be a `/security-review` slash command yo
 
 The review agent catches what shouldn't merge. The CI Autofix automation catches what breaks after it does.
 
-[Cursor's CI Autofix](https://cursor.com/marketplace/automations/ci-autofix) is a first-party automation in the Marketplace. Install it on a repo and a cloud agent wakes up every time your CI pipeline fails — reads the workflow logs, traces the failing change through git history, assesses whether the root cause lives in a handful of files and involves code-level changes, then either pushes a fix commit to the branch or posts a comment with a root cause hypothesis and the relevant commits to investigate.
+[Cursor's CI Autofix](https://cursor.com/marketplace/automations/ci-autofix) is a first-party automation in the Marketplace — the one-click version of a pattern you can also wire up manually via the [CLI cookbook](https://cursor.com/docs/cli/cookbook/fix-ci). Install it on a repo and a cloud agent wakes up every time your CI pipeline fails. It identifies the PR associated with the failing workflow run, traces the failure through the codebase, makes minimal targeted edits consistent with the repo's style, and then — this is the careful part — creates a separate fix branch rather than committing directly to the PR branch. It posts a single PR comment explaining what it did, with an inline compare link so you can one-click open a PR from the fix.
 
-The execution model is the same as Bugbot Autofix: isolated VM, full dev environment, type checker and linter pass before anything gets pushed. The trigger is different. Bugbot fires on PR creation and reviews the code ahead of time. CI Autofix fires on CI failure and responds to what broke. One is proactive, one is reactive — both run without you.
+The trigger is a `workflow_run` event watching your test workflow for a `completed` + `failure` conclusion. The Cursor agent runs headless in GitHub Actions, reads the logs, and does the investigation in the same environment where the failure happened.
+
+The design decision matters: CI Autofix proposes via a compare link rather than force-pushing to your branch. Bugbot Autofix commits directly to the PR branch — it's reviewing your own code and has standing to do that. CI Autofix creates a parallel fix branch because the failure might involve anyone's code, and the fix deserves its own history. You stay in control of whether the fix lands.
 
 The Sentry integration shows the same pattern working across external signals. An Issue updated event triggers the automation, the agent reads the full stack trace and breadcrumbs via the Sentry MCP, traces the regression vector through `git log`, and opens a fix PR. Memories is wired in so the agent doesn't open duplicate PRs for the same issue. The [full cookbook](https://sentry.io/cookbook/regressed-issue-to-pr-cursor/) covers the setup in detail — including the fixability heuristic: the agent skips anything requiring architectural changes or touching more than five files.
 
-Practical read: the interrupt is the expensive part. A CI failure that used to mean "get a Slack notification, context-switch, diagnose it, fix it, push, wait for CI again" can now land as "review this commit the agent pushed." Install it, watch the first ten runs to calibrate fix quality for your codebase, then decide whether to let it auto-push or keep a review gate. The Sentry cookbook's rollout sequence — silent mode first, then comments, then a real PR — applies here too.
+Practical read: the interrupt is the expensive part. A CI failure that used to mean "get a Slack notification, context-switch, diagnose it, fix it, push, wait for CI again" can now land as "click this compare link and review the agent's fix." The human review step stays; the context-switch mostly disappears. Watch the first ten runs to calibrate fix quality before you trust it in production.
 
 ## Open models keep closing the gap
 
@@ -374,7 +376,10 @@ Sorted roughly by how much foundational leverage they provide.
   Official docs for Cursor's Agentic Security Review automation. Open-source templates and Terraform on Cursor Automations, plus three companion security agents (Vuln Hunter, Anybump, Invariant Sentinel). The [blog post](https://cursor.com/blog/security-agents) covers the architecture and rollout strategy.
 
 - **[Cursor CI Autofix](https://cursor.com/marketplace/automations/ci-autofix)**
-  First-party Marketplace automation that wakes on CI failures, reads workflow logs, traces root cause through git history, and pushes fix commits or posts a diagnosis comment. One-click install. Pairs naturally with the security review automation — security review catches vulnerabilities, CI Autofix catches broken builds.
+  First-party Marketplace automation that wakes on CI `workflow_run` failures, traces root cause through git history, and posts a PR comment with a compare link to a separate fix branch — human review stays in the loop, context-switch disappears. One-click install; the underlying mechanism is the [CLI cookbook](https://cursor.com/docs/cli/cookbook/fix-ci) if you want to wire it manually.
+
+- **[Tweet: cursor_ai on CI Autofix](https://x.com/cursor_ai/status/2051739625958584659)**
+  Official announcement of the CI Autofix Marketplace automation.
 
 - **[Cursor Automations](https://cursor.com/blog/automations)**
   The launch post for always-on cloud agents: trigger types, cloud sandbox mechanics, Memories, and how Bugbot Autofix was the first instantiation of the pattern. Worth reading before building custom automations.
