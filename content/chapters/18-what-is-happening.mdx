@@ -2,7 +2,7 @@
 title: "What Is Happening"
 subtitle: "The fastest-moving areas in AI agent tooling right now — hooks, harness design, browser automation, and multi-agent orchestration"
 publishedAt: "2026-04-17"
-updatedAt: "2026-04-30"
+updatedAt: "2026-05-06"
 chapter: 18
 part: tools-infrastructure
 partNumber: 4
@@ -11,9 +11,45 @@ illustrationPlaceholders:
   - "Timeline: predicted maturity curve for hooks, harness design, browser automation, and multi-agent orchestration."
 ---
 
+{/* New entries go at the TOP. Sections are ordered newest-added → oldest-added so recent items surface first. Do not insert in topical or alphabetical order. */}
+
 Something's shifted in the last few months. The interesting problems aren't "which model is better" anymore — it's everything around the model. How you feed it context. How you keep it coherent across a long session. How you constrain what it touches. How you recover when it goes sideways.
 
 The models are good. The question is how you harness them. That's where things are moving fast, and where most of my attention is right now. Here's what's actually made a difference.
+
+## Vercel opens the cloud agent stack
+
+Cursor's SDK gives you agent infrastructure from an IDE company. Vercel's answer is different: an open-source reference implementation you can actually read.
+
+[Open Agents](https://github.com/vercel-labs/open-agents) is MIT-licensed, deployed at open-agents.dev, and explicitly framed as a reference, not a starter kit. The goal is visibility — see exactly how the pieces wire together, then fork and adapt.
+
+The architecture is three layers: **web app → agent workflow → sandbox VM**. The web layer handles auth (Better Auth, GitHub OAuth), sessions, chat, and streaming UI built on Next.js. The agent runs as a durable workflow via Vercel's Workflows SDK — long-running execution that can hibernate and resume without losing state. The sandbox is an isolated VM with a full filesystem, shell, git, dev servers, and preview ports.
+
+The critical design choice: agent and sandbox are separate. The agent doesn't run inside the VM — it reaches in via tool calls. That means each layer can hibernate independently. Pause a long coding task, come back hours later, the agent picks up without the sandbox burning compute the whole time.
+
+Feature set: file reads and edits, shell commands, web search, git operations, optional auto-commit and PR creation, session sharing via read-only links, voice input via ElevenLabs. Neon PostgreSQL for persistence, optional Redis or Vercel KV for caching.
+
+Practical read: this is the cleanest public example of how Vercel's own stack — Workflows SDK, Sandboxes, Gateway — wires together for a coding agent. If you've been building agent loops yourself over raw APIs, reading this codebase is faster than reading docs. The architectural insight is the same one underneath the Cursor SDK: durable execution plus isolated sandbox plus external tool access is the skeleton of every cloud coding agent. Vercel just made theirs legible.
+
+## Cursor SDK opens the harness up
+
+Cursor [shipped a TypeScript SDK](https://cursor.com/blog/typescript-sdk) on April 29 — the same runtime, harness, and models that power the desktop app, CLI, and web client, now available programmatically via `npm install @cursor/sdk`. Public beta, token-based pricing, default model is Composer 2 (Cursor's in-house coding model — roughly 10× cheaper per input token than both Opus 4.7 and GPT-5.5).
+
+Agents created through the SDK get the full stack: codebase indexing with semantic search and instant grep, MCP servers, skills from `.cursor/skills/`, and hooks from `.cursor/hooks.json`. Execution can target sandboxed cloud VMs (Cursor-managed), self-hosted workers (your network), or your local machine. Subagents, streaming, and the same harness primitives that ship in the IDE are exposed as composable APIs.
+
+The [cookbook](https://github.com/cursor/cookbook) is the part to look at. Four reference projects: a minimal quickstart, a web-based prototyping tool that scaffolds new projects in a sandbox, a lightweight coding-agent CLI, and the [agent-kanban](https://github.com/cursor/cookbook/tree/main/sdk/agent-kanban) board — a Linear-style UI where each card represents a Cloud Agent. Drag a card to "in progress" and the agent picks the work up, runs to completion in a sandbox, opens a PR, and posts the result back to the card as an attachment. The board lists running agents, groups them into columns, previews artifacts inline, and creates new agents from a repo + prompt.
+
+Practical read: the SDK turns Cursor from "an editor with agents" into "agent runtime you can build on." If you've been wiring up your own agent loops over the Anthropic or OpenAI APIs, the SDK is shorter — you inherit indexing, hooks, subagents, and sandboxing instead of reinventing them. The kanban example is the cleanest demonstration of where this lands: tickets become agent invocations, drag-and-drop becomes scheduling, and PRs become the artifact.
+
+## Cursor ships agentic security review
+
+Cursor open-sourced its [Agentic Security Review](https://cursor.com/docs/security-review) — a security-tuned automation that runs on every pull request, posts findings as PR comments, and can block CI on high-severity issues. It audits diffs for exploitable vulnerabilities (auth, input validation, permission checks), skips items already discussed in the PR, and routes high-risk findings to a private Slack channel.
+
+The review agent ships alongside three other security agents Cursor runs internally — Vuln Hunter (segments the repo and hunts for vulnerabilities), Anybump (handles dependency patching, runs tests, opens a PR if they pass), and Invariant Sentinel (runs daily to detect drift against a list of compliance and privacy invariants). Templates and Terraform for all four are public, with a custom MCP server deployed as a serverless Lambda handling persistent state, deduplication, and Slack formatting. The [Cursor blog post](https://cursor.com/blog/security-agents) has the full architecture.
+
+In Cursor's own deployment, the review agent has run on thousands of PRs and prevented hundreds of issues from reaching production in the last two months. The rollout sequence they used is worth copying: silent mode to a private Slack channel first, then PR comments once precision was high enough, then a blocking CI gate.
+
+Practical read: security review used to be a `/security-review` slash command you remembered to run. As an always-on automation tied to CI, it stops being a discipline problem and starts being infrastructure. Worth pairing with hooks — the hook blocks bad writes locally, the review agent catches what makes it through.
 
 ## GPT-5.5 lands a week after Opus 4.7 — and the vibe flips
 
@@ -27,17 +63,23 @@ Reception is sharply warmer than Opus 4.7's, which landed with a 46-point MRCR r
 
 Practical read: for agentic coding, browser automation, and long tool-use loops, GPT-5.5 is the default this week. For long-document reasoning, review-grade correctness, and anything close to HLE territory, Opus 4.7 still edges it. If you were burned by the Opus 4.7 release and parked on 4.6 or 5.4, 5.5 is the first model since 4.5 where the jump is worth the retest.
 
-## Claude Opus 4.7 lands — and the reception is split
+## Cursor 3: parallel agents and worktrees
 
-Anthropic shipped [Claude Opus 4.7](https://www.anthropic.com/news/claude-opus-4-7) on April 16. Generally available on the Claude API, Amazon Bedrock, Google Cloud Vertex AI, and Microsoft Foundry from day one, with pricing held steady at **$5 / $25 per million tokens** — unchanged from 4.6.
+Cursor 3 ships two changes that address the same problem — waiting.
 
-The headline benchmarks move in the right direction. 70% on CursorBench vs 58% for 4.6. 3× more production tasks resolved on Rakuten-SWE-Bench. 13% gain on a 93-task coding suite, state-of-the-art on GDPval-AA. Vision is the standout: 98.5% on XBOW's autonomous pentest visual-acuity benchmark vs 54.5% for 4.6, with image input now up to ~3.75 megapixels.
+The first is `/multitask`. Instead of queuing requests and running them serially, Cursor can now spin up async subagents to handle them in parallel. For requests already in the queue, you can ask Cursor to multitask mid-run rather than waiting for the current task to finish.
 
-But the developer reception is sharper than the numbers suggest. On MRCR v2 at 1M tokens, **Opus 4.7 scores 32.2% — down from 78.3% on 4.6**. A 46-point collapse in long-context retrieval. BrowseComp dropped from 83.7% to 79.3%. Developers on Hacker News and X are reporting argumentative loops in Claude Code where the model re-raises concerns it already acknowledged as resolved, more frequent hallucinations on long documents, and stub implementations where 4.6 produced complete ones. One independent run had Sonnet 4.6 beat Opus 4.7 on a custom terminal-UI task.
+The second is improved worktrees in the agents window. Run isolated tasks in the background across different branches simultaneously. When you're ready to test changes, bring any branch into your local foreground with one click.
 
-Anthropic's own release notes hint at the tradeoff in softer language: "prompts written for earlier models can sometimes now produce unexpected results" as 4.7 interprets instructions more literally. The [Finout pricing breakdown](https://www.finout.io/blog/claude-opus-4.7-pricing-the-real-cost-story-behind-the-unchanged-price-tag) flags the other caveat: a new tokenizer can produce up to ~35% more tokens for the same input. The rate card didn't change, but your real bill per request can still go up.
+Combined, these features move Cursor toward a model where you describe work across multiple tasks and let the editor figure out execution order. The interface is catching up to what the agents can already do.
 
-Practical read: if your work is primarily agentic coding, vision, or document reasoning, upgrade and measure. If you're doing long-document Q&A, needle-in-a-haystack retrieval, or agentic browsing over very long contexts, stay on 4.6 until a patch release. "Narrowly retaking the lead" is an accurate but incomplete summary — on the specific things some teams built their workflows around, 4.7 is a step back.
+## The packaging pattern works for design too
+
+The same pattern that works for code conventions works for design. [ux-ui-agent-skills](https://github.com/plugin87/ux-ui-agent-skills) packages DTCG design tokens, Atomic Design component specs, WCAG 2.2 checklists, Nielsen heuristic rubrics, and React + Tailwind v4 / Next.js 15 patterns into a single skill set.
+
+Drop it into a project and the agent applies consistent design knowledge — token mapping, accessibility scoring, state documentation — instead of improvising each time.
+
+Any domain with enough accumulated knowledge can be packaged this way. Design is just a clear example because the gap between "AI generates UI" and "AI generates good UI" is so visible.
 
 ## Mythos Preview finds zero-days at scale
 
@@ -64,6 +106,18 @@ What you actually do with it: point it at a codebase and it picks up the design 
 Brilliant cited in the launch: complex prototyping dropped from 20+ prompts to 2. The more interesting detail is the Claude Code handoff. Design and code are usually connected by a lossy export step — a Figma file becomes hand-written React, with drift appearing immediately. Claude Design treats them as one continuous surface: generate in Design, refine in Design, hand the component tree directly to Claude Code for implementation. If that pipeline holds up in practice, it's a different workflow, not just a faster one.
 
 Available now on Pro, Max, Team, and Enterprise with gradual rollout from April 17.
+
+## Claude Opus 4.7 lands — and the reception is split
+
+Anthropic shipped [Claude Opus 4.7](https://www.anthropic.com/news/claude-opus-4-7) on April 16. Generally available on the Claude API, Amazon Bedrock, Google Cloud Vertex AI, and Microsoft Foundry from day one, with pricing held steady at **$5 / $25 per million tokens** — unchanged from 4.6.
+
+The headline benchmarks move in the right direction. 70% on CursorBench vs 58% for 4.6. 3× more production tasks resolved on Rakuten-SWE-Bench. 13% gain on a 93-task coding suite, state-of-the-art on GDPval-AA. Vision is the standout: 98.5% on XBOW's autonomous pentest visual-acuity benchmark vs 54.5% for 4.6, with image input now up to ~3.75 megapixels.
+
+But the developer reception is sharper than the numbers suggest. On MRCR v2 at 1M tokens, **Opus 4.7 scores 32.2% — down from 78.3% on 4.6**. A 46-point collapse in long-context retrieval. BrowseComp dropped from 83.7% to 79.3%. Developers on Hacker News and X are reporting argumentative loops in Claude Code where the model re-raises concerns it already acknowledged as resolved, more frequent hallucinations on long documents, and stub implementations where 4.6 produced complete ones. One independent run had Sonnet 4.6 beat Opus 4.7 on a custom terminal-UI task.
+
+Anthropic's own release notes hint at the tradeoff in softer language: "prompts written for earlier models can sometimes now produce unexpected results" as 4.7 interprets instructions more literally. The [Finout pricing breakdown](https://www.finout.io/blog/claude-opus-4.7-pricing-the-real-cost-story-behind-the-unchanged-price-tag) flags the other caveat: a new tokenizer can produce up to ~35% more tokens for the same input. The rate card didn't change, but your real bill per request can still go up.
+
+Practical read: if your work is primarily agentic coding, vision, or document reasoning, upgrade and measure. If you're doing long-document Q&A, needle-in-a-haystack retrieval, or agentic browsing over very long contexts, stay on 4.6 until a patch release. "Narrowly retaking the lead" is an accurate but incomplete summary — on the specific things some teams built their workflows around, 4.7 is a step back.
 
 ## Hooks move agents from advice to automation
 
@@ -174,14 +228,6 @@ The instinct system is the interesting part: the agent extracts patterns from yo
 
 The community is converging on a shared vocabulary — skills, subagents, hooks, harnesses, evals. The primitives are stabilizing even as the specific tools change.
 
-## The packaging pattern works for design too
-
-The same pattern that works for code conventions works for design. [ux-ui-agent-skills](https://github.com/plugin87/ux-ui-agent-skills) packages DTCG design tokens, Atomic Design component specs, WCAG 2.2 checklists, Nielsen heuristic rubrics, and React + Tailwind v4 / Next.js 15 patterns into a single skill set.
-
-Drop it into a project and the agent applies consistent design knowledge — token mapping, accessibility scoring, state documentation — instead of improvising each time.
-
-Any domain with enough accumulated knowledge can be packaged this way. Design is just a clear example because the gap between "AI generates UI" and "AI generates good UI" is so visible.
-
 ## Engineering practices are becoming installable
 
 Addy Osmani packaged Google's engineering culture into [agent-skills](https://github.com/addyosmani/agent-skills): 20 skills across a 6-phase lifecycle, with 7 slash commands (`/spec`, `/plan`, `/build`, `/test`, `/review`, `/code-simplify`, `/ship`) that map to the full development loop.
@@ -239,50 +285,6 @@ Cursor shipped [canvases](https://cursor.com/blog/canvas) — interactive visual
 The shift is in the output format. Most agent responses are text. Canvases let the agent build a small interactive application as the response — a dependency graph you can explore, a timeline you can scrub, a layout you can rearrange. The agent writes the visualization code, renders it in a sandboxed canvas, and you interact with the result directly.
 
 This matters because some information is fundamentally better explored than read. A table of API response times is less useful than a chart you can filter by endpoint. A list of component dependencies is less useful than a graph you can zoom into. Canvases give the agent a richer output vocabulary.
-
-## Cursor 3: parallel agents and worktrees
-
-Cursor 3 ships two changes that address the same problem — waiting.
-
-The first is `/multitask`. Instead of queuing requests and running them serially, Cursor can now spin up async subagents to handle them in parallel. For requests already in the queue, you can ask Cursor to multitask mid-run rather than waiting for the current task to finish.
-
-The second is improved worktrees in the agents window. Run isolated tasks in the background across different branches simultaneously. When you're ready to test changes, bring any branch into your local foreground with one click.
-
-Combined, these features move Cursor toward a model where you describe work across multiple tasks and let the editor figure out execution order. The interface is catching up to what the agents can already do.
-
-## Cursor SDK opens the harness up
-
-Cursor [shipped a TypeScript SDK](https://cursor.com/blog/typescript-sdk) on April 29 — the same runtime, harness, and models that power the desktop app, CLI, and web client, now available programmatically via `npm install @cursor/sdk`. Public beta, token-based pricing, default model is Composer 2 (Cursor's in-house coding model — roughly 10× cheaper per input token than both Opus 4.7 and GPT-5.5).
-
-Agents created through the SDK get the full stack: codebase indexing with semantic search and instant grep, MCP servers, skills from `.cursor/skills/`, and hooks from `.cursor/hooks.json`. Execution can target sandboxed cloud VMs (Cursor-managed), self-hosted workers (your network), or your local machine. Subagents, streaming, and the same harness primitives that ship in the IDE are exposed as composable APIs.
-
-The [cookbook](https://github.com/cursor/cookbook) is the part to look at. Four reference projects: a minimal quickstart, a web-based prototyping tool that scaffolds new projects in a sandbox, a lightweight coding-agent CLI, and the [agent-kanban](https://github.com/cursor/cookbook/tree/main/sdk/agent-kanban) board — a Linear-style UI where each card represents a Cloud Agent. Drag a card to "in progress" and the agent picks the work up, runs to completion in a sandbox, opens a PR, and posts the result back to the card as an attachment. The board lists running agents, groups them into columns, previews artifacts inline, and creates new agents from a repo + prompt.
-
-Practical read: the SDK turns Cursor from "an editor with agents" into "agent runtime you can build on." If you've been wiring up your own agent loops over the Anthropic or OpenAI APIs, the SDK is shorter — you inherit indexing, hooks, subagents, and sandboxing instead of reinventing them. The kanban example is the cleanest demonstration of where this lands: tickets become agent invocations, drag-and-drop becomes scheduling, and PRs become the artifact.
-
-## Vercel opens the cloud agent stack
-
-Cursor's SDK gives you agent infrastructure from an IDE company. Vercel's answer is different: an open-source reference implementation you can actually read.
-
-[Open Agents](https://github.com/vercel-labs/open-agents) is MIT-licensed, deployed at open-agents.dev, and explicitly framed as a reference, not a starter kit. The goal is visibility — see exactly how the pieces wire together, then fork and adapt.
-
-The architecture is three layers: **web app → agent workflow → sandbox VM**. The web layer handles auth (Better Auth, GitHub OAuth), sessions, chat, and streaming UI built on Next.js. The agent runs as a durable workflow via Vercel's Workflows SDK — long-running execution that can hibernate and resume without losing state. The sandbox is an isolated VM with a full filesystem, shell, git, dev servers, and preview ports.
-
-The critical design choice: agent and sandbox are separate. The agent doesn't run inside the VM — it reaches in via tool calls. That means each layer can hibernate independently. Pause a long coding task, come back hours later, the agent picks up without the sandbox burning compute the whole time.
-
-Feature set: file reads and edits, shell commands, web search, git operations, optional auto-commit and PR creation, session sharing via read-only links, voice input via ElevenLabs. Neon PostgreSQL for persistence, optional Redis or Vercel KV for caching.
-
-Practical read: this is the cleanest public example of how Vercel's own stack — Workflows SDK, Sandboxes, Gateway — wires together for a coding agent. If you've been building agent loops yourself over raw APIs, reading this codebase is faster than reading docs. The architectural insight is the same one underneath the Cursor SDK: durable execution plus isolated sandbox plus external tool access is the skeleton of every cloud coding agent. Vercel just made theirs legible.
-
-## Cursor ships agentic security review
-
-Cursor open-sourced its [Agentic Security Review](https://cursor.com/docs/security-review) — a security-tuned automation that runs on every pull request, posts findings as PR comments, and can block CI on high-severity issues. It audits diffs for exploitable vulnerabilities (auth, input validation, permission checks), skips items already discussed in the PR, and routes high-risk findings to a private Slack channel.
-
-The review agent ships alongside three other security agents Cursor runs internally — Vuln Hunter (segments the repo and hunts for vulnerabilities), Anybump (handles dependency patching, runs tests, opens a PR if they pass), and Invariant Sentinel (runs daily to detect drift against a list of compliance and privacy invariants). Templates and Terraform for all four are public, with a custom MCP server deployed as a serverless Lambda handling persistent state, deduplication, and Slack formatting. The [Cursor blog post](https://cursor.com/blog/security-agents) has the full architecture.
-
-In Cursor's own deployment, the review agent has run on thousands of PRs and prevented hundreds of issues from reaching production in the last two months. The rollout sequence they used is worth copying: silent mode to a private Slack channel first, then PR comments once precision was high enough, then a blocking CI gate.
-
-Practical read: security review used to be a `/security-review` slash command you remembered to run. As an always-on automation tied to CI, it stops being a discipline problem and starts being infrastructure. Worth pairing with hooks — the hook blocks bad writes locally, the review agent catches what makes it through.
 
 ## Open models keep closing the gap
 
