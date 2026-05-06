@@ -260,6 +260,20 @@ The [cookbook](https://github.com/cursor/cookbook) is the part to look at. Four 
 
 Practical read: the SDK turns Cursor from "an editor with agents" into "agent runtime you can build on." If you've been wiring up your own agent loops over the Anthropic or OpenAI APIs, the SDK is shorter — you inherit indexing, hooks, subagents, and sandboxing instead of reinventing them. The kanban example is the cleanest demonstration of where this lands: tickets become agent invocations, drag-and-drop becomes scheduling, and PRs become the artifact.
 
+## Vercel opens the cloud agent stack
+
+Cursor's SDK gives you agent infrastructure from an IDE company. Vercel's answer is different: an open-source reference implementation you can actually read.
+
+[Open Agents](https://github.com/vercel-labs/open-agents) is MIT-licensed, deployed at open-agents.dev, and explicitly framed as a reference, not a starter kit. The goal is visibility — see exactly how the pieces wire together, then fork and adapt.
+
+The architecture is three layers: **web app → agent workflow → sandbox VM**. The web layer handles auth (Better Auth, GitHub OAuth), sessions, chat, and streaming UI built on Next.js. The agent runs as a durable workflow via Vercel's Workflows SDK — long-running execution that can hibernate and resume without losing state. The sandbox is an isolated VM with a full filesystem, shell, git, dev servers, and preview ports.
+
+The critical design choice: agent and sandbox are separate. The agent doesn't run inside the VM — it reaches in via tool calls. That means each layer can hibernate independently. Pause a long coding task, come back hours later, the agent picks up without the sandbox burning compute the whole time.
+
+Feature set: file reads and edits, shell commands, web search, git operations, optional auto-commit and PR creation, session sharing via read-only links, voice input via ElevenLabs. Neon PostgreSQL for persistence, optional Redis or Vercel KV for caching.
+
+Practical read: this is the cleanest public example of how Vercel's own stack — Workflows SDK, Sandboxes, Gateway — wires together for a coding agent. If you've been building agent loops yourself over raw APIs, reading this codebase is faster than reading docs. The architectural insight is the same one underneath the Cursor SDK: durable execution plus isolated sandbox plus external tool access is the skeleton of every cloud coding agent. Vercel just made theirs legible.
+
 ## Cursor ships agentic security review
 
 Cursor open-sourced its [Agentic Security Review](https://cursor.com/docs/security-review) — a security-tuned automation that runs on every pull request, posts findings as PR comments, and can block CI on high-severity issues. It audits diffs for exploitable vulnerabilities (auth, input validation, permission checks), skips items already discussed in the PR, and routes high-risk findings to a private Slack channel.
@@ -357,6 +371,9 @@ Sorted roughly by how much foundational leverage they provide.
 
 - **[Cursor SDK](https://cursor.com/blog/typescript-sdk)**
   TypeScript SDK exposing Cursor's runtime, harness, models, codebase indexing, MCP, skills, and hooks. Public beta via `npm install @cursor/sdk`. Default model is Composer 2. Pair with the [cookbook](https://github.com/cursor/cookbook) — the [agent-kanban](https://github.com/cursor/cookbook/tree/main/sdk/agent-kanban) example is the clearest demo of agents-as-tickets.
+
+- **[Open Agents](https://github.com/vercel-labs/open-agents)** — Vercel Labs
+  MIT-licensed reference app for building background cloud coding agents on Vercel. Web app + durable Workflows SDK + isolated Sandbox VM. Agent and sandbox are decoupled, so each can hibernate independently. Fork it to understand the wiring; don't use it as a starter kit.
 
 - **[Cursor Security Review](https://cursor.com/docs/security-review)**
   Official docs for Cursor's Agentic Security Review automation. Open-source templates and Terraform on Cursor Automations, plus three companion security agents (Vuln Hunter, Anybump, Invariant Sentinel). The [blog post](https://cursor.com/blog/security-agents) covers the architecture and rollout strategy.
