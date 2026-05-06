@@ -17,6 +17,30 @@ Something's shifted in the last few months. The interesting problems aren't "whi
 
 The models are good. The question is how you harness them. That's where things are moving fast, and where most of my attention is right now. Here's what's actually made a difference.
 
+## Claude Managed Agents: the harness becomes a service
+
+Building your own agent loop — tool execution, sandboxing, context management, error recovery — is the thing most teams do because they have to, not because they want to. [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview) is Anthropic's answer to that: a managed runtime where you define what the agent does and Anthropic handles the rest.
+
+The model has four pieces:
+
+**Agent** — the model, system prompt, tools, MCP servers, and skills. Create it once, reference it by ID across as many sessions as you need.
+
+**Environment** — a configured cloud container. Choose your packages (Python, Node, Go), set network access rules, mount files. The environment is the execution context; the agent is what runs inside it.
+
+**Session** — a running agent instance. Send a user message as an event and Claude executes — running Bash commands, modifying files, browsing the web — streaming results back via server-sent events. Session history is persisted server-side.
+
+**Events** — the communication layer. You send user turns; the agent streams tool calls, tool results, and status updates back. Send additional events to steer mid-execution, or interrupt to change direction entirely.
+
+Built-in tools cover the common cases: Bash, file read/write/edit/grep/glob, web search and fetch, MCP servers for anything external. The harness includes prompt caching and compaction automatically — long-running tasks that span minutes or hours are the intended workload, not quick one-shot prompts.
+
+The Memory feature (added this month, currently in public beta) is the piece that changes the economics. Agents can now carry learning across sessions: patterns from a completed task, preferences refined over time, context too expensive to rebuild from scratch on every run. Memories are filesystem-based, so you can export them, manage them via the API, and audit them per session. For teams running long-lived agents at scale, not paying to re-establish context from zero on each invocation adds up fast.
+
+Access is on by default for all Claude API accounts. The beta header is `managed-agents-2026-04-01`; the SDK sets it automatically. Multiagent features — orchestrating multiple agents from a single session — are in research preview and require separate access.
+
+Early adopters on the tech side: Notion, Rakuten, Asana. On the financial services side: JPMorgan Chase, Goldman Sachs, Citi — though that's as much about the broader Claude for Financial Services push as Managed Agents specifically.
+
+Practical read: the gap Managed Agents closes is the gap between "I know what I want the agent to do" and "I've spent three weeks building the infrastructure for it to do that." It's the same shift that happened with every infrastructure layer — databases, queues, containers — applied to agent runtimes. The abstraction won't work for everyone. Teams that need agents touching private network endpoints or compliance-sensitive data are going to run self-hosted regardless. For teams that don't, Managed Agents removes a real build burden. The comparison that keeps coming up: a month ago, getting a capable cloud agent into production meant Lambdas, custom sandboxes, and a lot of glue. Now it's defining a YAML config and an API key.
+
 ## Cursor Security Review goes managed
 
 The DIY security agents Cursor open-sourced earlier just turned into a product. [Cursor Security Review](https://cursor.com/changelog/04-30-26) is in beta on Teams and Enterprise plans, with two always-on agents you turn on from the dashboard instead of standing up Lambdas and Terraform yourself.
@@ -386,6 +410,9 @@ Sorted roughly by how much foundational leverage they provide.
 
 - **[Open Agents](https://github.com/vercel-labs/open-agents)** — Vercel Labs
   MIT-licensed reference app for building background cloud coding agents on Vercel. Web app + durable Workflows SDK + isolated Sandbox VM. Agent and sandbox are decoupled, so each can hibernate independently. Fork it to understand the wiring; don't use it as a starter kit.
+
+- **[Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview)** — Anthropic
+  Official docs for the managed agent runtime: agents, environments, sessions, events, built-in tools, and the Memory feature (cross-session learning, filesystem-based, API-managed). The quickstart is the fastest path to a running session.
 
 - **[Cursor Security Review](https://cursor.com/docs/security-review)**
   Official docs for Cursor's Agentic Security Review automation. Open-source templates and Terraform on Cursor Automations, plus three companion security agents (Vuln Hunter, Anybump, Invariant Sentinel). The [blog post](https://cursor.com/blog/security-agents) covers the architecture and rollout strategy.
