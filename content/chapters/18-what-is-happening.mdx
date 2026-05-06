@@ -17,6 +17,16 @@ Something's shifted in the last few months. The interesting problems aren't "whi
 
 The models are good. The question is how you harness them. That's where things are moving fast, and where most of my attention is right now. Here's what's actually made a difference.
 
+## Cursor Security Review goes managed
+
+The DIY security agents Cursor open-sourced earlier just turned into a product. [Cursor Security Review](https://cursor.com/changelog/04-30-26) is in beta on Teams and Enterprise plans, with two always-on agents you turn on from the dashboard instead of standing up Lambdas and Terraform yourself.
+
+**Security Reviewer** runs on every PR. It checks for vulnerabilities, auth regressions, privacy and data-handling risks, agent tool auto-approvals, and prompt injection — and leaves inline comments at the exact diff location with severity and remediation. **Vulnerability Scanner** runs on a schedule across the codebase, looking for known CVEs, outdated dependencies, and misconfigurations, with optional Slack updates.
+
+Both are configurable: adjust triggers, drop in custom instructions, give them custom tooling, decide where outputs land. The interesting hook is MCP — you can plug in your existing SAST, SCA, and secrets scanners as MCP servers and let the agent use them as part of the review. Cursor keeps tuning the runtime, harness, and models behind the scenes. Usage comes out of your existing pool, not a separate SKU.
+
+Practical read: a month ago, getting a security review agent into your PR pipeline meant adopting Cursor's open-source templates, deploying a Lambda, and wiring Slack yourself. Now it's a toggle. The interesting part isn't the convenience — it's that "security agent" is becoming a product category, not a custom build. The DIY version still exists for teams who want full control; the managed version is for teams who want it on by Friday.
+
 ## Vercel opens the cloud agent stack
 
 Cursor's SDK gives you agent infrastructure from an IDE company. Vercel's answer is different: an open-source reference implementation you can actually read.
