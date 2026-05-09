@@ -2,7 +2,7 @@
 title: "What Is Happening"
 subtitle: "The fastest-moving areas in AI agent tooling right now — hooks, harness design, browser automation, and multi-agent orchestration"
 publishedAt: "2026-04-17"
-updatedAt: "2026-05-06"
+updatedAt: "2026-05-09"
 chapter: 18
 part: tools-infrastructure
 partNumber: 4
@@ -16,6 +16,22 @@ illustrationPlaceholders:
 Something's shifted in the last few months. The interesting problems aren't "which model is better" anymore — it's everything around the model. How you feed it context. How you keep it coherent across a long session. How you constrain what it touches. How you recover when it goes sideways.
 
 The models are good. The question is how you harness them. That's where things are moving fast, and where most of my attention is right now. Here's what's actually made a difference.
+
+## Karpathy's map of where software engineering is going
+
+Andrej Karpathy gave a talk at Sequoia in April that's worth treating as a reference document, not a motivational keynote. It's the clearest framing yet of what's actually shifting and why.
+
+The core argument is that we're in Software 3.0 — where prompting is the main interface to the "interpreter" and LLMs are the runtime. Not an accelerant on top of existing workflows, but a different substrate. The practical implication: things that were impossible or just too slow (turning a pile of raw documents into a navigable personal wiki, building custom RL training runs for your specific domain) become tractable. Looking further out, Karpathy expects neural networks to be the main runtime, CPUs to serve as support hardware, and UIs to be generated on the fly with diffusion models rather than shipped as static code.
+
+The framing around verifiability is the part most teams are missing. Classic computers could only automate things you could specify completely upfront. LLMs flip that: they can automate anything you can check reliably afterward. That's why the top labs are investing so heavily in reinforcement learning — it creates those strange "jagged" capability profiles where models are excellent at verifiable domains like math and code, but still inconsistent on fuzzier tasks. The corollary for builders: if you can turn your domain into something verifiable — tests, feedback loops, automated checks — you can run your own RL training and tune models for your specific world. You don't need the big labs to care about your niche.
+
+The vibe coding / agentic engineering distinction is useful for setting expectations. Vibe coding lowered the bar to near zero — functional software from prompts, no precision required. Agentic engineering is what happens when you keep the same standards for correctness, security, and reliability but use agents as the execution layer. The leverage difference is significant: what used to look like a 10x engineer starts to look like 100x once you're directing agents rather than writing everything yourself. Karpathy thinks hiring is about to change accordingly — less LeetCode, more "here's a real project, ship a secure Twitter clone, let's see how you break it down and verify the output."
+
+What agents actually feel like to work with right now: Karpathy describes them as the perfect intern — photographic memory, never tired, fast — but with unreliable judgment that needs oversight. You stay responsible for taste, architecture, and final sign-off. The right posture is calm direction and healthy skepticism. Over-trust is the main failure mode, especially when the output looks polished.
+
+The most underappreciated bottleneck is infrastructure. Most docs, READMEs, and ops tooling are still written for human eyes — DNS configs, deployment pipelines, environment setup. That friction is what slows agents down more than model capability. The systems need to be redesigned so agents can navigate them. The flip side: you can't delegate genuine understanding. Humans are the permanent bottleneck. If you don't deeply understand what's being built and why, you can't spec it well or verify the output. LLMs handle pattern-matching and recall well; comprehension still has to stay with you.
+
+Practical read: the talk isn't about what AI will eventually be able to do. It's about how the economics of software production are changing right now and what skills will matter going forward. The transition from vibe coding to agentic engineering is the one worth paying attention to. If you haven't watched it, prioritize the full video over summaries — the framing is precise enough that paraphrasing loses something.
 
 ## Cursor Security Review goes managed
 
