@@ -21,7 +21,7 @@ That's the problem Max Mode solves.
 
 By default, Cursor keeps you on the standard context window for the selected model — in practice often the 200K band, roughly 15,000 lines of code, which covers most single-feature work. Max Mode extends that to the model's maximum context window. The models that support Max Mode include Claude 4.6 Sonnet, Claude 4.7 Opus, GPT-5.5, GPT-5.3 Codex, and Gemini 3.1 Pro, among others.
 
-The catch: on individual plans, it switches that session onto API-rate billing plus a 20% upcharge. A few heavy queries can chew through your included API usage fast.
+The catch: on current individual plans, it switches that session onto API-rate billing from your API pool. On legacy request-based plans, a 20% surcharge applies on top. Either way, a few heavy queries can chew through your included API usage fast.
 
 Not a "better" mode. A "bigger context" mode. The model doesn't reason differently — it just sees more of your codebase at once.
 
@@ -45,7 +45,7 @@ Not a "better" mode. A "bigger context" mode. The model doesn't reason different
 
 ## The cost reality
 
-Cursor Pro includes $20/month of API usage. Max Mode draws from that API pool at the selected model's rate, plus a 20% upcharge on individual plans. The numbers compound quickly:
+Cursor Pro includes $20/month of API usage. Max Mode draws from that API pool at the selected model's rate (no surcharge on current individual plans — the 20% upcharge only applies to legacy request-based plans). The numbers compound quickly:
 
 - A session processing 400K tokens of context can cost well under a dollar on Gemini 3 Flash and several dollars on Sonnet or GPT-5.5 once Max Mode pricing kicks in
 - Run that three or four times a day and you've consumed your monthly pool in a week
