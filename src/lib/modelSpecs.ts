@@ -484,7 +484,7 @@ export function getMixerModels() {
 // ---------------------------------------------------------------------------
 
 export const PRICING_META = {
-  verifiedDate: "2026-05-06", // Full MODEL_REGISTRY cross-check vs provider pricing pages; no rate or context changes
+  verifiedDate: "2026-05-11", // Full MODEL_REGISTRY cross-check vs provider pricing pages; no rate or context changes
   source: "Official API pricing pages",
   urls: {
     Anthropic: "https://docs.anthropic.com/en/docs/about-claude/pricing",
