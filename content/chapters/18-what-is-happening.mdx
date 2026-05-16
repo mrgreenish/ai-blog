@@ -2,7 +2,7 @@
 title: "What Is Happening"
 subtitle: "The fastest-moving areas in AI agent tooling right now — hooks, harness design, browser automation, and multi-agent orchestration"
 publishedAt: "2026-04-17"
-updatedAt: "2026-05-06"
+updatedAt: "2026-05-16"
 chapter: 18
 part: tools-infrastructure
 partNumber: 4
@@ -16,6 +16,16 @@ illustrationPlaceholders:
 Something's shifted in the last few months. The interesting problems aren't "which model is better" anymore — it's everything around the model. How you feed it context. How you keep it coherent across a long session. How you constrain what it touches. How you recover when it goes sideways.
 
 The models are good. The question is how you harness them. That's where things are moving fast, and where most of my attention is right now. Here's what's actually made a difference.
+
+## NVIDIA's SANA-WM puts minute-scale world models on a single GPU
+
+NVIDIA Labs dropped [SANA-WM](https://nvlabs.github.io/Sana/WM/) on May 14 — a 2.6B-parameter open-source world model that turns one image plus a 6-DoF camera trajectory into 60 seconds of controllable 720p video, running on a single GPU. The paper claims visual quality on par with industrial baselines like LingBot-World and HY-WorldPlay, at a fraction of the compute.
+
+The architecture is a hybrid linear diffusion transformer: frame-wise Gated DeltaNet handles long-context modeling with linear cost, softmax attention covers the parts that need full-rank mixing, and a dual-branch camera path enforces precise trajectory adherence. A two-stage pipeline applies a long-video refiner over first-pass outputs for temporal consistency across the full minute. Training used only ~213K public video clips with metric-scale pose supervision, completing in 15 days on 64 H100s — small for a frontier video model.
+
+The number that matters: the distilled variant runs on a single RTX 5090 with NVFP4 quantization, denoising a 60s 720p clip in **34 seconds** — roughly 36× the throughput of prior open-source baselines. The [paper](https://arxiv.org/abs/2605.15178) and code are out alongside the project page.
+
+Practical read: the headline isn't pixel quality — industrial models still match it. It's that minute-scale, camera-controllable world models stop being a multi-GPU research artifact and start being something you run locally with a starting frame and a trajectory. For agent work — generating training video, simulating embodied environments, building evaluation scenarios at scale — the cost curve just bent hard. Worth watching how fast this gets wired into robotics and game-engine workflows.
 
 ## Cursor Security Review goes managed
 
