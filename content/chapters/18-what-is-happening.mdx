@@ -29,6 +29,16 @@ Reception on the [Cursor forum thread](https://forum.cursor.com/t/share-your-tho
 
 Practical read: for the first time, the cheap in-IDE model is in the same room as the frontier models on the benchmarks Cursor users actually care about — multi-file refactors, multilingual SWE-Bench, CursorBench. It's not the best at any single thing, but at 10× cheaper it doesn't need to be. The Fast variant is still where the long autonomous loops should live if you can afford it; Composer 2.5 standard is the new sensible default for everything else. The bigger story is structural — Anthropic has been pricing Cursor into a corner by selling Claude Code at rates Cursor pays to serve. Composer 2.5 is the answer to that squeeze: a model Cursor owns end-to-end, priced where the unit economics work.
 
+## NVIDIA's SANA-WM puts minute-scale world models on a single GPU
+
+NVIDIA Labs dropped [SANA-WM](https://nvlabs.github.io/Sana/WM/) on May 14 — a 2.6B-parameter open-source world model that turns one image plus a 6-DoF camera trajectory into 60 seconds of controllable 720p video, running on a single GPU. The paper claims visual quality on par with industrial baselines like LingBot-World and HY-WorldPlay, at a fraction of the compute.
+
+The architecture is a hybrid linear diffusion transformer: frame-wise Gated DeltaNet handles long-context modeling with linear cost, softmax attention covers the parts that need full-rank mixing, and a dual-branch camera path enforces precise trajectory adherence. A two-stage pipeline applies a long-video refiner over first-pass outputs for temporal consistency across the full minute. Training used only ~213K public video clips with metric-scale pose supervision, completing in 15 days on 64 H100s — small for a frontier video model.
+
+The number that matters: the distilled variant runs on a single RTX 5090 with NVFP4 quantization, denoising a 60s 720p clip in **34 seconds** — roughly 36× the throughput of prior open-source baselines. The [paper](https://arxiv.org/abs/2605.15178) and code are out alongside the project page.
+
+Practical read: the headline isn't pixel quality — industrial models still match it. It's that minute-scale, camera-controllable world models stop being a multi-GPU research artifact and start being something you run locally with a starting frame and a trajectory. For agent work — generating training video, simulating embodied environments, building evaluation scenarios at scale — the cost curve just bent hard. Worth watching how fast this gets wired into robotics and game-engine workflows.
+
 ## Cursor Security Review goes managed
 
 The DIY security agents Cursor open-sourced earlier just turned into a product. [Cursor Security Review](https://cursor.com/changelog/04-30-26) is in beta on Teams and Enterprise plans, with two always-on agents you turn on from the dashboard instead of standing up Lambdas and Terraform yourself.
