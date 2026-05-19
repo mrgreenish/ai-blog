@@ -405,8 +405,8 @@ export const MODEL_REGISTRY: ModelSpec[] = [
   },
   // ── Cursor agentic ─────────────────────────────────────────────────────────
   {
-    id: "composer-2",
-    name: "Composer 2",
+    id: "composer-2.5",
+    name: "Composer 2.5",
     provider: "Cursor",
     inputPer1M: 0.50,
     outputPer1M: 2.50,
@@ -421,28 +421,29 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     costColor: "text-fuchsia-600",
     why: {
       autonomous:
-        "Composer 2 runs terminal commands, reads the output, makes more edits, and loops until the task is done. It's the closest thing to a developer who can actually execute end-to-end.",
+        "Composer 2.5 runs terminal commands, reads the output, makes more edits, and loops until the task is done. It now sustains long horizons more reliably than Composer 2 did — the May 2026 retrain was specifically tuned for multi-step coherence.",
       multifile:
-        "It navigates the project, finds the relevant files, and makes coordinated changes across many of them — without you having to specify each one.",
+        "It navigates the project, finds the relevant files, and makes coordinated changes across many of them — without you having to specify each one. Trained on 25× more synthetic refactor and feature-deletion tasks than Composer 2.",
       selfcorrect:
-        "It sees the TypeScript error, understands it in context, and fixes it — without you having to copy-paste the error back into a prompt.",
+        "It sees the TypeScript error, understands it in context, and fixes it — without you having to copy-paste the error back into a prompt. Targeted RL with Textual Feedback localized the corrections during training instead of relying on final reward only.",
       hardproblems:
-        "Composer 2 is Cursor's own model — trained for long-horizon agentic coding with reinforcement learning and self-summarization, so it can keep working through tasks that take many steps.",
+        "Composer 2.5 is Cursor's own model — same Kimi K2.5 base as Composer 2, retrained to land in the same room as Opus 4.7 and GPT-5.5 on SWE-Bench Multilingual (79.8%) and CursorBench v3.1 (63.2%) at roughly one tenth the per-token cost.",
     },
     whenWrong:
-      "When you need tight control. Composer 2 can go down wrong paths and make a lot of changes before you realize it's off track. Short task scopes and frequent checkpoints are essential.",
+      "When you need a really hard reasoning result. On Terminal-Bench 2.0 it ties Opus 4.7 (~69%) but trails GPT-5.5's 82.7% on long autonomous loops. Some users also report it sometimes hedges with lightweight answers until you nudge it to think harder.",
     traits: [
-      "Frontier-level coding quality on Cursor's benchmarks — big jump from Composer 1.5",
+      "Frontier-competitive on SWE-Bench Multilingual (79.8%) and CursorBench v3.1 (63.2%) — within ~1 point of Opus 4.7 at ~10× cheaper per token",
       "Tuned for tool use, terminal, and file edits inside Cursor",
-      "Self-summarization in training so long sessions stay coherent",
+      "Built on Moonshot's Kimi K2.5; trained with Targeted RL with Textual Feedback and 25× more synthetic tasks than Composer 2",
+      "Standard $0.50/$2.50 per M tokens; Fast variant at $3/$15 for low-latency runs",
     ],
-    bestFor: "Multi-step features, refactors, and autonomous bug fixes",
-    worstFor: "Quick one-liner changes where the overhead isn't worth it",
+    bestFor: "Multi-step features, refactors, and autonomous bug fixes at frontier quality without frontier pricing",
+    worstFor: "Quick one-liner changes where the overhead isn't worth it, or long autonomous browser-agent loops where GPT-5.5 still leads",
     latencyBand: "moderate",
     initiativeStyle: "autonomous",
-    scopeDiscipline: "unpredictable",
-    pickWhen: "You want the model to run a multi-step task end-to-end with tool use and self-correction",
-    avoidWhen: "You need tight control — it can go deep down wrong paths before you notice",
+    scopeDiscipline: "good",
+    pickWhen: "You want frontier-grade agentic coding at one-tenth the cost of Opus 4.7 or GPT-5.5",
+    avoidWhen: "You need the absolute best on long autonomous loops (GPT-5.5) or maximum-rigor reasoning (Opus 4.7)",
     benchmark: {
       correctServerAction: true,
       followedConstraints: true,
@@ -484,7 +485,7 @@ export function getMixerModels() {
 // ---------------------------------------------------------------------------
 
 export const PRICING_META = {
-  verifiedDate: "2026-05-11", // Full MODEL_REGISTRY cross-check vs provider pricing pages; no rate or context changes
+  verifiedDate: "2026-05-19", // Composer 2.5 launch (May 18) — confirmed against cursor.com/blog/composer-2-5; other models unchanged since 2026-05-11 cross-check
   source: "Official API pricing pages",
   urls: {
     Anthropic: "https://docs.anthropic.com/en/docs/about-claude/pricing",
@@ -503,7 +504,7 @@ export function getCostCalculatorModels() {
     "deepseek-v4-flash",
     "haiku-4.5",
     "sonnet-4.6",
-    "composer-2",
+    "composer-2.5",
     "opus-4.7",
     "gpt-5.5",
   ];
@@ -526,7 +527,7 @@ export function getContextWindowModels() {
     "gpt-5.5",
     "gemini-flash",
     "sonnet-4.6",
-    "composer-2",
+    "composer-2.5",
   ];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
@@ -544,7 +545,7 @@ export function getPickerModels() {
     "gemini-flash",
     "sonnet-4.6",
     "opus-4.7",
-    "composer-2",
+    "composer-2.5",
   ];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
@@ -597,7 +598,7 @@ export function getScenarioLabModels() {
     "haiku-4.5",
     "deepseek-v4-flash",
     "sonnet-4.6",
-    "composer-2",
+    "composer-2.5",
     "opus-4.7",
     "gpt-5.5",
   ];
@@ -642,7 +643,7 @@ export function getTinderModels() {
     "gemini-flash",
     "sonnet-4.6",
     "opus-4.7",
-    "composer-2",
+    "composer-2.5",
   ];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
@@ -677,7 +678,7 @@ export const BENCHMARK_CHECKS: BenchmarkCheck[] = [
 
 /** Models shown as columns in DevBenchmark */
 export function getDevBenchmarkColumns() {
-  const ids = ["sonnet-4.6", "gemini-flash", "haiku-4.5", "composer-2"];
+  const ids = ["sonnet-4.6", "gemini-flash", "haiku-4.5", "composer-2.5"];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
     return {

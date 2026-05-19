@@ -270,7 +270,7 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
       : autonomy === "targeted" ? "Overkill for pointed edits — use a cheaper, more controlled model" : "");
   }
 
-  if (modelId === "composer-2") {
+  if (modelId === "composer-2.5") {
     dim("task", task === "coding" ? 3 : 0,
       "Cursor's agentic model — frontier coding quality with tool use and terminal workflows");
     dim("scope", scope === "autonomous" ? 5 : scope === "targeted" ? 4 : scope === "multifile" ? 3 : 0,
@@ -289,14 +289,14 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
 
   // ── Interaction effects ──────────────────────────────────────────────────
   if (scope === "autonomous" && autonomy === "drive") {
-    if (modelId === "composer-2") dims.push({ dimension: "interaction", points: -2, reason: "Dampen double-counting: autonomous scope + drive autonomy overlap" });
+    if (modelId === "composer-2.5") dims.push({ dimension: "interaction", points: -2, reason: "Dampen double-counting: autonomous scope + drive autonomy overlap" });
   }
   if (stakes === "critical" && scope === "autonomous") {
     if (modelId === "opus-4.7") dims.push({ dimension: "interaction", points: 2, reason: "Critical stakes + autonomous scope: frontier reasoning earns its cost" });
   }
   if (stakes === "critical" && priority === "accuracy") {
     if (modelId === "opus-4.7") dims.push({ dimension: "interaction", points: 2, reason: "Critical + accuracy: strongest quality signal — Opus is the right choice" });
-    if (modelId === "composer-2") dims.push({ dimension: "interaction", points: -1, reason: "Critical + accuracy: autonomy risk outweighs speed benefit" });
+    if (modelId === "composer-2.5") dims.push({ dimension: "interaction", points: -1, reason: "Critical + accuracy: autonomy risk outweighs speed benefit" });
   }
 
   const total = dims.reduce((s, d) => s + d.points, 0);
@@ -373,10 +373,10 @@ export function getRanking<
 
   const winner = top3[0];
   if (winner) {
-    if (answers.stakes === "critical" && winner.model.id === "composer-2") {
+    if (answers.stakes === "critical" && winner.model.id === "composer-2.5") {
       hasCaution = true;
       cautionMessage =
-        "Composer 2 can go deep down wrong paths before you notice. For critical systems, add explicit checkpoints and review every diff before merging.";
+        "Composer 2.5 is tighter than 2.0, but for critical systems still add explicit checkpoints and review every diff before merging.";
     }
     if (answers.stakes === "critical" && winner.model.id === "sonnet-4.6") {
       hasCaution = true;
