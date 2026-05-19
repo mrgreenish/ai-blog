@@ -57,7 +57,7 @@ const modelRecommendations = [
   {
     title: "Simple, clearly defined tasks",
     description:
-      "Use Gemini 3 Flash or Composer 2.5.5 Standard. Avoid Fast mode by default. Fast is quicker, but more expensive, and often not worth it if you can do something else while the model works.",
+      "Use Gemini 3 Flash or Composer 2.5 Standard. Avoid Fast mode by default. Fast is quicker, but more expensive, and often not worth it if you can do something else while the model works.",
   },
 ];
 
@@ -93,8 +93,8 @@ const promptChecklist = [
 ];
 
 const modelPrices = [
-  ["Composer 2.5.5 Standard", "$0.50 input / $2.50 output"],
-  ["Composer 2.5.5 Fast", "$3 input / $15 output"],
+  ["Composer 2.5 Standard", "$0.50 input / $2.50 output"],
+  ["Composer 2.5 Fast", "$3 input / $15 output"],
   ["Gemini 3 Flash", "$0.50 input / $3 output"],
   ["Gemini 3.1 Pro", "$2 input / $12 output"],
   ["Claude Sonnet 4.6", "$3 input / $15 output"],
@@ -414,7 +414,7 @@ export default function AiModelGuidelinesPage() {
 
         <ul>
           <li>Composer 2.5 Standard: about $0.06</li>
-          <li>Composer 2.5 Fast: about $0.18</li>
+          <li>Composer 2.5 Fast: about $0.36</li>
           <li>Gemini 3.1 Pro: about $0.26</li>
           <li>Claude Sonnet 4.6: about $0.36</li>
           <li>GPT-5.4: about $0.32</li>
