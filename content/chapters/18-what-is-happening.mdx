@@ -17,6 +17,32 @@ Something's shifted in the last few months. The interesting problems aren't "whi
 
 The models are good. The question is how you harness them. That's where things are moving fast, and where most of my attention is right now. Here's what's actually made a difference.
 
+## Karpathy joins Anthropic's pre-training team
+
+Andrej Karpathy [announced on May 19](https://www.cnbc.com/2026/05/19/anthropic-hires-openai-cofounder-andrej-karpathy-former-tesla-ai-lead.html) that he's joining Anthropic this week. The short bio for anyone who's lost track: OpenAI cofounder, then Tesla's director of AI from 2017 leading Autopilot computer vision, then a brief return to OpenAI, then [Eureka Labs](https://eurekalabs.ai/) — the AI education startup he's been running since. Now Anthropic.
+
+The role is the interesting part. [Per TechCrunch](https://techcrunch.com/2026/05/19/openai-co-founder-andrej-karpathy-joins-anthropics-pre-training-team/), Karpathy is building a team focused on **using Claude to accelerate pre-training research** — the work that gives new models their core knowledge and capabilities in the first place. Not an applied team. Not an agent team. The team whose job is to make the next Claude train better than this one.
+
+The hire lands while Anthropic is poised to surpass OpenAI's private-market valuation and in the middle of an unusually loud talent war between the two labs. Karpathy is the highest-profile name to switch sides this year, and the optics of an OpenAI cofounder running pre-training at the chief rival are doing their own work.
+
+Practical read: this is the "models training models" loop showing up in a hiring decision. The same instinct that drives Cursor's Targeted RL with Textual Feedback or Composer 2.5's 25× synthetic-task expansion — using the current model to improve the next one — is now a staffing thesis at the lab level. If the bet pays off, the Claude that ships in 12 months won't just be a bigger Claude 4.7. It'll be a Claude trained by a Claude. Worth watching what shows up in Anthropic's research output over the next two quarters.
+
+## Google's Gemini Omni: one model, any modality in, any modality out
+
+Google [unveiled Gemini Omni](https://venturebeat.com/technology/google-unveils-gemini-omni-any-to-any-ai-model-what-enterprises-should-know) at I/O 2026 today — its first natively multimodal "any-to-any" model. Gemini Omni Flash is the first variant: take any combination of text, images, audio, and video in, get high-quality output across the same modalities out. The pitch is that Omni *reasons across* the inputs rather than stitching three specialist models together behind a single API.
+
+Concrete details: **10-second video generation**, custom digital avatars, plain-text photo editing without a Photoshop-style interface. Live today inside the Gemini app for U.S. subscribers on AI Plus, AI Pro, and AI Ultra, plus integrations into YouTube Shorts and Google's Flow creative studio. Vertex AI API access is "in the coming weeks," [per TechCrunch](https://techcrunch.com/2026/05/19/googles-gemini-omni-turns-images-audio-and-text-into-video-and-thats-just-the-start/).
+
+Practical read: the structural play here is collapse-the-stack. For agent work the interesting bit isn't the consumer video demo — it's that once Omni hits Vertex, you stop needing text-to-image-then-image-to-video-then-audio-overlay as three separate model calls glued together. Quality vs. specialist models like Seedance 2 or Veo is the open question; early write-ups are [skeptical that one model beats focused ones on pixel quality yet](https://medium.com/ai-analytics-diaries/googles-omni-video-model-impressive-but-does-it-beat-seedance-2-1d2cd3d23dc2). But for multimodal agent outputs where consistency across modalities matters more than per-modality maximum, this changes the wiring.
+
+## Gemini 3.5 Flash beats 3.1 Pro on the benchmarks that matter
+
+The other I/O headline: [Gemini 3.5 Flash](https://www.androidauthority.com/google-gemini-3-5-flash-3668559/) — Google's new Flash-tier model — outperforms Gemini 3.1 Pro, the flagship that shipped in February, on three benchmarks Google chose to highlight: **Terminal-Bench 2.1**, **GDPval-AA Elo**, and **MCP Atlas**. The GDPval-AA number is the one to stare at: **1,656 for 3.5 Flash vs 1,317 for 3.1 Pro**. That's not a tick, that's a step. Sundar Pichai called out **289 tokens/sec** in the keynote — roughly 4× the throughput of comparable frontier models. It's rolling out today as the default model in the Gemini app and Google Search globally.
+
+Reception is mixed-positive. The long-standing "Gemini feels lazy" complaint has [reportedly mostly faded](https://nokiapoweruser.com/gemini-3-5-flash-leak-pricing-reasoning-upgrade/) in early testing, sub-200ms responses on many prompts make it feel genuinely real-time, and LM Arena coding scores have it ahead of 3.1 Pro at meaningfully lower per-token cost. The honest counterweight: [Hacker News threads](https://news.ycombinator.com/item?id=46301851) on the prior 3.x releases still surface a steady drumbeat of "Gemini is consistently the most frustrating model I use" from developers — benchmarks aren't the same as daily-driver feel, and Google hasn't fully closed that gap yet.
+
+Practical read: two things matter here. First, "Flash beats Pro" inverts the normal model hierarchy — the same move Cursor made with Composer 2.5 last week, and Anthropic's pre-training hire above is partly a response to the same pressure. The cheap-and-fast tier is no longer a worse version of the expensive one; it's a different point on the price/capability curve that sometimes wins. Second, GDPval-AA and MCP Atlas are the agent-shaped benchmarks — tool use, long-horizon tasks. A Flash-tier model leading there means the cost floor for capable agent runtimes just dropped again. Build budgets that assumed Pro-tier pricing for agent loops need a refresh this week.
+
 ## Composer 2.5 makes the in-house model competitive
 
 Cursor [shipped Composer 2.5](https://cursor.com/blog/composer-2-5) on May 18 — the same Moonshot Kimi K2.5 base as Composer 2, retrained with 25× more synthetic tasks and a new technique they call **Targeted RL with Textual Feedback**: instead of waiting for a final reward, the trainer drops localized hints at the exact tokens where behavior went wrong and distills back from those points. The infrastructure note worth flagging is the Muon optimizer with distributed orthogonalization — 0.2-second optimizer steps on a trillion-parameter model.
