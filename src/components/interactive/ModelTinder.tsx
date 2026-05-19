@@ -215,7 +215,7 @@ const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
     },
   ],
 
-  "composer-2": [
+  "composer-2.5": [
     {
       modelMessage:
         "Hi! I've already run `npm install`, opened 6 files, executed your test suite, and identified 3 failing tests. Ready when you are.",

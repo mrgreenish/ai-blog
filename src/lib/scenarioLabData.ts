@@ -149,12 +149,12 @@ export const SCENARIOS: Scenario[] = [
     primarySignal: "scope",
     insight:
       "Scope discipline matters here. A model that drifts will touch things you didn't ask about. A model that's too literal might miss the spirit of the refactor.",
-    recommendedModelId: "composer-2",
+    recommendedModelId: "composer-2.5",
     recommendationReason:
-      "Composer 2 still handles this well when you keep the scope explicit. You get the same IDE context plus the option to self-check the result if the edit turns out to be slightly trickier than expected.",
+      "Composer 2.5 still handles this well when you keep the scope explicit. You get the same IDE context plus the option to self-check the result if the edit turns out to be slightly trickier than expected.",
     results: [
       {
-        modelId: "composer-2",
+        modelId: "composer-2.5",
         verdict: "best",
         summary: "Clean refactor, stayed in scope",
         outputExcerpt:
@@ -175,7 +175,7 @@ export const SCENARIOS: Scenario[] = [
           "Refactored to use early returns and extracted the validation into a separate function as requested.",
         strengths: ["Followed instructions precisely", "No scope drift"],
         weaknesses: [
-          "Less IDE-native than Composer 2 — requires copy-paste workflow",
+          "Less IDE-native than Composer 2.5 — requires copy-paste workflow",
         ],
         costCommentary: "Very cheap",
       },
@@ -194,16 +194,16 @@ export const SCENARIOS: Scenario[] = [
           "Requires careful diff review to avoid unintended changes",
         ],
         costCommentary: "Fine if you review the diff, risky if you don't",
-        costContext: { compareToModelId: "composer-2" },
+        costContext: { compareToModelId: "composer-2.5" },
       },
     ],
     planMode: {
       planModelId: "sonnet-4.6",
-      executeModelId: "composer-2",
+      executeModelId: "composer-2.5",
       insight:
         "Plan mode turns Sonnet's scope drift into a feature. It reasons about the refactor approach — naming, structure, edge cases — but a fast model executes the actual edit. You get Sonnet's judgment without its tendency to touch adjacent code.",
       recommendationReason:
-        "Sonnet plans the approach (extract helper, simplify conditionals, preserve API), then Composer 2 executes it with explicit guardrails. The plan constrains scope while still letting the executor verify the result if needed.",
+        "Sonnet plans the approach (extract helper, simplify conditionals, preserve API), then Composer 2.5 executes it with explicit guardrails. The plan constrains scope while still letting the executor verify the result if needed.",
       results: [
         {
           modelId: "sonnet-4.6",
@@ -220,7 +220,7 @@ export const SCENARIOS: Scenario[] = [
           costCommentary: "Planning tokens are cheap — the plan is short and focused",
         },
         {
-          modelId: "composer-2",
+          modelId: "composer-2.5",
           verdict: "best",
           summary: "Executes the plan precisely, stays in scope",
           outputExcerpt:
@@ -433,9 +433,9 @@ export const SCENARIOS: Scenario[] = [
     primarySignal: "autonomy",
     insight:
       "This is where raw cost comparisons mislead. A model that ships working code in one shot is often cheaper in practice than a cheap model that needs five rounds of corrections.",
-    recommendedModelId: "composer-2",
+    recommendedModelId: "composer-2.5",
     recommendationReason:
-      "Composer 2 navigates the project, finds the relevant files, and makes coordinated changes across all of them — without you having to specify each one. For multi-file work, the agentic overhead pays off.",
+      "Composer 2.5 navigates the project, finds the relevant files, and makes coordinated changes across all of them — without you having to specify each one. For multi-file work, the agentic overhead pays off.",
     results: [
       {
         modelId: "gemini-flash",
@@ -464,12 +464,12 @@ export const SCENARIOS: Scenario[] = [
           "Native tool use found existing patterns without manual guidance",
         ],
         weaknesses: [
-          "Less IDE-native than Composer 2 — requires more setup",
+          "Less IDE-native than Composer 2.5 — requires more setup",
           "Higher per-token cost means scope control matters",
         ],
         costCommentary:
-          "Higher per-token API cost than Composer 2 — you pay for GPT-5.5's breadth and autonomous verification, not Cursor's native agent loop",
-        costContext: { compareToModelId: "composer-2" },
+          "Higher per-token API cost than Composer 2.5 — you pay for GPT-5.5's breadth and autonomous verification, not Cursor's native agent loop",
+        costContext: { compareToModelId: "composer-2.5" },
       },
       {
         modelId: "sonnet-4.6",
@@ -487,10 +487,10 @@ export const SCENARIOS: Scenario[] = [
           "Requires explicit constraints to prevent drift",
         ],
         costCommentary: "Good value if you set scope constraints upfront",
-        costContext: { compareToModelId: "composer-2" },
+        costContext: { compareToModelId: "composer-2.5" },
       },
       {
-        modelId: "composer-2",
+        modelId: "composer-2.5",
         verdict: "best",
         summary: "Navigated the codebase, implemented end-to-end, self-verified",
         outputExcerpt:
@@ -505,7 +505,7 @@ export const SCENARIOS: Scenario[] = [
           "Can go down wrong paths on ambiguous specs",
           "Needs clear success criteria upfront",
         ],
-        costCommentary: "Composer 2's API rates are low — with zero correction rounds, effective cost still wins",
+        costCommentary: "Composer 2.5's API rates are low — with zero correction rounds, effective cost still wins",
       },
       {
         modelId: "opus-4.7",
@@ -520,19 +520,19 @@ export const SCENARIOS: Scenario[] = [
         weaknesses: [
           "Slow for implementation work",
           "Better suited to the design/review phase than the build phase",
-          "Often hard to justify on pure token cost when Composer 2 ships comparable implementation quality",
+          "Often hard to justify on pure token cost when Composer 2.5 ships comparable implementation quality",
         ],
         costCommentary: "Use for architecture review, not feature implementation",
-        costContext: { compareToModelId: "composer-2" },
+        costContext: { compareToModelId: "composer-2.5" },
       },
     ],
     planMode: {
       planModelId: "opus-4.7",
-      executeModelId: "composer-2",
+      executeModelId: "composer-2.5",
       insight:
         "Multi-file features fail when the executor doesn't understand the big picture. Plan mode flips the direct approach: Opus maps the architecture and file changes, then a fast model executes each file edit. The plan prevents the cross-file inconsistencies that plague cheap models working alone.",
       recommendationReason:
-        "Opus plans the full feature — which files to touch, what patterns to follow, how the layers connect. Composer 2 executes against that plan with less wandering and better verification than working fully autonomously from scratch.",
+        "Opus plans the full feature — which files to touch, what patterns to follow, how the layers connect. Composer 2.5 executes against that plan with less wandering and better verification than working fully autonomously from scratch.",
       results: [
         {
           modelId: "opus-4.7",
@@ -550,7 +550,7 @@ export const SCENARIOS: Scenario[] = [
           costCommentary: "Planning cost is a fraction of the full implementation — and prevents rework",
         },
         {
-          modelId: "composer-2",
+          modelId: "composer-2.5",
           verdict: "best",
           summary: "Executes each planned file change cleanly",
           outputExcerpt:
@@ -563,7 +563,7 @@ export const SCENARIOS: Scenario[] = [
           weaknesses: [
             "Won't catch issues the plan missed",
           ],
-          costCommentary: "Combined Opus plan + Composer 2 execution trades a little extra cost for cleaner verification and less rework",
+          costCommentary: "Combined Opus plan + Composer 2.5 execution trades a little extra cost for cleaner verification and less rework",
         },
         {
           modelId: "sonnet-4.6",
@@ -593,7 +593,7 @@ export const SCENARIOS: Scenario[] = [
             "Followed the plan accurately",
           ],
           weaknesses: [
-            "Needed one manual fix — less reliable than Composer 2 for multi-file edits",
+            "Needed one manual fix — less reliable than Composer 2.5 for multi-file edits",
             "No IDE integration for applying changes",
           ],
           costCommentary: "Cheapest combo overall, but expect minor manual fixes",
@@ -683,7 +683,7 @@ export const SCENARIOS: Scenario[] = [
         costCommentary: "Worth it when the wrong answer has production consequences",
       },
       {
-        modelId: "composer-2",
+        modelId: "composer-2.5",
         verdict: "caution",
         summary: "Implemented a solution before fully reasoning through the design",
         outputExcerpt:

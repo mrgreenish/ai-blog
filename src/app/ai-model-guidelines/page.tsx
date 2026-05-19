@@ -57,7 +57,7 @@ const modelRecommendations = [
   {
     title: "Simple, clearly defined tasks",
     description:
-      "Use Gemini 3 Flash or Composer 2 Standard. Avoid Fast mode by default. Fast is quicker, but more expensive, and often not worth it if you can do something else while the model works.",
+      "Use Gemini 3 Flash or Composer 2.5 Standard. Avoid Fast mode by default. Fast is quicker, but more expensive, and often not worth it if you can do something else while the model works.",
   },
 ];
 
@@ -93,8 +93,8 @@ const promptChecklist = [
 ];
 
 const modelPrices = [
-  ["Composer 2 Standard", "$0.50 input / $2.50 output"],
-  ["Composer 2 Fast", "$1.50 input / $7.50 output"],
+  ["Composer 2.5 Standard", "$0.50 input / $2.50 output"],
+  ["Composer 2.5 Fast", "$3 input / $15 output"],
   ["Gemini 3 Flash", "$0.50 input / $3 output"],
   ["Gemini 3.1 Pro", "$2 input / $12 output"],
   ["Claude Sonnet 4.6", "$3 input / $15 output"],
@@ -264,7 +264,7 @@ export default function AiModelGuidelinesPage() {
           <li>Plan with GPT-5.5 or Opus 4.7.</li>
           <li>Use medium or high reasoning depending on complexity.</li>
           <li>
-            Implement with Sonnet 4.6, GPT-5.4, or Composer 2 if the work is
+            Implement with Sonnet 4.6, GPT-5.4, or Composer 2.5 if the work is
             straightforward.
           </li>
         </ul>
@@ -349,7 +349,7 @@ export default function AiModelGuidelinesPage() {
         <h2>Example Pricing</h2>
 
         <p>
-          Approximate Cursor model prices, per 1M tokens, as of April 2026:
+          Approximate Cursor model prices, per 1M tokens, as of May 2026:
         </p>
 
         <div className="not-prose my-8 overflow-hidden rounded-lg border border-border-default">
@@ -391,7 +391,7 @@ export default function AiModelGuidelinesPage() {
         <p>Approximate cost:</p>
 
         <ul>
-          <li>Composer 2 Standard: about $0.02</li>
+          <li>Composer 2.5 Standard: about $0.02</li>
           <li>Gemini 3 Flash: about $0.02</li>
           <li>Gemini 3.1 Pro: about $0.06</li>
           <li>GPT-5.5: about $0.16</li>
@@ -401,7 +401,7 @@ export default function AiModelGuidelinesPage() {
 
         <p>
           Advice: do not use Opus or GPT-5.5 for this unless there is hidden
-          complexity. Composer 2 Standard or Gemini Flash is enough.
+          complexity. Composer 2.5 Standard or Gemini Flash is enough.
         </p>
 
         <h3>Example 2: Medium Creative Task</h3>
@@ -413,8 +413,8 @@ export default function AiModelGuidelinesPage() {
         <p>Approximate cost:</p>
 
         <ul>
-          <li>Composer 2 Standard: about $0.06</li>
-          <li>Composer 2 Fast: about $0.18</li>
+          <li>Composer 2.5 Standard: about $0.06</li>
+          <li>Composer 2.5 Fast: about $0.36</li>
           <li>Gemini 3.1 Pro: about $0.26</li>
           <li>Claude Sonnet 4.6: about $0.36</li>
           <li>GPT-5.4: about $0.32</li>
@@ -443,7 +443,7 @@ export default function AiModelGuidelinesPage() {
         <ul>
           <li>Plan in Plan Mode with Opus 4.7.</li>
           <li>
-            Implement with Composer 2 Standard if the plan is clear and the
+            Implement with Composer 2.5 Standard if the plan is clear and the
             implementation is straightforward.
           </li>
         </ul>
@@ -452,7 +452,7 @@ export default function AiModelGuidelinesPage() {
 
         <ul>
           <li>Opus 4.7 planning: about $2.00</li>
-          <li>Composer 2 Standard implementation: about $0.11</li>
+          <li>Composer 2.5 Standard implementation: about $0.11</li>
           <li>Total: about $2.11</li>
         </ul>
 
@@ -473,7 +473,7 @@ export default function AiModelGuidelinesPage() {
           Advice: use the strong model where it matters most: understanding the
           problem, reading the codebase, and making the plan. Once the plan is
           clear, use a cheaper model for the mechanical implementation. Composer
-          2 Standard is usually a better fit than Gemini 3 Flash for codebase
+          2.5 Standard is usually a better fit than Gemini 3 Flash for codebase
           implementation work, but Gemini Flash can be useful when the
           implementation is very mechanical and tightly specified.
         </p>
