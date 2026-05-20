@@ -7,7 +7,6 @@ const pageTitle = "AI Model Guidelines — SharePoint Export";
 export const metadata: Metadata = {
   title: pageTitle,
   description: "Copy HTML for pasting into SharePoint. Data from modelSpecs.ts.",
-  robots: { index: false, follow: false },
   openGraph: {
     type: "article",
     siteName: SITE_NAME,

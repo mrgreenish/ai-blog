@@ -19,6 +19,10 @@ When Confluence and the registry disagree (e.g. “Composer 2” vs Composer 2.5
 - `page.tsx` — blog route `/ai-model-guidelines`
 - `export/page.tsx` — SharePoint HTML + **Copy HTML** at `/ai-model-guidelines/export`
 
+## SEO
+
+These routes are **not indexed**: `layout.tsx` sets `robots: noindex, nofollow`, and `robots.ts` disallows `/ai-model-guidelines`. They are not listed in `sitemap.ts` and are not linked from site navigation.
+
 ## Workflow
 
 1. **Structure changes** — edit Confluence, then sync `guidelinesContent.ts` (sections, matrix rows, tips).
