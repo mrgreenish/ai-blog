@@ -253,6 +253,33 @@ describe("Model ID integrity", () => {
     const missing = ids.filter((id) => !registryIds.has(id));
     expect([...new Set(missing)], "selector function model IDs not in registry").toEqual([]);
   });
+
+  it("every model ID in ai-model-guidelines resolves in MODEL_REGISTRY", () => {
+    const guidelinesModelsPath = path.join(
+      ROOT,
+      "src/app/ai-model-guidelines/guidelinesModels.ts"
+    );
+    const modelsSource = fs.readFileSync(guidelinesModelsPath, "utf-8");
+    const arrayBlock =
+      modelsSource.match(/GUIDELINES_MODEL_IDS\s*=\s*\[([\s\S]*?)\]\s*as const/)?.[1] ?? "";
+    const fromArray = [...arrayBlock.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+
+    const contentPath = path.join(
+      ROOT,
+      "src/app/ai-model-guidelines/guidelinesContent.ts"
+    );
+    const contentSource = fs.readFileSync(contentPath, "utf-8");
+    const fromContent = [
+      ...contentSource.matchAll(/modelId:\s*"([^"]+)"/g),
+    ].map((m) => m[1]);
+    const fromContentArrays = [
+      ...contentSource.matchAll(/modelIds:\s*\[([\s\S]*?)\]/g),
+    ].flatMap((m) => [...m[1].matchAll(/"([^"]+)"/g)].map((x) => x[1]));
+
+    const allIds = [...new Set([...fromArray, ...fromContent, ...fromContentArrays])];
+    const missing = allIds.filter((id) => !registryIds.has(id));
+    expect([...new Set(missing)], "guidelines model IDs not in registry").toEqual([]);
+  });
 });
 
 // ---------------------------------------------------------------------------
