@@ -2,7 +2,7 @@
 title: "What Is Happening"
 subtitle: "The fastest-moving areas in AI agent tooling right now — hooks, harness design, browser automation, and multi-agent orchestration"
 publishedAt: "2026-04-17"
-updatedAt: "2026-05-19"
+updatedAt: "2026-05-20"
 chapter: 18
 part: tools-infrastructure
 partNumber: 4
@@ -191,7 +191,7 @@ Skills encode knowledge. Hooks enforce behavior. Both belong in a mature setup.
 
 ## Harness design is now part of the craft
 
-A harness is everything around the model: prompts, tools, orchestration, context management, hooks. Anthropic published a detailed breakdown of how it affects long-running agent performance — two findings stood out.
+A harness is everything around the model: prompts, tools, orchestration, context management, hooks. If you want the from-scratch primer on what a harness *is* and why it matters, [chapter 19 — "What Is an AI Harness?"](/chapters/what-is-an-ai-harness) covers it. This section is the moving-target view. Anthropic published a detailed breakdown of how a harness affects long-running agent performance — two findings stood out.
 
 First: agents lose coherence as context fills. Some models exhibit "context anxiety," wrapping up prematurely. The fix isn't compaction (summarizing in place) — it's context resets: clear the window, start a fresh agent with a structured handoff. Compaction preserves continuity but doesn't give the agent a clean slate.
 

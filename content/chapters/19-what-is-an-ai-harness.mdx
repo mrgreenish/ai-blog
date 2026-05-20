@@ -1,0 +1,128 @@
+---
+title: "What Is an AI Harness?"
+subtitle: "Raw model power is a runaway horse. A harness turns it into directed work."
+publishedAt: "2026-05-20"
+updatedAt: "2026-05-20"
+chapter: 19
+part: tools-infrastructure
+partNumber: 4
+wonderQuestion: "What's actually between you and the model when you ask an agent to do something hard?"
+---
+
+<figure>
+  <img
+    src="/images/ai-harness-explained.png"
+    alt="Diagram titled 'What is an AI Harness?'. Left panel ('Without a harness') shows a confused user asking one robot to make a birthday cake, getting a messy result. Right panel ('With a harness') shows an orchestrator robot coordinating a team for a perfect result. Below: five agents in sequence — Planner, Baker, Decorator, Quality, Delivery — combining into a perfect birthday cake. Bottom summary: You give a task → the orchestrator divides the work → specialised AI agents do their part → together they deliver a top result."
+  />
+  <figcaption>
+    Left: <em>without a harness</em> — one model, one shot, messy result. Right: <em>with a harness</em> — an orchestrator splits the work across specialised agents. The pipeline: <strong>Planner → Baker → Decorator → Quality → Delivery</strong>.
+  </figcaption>
+</figure>
+
+It's *harness*, not *hardness* — and that turns out to be the whole point.
+
+A harness is the thing you put on a horse. Or the rig that holds a climber to a cliff. Or the strap that keeps a window cleaner from falling off a skyscraper. The word means *a system that channels power so it does work instead of damage*.
+
+Software borrowed the word a long time ago. A **test harness** wraps code so you can poke it from the outside. A **training harness** feeds examples into a model and grades the answers. A **simulation harness** runs a world around a thing so you can see how it behaves. Same shape every time: a frame that turns raw capability into useful, observable output.
+
+An AI harness is the same idea applied to a model.
+
+## A loose model is a runaway horse
+
+You can feel it the first time you give a model a real task with no scaffolding. Ask plain GPT or plain Claude to "fix this bug in our codebase." It starts strong. Then it invents a function that doesn't exist. Then it edits a file you didn't mean. Then it forgets what you asked because the conversation got long. Then it tells you it's done — confidently — when it isn't.
+
+That's the "zonder harness" panel in the diagram. One model. One shot. Vibes.
+
+The model isn't broken. It's a very strong horse with nothing on it. 🐎 Without something channelling that power — without rules about where it can step, what it has to check, who it hands off to — it will just run.
+
+## What an orchestrator actually does
+
+Look at the right panel of the diagram. There's still a user, still a model, but now there's an **orchestrator** in the middle. The user asks for a birthday cake. The orchestrator doesn't bake — it directs.
+
+It hands one piece of the job to a **Planner** ("what kind of cake, what flavour, how big?"). The plan goes to the **Baker**. The baked thing goes to the **Decorator**. The decorated thing gets inspected by the **Quality** agent. If it passes, the **Delivery** agent packages it and ships.
+
+Translate that into a frontend project and the cast looks like this:
+
+- `project-architect` — reads the codebase, plans the change
+- `frontend-builder` — writes the actual component
+- `design-system-guardian` — checks tokens, spacing, existing components
+- `accessibility-reviewer` — runs aria and contrast checks
+- `performance-reviewer` — flags unnecessary client components, oversized bundles
+- `browser-qa` — clicks through the running app to confirm it works
+
+No single agent is asked to be brilliant at everything. Each one is narrow on purpose. The harness is the thing that hands work between them, keeps the context tidy, and decides when it's done.
+
+## The five jobs of a harness
+
+Every harness I've seen — Cursor's, Claude Code's, the homemade ones — is doing some mix of these five things:
+
+1. **Splits the task.** One big request becomes a small graph of small requests. (Subagents, plan mode, planner/evaluator splits.)
+2. **Holds context.** What the project is, what was decided five minutes ago, what files matter. (`CLAUDE.md`, project rules, context resets instead of compaction.)
+3. **Imposes rules.** What the model is and isn't allowed to touch. (Hooks, allow-lists, lint gates, "no inline styling".)
+4. **Checks results.** A second agent — or a test, or a browser click — that says "yes this actually works" before the work is marked done. (Generator/evaluator pattern.)
+5. **Coordinates tools.** MCP servers, browser drivers, design system pickers, test runners — wired up so the model can reach for the right one.
+
+Subagents, workflows, plan mode, browser agents, feedback loops — all the pieces you already use are bits of the same tuig. We just didn't have a clean word for the whole thing until recently.
+
+## A harness should be per project
+
+Here's the idea I keep coming back to: every project deserves its own harness.
+
+Generic AI starts each task like a new freelancer on day one. It doesn't know your stack. Doesn't know which components already exist. Doesn't know the team agreed last quarter to stop using inline styles. So it guesses — and "the model guessed" is the root cause of a depressing amount of bad AI output.
+
+What if the repo itself carried the team handbook? Something like:
+
+```txt
+/project
+  /ai
+    project-context.md      // "Next.js, Prepr, GraphQL, Tailwind…"
+    coding-rules.md         // "Reuse components. Respect fragment masking."
+    agents.md               // Roster of specialised agents for this project
+    workflows.md            // "New component → search existing → plan → build → test → browser check"
+    review-checklist.md     // TypeScript, responsive, aria, tracking, no needless client components
+    commands.md             // Project-specific slash commands
+```
+
+That's a harness. Not a clever one. Just a written one.
+
+## MVP: a bootstrap skill
+
+You don't need agents on day one. You need the docs first. A small bootstrap skill is enough to start:
+
+1. Scan the project structure
+2. Detect the stack
+3. Find existing conventions (existing components, lint rules, naming patterns)
+4. Generate `AI_PROJECT_CONTEXT.md`
+5. Generate `AI_WORKFLOWS.md`
+6. Generate `AI_REVIEW_CHECKLIST.md`
+
+Three Markdown files. That's the MVP. Every future agent reads them before doing anything.
+
+Once that's stable, *then* layer in the roster:
+
+```txt
+1. project-architect
+2. frontend-builder
+3. design-system-guardian
+4. accessibility-reviewer
+5. performance-reviewer
+6. browser-qa
+```
+
+Same six characters from the cake diagram, just doing real work.
+
+## The pitfall: don't make it magical
+
+The temptation, once you have agents and hooks and skills and MCPs, is to build one enormous clever system that "just handles everything." Don't.
+
+The harnesses that work in production are boring. They're a written workflow, a short list of rules, a checklist, and a few narrow agents. Prefer "AI, follow this workflow" over "AI, figure it out."
+
+Hard agreements beat smart systems. Predictable beats clever. The whole point of a harness is to reduce surprise.
+
+## Same horse, now pulling something
+
+The model is the horse. Still strong. Still capable of carrying a lot of weight at speed. What changes is whether that strength turns into work or into a mess.
+
+A harness is just the rig that points the horse at the road.
+
+If you want the *what's-moving-this-month* view — Cursor SDK, Anthropic's harness-design paper, the generator/evaluator pattern, hooks, shared harnesses — that's all in [chapter 18, "What Is Happening"](/chapters/what-is-happening). This chapter is the primer; that one is the feed.
