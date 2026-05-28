@@ -2,7 +2,7 @@
 title: "What Is Happening"
 subtitle: "The fastest-moving areas in AI agent tooling right now — hooks, harness design, browser automation, and multi-agent orchestration"
 publishedAt: "2026-04-17"
-updatedAt: "2026-05-20"
+updatedAt: "2026-05-28"
 chapter: 18
 part: tools-infrastructure
 partNumber: 4
@@ -16,6 +16,16 @@ illustrationPlaceholders:
 Something's shifted in the last few months. The interesting problems aren't "which model is better" anymore — it's everything around the model. How you feed it context. How you keep it coherent across a long session. How you constrain what it touches. How you recover when it goes sideways.
 
 The models are good. The question is how you harness them. That's where things are moving fast, and where most of my attention is right now. Here's what's actually made a difference.
+
+## Cursor's productivity study: 39% more PRs at the same revert rate
+
+Cursor [published the data](https://cursor.com/blog/productivity) behind the productivity claim — a study Suproteem Sarkar (University of Chicago, finance and applied AI) ran across tens of thousands of Cursor users. The headline is **39% more PRs merged** once the coding agent became the default tool in the flow. The number sitting next to it is the one that decides whether the first number means anything: **revert rate didn't change and bugfix rate slightly decreased**. The extra throughput isn't being paid for in regressions.
+
+The developer-experience cut is the unintuitive bit. For every standard deviation of years-of-experience, agent acceptance rates rise roughly **6% relative to the mean**. Senior devs accept *more* agent code, not less. The plausible read: experienced developers write better plans before handing off, recognise good output faster, and rewrite less of it. The agent is a force multiplier on judgement, not a replacement for it. Cursor also notes that **more than a third of all PRs they merge are now opened by agents running in cloud sandboxes**, with the stated expectation that the share keeps climbing through the year.
+
+The study sits next to the team-level surface at [cursor.com/insights](https://cursor.com/insights) — the signed-in analytics dashboard where engineering leaders see the same shape of data inside their own org. The measurement plumbing is the part most "AI productivity" claims wave away. The **AI Share of Committed Code** metric tracks every AI suggestion as a local signature on-device, then compares those signatures against subsequent Git diffs — so the dashboard reports how much suggested code actually shipped, not how much was generated. Source never leaves the IDE; only the metadata does. Conversation Insights sits next to it, classifying sessions into bug-fixing, refactoring, documentation, or new features — also on-device. The May 4 enterprise refresh broke usage down further by surface (clients, Cloud Agents, automations, Bugbot, Security Review), so leadership can see whether the lift is coming from autocomplete, Composer, or autonomous cloud agents.
+
+Practical read: the Cursor numbers line up with [METR's own follow-up](https://metr.org/blog/2026-02-24-uplift-update/) — the same developers who were [19% *slower* with AI in METR's early-2025 study](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/) clocked an **18% speedup** in the early-2026 re-run, with METR attributing the flip to two things at once: the tools got better, and the developers learned when and how to use them. The conclusion isn't "AI tools work" or "AI tools don't" — it's that the answer moves quickly and the experienced operators move it fastest. The honest caveat on Cursor's data is the source (Cursor publishing about Cursor, self-selected population), and METR flags its own selection effect — devs became so reliant on AI they'd refuse to be in the no-AI control group. But the methodology is unusually transparent for a vendor study: quality metrics (revert, bugfix) reported alongside throughput instead of buried, on-device signatures as the answer to "how do you actually measure AI share," and the senior-dev finding cuts against the marketing narrative both sides would prefer. If you're trying to convince an exec the spend is justified — or convince yourself it isn't slop — pair the study with the METR update and the picture is consistent.
 
 ## Karpathy joins Anthropic's pre-training team
 
