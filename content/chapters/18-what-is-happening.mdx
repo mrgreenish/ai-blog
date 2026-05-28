@@ -17,6 +17,14 @@ Something's shifted in the last few months. The interesting problems aren't "whi
 
 The models are good. The question is how you harness them. That's where things are moving fast, and where most of my attention is right now. Here's what's actually made a difference.
 
+## Claude Opus 4.8 ships — more efficient and more persistent
+
+Anthropic [released Claude Opus 4.8](https://www.anthropic.com/news/claude-opus-4-8), and it's available in Cursor now.
+
+The Cursor read: on **CursorBench**, 4.8 works noticeably more efficiently than Opus 4.7. The other change is persistence — it pushes further on harder tasks before giving up or looping back for help.
+
+Practical read: two concrete improvements that matter for the workloads Cursor users run most. The efficiency gain means less per-task cost for equivalent output. The persistence gain is the harder-to-benchmark one, but it's the difference between a run that stalls halfway through a complex refactor and one that finishes. Worth switching from 4.7 in Cursor to check if your longer tasks complete more cleanly.
+
 ## Cursor's productivity study: 39% more PRs at the same revert rate
 
 Cursor [published the data](https://cursor.com/blog/productivity) behind the productivity claim — a study Suproteem Sarkar (University of Chicago, finance and applied AI) ran across tens of thousands of Cursor users. The headline is **39% more PRs merged** once the coding agent became the default tool in the flow. The number sitting next to it is the one that decides whether the first number means anything: **revert rate didn't change and bugfix rate slightly decreased**. The extra throughput isn't being paid for in regressions.
