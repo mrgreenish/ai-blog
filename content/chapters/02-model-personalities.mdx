@@ -2,7 +2,7 @@
 title: "Model Personalities"
 subtitle: "How different models approach the same task, and when to lean into that"
 publishedAt: "2026-04-17"
-updatedAt: "2026-04-28"
+updatedAt: "2026-06-03"
 chapter: 2
 part: understanding-models
 partNumber: 1
@@ -71,11 +71,11 @@ On the upside, it gives the clearest explanations of any model. Connects your sp
 
 Where it falls short: scope creep. Its instinct to be helpful means it expands tasks. Fix it with explicit constraints in your prompt or `CLAUDE.md`.
 
-## Claude 4.7 Opus: the deep thinker
+## Claude 4.8 Opus: the deep thinker
 
 **Anthropic · Deep · Best for: Hard problems & architecture**
 
-Opus isn't Sonnet with the volume up. Where Sonnet notices things, Opus *understands* them — traces actual logic rather than pattern-matching, reasons about systems rather than files. Opus 4.7 requires Max Mode on request-based plans and supports up to 1M tokens in Max Mode at standard per-token rates with no long-context surcharge.
+Opus isn't Sonnet with the volume up. Where Sonnet notices things, Opus *understands* them — traces actual logic rather than pattern-matching, reasons about systems rather than files. Opus 4.8 requires Max Mode on request-based plans and supports up to 1M tokens in Max Mode at standard per-token rates with no long-context surcharge.
 
 Where other models pattern-match, Opus traces actual logic. Catches bugs three levels of indirection deep, identifies race conditions by simulating concurrent execution, spots type issues TypeScript misses.
 
@@ -101,7 +101,7 @@ It also self-corrects. Observes the results of its own actions, catches mistakes
 
 Not limited to open files either. It navigates the project, finds relevant files, makes coordinated changes across many of them. Draws from the Auto + Composer pool, which includes more usage than the API pool — making it cost-efficient for everyday agentic work.
 
-The May 2026 retrain from Composer 2 closed the gap with frontier models — SWE-Bench Multilingual at 79.8% (within ~1pp of Opus 4.7) and CursorBench v3.1 at 63.2%, at roughly one-tenth the per-token cost. Behaviorally it also dropped the antagonistic edges of Composer 2: users on the forum describe it as "willing to think with you" rather than arguing back. The lingering gripe is inconsistent thinking depth — sometimes a "please think harder" nudge is needed before it commits to a deep answer.
+The May 2026 retrain from Composer 2 closed the gap with frontier models — SWE-Bench Multilingual at 79.8% (within ~1pp of Opus 4.8) and CursorBench v3.1 at 63.2%, at roughly one-tenth the per-token cost. Behaviorally it also dropped the antagonistic edges of Composer 2: users on the forum describe it as "willing to think with you" rather than arguing back. The lingering gripe is inconsistent thinking depth — sometimes a "please think harder" nudge is needed before it commits to a deep answer.
 
 Where it falls short: autonomy still has a cost, and on Terminal-Bench 2.0 long autonomous loops, GPT-5.5 still leads (82.7% vs 69.3%). Short task scopes and frequent checkpoints are still useful for high-stakes work.
 
