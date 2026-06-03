@@ -338,8 +338,8 @@ export const MODEL_REGISTRY: ModelSpec[] = [
 
   // ── Reasoning tier ─────────────────────────────────────────────────────────
   {
-    id: "opus-4.7",
-    name: "Claude Opus 4.7",
+    id: "opus-4.8",
+    name: "Claude Opus 4.8",
     provider: "Anthropic",
     inputPer1M: 5.00,
     outputPer1M: 25.00,
@@ -408,7 +408,7 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     costColor: "text-teal-300",
     why: {
       autonomous:
-        "GPT-5.5 is the strongest model released so far for long-running tool-use loops. 82.7% on Terminal-Bench 2.0 (vs Opus 4.7's 69.4%), plus leads on BrowseComp and CyberGym — it keeps going until the task is actually finished instead of handing back a plan.",
+        "GPT-5.5 is the strongest model released so far for long-running tool-use loops. 82.7% on Terminal-Bench 2.0 (vs Opus 4.8's 69.4%), plus leads on BrowseComp and CyberGym — it keeps going until the task is actually finished instead of handing back a plan.",
       coding:
         "First fully retrained base model since GPT-4.5. Developers describe it as needing much less hand-holding: you state the goal, it picks the right files, edits them, runs them, and corrects itself without a dozen follow-up prompts.",
       multifile:
@@ -419,14 +419,14 @@ export const MODEL_REGISTRY: ModelSpec[] = [
         "GPT-5.5 matches earlier GPT-5.x latency despite the capability jump, so you can put it behind agentic workflows without the usual speed tax.",
     },
     whenWrong:
-      "For review-grade reasoning, long-document Q&A, or anything close to HLE territory. Opus 4.7 still wins on SWE-bench Pro (64.3% vs 58.6%), HLE (46.9% vs 41.4%), and MCP-Atlas — if the task is 'reason deeply once' rather than 'run a loop,' pick Opus.",
+      "For review-grade reasoning, long-document Q&A, or anything close to HLE territory. Opus 4.8 still wins on SWE-bench Pro (64.3% vs 58.6%), HLE (46.9% vs 41.4%), and MCP-Atlas — if the task is 'reason deeply once' rather than 'run a loop,' pick Opus.",
     traits: [
       "1M token context with earlier GPT-5.x latency",
       "State-of-the-art on autonomous tool-use and terminal benchmarks",
       "First fully retrained base model since GPT-4.5",
     ],
     bestFor: "Agentic coding, browser automation, and long tool-use loops",
-    worstFor: "Review-grade reasoning and long-document Q&A — Opus 4.7 still edges it there",
+    worstFor: "Review-grade reasoning and long-document Q&A — Opus 4.8 still edges it there",
     latencyBand: "moderate",
     initiativeStyle: "autonomous",
     scopeDiscipline: "good",
@@ -463,12 +463,12 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       selfcorrect:
         "It sees the TypeScript error, understands it in context, and fixes it — without you having to copy-paste the error back into a prompt. Targeted RL with Textual Feedback localized the corrections during training instead of relying on final reward only.",
       hardproblems:
-        "Composer 2.5 is Cursor's own model — same Kimi K2.5 base as Composer 2, retrained to land in the same room as Opus 4.7 and GPT-5.5 on SWE-Bench Multilingual (79.8%) and CursorBench v3.1 (63.2%) at roughly one tenth the per-token cost.",
+        "Composer 2.5 is Cursor's own model — same Kimi K2.5 base as Composer 2, retrained to land in the same room as Opus 4.8 and GPT-5.5 on SWE-Bench Multilingual (79.8%) and CursorBench v3.1 (63.2%) at roughly one tenth the per-token cost.",
     },
     whenWrong:
-      "When you need a really hard reasoning result. On Terminal-Bench 2.0 it ties Opus 4.7 (~69%) but trails GPT-5.5's 82.7% on long autonomous loops. Some users also report it sometimes hedges with lightweight answers until you nudge it to think harder.",
+      "When you need a really hard reasoning result. On Terminal-Bench 2.0 it ties Opus 4.8 (~69%) but trails GPT-5.5's 82.7% on long autonomous loops. Some users also report it sometimes hedges with lightweight answers until you nudge it to think harder.",
     traits: [
-      "Frontier-competitive on SWE-Bench Multilingual (79.8%) and CursorBench v3.1 (63.2%) — within ~1 point of Opus 4.7 at ~10× cheaper per token",
+      "Frontier-competitive on SWE-Bench Multilingual (79.8%) and CursorBench v3.1 (63.2%) — within ~1 point of Opus 4.8 at ~10× cheaper per token",
       "Tuned for tool use, terminal, and file edits inside Cursor",
       "Built on Moonshot's Kimi K2.5; trained with Targeted RL with Textual Feedback and 25× more synthetic tasks than Composer 2",
       "Standard $0.50/$2.50 per M tokens; Fast variant at $3/$15 for low-latency runs",
@@ -478,8 +478,8 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     latencyBand: "moderate",
     initiativeStyle: "autonomous",
     scopeDiscipline: "good",
-    pickWhen: "You want frontier-grade agentic coding at one-tenth the cost of Opus 4.7 or GPT-5.5",
-    avoidWhen: "You need the absolute best on long autonomous loops (GPT-5.5) or maximum-rigor reasoning (Opus 4.7)",
+    pickWhen: "You want frontier-grade agentic coding at one-tenth the cost of Opus 4.8 or GPT-5.5",
+    avoidWhen: "You need the absolute best on long autonomous loops (GPT-5.5) or maximum-rigor reasoning (Opus 4.8)",
     benchmark: {
       correctServerAction: true,
       followedConstraints: true,
@@ -527,8 +527,8 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     id: "opus-fast",
     name: "Claude Opus Fast",
     provider: "Anthropic",
-    inputPer1M: 30.00,
-    outputPer1M: 150.00,
+    inputPer1M: 10.00,
+    outputPer1M: 50.00,
     tier: "reasoning",
     contextWindowTokens: 1_000_000,
     tagline: "Opus at Speed",
@@ -540,10 +540,10 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     costColor: "text-red-400",
     why: {},
     whenWrong:
-      "For almost all routine tasks — standard Opus 4.7 or Sonnet is enough without Fast-tier pricing.",
+      "For almost all routine tasks — standard Opus 4.8 or Sonnet is enough without Fast-tier pricing.",
     traits: [
       "Low-latency Opus variant",
-      "Roughly 6× standard Opus input pricing in Cursor",
+      "Roughly 2× standard Opus input pricing in Cursor",
     ],
     bestFor: "Rare cases where you need Opus-quality reasoning with minimum latency",
     worstFor: "Default choice — prohibitively expensive for everyday coding",
@@ -551,7 +551,7 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     initiativeStyle: "proactive",
     scopeDiscipline: "good",
     pickWhen: "Latency is critical and you have budget for premium Opus Fast rates",
-    avoidWhen: "Any normal task — use Opus 4.7 standard or a lighter model",
+    avoidWhen: "Any normal task — use Opus 4.8 standard or a lighter model",
     benchmark: {
       correctServerAction: false,
       followedConstraints: false,
@@ -593,7 +593,7 @@ export function getMixerModels() {
 // ---------------------------------------------------------------------------
 
 export const PRICING_META = {
-  verifiedDate: "2026-05-20", // Full registry cross-check against cursor.com/docs/models-and-pricing and provider API pages
+  verifiedDate: "2026-06-03", // Full registry cross-check against cursor.com/docs/models-and-pricing and provider API pages
   source: "Official API pricing pages",
   urls: {
     Anthropic: "https://docs.anthropic.com/en/docs/about-claude/pricing",
@@ -613,7 +613,7 @@ export function getCostCalculatorModels() {
     "haiku-4.5",
     "sonnet-4.6",
     "composer-2.5",
-    "opus-4.7",
+    "opus-4.8",
     "gpt-5.5",
   ];
   return ids.map((id) => {
@@ -652,7 +652,7 @@ export function getPickerModels() {
   const ids = [
     "gemini-flash",
     "sonnet-4.6",
-    "opus-4.7",
+    "opus-4.8",
     "composer-2.5",
   ];
   return ids.map((id) => {
@@ -707,7 +707,7 @@ export function getScenarioLabModels() {
     "deepseek-v4-flash",
     "sonnet-4.6",
     "composer-2.5",
-    "opus-4.7",
+    "opus-4.8",
     "gpt-5.5",
   ];
   return ids.map((id) => {
@@ -750,7 +750,7 @@ export function getTinderModels() {
   const ids = [
     "gemini-flash",
     "sonnet-4.6",
-    "opus-4.7",
+    "opus-4.8",
     "composer-2.5",
   ];
   return ids.map((id) => {

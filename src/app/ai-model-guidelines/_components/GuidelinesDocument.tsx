@@ -198,10 +198,10 @@ function CostExampleSection({
             {formatAboutCost("gemini-flash", 120_000, 20_000)}
           </li>
           <li>
-            Total with {getModelDisplayName("opus-4.7")} planning:{" "}
+            Total with {getModelDisplayName("opus-4.8")} planning:{" "}
             about{" "}
             {formatCost(
-              calcGuidelinesCost("opus-4.7", 300_000, 20_000) +
+              calcGuidelinesCost("opus-4.8", 300_000, 20_000) +
                 calcGuidelinesCost("gemini-flash", 120_000, 20_000)
             )}
           </li>
@@ -217,8 +217,8 @@ function CostExampleSection({
         )}
         <ul style={variant === "sharepoint" ? { margin: "0 0 12px", paddingLeft: "24px" } : undefined}>
           <li>
-            Doing the whole task with {getModelDisplayName("opus-4.7")} in Max Mode:{" "}
-            {formatAboutCost("opus-4.7", 420_000, 40_000)} or more
+            Doing the whole task with {getModelDisplayName("opus-4.8")} in Max Mode:{" "}
+            {formatAboutCost("opus-4.8", 420_000, 40_000)} or more
           </li>
         </ul>
       </>
@@ -228,8 +228,8 @@ function CostExampleSection({
     example.totalLine && example.id === "complex" ? (
       <ul style={variant === "sharepoint" ? { margin: "0 0 12px", paddingLeft: "24px" } : undefined}>
         <li>
-          {getModelDisplayName("opus-4.7")} planning:{" "}
-          {formatAboutCost("opus-4.7", 300_000, 20_000)}
+          {getModelDisplayName("opus-4.8")} planning:{" "}
+          {formatAboutCost("opus-4.8", 300_000, 20_000)}
         </li>
         <li>
           {getModelDisplayName("composer-2.5")} implementation:{" "}
@@ -238,7 +238,7 @@ function CostExampleSection({
         <li>
           Total: about{" "}
           {formatCost(
-            calcGuidelinesCost("opus-4.7", 300_000, 20_000) +
+            calcGuidelinesCost("opus-4.8", 300_000, 20_000) +
               calcGuidelinesCost("composer-2.5", 120_000, 20_000)
           )}
         </li>
@@ -528,7 +528,7 @@ export function GuidelinesDocument({ variant }: { variant: GuidelinesVariant }) 
         But do not use Max Mode for small tasks. It can cost much more because the model reads and reasons over more tokens.
       </p>
       <p style={isSp ? SP.p : undefined}>
-        Doing everything with {getModelDisplayName("opus-4.7")} in Max Mode can get really expensive very quickly. Do not do this by default. Use it only when the task truly benefits from deep context and stronger reasoning.
+        Doing everything with {getModelDisplayName("opus-4.8")} in Max Mode can get really expensive very quickly. Do not do this by default. Use it only when the task truly benefits from deep context and stronger reasoning.
       </p>
 
       {isSp ? <h3 style={SP.h3}>Fast Mode</h3> : <h3>Fast Mode</h3>}

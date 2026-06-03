@@ -2,7 +2,7 @@
 title: "Agents and Skills"
 subtitle: "How reusable skill files encode domain knowledge beyond a single session"
 publishedAt: "2026-04-17"
-updatedAt: "2026-05-21"
+updatedAt: "2026-06-03"
 chapter: 14
 part: tools-infrastructure
 partNumber: 4
@@ -83,7 +83,7 @@ If you use Claude Code, install the official `code-simplifier` plugin from Claud
 
 The other pattern I keep reaching for is the opposite of a second pass — it's a *parallel* pass. Instead of asking one model a hard question and trusting the answer, ask three at once and let them peer-review each other.
 
-That's what my [`ai-council`](https://github.com/mrgreenish/ai-council-plugin) plugin does. It spins up three subagents in parallel — GPT-5.5 as the adversarial analyst, Claude Opus 4.7 as the production-quality advocate, and Gemini 3.1 Pro as the breadth analyst — each returning the same structured schema (assumptions, risks ordered by severity, counterargument, confidence score). They then anonymously score each other's outputs, and the parent session synthesizes a final verdict informed by the peer review.
+That's what my [`ai-council`](https://github.com/mrgreenish/ai-council-plugin) plugin does. It spins up three subagents in parallel — GPT-5.5 as the adversarial analyst, Claude Opus 4.8 as the production-quality advocate, and Gemini 3.1 Pro as the breadth analyst — each returning the same structured schema (assumptions, risks ordered by severity, counterargument, confidence score). They then anonymously score each other's outputs, and the parent session synthesizes a final verdict informed by the peer review.
 
 The point isn't ensemble averaging. It's that the three models have genuinely different instincts — the same personality differences from [Chapter 2](/chapters/model-personalities) — and surfacing all three at once catches blind spots that any single model would confidently miss.
 

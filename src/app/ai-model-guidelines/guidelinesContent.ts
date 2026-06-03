@@ -62,7 +62,7 @@ export const AT_A_GLANCE_ROWS: {
       simple: { modelIds: ["gemini-flash", "composer-2.5"] },
       mediumLow: { modelIds: ["gemini-3.1-pro", "gpt-5.4"] },
       mediumCreative: { modelIds: ["sonnet-4.6"] },
-      complex: { modelIds: ["gpt-5.5", "opus-4.7"] },
+      complex: { modelIds: ["gpt-5.5", "opus-4.8"] },
     },
   },
   {
@@ -109,11 +109,11 @@ export const AT_A_GLANCE_ROWS: {
   {
     label: "Avoid",
     cells: {
-      simple: "Opus 4.7, GPT-5.5, Max Mode, Fast Mode",
+      simple: "Opus 4.8, GPT-5.5, Max Mode, Fast Mode",
       mediumLow: "Opus Fast, defaulting to Max Mode",
       mediumCreative: "Jumping straight to the heaviest model",
       complex:
-        "Doing everything in Opus 4.7 + Max Mode by default — costs escalate quickly",
+        "Doing everything in Opus 4.8 + Max Mode by default — costs escalate quickly",
     },
   },
 ];
@@ -151,7 +151,7 @@ export interface RecommendationBlock {
 export const RECOMMENDED_PICKS: RecommendationBlock[] = [
   {
     title: "Complex tasks",
-    modelIds: ["gpt-5.5", "opus-4.7"],
+    modelIds: ["gpt-5.5", "opus-4.8"],
     note: "Use Plan Mode for complex multi-file tasks — see the Tips section below.",
   },
   {
@@ -224,7 +224,7 @@ export const REASONING_RULE_OF_THUMB =
 
 export const PLAN_MODE_EXAMPLE = {
   quote: "Create a new component in our application.",
-  planModelIds: ["gpt-5.5", "opus-4.7"] as GuidelinesModelId[],
+  planModelIds: ["gpt-5.5", "opus-4.8"] as GuidelinesModelId[],
   implementModelIds: ["sonnet-4.6", "gpt-5.4", "composer-2.5"] as GuidelinesModelId[],
 };
 
@@ -261,7 +261,7 @@ export const COST_EXAMPLES: CostExample[] = [
       { modelId: "gemini-flash", inputTokens: 20_000, outputTokens: 2_000 },
       { modelId: "gemini-3.1-pro", inputTokens: 20_000, outputTokens: 2_000 },
       { modelId: "gpt-5.5", inputTokens: 20_000, outputTokens: 2_000 },
-      { modelId: "opus-4.7", inputTokens: 20_000, outputTokens: 2_000 },
+      { modelId: "opus-4.8", inputTokens: 20_000, outputTokens: 2_000 },
       { modelId: "opus-fast", inputTokens: 20_000, outputTokens: 2_000 },
     ],
     advice:
@@ -279,7 +279,7 @@ export const COST_EXAMPLES: CostExample[] = [
       { modelId: "sonnet-4.6", inputTokens: 80_000, outputTokens: 8_000 },
       { modelId: "gpt-5.4", inputTokens: 80_000, outputTokens: 8_000 },
       { modelId: "gpt-5.5", inputTokens: 80_000, outputTokens: 8_000 },
-      { modelId: "opus-4.7", inputTokens: 80_000, outputTokens: 8_000 },
+      { modelId: "opus-4.8", inputTokens: 80_000, outputTokens: 8_000 },
     ],
     advice:
       "Sonnet 4.6 is probably the best fit here. It is strong creatively without jumping straight to the most expensive models.",
@@ -293,7 +293,7 @@ export const COST_EXAMPLES: CostExample[] = [
       { label: "Implementation phase", inputTokens: 120_000, outputTokens: 20_000 },
     ],
     approach: [
-      { label: "Plan in Plan Mode with", modelIds: ["opus-4.7"] },
+      { label: "Plan in Plan Mode with", modelIds: ["opus-4.8"] },
       {
         label: "Implement with",
         modelIds: ["composer-2.5"],
@@ -301,18 +301,18 @@ export const COST_EXAMPLES: CostExample[] = [
       },
     ],
     modelCosts: [
-      { modelId: "opus-4.7", inputTokens: 300_000, outputTokens: 20_000 },
+      { modelId: "opus-4.8", inputTokens: 300_000, outputTokens: 20_000 },
       { modelId: "composer-2.5", inputTokens: 120_000, outputTokens: 20_000 },
     ],
     extraCosts: [
       { modelId: "gemini-flash", inputTokens: 120_000, outputTokens: 20_000 },
-      { modelId: "opus-4.7", inputTokens: 420_000, outputTokens: 40_000 },
+      { modelId: "opus-4.8", inputTokens: 420_000, outputTokens: 40_000 },
     ],
     totalLine: {
       label: "Total",
-      modelIds: ["opus-4.7", "composer-2.5"],
+      modelIds: ["opus-4.8", "composer-2.5"],
       phases: [
-        { modelId: "opus-4.7", inputTokens: 300_000, outputTokens: 20_000 },
+        { modelId: "opus-4.8", inputTokens: 300_000, outputTokens: 20_000 },
         { modelId: "composer-2.5", inputTokens: 120_000, outputTokens: 20_000 },
       ],
     },
