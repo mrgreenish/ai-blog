@@ -17,6 +17,14 @@ Something's shifted in the last few months. The interesting problems aren't "whi
 
 The models are good. The question is how you harness them. That's where things are moving fast, and where most of my attention is right now. Here's what's actually made a difference.
 
+## Claude Fable 5 is available again
+
+Anthropic has [redeployed Claude Fable 5](https://www.anthropic.com/news/redeploying-fable-5) globally after the US government lifted the export controls that forced the company to suspend it on June 12. Access returns today, July 1, in Claude, Claude Code, Cowork, and the Claude API. Amazon Bedrock, Google Cloud Vertex AI, and Microsoft Foundry will follow as Anthropic re-enables them.
+
+The suspension started when the government learned that Amazon researchers had bypassed some of Fable's safeguards and used it to identify software vulnerabilities. Anthropic says its review found that less capable models — including Claude Opus 4.8, GPT-5.5, and Kimi K2.7 — could identify the same vulnerabilities. The company is keeping Fable's deliberately conservative classifiers and adding deeper pre-release testing and information sharing with the US government.
+
+For Pro, Max, Team, and eligible Enterprise plans, Fable can use up to **50% of weekly usage limits through July 7**; after that it moves to usage credits. Mythos 5, the less-restricted version of the same underlying model, is available again only to approved US organisations. Practical read: Fable is back as the high-end option for difficult reasoning and coding, but the two-week interruption is the bigger signal — access to frontier models can now change overnight because of policy, not just product decisions.
+
 ## Sakana Fugu hides a multi-agent system behind one model endpoint
 
 Sakana AI's [Fugu](https://sakana.ai/fugu/) is a different answer to model selection: don't pick one. It exposes a pool of frontier models through a single OpenAI-compatible API, then learns which agents to assemble, what roles to give them, and how they should collaborate for each request. The research underneath — TRINITY and the Conductor — replaces the usual hand-written router and fixed Thinker/Worker/Verifier workflow with a coordinator trained to discover its own delegation patterns.
@@ -36,10 +44,6 @@ There is one billing wrinkle hiding behind the cheaper launch rate. Sonnet 5 use
 The safety story moved too. Anthropic reports lower hallucination, sycophancy, prompt-injection susceptibility, and undesirable behavior than Sonnet 4.6. Cyber capability is deliberately lower than Opus 4.8 and Mythos 5, and Sonnet 5 ships with cyber safeguards enabled by default. Practical read: this is now the default Claude for everyday coding agents — cheaper than Opus, much better at finishing the loop than the previous Sonnet, and available across Claude plans, Claude Code, and the Claude Platform. Keep Opus for the hardest reasoning and reduced-guardrail security work; start almost everything else here.
 
 ## Claude Fable 5 puts a Mythos-class model in everyone's hands
-
-<UpdateBlock>
-  **Update, July 1:** Fable 5 is no longer blocked. The US government forced Anthropic to suspend it globally on June 12, but [lifted the export controls on June 30](https://www.anthropic.com/news/redeploying-fable-5). Anthropic says access returns globally today in Claude, Claude Code, Cowork, and its API; AWS, Google Cloud, and Microsoft Foundry will follow.
-</UpdateBlock>
 
 Anthropic shipped [Claude Fable 5](https://www.anthropic.com/news/claude-fable-5-mythos-5) today, June 9 — the first **Mythos-class** model to go generally available. The Mythos Preview and Glasswing entries further down this chapter were the gated version of this capability; Fable 5 is the public release. It and **Claude Mythos 5** are the same underlying model — the split is safety, not power. Fable 5 ships with classifiers that route cybersecurity, biology/chemistry, and model-distillation prompts to Opus 4.8 instead of answering them directly, while Mythos 5 has those safeguards lifted and stays restricted to vetted Project Glasswing partners and the US government. The classifiers are tuned conservatively — they trigger in **under 5% of sessions** and will sometimes catch harmless requests.
 
