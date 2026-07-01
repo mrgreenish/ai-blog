@@ -17,6 +17,14 @@ Something's shifted in the last few months. The interesting problems aren't "whi
 
 The models are good. The question is how you harness them. That's where things are moving fast, and where most of my attention is right now. Here's what's actually made a difference.
 
+## Sakana Fugu hides a multi-agent system behind one model endpoint
+
+Sakana AI's [Fugu](https://sakana.ai/fugu/) is a different answer to model selection: don't pick one. It exposes a pool of frontier models through a single OpenAI-compatible API, then learns which agents to assemble, what roles to give them, and how they should collaborate for each request. The research underneath — TRINITY and the Conductor — replaces the usual hand-written router and fixed Thinker/Worker/Verifier workflow with a coordinator trained to discover its own delegation patterns.
+
+There are two versions. Fugu is tuned for everyday latency and lets you exclude specific providers or models; Fugu Ultra uses a fixed, deeper pool for difficult coding, reasoning, and research work. Sakana's own results put Ultra at **73.7% on SWE-Bench Pro** and **82.1% on Terminal-Bench 2.1**, ahead of the individual frontier models in its comparison. Treat those as vendor benchmarks until they are independently reproduced, but the product shape matters even if the exact ranking moves.
+
+Practical read: this turns multi-agent orchestration from something you build into something you call. That is attractive if you want ensemble performance without maintaining routers, prompts, retries, and handoffs yourself. The tradeoff is observability: Fugu does not reveal which underlying models handled a request or how they were coordinated, and Fugu Ultra does not allow provider opt-outs. It is also **not yet available in the EU or EEA** while Sakana works through GDPR and regional compliance. The interesting bet is that the durable unit developers buy may stop being a model and become a managed team of models wearing one API name.
+
 ## Claude Sonnet 5 turns the balanced tier into an agent
 
 Anthropic [announced Claude Sonnet 5](https://www.anthropic.com/news/claude-sonnet-5) on June 30. The short version: the Sonnet tier now does work that needed an Opus model a few months ago. It can plan, use browsers and terminals, keep a multi-step task moving, and check its own output without waiting for another prompt. Anthropic says the biggest gains over Sonnet 4.6 are in reasoning, tool use, coding, and knowledge work; at higher effort levels, it can match Opus 4.8 on some agentic search and computer-use tasks.
