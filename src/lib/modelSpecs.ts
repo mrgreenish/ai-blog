@@ -14,6 +14,16 @@ export type InitiativeStyle = "minimal" | "measured" | "proactive" | "autonomous
 /** How well the model respects explicit scope constraints */
 export type ScopeDiscipline = "strict" | "good" | "drifts" | "unpredictable";
 
+export interface PromotionalPricing {
+  inputPer1M: number;
+  outputPer1M: number;
+  /** Inclusive ISO date on which the promotion starts. */
+  startsAt: string;
+  /** Inclusive ISO date on which the promotion ends. */
+  endsAt: string;
+  label: string;
+}
+
 export interface ModelSpec {
   // Core identity
   id: string;
@@ -23,6 +33,8 @@ export interface ModelSpec {
   // Pricing (per 1M tokens, USD)
   inputPer1M: number;
   outputPer1M: number;
+  /** Temporary pricing layered over the standard rates above. */
+  promotionalPricing?: PromotionalPricing;
 
   // Tier classification for ModelMixer
   tier: Tier;
@@ -288,11 +300,18 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     },
   },
   {
-    id: "sonnet-4.6",
-    name: "Claude Sonnet 4.6",
+    id: "sonnet-5",
+    name: "Claude Sonnet 5",
     provider: "Anthropic",
     inputPer1M: 3.00,
     outputPer1M: 15.00,
+    promotionalPricing: {
+      inputPer1M: 2.00,
+      outputPer1M: 10.00,
+      startsAt: "2026-06-30",
+      endsAt: "2026-08-31",
+      label: "Introductory pricing through August 31, 2026",
+    },
     tier: "balanced",
     contextWindowTokens: 1_000_000,
     tagline: "The Proactive One",
@@ -569,6 +588,44 @@ export const MODEL_BY_ID: Record<string, ModelSpec> = Object.fromEntries(
   MODEL_REGISTRY.map((m) => [m.id, m])
 );
 
+export interface EffectiveModelPricing {
+  inputPer1M: number;
+  outputPer1M: number;
+  isPromotional: boolean;
+  label?: string;
+  endsAt?: string;
+}
+
+function toIsoDate(asOf: Date | string): string {
+  if (typeof asOf === "string") return asOf.slice(0, 10);
+  return asOf.toISOString().slice(0, 10);
+}
+
+/** Resolve the rate in effect on a given date while preserving standard pricing in the registry. */
+export function getEffectiveModelPricing(
+  model: ModelSpec,
+  asOf: Date | string = new Date()
+): EffectiveModelPricing {
+  const date = toIsoDate(asOf);
+  const promotion = model.promotionalPricing;
+
+  if (promotion && date >= promotion.startsAt && date <= promotion.endsAt) {
+    return {
+      inputPer1M: promotion.inputPer1M,
+      outputPer1M: promotion.outputPer1M,
+      isPromotional: true,
+      label: promotion.label,
+      endsAt: promotion.endsAt,
+    };
+  }
+
+  return {
+    inputPer1M: model.inputPer1M,
+    outputPer1M: model.outputPer1M,
+    isPromotional: false,
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Component-specific selectors
 // These return exactly the shape each component expects so component internals
@@ -576,27 +633,34 @@ export const MODEL_BY_ID: Record<string, ModelSpec> = Object.fromEntries(
 // ---------------------------------------------------------------------------
 
 /** Models shown in ModelMixer — all models with pricing + tier */
-export function getMixerModels() {
-  return MODEL_REGISTRY.map((m) => ({
-    id: m.id,
-    name: m.name,
-    provider: m.provider,
-    tier: m.tier,
-    inputPer1M: m.inputPer1M,
-    outputPer1M: m.outputPer1M,
-  }));
+export function getMixerModels(asOf: Date | string = new Date()) {
+  return MODEL_REGISTRY.map((m) => {
+    const pricing = getEffectiveModelPricing(m, asOf);
+    return {
+      id: m.id,
+      name: m.name,
+      provider: m.provider,
+      tier: m.tier,
+      inputPer1M: pricing.inputPer1M,
+      outputPer1M: pricing.outputPer1M,
+      pricingLabel: pricing.label,
+    };
+  });
 }
 
 // ---------------------------------------------------------------------------
 // Pricing metadata — single source of truth for data attribution
-// Prices verified against official API pricing pages on 2026-05-06
+// Prices verified against official API pricing pages on 2026-07-01
 // ---------------------------------------------------------------------------
 
 export const PRICING_META = {
-  verifiedDate: "2026-06-03", // Full registry cross-check against cursor.com/docs/models-and-pricing and provider API pages
+  verifiedDate: "2026-07-01", // Full registry cross-check against cursor.com/docs/models-and-pricing and provider API pages
   source: "Official API pricing pages",
+  notes: [
+    "Claude Sonnet 5 is $2/$10 per million input/output tokens through August 31, 2026, then $3/$15.",
+  ],
   urls: {
-    Anthropic: "https://docs.anthropic.com/en/docs/about-claude/pricing",
+    Anthropic: "https://platform.claude.com/docs/en/about-claude/pricing",
     OpenAI: "https://openai.com/api/pricing",
     Google: "https://ai.google.dev/gemini-api/docs/pricing",
     DeepSeek: "https://api-docs.deepseek.com/quick_start/pricing",
@@ -605,26 +669,28 @@ export const PRICING_META = {
 } as const;
 
 /** Models shown in CostCalculator */
-export function getCostCalculatorModels() {
+export function getCostCalculatorModels(asOf: Date | string = new Date()) {
   // Only include models that are meaningful for cost comparison in the blog
   const ids = [
     "gemini-flash",
     "deepseek-v4-flash",
     "haiku-4.5",
-    "sonnet-4.6",
+    "sonnet-5",
     "composer-2.5",
     "opus-4.8",
     "gpt-5.5",
   ];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
+    const pricing = getEffectiveModelPricing(m, asOf);
     return {
       id: m.id,
       name: m.name,
       provider: m.provider,
-      perM_in: m.inputPer1M,
-      perM_out: m.outputPer1M,
+      perM_in: pricing.inputPer1M,
+      perM_out: pricing.outputPer1M,
       color: m.costColor,
+      pricingLabel: pricing.label,
     };
   });
 }
@@ -634,7 +700,7 @@ export function getContextWindowModels() {
   const ids = [
     "gpt-5.5",
     "gemini-flash",
-    "sonnet-4.6",
+    "sonnet-5",
     "composer-2.5",
   ];
   return ids.map((id) => {
@@ -651,7 +717,7 @@ export function getContextWindowModels() {
 export function getPickerModels() {
   const ids = [
     "gemini-flash",
-    "sonnet-4.6",
+    "sonnet-5",
     "opus-4.8",
     "composer-2.5",
   ];
@@ -672,46 +738,50 @@ export function getPickerModels() {
 }
 
 /** Full model set for ModelPicker 2.0 — includes all models that can surface as recommendations */
-export function getPickerModelsV2() {
+export function getPickerModelsV2(asOf: Date | string = new Date()) {
   // All models are candidates; scoring determines which surface in top-3
-  return MODEL_REGISTRY.map((m) => ({
-    id: m.id,
-    name: m.name,
-    provider: m.provider,
-    tagline: m.tagline,
-    emoji: m.emoji,
-    gradientFrom: m.gradientFrom,
-    gradientTo: m.gradientTo,
-    accentColor: m.accentColor,
-    tier: m.tier,
-    inputPer1M: m.inputPer1M,
-    outputPer1M: m.outputPer1M,
-    latencyBand: m.latencyBand,
-    initiativeStyle: m.initiativeStyle,
-    scopeDiscipline: m.scopeDiscipline,
-    why: m.why,
-    whenWrong: m.whenWrong,
-    pickWhen: m.pickWhen,
-    avoidWhen: m.avoidWhen,
-    traits: m.traits,
-    bestFor: m.bestFor,
-    worstFor: m.worstFor,
-  }));
+  return MODEL_REGISTRY.map((m) => {
+    const pricing = getEffectiveModelPricing(m, asOf);
+    return {
+      id: m.id,
+      name: m.name,
+      provider: m.provider,
+      tagline: m.tagline,
+      emoji: m.emoji,
+      gradientFrom: m.gradientFrom,
+      gradientTo: m.gradientTo,
+      accentColor: m.accentColor,
+      tier: m.tier,
+      inputPer1M: pricing.inputPer1M,
+      outputPer1M: pricing.outputPer1M,
+      latencyBand: m.latencyBand,
+      initiativeStyle: m.initiativeStyle,
+      scopeDiscipline: m.scopeDiscipline,
+      why: m.why,
+      whenWrong: m.whenWrong,
+      pickWhen: m.pickWhen,
+      avoidWhen: m.avoidWhen,
+      traits: m.traits,
+      bestFor: m.bestFor,
+      worstFor: m.worstFor,
+    };
+  });
 }
 
 /** Models available in ScenarioLab comparisons */
-export function getScenarioLabModels() {
+export function getScenarioLabModels(asOf: Date | string = new Date()) {
   const ids = [
     "gemini-flash",
     "haiku-4.5",
     "deepseek-v4-flash",
-    "sonnet-4.6",
+    "sonnet-5",
     "composer-2.5",
     "opus-4.8",
     "gpt-5.5",
   ];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
+    const pricing = getEffectiveModelPricing(m, asOf);
     return {
       id: m.id,
       name: m.name,
@@ -720,8 +790,8 @@ export function getScenarioLabModels() {
       emoji: m.emoji,
       accentColor: m.accentColor,
       tier: m.tier,
-      inputPer1M: m.inputPer1M,
-      outputPer1M: m.outputPer1M,
+      inputPer1M: pricing.inputPer1M,
+      outputPer1M: pricing.outputPer1M,
       latencyBand: m.latencyBand,
       initiativeStyle: m.initiativeStyle,
       scopeDiscipline: m.scopeDiscipline,
@@ -749,7 +819,7 @@ export function getFailureGalleryModels() {
 export function getTinderModels() {
   const ids = [
     "gemini-flash",
-    "sonnet-4.6",
+    "sonnet-5",
     "opus-4.8",
     "composer-2.5",
   ];
@@ -786,7 +856,7 @@ export const BENCHMARK_CHECKS: BenchmarkCheck[] = [
 
 /** Models shown as columns in DevBenchmark */
 export function getDevBenchmarkColumns() {
-  const ids = ["sonnet-4.6", "gemini-flash", "haiku-4.5", "composer-2.5"];
+  const ids = ["sonnet-5", "gemini-flash", "haiku-4.5", "composer-2.5"];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
     return {

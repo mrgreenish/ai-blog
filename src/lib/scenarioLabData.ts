@@ -110,7 +110,7 @@ export const SCENARIOS: Scenario[] = [
         costCommentary: "Cheapest option",
       },
       {
-        modelId: "sonnet-4.6",
+        modelId: "sonnet-5",
         verdict: "caution",
         summary: "Correct, but added unrequested refactor suggestions",
         outputExcerpt:
@@ -180,7 +180,7 @@ export const SCENARIOS: Scenario[] = [
         costCommentary: "Very cheap",
       },
       {
-        modelId: "sonnet-4.6",
+        modelId: "sonnet-5",
         verdict: "caution",
         summary: "Good refactor, but touched adjacent code",
         outputExcerpt:
@@ -198,7 +198,7 @@ export const SCENARIOS: Scenario[] = [
       },
     ],
     planMode: {
-      planModelId: "sonnet-4.6",
+      planModelId: "sonnet-5",
       executeModelId: "composer-2.5",
       insight:
         "Plan mode turns Sonnet's scope drift into a feature. It reasons about the refactor approach — naming, structure, edge cases — but a fast model executes the actual edit. You get Sonnet's judgment without its tendency to touch adjacent code.",
@@ -206,7 +206,7 @@ export const SCENARIOS: Scenario[] = [
         "Sonnet plans the approach (extract helper, simplify conditionals, preserve API), then Composer 2.5 executes it with explicit guardrails. The plan constrains scope while still letting the executor verify the result if needed.",
       results: [
         {
-          modelId: "sonnet-4.6",
+          modelId: "sonnet-5",
           verdict: "best",
           summary: "Plans the approach without touching code directly",
           outputExcerpt:
@@ -232,7 +232,7 @@ export const SCENARIOS: Scenario[] = [
           ],
           weaknesses: [],
           costCommentary: "Fast executor — combined plan + execute cost stays reasonable while adding verification headroom",
-          costContext: { compareToModelId: "sonnet-4.6" },
+          costContext: { compareToModelId: "sonnet-5" },
         },
         {
           modelId: "gemini-flash",
@@ -262,7 +262,7 @@ export const SCENARIOS: Scenario[] = [
     primarySignal: "accuracy",
     insight:
       "Fast models produce boilerplate tests quickly. A stronger model reasons about edge cases and failure modes — one good suite beats three mediocre ones you have to fix.",
-    recommendedModelId: "sonnet-4.6",
+    recommendedModelId: "sonnet-5",
     recommendationReason:
       "Sonnet notices edge cases you didn't think to mention. For test generation, that proactiveness is a feature — you want the model to think about failure modes.",
     results: [
@@ -313,10 +313,10 @@ export const SCENARIOS: Scenario[] = [
           "Can over-invest in verification unless you set scope",
         ],
         costCommentary: "Expensive per token, but one verified pass can beat multiple correction rounds",
-        costContext: { compareToModelId: "sonnet-4.6" },
+        costContext: { compareToModelId: "sonnet-5" },
       },
       {
-        modelId: "sonnet-4.6",
+        modelId: "sonnet-5",
         verdict: "best",
         summary: "Thoughtful tests with real edge cases",
         outputExcerpt:
@@ -347,11 +347,11 @@ export const SCENARIOS: Scenario[] = [
           "Marginal improvement over Sonnet for most test suites",
         ],
         costCommentary: "Reserve for critical payment/auth modules where thoroughness matters",
-        costContext: { compareToModelId: "sonnet-4.6" },
+        costContext: { compareToModelId: "sonnet-5" },
       },
     ],
     planMode: {
-      planModelId: "sonnet-4.6",
+      planModelId: "sonnet-5",
       executeModelId: "haiku-4.5",
       insight:
         "The hard part of test generation is knowing what to test — the edge cases, race conditions, failure modes. The easy part is writing the actual test code. Plan mode lets a strong model do the thinking while a fast model does the typing.",
@@ -359,7 +359,7 @@ export const SCENARIOS: Scenario[] = [
         "Sonnet identifies the edge cases (concurrent payments, timeouts, idempotency) and writes a test plan. Haiku generates the actual test code from that plan. You get Sonnet-quality coverage at a fraction of the cost.",
       results: [
         {
-          modelId: "sonnet-4.6",
+          modelId: "sonnet-5",
           verdict: "best",
           summary: "Identifies every edge case worth testing",
           outputExcerpt:
@@ -418,7 +418,7 @@ export const SCENARIOS: Scenario[] = [
             "Extra depth (property-based testing) often isn't needed",
           ],
           costCommentary: "Sonnet's plan is good enough — save Opus for architecture",
-          costContext: { compareToModelId: "sonnet-4.6" },
+          costContext: { compareToModelId: "sonnet-5" },
         },
       ],
     },
@@ -472,7 +472,7 @@ export const SCENARIOS: Scenario[] = [
         costContext: { compareToModelId: "composer-2.5" },
       },
       {
-        modelId: "sonnet-4.6",
+        modelId: "sonnet-5",
         verdict: "good",
         summary: "Strong implementation, but required scope guardrails",
         outputExcerpt:
@@ -566,7 +566,7 @@ export const SCENARIOS: Scenario[] = [
           costCommentary: "Combined Opus plan + Composer 2.5 execution trades a little extra cost for cleaner verification and less rework",
         },
         {
-          modelId: "sonnet-4.6",
+          modelId: "sonnet-5",
           verdict: "good",
           summary: "Strong planner, but Opus catches more architectural issues",
           outputExcerpt:
@@ -648,7 +648,7 @@ export const SCENARIOS: Scenario[] = [
         costContext: { compareToModelId: "opus-4.8" },
       },
       {
-        modelId: "sonnet-4.6",
+        modelId: "sonnet-5",
         verdict: "good",
         summary: "Solid analysis, but missed the key access pattern implication",
         outputExcerpt:

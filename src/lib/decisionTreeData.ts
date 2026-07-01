@@ -55,7 +55,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F50D}",
           description:
             "Use AI to catch mechanical bugs, type errors, and security issues before human review.",
-          model: "Claude Sonnet 4.6",
+          model: "Claude Sonnet 5",
           tools: ["Cursor BugBot", "Codex on GitHub", "GitHub PR"],
           steps: [
             {
@@ -184,7 +184,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F3A8}",
           description:
             "Go from Figma design to production component with typed props, design tokens, and Storybook stories.",
-          model: "Claude Sonnet 4.6",
+          model: "Claude Sonnet 5",
           tools: ["Figma MCP", "Cursor", "Storybook", "SKILL.md"],
           steps: [
             {
@@ -248,7 +248,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F3AB}",
           description:
             "Turn a Jira ticket into a working PR using acceptance criteria as test cases and edge cases as guardrails.",
-          model: "Claude Sonnet 4.6",
+          model: "Claude Sonnet 5",
           tools: ["AI ticket generator", "Cursor", "Figma MCP", "GitHub"],
           steps: [
             {
@@ -259,7 +259,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
             {
               label: "Set up context",
               description:
-                "Paste the ticket into Cursor. Add the Figma link. Keep Figma Desktop open for MCP access.",
+                "Paste the ticket into Cursor. Add the Figma link. Connect the recommended remote Figma MCP server.",
             },
             {
               label: "Plan",
@@ -281,7 +281,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
             "Acceptance criteria become test cases",
             "Edge cases from the ticket become guardrails",
             "Stay within ticket scope \u2014 out-of-scope work gets its own ticket",
-            "Keep Figma Desktop open during the session",
+            "Confirm the remote Figma MCP server is authenticated",
           ],
           output:
             "PR that maps directly to ticket acceptance criteria with design-accurate implementation.",
@@ -377,7 +377,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F9F1}",
           description:
             "Build new features by composing existing components using atomic design principles.",
-          model: "Claude Sonnet 4.6",
+          model: "Claude Sonnet 5",
           tools: ["Cursor with project rules", "Storybook", "cva"],
           steps: [
             {
@@ -442,7 +442,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F41B}",
           description:
             "You can reproduce it \u2014 skip straight to isolating and fixing the bug.",
-          model: "Claude Sonnet 4.6",
+          model: "Claude Sonnet 5",
           tools: ["Cursor", "Claude Code"],
           steps: [
             {
@@ -495,7 +495,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F41B}",
           description:
             "You can\u2019t reproduce it yet \u2014 start by building a reliable repro before fixing anything.",
-          model: "Claude Sonnet 4.6",
+          model: "Claude Sonnet 5",
           tools: ["Cursor", "Claude Code"],
           steps: [
             {
@@ -560,8 +560,8 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F5B1}\uFE0F",
           description:
             "Configure Cursor with project rules and optimized settings for AI-assisted development.",
-          model: "Claude Sonnet 4.6 (in Cursor)",
-          tools: ["Cursor", ".cursorrules"],
+          model: "Claude Sonnet 5 (in Cursor)",
+          tools: ["Cursor", ".cursor/rules/*.mdc"],
           steps: [
             {
               label: "Install & configure",
@@ -571,7 +571,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
             {
               label: "Create project rules",
               description:
-                "Add .cursorrules with your codebase conventions, tech stack, and coding standards.",
+                "Add scoped .mdc project rules under .cursor/rules/ with your codebase conventions, tech stack, and coding standards.",
             },
             {
               label: "Test with a real task",
@@ -580,7 +580,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
             },
           ],
           guardrails: [
-            "Keep .cursorrules focused \u2014 too many rules confuse the model",
+            "Keep project rules focused and scoped \u2014 too many always-on rules confuse the model",
             "Update rules as your codebase evolves",
           ],
           output:
@@ -606,7 +606,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F4BB}",
           description:
             "Set up Claude Code CLI and Codex for terminal-based AI development with CLAUDE.md project context.",
-          model: "Claude Opus 4.8 / Sonnet 4.6",
+          model: "Claude Opus 4.8 / Sonnet 5",
           tools: ["Claude Code CLI", "CLAUDE.md", "GitHub Codex"],
           steps: [
             {
@@ -659,8 +659,8 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F308}",
           description:
             "Connect Figma to your AI development tools via Model Context Protocol for design-to-code workflows.",
-          model: "Claude Sonnet 4.6",
-          tools: ["Figma MCP", "Figma Desktop", "Cursor"],
+          model: "Claude Sonnet 5",
+          tools: ["Figma MCP", "Cursor"],
           steps: [
             {
               label: "Install Figma MCP",
@@ -684,7 +684,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
             },
           ],
           guardrails: [
-            "Keep Figma Desktop open during MCP sessions",
+            "Use Figma's recommended remote MCP server unless local organization requirements need the desktop server",
             "Use the token skill for consistent mappings",
             "Verify extracted values against Figma \u2014 MCP can misread nested groups",
             "Start with a simple component, not a complex page layout",

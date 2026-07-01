@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Maximize2, CheckCircle2, AlertTriangle, Zap, Info } from "lucide-react";
+import { MODEL_BY_ID, getEffectiveModelPricing } from "@/lib/modelSpecs";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -24,12 +25,13 @@ const PRO_MONTHLY_CREDITS = 20; // USD
 // Auto mode (cursor-small / balanced model)
 const AUTO_INPUT_PER_M = 1.25;
 const AUTO_OUTPUT_PER_M = 6.0;
-// Cursor Max Mode: Claude Sonnet 4.6 API rate ($3/$15 per 1M)
+// Cursor Max Mode: active Claude Sonnet 5 API rate.
 // On current individual plans Max Mode is billed at the model's API rate (no
 // surcharge). The 20% surcharge only applies on legacy request-based plans.
 // Source: https://cursor.com/docs/models-and-pricing — verify when running validate-model-specs
-const MAX_INPUT_PER_M = 3.0;
-const MAX_OUTPUT_PER_M = 15.0;
+const SONNET_PRICING = getEffectiveModelPricing(MODEL_BY_ID["sonnet-5"]);
+const MAX_INPUT_PER_M = SONNET_PRICING.inputPer1M;
+const MAX_OUTPUT_PER_M = SONNET_PRICING.outputPer1M;
 
 // Output tokens ≈ 15% of input for refactor/analysis tasks
 const OUTPUT_RATIO = 0.15;
@@ -305,7 +307,9 @@ export function MaxModeViz() {
               <span className="font-mono text-[11px] font-semibold text-violet-600">Max Mode</span>
             </div>
             <p className="font-mono text-2xl font-bold text-violet-200">{formatCost(maxCost)}</p>
-            <p className="mt-1 font-mono text-[10px] text-fg-placeholder">per session (Sonnet 4.6 API rate)</p>
+            <p className="mt-1 font-mono text-[10px] text-fg-placeholder">
+              per session (Sonnet 5 {SONNET_PRICING.isPromotional ? "introductory" : "standard"} API rate)
+            </p>
             {needsMaxMode && (
               <p className="mt-1.5 font-mono text-[10px] text-violet-600/80">Full context fits ✓</p>
             )}

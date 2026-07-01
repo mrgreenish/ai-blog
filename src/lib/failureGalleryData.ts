@@ -297,7 +297,7 @@ function formatDate(date: Date) {
       "The codebase already has date-fns installed. The model introduced a second date library, adding bundle weight and inconsistency. It didn't check existing imports or ask about the preferred library.",
     spotDifficulty: "medium",
     fix: "Tell the model which libraries are already in use. Add a guardrail: 'Do not add new dependencies without asking first.'",
-    fixExample: `CLAUDE.md / .cursorrules addition:
+    fixExample: `CLAUDE.md / .cursor/rules/dependencies.mdc addition:
 "Do not add new npm dependencies without explicit confirmation. Check existing imports for the library pattern to use."`,
     riskFactors: [
       {

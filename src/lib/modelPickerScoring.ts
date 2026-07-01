@@ -178,6 +178,19 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
       : autonomy === "drive" ? "Not built for autonomous tasks — needs explicit direction" : "");
   }
 
+  if (modelId === "gemini-3.1-pro") {
+    dim("task", task === "coding" ? 3 : task === "reasoning" ? 3 : task === "vision" ? 3 : task === "analysis" ? 2 : 0,
+      "Stronger reasoning than Flash with the same large-context multimodal range");
+    dim("scope", scope === "multifile" ? 3 : scope === "architecture" ? 2 : scope === "targeted" ? 1 : 0,
+      "Good fit for medium-complexity work that needs broad context and judgment");
+    dim("stakes", stakes === "production" ? 2 : stakes === "internal" ? 2 : stakes === "critical" ? -1 : 0,
+      "Capable production model without the cost of the heaviest reasoning tier");
+    dim("priority", priority === "balance" ? 3 : priority === "accuracy" ? 2 : 0,
+      "Balanced price and capability for substantial work");
+    dim("autonomy", autonomy === "gaps" ? 2 : autonomy === "drive" ? 1 : 0,
+      "Can fill reasonable gaps while staying more measured than autonomous coding models");
+  }
+
   if (modelId === "haiku-4.5") {
     dim("task", task === "coding" ? 2 : 0,
       "Retains Claude's instruction-following quality at high speed");
@@ -202,7 +215,7 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
     dim("autonomy", autonomy === "gaps" ? 1 : 0, "");
   }
 
-  if (modelId === "sonnet-4.6") {
+  if (modelId === "sonnet-5") {
     dim("task", task === "coding" ? 2 : task === "reasoning" ? 2 : task === "writing" ? 3 : task === "analysis" ? 3 : 0,
       task === "writing" ? "Clearest, most useful explanations of any model"
       : task === "analysis" ? "Notices connections and implications that weren't in your original question"
@@ -285,6 +298,32 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
     dim("autonomy", autonomy === "drive" ? 5 : autonomy === "targeted" ? 4 : autonomy === "gaps" ? 2 : 0,
       autonomy === "drive" ? "Self-corrects — sees the TypeScript error, understands it, fixes it without copy-pasting back"
       : autonomy === "targeted" ? "Can stay on a pointed task when you give it explicit guardrails" : "");
+  }
+
+  if (modelId === "composer-2.5-fast") {
+    dim("task", task === "coding" ? 3 : 0,
+      "Low-latency Composer variant tuned for agentic coding");
+    dim("scope", scope === "autonomous" ? 4 : scope === "multifile" ? 3 : scope === "targeted" ? 2 : 0,
+      "Runs the same agentic loop as Composer 2.5 with faster output");
+    dim("stakes", stakes === "prototype" ? 2 : stakes === "internal" ? 2 : stakes === "critical" ? -3 : 0,
+      "Best when turnaround time matters more than premium token cost");
+    dim("priority", priority === "speed" ? 5 : priority === "balance" ? -1 : priority === "accuracy" ? -2 : 0,
+      priority === "speed" ? "Premium low-latency mode for urgent agentic runs" : "Standard Composer is usually the better value");
+    dim("autonomy", autonomy === "drive" ? 4 : autonomy === "gaps" ? 2 : 0,
+      "Executes and verifies multi-step coding work end-to-end");
+  }
+
+  if (modelId === "opus-fast") {
+    dim("task", task === "reasoning" ? 4 : task === "coding" ? 3 : task === "analysis" ? 3 : 0,
+      "Opus-quality reasoning with reduced latency");
+    dim("scope", scope === "architecture" ? 4 : scope === "multifile" ? 2 : 0,
+      "Designed for hard architecture and system-level reasoning");
+    dim("stakes", stakes === "critical" ? 4 : stakes === "production" ? 2 : stakes === "prototype" ? -3 : 0,
+      "Useful when both correctness and response time are consequential");
+    dim("priority", priority === "speed" ? 3 : priority === "accuracy" ? 3 : priority === "balance" ? -3 : 0,
+      "Premium pricing only makes sense when latency and reasoning quality both matter");
+    dim("autonomy", autonomy === "gaps" ? 2 : autonomy === "drive" ? 1 : 0,
+      "Proactive reasoning with the same review requirements as standard Opus");
   }
 
   // ── Interaction effects ──────────────────────────────────────────────────
@@ -378,7 +417,7 @@ export function getRanking<
       cautionMessage =
         "Composer 2.5 is tighter than 2.0, but for critical systems still add explicit checkpoints and review every diff before merging.";
     }
-    if (answers.stakes === "critical" && winner.model.id === "sonnet-4.6") {
+    if (answers.stakes === "critical" && winner.model.id === "sonnet-5") {
       hasCaution = true;
       cautionMessage =
         "Sonnet's scope drift is risky in critical systems. Set explicit constraints: 'do not modify files outside X' and review the full diff carefully.";

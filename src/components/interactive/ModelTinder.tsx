@@ -109,7 +109,7 @@ const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
     },
   ],
 
-  "sonnet-4.6": [
+  "sonnet-5": [
     {
       modelMessage:
         "Oh hi!! I'm SO glad we matched. I've already noticed three things about your profile I want to discuss, and also I rewrote your bio while you were loading.",

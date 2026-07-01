@@ -245,7 +245,7 @@ const RECIPES: Recipe[] = [
       {
         label: "Set up context",
         description:
-          "Paste the ticket into Cursor. Add the Figma link. Keep Figma Desktop open for MCP access.",
+          "Paste the ticket into Cursor. Add the Figma link. Connect the recommended remote Figma MCP server.",
       },
       {
         label: "Plan",
@@ -268,7 +268,7 @@ const RECIPES: Recipe[] = [
       "Acceptance criteria become test cases",
       "Edge cases from the ticket become guardrails",
       "Stay within ticket scope \u2014 out-of-scope work gets its own ticket",
-      "Keep Figma Desktop open during the session",
+      "Confirm the remote Figma MCP server is authenticated",
     ],
     output:
       "PR that maps directly to ticket acceptance criteria with design-accurate implementation.",
@@ -394,7 +394,7 @@ function BrowseRecipes() {
       {/* Footer */}
       <div className="flex flex-wrap items-center justify-between gap-3 px-3 py-3 sm:px-5 bg-bg-surface border-t border-border-default">
         <p className="text-[11px] text-fg-muted">
-          Paste into CLAUDE.md, .cursorrules, or your workflow docs
+          Paste into CLAUDE.md, .cursor/rules/, or your workflow docs
         </p>
         <CopyButton
           getText={() => formatRecipeAsMarkdown(recipe)}

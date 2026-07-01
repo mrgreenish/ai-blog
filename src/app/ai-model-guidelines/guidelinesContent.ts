@@ -61,7 +61,7 @@ export const AT_A_GLANCE_ROWS: {
     cells: {
       simple: { modelIds: ["gemini-flash", "composer-2.5"] },
       mediumLow: { modelIds: ["gemini-3.1-pro", "gpt-5.4"] },
-      mediumCreative: { modelIds: ["sonnet-4.6"] },
+      mediumCreative: { modelIds: ["sonnet-5"] },
       complex: { modelIds: ["gpt-5.5", "opus-4.8"] },
     },
   },
@@ -156,7 +156,7 @@ export const RECOMMENDED_PICKS: RecommendationBlock[] = [
   },
   {
     title: "Medium tasks with creative work",
-    modelIds: ["sonnet-4.6"],
+    modelIds: ["sonnet-5"],
     note: "Usually a good balance for writing, UI ideas, refactoring, and judgment-heavy tasks.",
   },
   {
@@ -225,7 +225,7 @@ export const REASONING_RULE_OF_THUMB =
 export const PLAN_MODE_EXAMPLE = {
   quote: "Create a new component in our application.",
   planModelIds: ["gpt-5.5", "opus-4.8"] as GuidelinesModelId[],
-  implementModelIds: ["sonnet-4.6", "gpt-5.4", "composer-2.5"] as GuidelinesModelId[],
+  implementModelIds: ["sonnet-5", "gpt-5.4", "composer-2.5"] as GuidelinesModelId[],
 };
 
 export const PROMPT_CHECKLIST = [
@@ -276,13 +276,13 @@ export const COST_EXAMPLES: CostExample[] = [
       { modelId: "composer-2.5", inputTokens: 80_000, outputTokens: 8_000 },
       { modelId: "composer-2.5-fast", inputTokens: 80_000, outputTokens: 8_000 },
       { modelId: "gemini-3.1-pro", inputTokens: 80_000, outputTokens: 8_000 },
-      { modelId: "sonnet-4.6", inputTokens: 80_000, outputTokens: 8_000 },
+      { modelId: "sonnet-5", inputTokens: 80_000, outputTokens: 8_000 },
       { modelId: "gpt-5.4", inputTokens: 80_000, outputTokens: 8_000 },
       { modelId: "gpt-5.5", inputTokens: 80_000, outputTokens: 8_000 },
       { modelId: "opus-4.8", inputTokens: 80_000, outputTokens: 8_000 },
     ],
     advice:
-      "Sonnet 4.6 is probably the best fit here. It is strong creatively without jumping straight to the most expensive models.",
+      "Sonnet 5 is probably the best fit here. It is strong creatively without jumping straight to the most expensive models.",
   },
   {
     id: "complex",
