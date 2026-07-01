@@ -29,6 +29,10 @@ The safety story moved too. Anthropic reports lower hallucination, sycophancy, p
 
 ## Claude Fable 5 puts a Mythos-class model in everyone's hands
 
+<UpdateBlock>
+  **Update, July 1:** Fable 5 is no longer blocked. The US government forced Anthropic to suspend it globally on June 12, but [lifted the export controls on June 30](https://www.anthropic.com/news/redeploying-fable-5). Anthropic says access returns globally today in Claude, Claude Code, Cowork, and its API; AWS, Google Cloud, and Microsoft Foundry will follow.
+</UpdateBlock>
+
 Anthropic shipped [Claude Fable 5](https://www.anthropic.com/news/claude-fable-5-mythos-5) today, June 9 — the first **Mythos-class** model to go generally available. The Mythos Preview and Glasswing entries further down this chapter were the gated version of this capability; Fable 5 is the public release. It and **Claude Mythos 5** are the same underlying model — the split is safety, not power. Fable 5 ships with classifiers that route cybersecurity, biology/chemistry, and model-distillation prompts to Opus 4.8 instead of answering them directly, while Mythos 5 has those safeguards lifted and stays restricted to vetted Project Glasswing partners and the US government. The classifiers are tuned conservatively — they trigger in **under 5% of sessions** and will sometimes catch harmless requests.
 
 The benchmarks are a clear step over the current reasoning tier. **SWE-Bench Pro hits 80.3%**, up from Opus 4.8's 69.2% and well past GPT-5.5's 58.6%. **USAMO 2026 lands at 97.6%**, and **GDPval-AA reaches 1932** against Opus 4.8's 1890 and GPT-5.5's 1769. The one that closes a standing gap: **Terminal-Bench 2.0 at 82.0%** — essentially level with GPT-5.5's 82.7% on the same benchmark, erasing the long autonomous-loop advantage that's defined the Opus-vs-GPT split all spring. It's also the first model past 90% on Hex's analytical benchmark, and it scored 91 on Every's senior-engineer eval.
