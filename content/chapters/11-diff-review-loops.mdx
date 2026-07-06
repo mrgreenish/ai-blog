@@ -2,7 +2,7 @@
 title: "Diff Review Loops"
 subtitle: "Avoiding the looks-fine trap in AI-generated code"
 publishedAt: "2026-04-17"
-updatedAt: "2026-04-17"
+updatedAt: "2026-07-06"
 chapter: 11
 part: review-quality
 partNumber: 3
@@ -25,11 +25,11 @@ A concrete example: you ask the model to add pagination to a list. It returns th
 
 ```ts
 const start = (page - 1) * pageSize;
-const end = start + pageSize;
+const end = start + pageSize - 1;
 return items.slice(start, end);
 ```
 
-Looks right. Works for every page except the last one, where `end` overshoots the array length — `slice` handles that gracefully, so no error, just silently truncated results. The test passes because the test uses a full page of data. The bug only appears when the last page has fewer items than `pageSize`.
+Looks right, but `slice` treats its end index as exclusive. Subtracting one means every page returns `pageSize - 1` items. A test that only checks the first item or verifies that the result is non-empty can still pass while every page silently drops its final item.
 
 The code is clean, the logic is almost right, and nothing in the diff signals the problem. That's the failure mode.
 

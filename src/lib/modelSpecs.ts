@@ -654,7 +654,7 @@ export function getMixerModels(asOf: Date | string = new Date()) {
 // ---------------------------------------------------------------------------
 
 export const PRICING_META = {
-  verifiedDate: "2026-07-01", // Full registry cross-check against cursor.com/docs/models-and-pricing and provider API pages
+  verifiedDate: "2026-07-06", // Full registry cross-check against cursor.com/docs/models-and-pricing and provider API pages
   source: "Official API pricing pages",
   notes: [
     "Claude Sonnet 5 is $2/$10 per million input/output tokens through August 31, 2026, then $3/$15.",
