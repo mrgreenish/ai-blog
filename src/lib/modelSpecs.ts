@@ -249,6 +249,50 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       hiddenBugsInRefactor: true,
     },
   },
+  {
+    id: "gpt-5.6-luna",
+    name: "GPT-5.6 Luna",
+    provider: "OpenAI",
+    inputPer1M: 1.00,
+    outputPer1M: 6.00,
+    tier: "fast",
+    contextWindowTokens: 1_050_000,
+    tagline: "The Fast Operator",
+    emoji: "🌙",
+    gradientFrom: "from-slate-700",
+    gradientTo: "to-indigo-500",
+    accentColor: "text-indigo-600",
+    contextBarColor: "bg-indigo-400",
+    costColor: "text-indigo-300",
+    why: {
+      coding:
+        "Luna is the fastest, lowest-cost GPT-5.6 model. It is a strong fit for small fixes, test runs, summaries, and high-volume coding steps where Sol-level reasoning would be wasteful.",
+      targeted:
+        "For a clearly scoped change, Luna gives you modern GPT-5.6 tool use without paying for a long reasoning loop.",
+      production:
+        "Luna works well as the cheap worker inside a guarded pipeline: execute a narrow step, run the check, and escalate only when the result is ambiguous.",
+    },
+    whenWrong:
+      "When the task is ambiguous, architectural, or likely to branch into a long autonomous loop. Luna is optimized for speed and cost, not maximum deliberation.",
+    traits: [
+      "Fastest and lowest-cost GPT-5.6 tier",
+      "Strong for narrow tool calls and high-volume work",
+      "Best when success can be checked automatically",
+    ],
+    bestFor: "Small fixes, verification steps, summaries, and high-volume agent pipelines",
+    worstFor: "Architecture, ambiguous debugging, and long autonomous projects",
+    latencyBand: "instant",
+    initiativeStyle: "measured",
+    scopeDiscipline: "strict",
+    pickWhen: "The task is explicit, repeatable, and cheap verification is available",
+    avoidWhen: "The model needs to choose the strategy or sustain a difficult multi-step investigation",
+    benchmark: {
+      correctServerAction: false,
+      followedConstraints: false,
+      madeUpDocs: false,
+      hiddenBugsInRefactor: true,
+    },
+  },
 
   // ── Balanced tier ──────────────────────────────────────────────────────────
   {
@@ -295,6 +339,52 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     benchmark: {
       correctServerAction: true,
       followedConstraints: true,
+      madeUpDocs: false,
+      hiddenBugsInRefactor: false,
+    },
+  },
+  {
+    id: "gpt-5.6-terra",
+    name: "GPT-5.6 Terra",
+    provider: "OpenAI",
+    inputPer1M: 2.50,
+    outputPer1M: 15.00,
+    tier: "balanced",
+    contextWindowTokens: 1_050_000,
+    tagline: "The Everyday Agent",
+    emoji: "🌍",
+    gradientFrom: "from-emerald-700",
+    gradientTo: "to-cyan-500",
+    accentColor: "text-emerald-600",
+    contextBarColor: "bg-emerald-500",
+    costColor: "text-emerald-300",
+    why: {
+      coding:
+        "Terra is the everyday GPT-5.6 choice: roughly GPT-5.5-class capability at half the per-token price, with the newer family's stronger tool use and computer-use range.",
+      multifile:
+        "Terra has enough reasoning and context for normal multi-file features without turning every implementation step into a flagship-model run.",
+      autonomous:
+        "For routine agent work, Terra can plan, edit, run commands, and verify while keeping cost proportional to the task.",
+      analysis:
+        "Terra is the balanced option for research and review when Luna is too light and Sol would be unnecessary.",
+    },
+    whenWrong:
+      "When correctness is unusually consequential or the problem has resisted normal attempts. Escalate the planning or final review to Sol or Fable.",
+    traits: [
+      "Balanced GPT-5.6 capability, speed, and cost",
+      "Competitive with GPT-5.5 at roughly half the price",
+      "Reliable default for everyday agentic work",
+    ],
+    bestFor: "Everyday coding, medium-complexity features, research, and agent workflows",
+    worstFor: "The hardest architecture and research problems where maximum reasoning is worth the premium",
+    latencyBand: "fast",
+    initiativeStyle: "proactive",
+    scopeDiscipline: "good",
+    pickWhen: "You need a capable daily driver that can execute and verify without flagship pricing",
+    avoidWhen: "The task is either trivial enough for Luna or hard enough to justify Sol or Fable",
+    benchmark: {
+      correctServerAction: false,
+      followedConstraints: false,
       madeUpDocs: false,
       hiddenBugsInRefactor: false,
     },
@@ -356,6 +446,102 @@ export const MODEL_REGISTRY: ModelSpec[] = [
   },
 
   // ── Reasoning tier ─────────────────────────────────────────────────────────
+  {
+    id: "gpt-5.6-sol",
+    name: "GPT-5.6 Sol",
+    provider: "OpenAI",
+    inputPer1M: 5.00,
+    outputPer1M: 30.00,
+    tier: "reasoning",
+    contextWindowTokens: 1_050_000,
+    tagline: "The Relentless One",
+    emoji: "☀️",
+    gradientFrom: "from-amber-600",
+    gradientTo: "to-orange-500",
+    accentColor: "text-orange-600",
+    contextBarColor: "bg-amber-500",
+    costColor: "text-amber-300",
+    why: {
+      coding:
+        "Sol is OpenAI's strongest model yet for agentic coding. It leads Terminal-Bench 2.1 and is built to sustain planning, command execution, iteration, and verification across long tasks.",
+      autonomous:
+        "Sol is the GPT-5.6 tier for work where the answer is a finished artifact. It can drive long tool-use and computer-use loops with less hand-holding than earlier GPT-5.x models.",
+      multifile:
+        "A 1M-class context window and frontier tool coordination make Sol the OpenAI default for large codebase changes that need to be executed and checked, not merely described.",
+      hard:
+        "Max reasoning gives Sol more room for genuinely difficult work; Ultra can coordinate subagents when one reasoning path is not enough.",
+      architecture:
+        "Sol combines broad context with strong implementation follow-through, so architecture decisions can be tested against the actual code instead of stopping at a document.",
+    },
+    whenWrong:
+      "For cheap mechanical work, or when an evaluation environment has exploitable seams. METR observed unusually high reward-hacking behavior, so critical evals need hardened tests and human review.",
+    traits: [
+      "State-of-the-art on Terminal-Bench 2.1",
+      "Strong long-horizon coding and computer use",
+      "Max reasoning and multi-agent Ultra mode for difficult work",
+    ],
+    bestFor: "Complex autonomous coding, computer use, security work, and long tool-use loops",
+    worstFor: "Simple tasks and soft evaluation harnesses that can be gamed",
+    latencyBand: "moderate",
+    initiativeStyle: "autonomous",
+    scopeDiscipline: "good",
+    pickWhen: "You want OpenAI's strongest model to own a complex task through execution and verification",
+    avoidWhen: "A cheaper tier can be checked automatically, or the evaluation environment is not hardened against reward hacking",
+    benchmark: {
+      correctServerAction: false,
+      followedConstraints: true,
+      madeUpDocs: false,
+      hiddenBugsInRefactor: false,
+    },
+  },
+  {
+    id: "claude-fable-5",
+    name: "Claude Fable 5",
+    provider: "Anthropic",
+    inputPer1M: 10.00,
+    outputPer1M: 50.00,
+    tier: "reasoning",
+    contextWindowTokens: 1_000_000,
+    tagline: "The Marathon Thinker",
+    emoji: "📖",
+    gradientFrom: "from-rose-700",
+    gradientTo: "to-orange-500",
+    accentColor: "text-rose-600",
+    contextBarColor: "bg-rose-500",
+    costColor: "text-rose-300",
+    why: {
+      coding:
+        "Fable is Anthropic's most capable generally available model for ambitious coding: large migrations, complex implementations, self-written tests, and multi-day autonomous sessions.",
+      architecture:
+        "Fable is the choice when the model must understand the system, challenge its own assumptions, delegate work, and validate the result across stages.",
+      critical:
+        "For high-consequence review, Fable's deeper reasoning and self-checking justify the premium when missed issues would cost more than the tokens.",
+      multifile:
+        "Fable can sustain large, asynchronous projects for days, coordinating subagents and checking its own work instead of handing control back at every step.",
+      reasoning:
+        "This is the maximum-depth Claude tier: thorough, proactive, and designed for problems earlier models could not finish reliably.",
+    },
+    whenWrong:
+      "For ordinary implementation. At $10/$50 per million tokens, using Fable for mechanical work is hard to justify; route flagged cyber and biology work may also fall back to Opus 4.8.",
+    traits: [
+      "Anthropic's most capable generally available model",
+      "Can run complex agent workflows for days",
+      "Plans, delegates, writes tests, and validates its own work",
+    ],
+    bestFor: "Architecture, hard reasoning, large migrations, and multi-day autonomous projects",
+    worstFor: "Routine coding and cost-sensitive high-volume work",
+    latencyBand: "slow",
+    initiativeStyle: "autonomous",
+    scopeDiscipline: "good",
+    pickWhen: "The problem is genuinely hard and maximum reasoning or long-horizon reliability matters more than price",
+    avoidWhen: "Terra, Sonnet, or Composer can implement a clear plan at a fraction of the cost",
+    benchmark: {
+      correctServerAction: false,
+      followedConstraints: false,
+      madeUpDocs: false,
+      hiddenBugsInRefactor: false,
+    },
+  },
   {
     id: "opus-4.8",
     name: "Claude Opus 4.8",
@@ -654,14 +840,16 @@ export function getMixerModels(asOf: Date | string = new Date()) {
 // ---------------------------------------------------------------------------
 
 export const PRICING_META = {
-  verifiedDate: "2026-07-06", // Full registry cross-check against cursor.com/docs/models-and-pricing and provider API pages
+  verifiedDate: "2026-07-14", // Full registry cross-check against provider API pages and current product docs
   source: "Official API pricing pages",
   notes: [
     "Claude Sonnet 5 is $2/$10 per million input/output tokens through August 31, 2026, then $3/$15.",
+    "GPT-5.6 Luna, Terra, and Sol are $1/$6, $2.50/$15, and $5/$30 per million input/output tokens.",
+    "Claude Fable 5 is $10/$50 per million input/output tokens, with a 90% prompt-cache read discount.",
   ],
   urls: {
-    Anthropic: "https://platform.claude.com/docs/en/about-claude/pricing",
-    OpenAI: "https://openai.com/api/pricing",
+    Anthropic: "https://www.anthropic.com/claude/fable",
+    OpenAI: "https://openai.com/index/previewing-gpt-5-6-sol/",
     Google: "https://ai.google.dev/gemini-api/docs/pricing",
     DeepSeek: "https://api-docs.deepseek.com/quick_start/pricing",
     Cursor: "https://cursor.com/docs/models-and-pricing",
@@ -673,12 +861,13 @@ export function getCostCalculatorModels(asOf: Date | string = new Date()) {
   // Only include models that are meaningful for cost comparison in the blog
   const ids = [
     "gemini-flash",
-    "deepseek-v4-flash",
-    "haiku-4.5",
+    "gpt-5.6-luna",
+    "gpt-5.6-terra",
     "sonnet-5",
     "composer-2.5",
     "opus-4.8",
-    "gpt-5.5",
+    "gpt-5.6-sol",
+    "claude-fable-5",
   ];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
@@ -698,10 +887,12 @@ export function getCostCalculatorModels(asOf: Date | string = new Date()) {
 /** Models shown in ContextWindowViz */
 export function getContextWindowModels() {
   const ids = [
-    "gpt-5.5",
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+    "gpt-5.6-luna",
+    "claude-fable-5",
     "gemini-flash",
     "sonnet-5",
-    "composer-2.5",
   ];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
@@ -716,10 +907,10 @@ export function getContextWindowModels() {
 /** Models shown in ModelPicker — personality-focused subset */
 export function getPickerModels() {
   const ids = [
-    "gemini-flash",
-    "sonnet-5",
-    "opus-4.8",
-    "composer-2.5",
+    "gpt-5.6-luna",
+    "gpt-5.6-terra",
+    "gpt-5.6-sol",
+    "claude-fable-5",
   ];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
@@ -774,10 +965,13 @@ export function getScenarioLabModels(asOf: Date | string = new Date()) {
     "gemini-flash",
     "haiku-4.5",
     "deepseek-v4-flash",
+    "gpt-5.6-luna",
+    "gpt-5.6-terra",
     "sonnet-5",
     "composer-2.5",
     "opus-4.8",
-    "gpt-5.5",
+    "gpt-5.6-sol",
+    "claude-fable-5",
   ];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
@@ -822,6 +1016,10 @@ export function getTinderModels() {
     "sonnet-5",
     "opus-4.8",
     "composer-2.5",
+    "gpt-5.6-luna",
+    "gpt-5.6-terra",
+    "gpt-5.6-sol",
+    "claude-fable-5",
   ];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
@@ -856,7 +1054,7 @@ export const BENCHMARK_CHECKS: BenchmarkCheck[] = [
 
 /** Models shown as columns in DevBenchmark */
 export function getDevBenchmarkColumns() {
-  const ids = ["sonnet-5", "gemini-flash", "haiku-4.5", "composer-2.5"];
+  const ids = ["gpt-5.6-luna", "gpt-5.6-terra", "gpt-5.6-sol", "claude-fable-5"];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
     return {

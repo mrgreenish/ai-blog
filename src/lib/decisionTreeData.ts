@@ -55,7 +55,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F50D}",
           description:
             "Use AI to catch mechanical bugs, type errors, and security issues before human review.",
-          model: "Claude Sonnet 5",
+          model: "GPT-5.6 Sol",
           tools: ["Cursor BugBot", "Codex on GitHub", "GitHub PR"],
           steps: [
             {
@@ -248,7 +248,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F3AB}",
           description:
             "Turn a Jira ticket into a working PR using acceptance criteria as test cases and edge cases as guardrails.",
-          model: "Claude Sonnet 5",
+          model: "GPT-5.6 Terra",
           tools: ["AI ticket generator", "Cursor", "Figma MCP", "GitHub"],
           steps: [
             {
@@ -310,7 +310,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F4DD}",
           description:
             "Go from a developer spec to a working PR with tests, following a plan-first approach.",
-          model: "Claude Opus 4.8",
+          model: "Claude Fable 5",
           tools: ["Cursor", "Claude Code", "GitHub Actions"],
           steps: [
             {
@@ -377,7 +377,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F9F1}",
           description:
             "Build new features by composing existing components using atomic design principles.",
-          model: "Claude Sonnet 5",
+          model: "GPT-5.6 Terra",
           tools: ["Cursor with project rules", "Storybook", "cva"],
           steps: [
             {
@@ -442,7 +442,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F41B}",
           description:
             "You can reproduce it \u2014 skip straight to isolating and fixing the bug.",
-          model: "Claude Sonnet 5",
+          model: "GPT-5.6 Terra",
           tools: ["Cursor", "Claude Code"],
           steps: [
             {
@@ -495,7 +495,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F41B}",
           description:
             "You can\u2019t reproduce it yet \u2014 start by building a reliable repro before fixing anything.",
-          model: "Claude Sonnet 5",
+          model: "GPT-5.6 Sol",
           tools: ["Cursor", "Claude Code"],
           steps: [
             {
@@ -606,7 +606,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F4BB}",
           description:
             "Set up Claude Code CLI and Codex for terminal-based AI development with CLAUDE.md project context.",
-          model: "Claude Opus 4.8 / Sonnet 5",
+          model: "Claude Fable 5 / Sonnet 5",
           tools: ["Claude Code CLI", "CLAUDE.md", "GitHub Codex"],
           steps: [
             {
@@ -716,7 +716,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F916}",
           description:
             "Set up AI agents with proper guardrails and learn the skills ecosystem for safe autonomous operation.",
-          model: "Claude Opus 4.8",
+          model: "Claude Fable 5",
           tools: ["Claude Code", "SKILL.md", "GitHub Actions"],
           steps: [
             {

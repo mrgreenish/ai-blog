@@ -254,6 +254,22 @@ describe("Model ID integrity", () => {
     expect([...new Set(missing)], "selector function model IDs not in registry").toEqual([]);
   });
 
+  it("every Model Tinder card has a non-empty chat script", () => {
+    const tinderSelector = modelSpecsSource.match(
+      /export function getTinderModels\(\)\s*\{[\s\S]*?const ids\s*=\s*\[([\s\S]*?)\]/
+    )?.[1] ?? "";
+    const tinderIds = [...tinderSelector.matchAll(/"([^"]+)"/g)].map((match) => match[1]);
+
+    const tinderPath = path.join(ROOT, "src/components/interactive/ModelTinder.tsx");
+    const tinderSource = fs.readFileSync(tinderPath, "utf-8");
+    const scriptedIds = new Set(
+      [...tinderSource.matchAll(/^\s{2}"([^"]+)":\s*\[/gm)].map((match) => match[1])
+    );
+    const missing = tinderIds.filter((id) => !scriptedIds.has(id));
+
+    expect(missing, "Model Tinder IDs without a chat script").toEqual([]);
+  });
+
   it("every model ID in ai-model-guidelines resolves in MODEL_REGISTRY", () => {
     const guidelinesModelsPath = path.join(
       ROOT,
