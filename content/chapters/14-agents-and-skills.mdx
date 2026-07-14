@@ -2,7 +2,7 @@
 title: "Agents and Skills"
 subtitle: "How reusable skill files encode domain knowledge beyond a single session"
 publishedAt: "2026-04-17"
-updatedAt: "2026-06-03"
+updatedAt: "2026-07-01"
 chapter: 14
 part: tools-infrastructure
 partNumber: 4
@@ -107,13 +107,13 @@ The real power is writing skills for your specific project. A custom skill for y
 - Your guardrails (what not to do, what to ask before doing)
 - Context about the codebase (what's legacy, what's being migrated, what's in flux)
 
-Skills compose with `CLAUDE.md`, `AGENTS.md`, and `.cursorrules`. Think of them as layers: the skill provides domain knowledge, the project config provides project-specific context, and the task prompt provides the specific request.
+Skills compose with `CLAUDE.md`, `AGENTS.md`, and Cursor project rules under `.cursor/rules/`. Think of them as layers: the skill provides domain knowledge, the project config provides project-specific context, and the task prompt provides the specific request.
 
 ## Subagents: skills with autonomy
 
 Skills tell an agent what to do. Subagents are agents that *do it* — they run as specialized workers within a larger task, with their own context, tools, and scope. Think of them as team members you spin up for specific jobs.
 
-Claude Code supports this through `AGENTS.md` — a file where you define subagents with their own instructions, tool access, and constraints. When the main agent encounters a task that matches a subagent's domain, it delegates.
+Claude Code stores project subagents as Markdown files under `.claude/agents/`. Each file defines the agent's instructions, tool access, model, and constraints in YAML frontmatter and a Markdown body. When the main agent encounters a task that matches the subagent's description, it can delegate.
 
 ### Example: a Prepr integration agent
 

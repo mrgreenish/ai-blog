@@ -418,6 +418,7 @@ export function ScenarioLab() {
               {i < arr.length - 1 ? " · " : ""}
             </span>
           ))}
+          {" "}{PRICING_META.notes[0]}
         </p>
       </div>
     </div>

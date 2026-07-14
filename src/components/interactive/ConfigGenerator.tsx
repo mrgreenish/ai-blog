@@ -46,7 +46,7 @@ export function ConfigGenerator() {
     <InteractivePlaceholder
       icon={Settings2}
       title="Config Generator"
-      tagline="Generate .cursorrules, CLAUDE.md, or AGENTS.md for your project"
+      tagline="Generate Cursor project rules, CLAUDE.md, or AGENTS.md for your project"
       description="Answer a few questions about your project (framework, team size, AI tools, coding conventions) and get a generated config file ready to copy into your repo. Encodes your conventions so agents follow them automatically — no more repeating yourself in every prompt."
       preview={<Preview />}
       accentColor="text-orange-400"

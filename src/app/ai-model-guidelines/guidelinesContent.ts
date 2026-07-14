@@ -59,10 +59,10 @@ export const AT_A_GLANCE_ROWS: {
   {
     label: "Recommended model",
     cells: {
-      simple: { modelIds: ["gemini-flash", "composer-2.5"] },
-      mediumLow: { modelIds: ["gemini-3.1-pro", "gpt-5.4"] },
-      mediumCreative: { modelIds: ["sonnet-4.6"] },
-      complex: { modelIds: ["gpt-5.5", "opus-4.8"] },
+      simple: { modelIds: ["gpt-5.6-luna", "gemini-flash"] },
+      mediumLow: { modelIds: ["gpt-5.6-terra", "composer-2.5"] },
+      mediumCreative: { modelIds: ["sonnet-5"] },
+      complex: { modelIds: ["gpt-5.6-sol", "claude-fable-5"] },
     },
   },
   {
@@ -109,11 +109,11 @@ export const AT_A_GLANCE_ROWS: {
   {
     label: "Avoid",
     cells: {
-      simple: "Opus 4.8, GPT-5.5, Max Mode, Fast Mode",
+      simple: "GPT-5.6 Sol, Claude Fable 5, Max Mode, Fast Mode",
       mediumLow: "Opus Fast, defaulting to Max Mode",
       mediumCreative: "Jumping straight to the heaviest model",
       complex:
-        "Doing everything in Opus 4.8 + Max Mode by default — costs escalate quickly",
+        "Doing everything in Fable 5 or Sol + Max Mode by default — costs escalate quickly",
     },
   },
 ];
@@ -151,22 +151,22 @@ export interface RecommendationBlock {
 export const RECOMMENDED_PICKS: RecommendationBlock[] = [
   {
     title: "Complex tasks",
-    modelIds: ["gpt-5.5", "opus-4.8"],
+    modelIds: ["gpt-5.6-sol", "claude-fable-5"],
     note: "Use Plan Mode for complex multi-file tasks — see the Tips section below.",
   },
   {
     title: "Medium tasks with creative work",
-    modelIds: ["sonnet-4.6"],
+    modelIds: ["sonnet-5"],
     note: "Usually a good balance for writing, UI ideas, refactoring, and judgment-heavy tasks.",
   },
   {
     title: "Medium tasks with low creativity",
-    modelIds: ["gemini-3.1-pro", "gpt-5.4"],
+    modelIds: ["gpt-5.6-terra", "composer-2.5"],
     note: "Good when you need competence and context, but not the absolute heaviest model.",
   },
   {
     title: "Simple, clearly defined tasks",
-    modelIds: ["gemini-flash", "composer-2.5"],
+    modelIds: ["gpt-5.6-luna", "gemini-flash"],
     note: "Avoid Fast mode by default. Fast is quicker, but more expensive, and often not worth it if you can do something else while the model works.",
   },
 ];
@@ -224,8 +224,8 @@ export const REASONING_RULE_OF_THUMB =
 
 export const PLAN_MODE_EXAMPLE = {
   quote: "Create a new component in our application.",
-  planModelIds: ["gpt-5.5", "opus-4.8"] as GuidelinesModelId[],
-  implementModelIds: ["sonnet-4.6", "gpt-5.4", "composer-2.5"] as GuidelinesModelId[],
+  planModelIds: ["gpt-5.6-sol", "claude-fable-5"] as GuidelinesModelId[],
+  implementModelIds: ["gpt-5.6-terra", "sonnet-5", "composer-2.5"] as GuidelinesModelId[],
 };
 
 export const PROMPT_CHECKLIST = [
@@ -259,13 +259,14 @@ export const COST_EXAMPLES: CostExample[] = [
     modelCosts: [
       { modelId: "composer-2.5", inputTokens: 20_000, outputTokens: 2_000 },
       { modelId: "gemini-flash", inputTokens: 20_000, outputTokens: 2_000 },
-      { modelId: "gemini-3.1-pro", inputTokens: 20_000, outputTokens: 2_000 },
-      { modelId: "gpt-5.5", inputTokens: 20_000, outputTokens: 2_000 },
-      { modelId: "opus-4.8", inputTokens: 20_000, outputTokens: 2_000 },
+      { modelId: "gpt-5.6-luna", inputTokens: 20_000, outputTokens: 2_000 },
+      { modelId: "gpt-5.6-terra", inputTokens: 20_000, outputTokens: 2_000 },
+      { modelId: "gpt-5.6-sol", inputTokens: 20_000, outputTokens: 2_000 },
+      { modelId: "claude-fable-5", inputTokens: 20_000, outputTokens: 2_000 },
       { modelId: "opus-fast", inputTokens: 20_000, outputTokens: 2_000 },
     ],
     advice:
-      "Do not use Opus or GPT-5.5 for this unless there is hidden complexity. Composer 2.5 or Gemini 3 Flash is enough.",
+      "Do not use Sol or Fable for this unless there is hidden complexity. GPT-5.6 Luna or Gemini 3 Flash is enough.",
   },
   {
     id: "medium-creative",
@@ -276,13 +277,14 @@ export const COST_EXAMPLES: CostExample[] = [
       { modelId: "composer-2.5", inputTokens: 80_000, outputTokens: 8_000 },
       { modelId: "composer-2.5-fast", inputTokens: 80_000, outputTokens: 8_000 },
       { modelId: "gemini-3.1-pro", inputTokens: 80_000, outputTokens: 8_000 },
-      { modelId: "sonnet-4.6", inputTokens: 80_000, outputTokens: 8_000 },
-      { modelId: "gpt-5.4", inputTokens: 80_000, outputTokens: 8_000 },
-      { modelId: "gpt-5.5", inputTokens: 80_000, outputTokens: 8_000 },
-      { modelId: "opus-4.8", inputTokens: 80_000, outputTokens: 8_000 },
+      { modelId: "sonnet-5", inputTokens: 80_000, outputTokens: 8_000 },
+      { modelId: "gpt-5.6-luna", inputTokens: 80_000, outputTokens: 8_000 },
+      { modelId: "gpt-5.6-terra", inputTokens: 80_000, outputTokens: 8_000 },
+      { modelId: "gpt-5.6-sol", inputTokens: 80_000, outputTokens: 8_000 },
+      { modelId: "claude-fable-5", inputTokens: 80_000, outputTokens: 8_000 },
     ],
     advice:
-      "Sonnet 4.6 is probably the best fit here. It is strong creatively without jumping straight to the most expensive models.",
+      "Sonnet 5 is probably the best fit here. It is strong creatively without jumping straight to the most expensive models.",
   },
   {
     id: "complex",
@@ -293,31 +295,31 @@ export const COST_EXAMPLES: CostExample[] = [
       { label: "Implementation phase", inputTokens: 120_000, outputTokens: 20_000 },
     ],
     approach: [
-      { label: "Plan in Plan Mode with", modelIds: ["opus-4.8"] },
+      { label: "Plan in Plan Mode with", modelIds: ["claude-fable-5"] },
       {
         label: "Implement with",
-        modelIds: ["composer-2.5"],
+        modelIds: ["gpt-5.6-terra", "composer-2.5"],
         text: "if the plan is clear and the implementation is straightforward.",
       },
     ],
     modelCosts: [
-      { modelId: "opus-4.8", inputTokens: 300_000, outputTokens: 20_000 },
-      { modelId: "composer-2.5", inputTokens: 120_000, outputTokens: 20_000 },
+      { modelId: "claude-fable-5", inputTokens: 300_000, outputTokens: 20_000 },
+      { modelId: "gpt-5.6-terra", inputTokens: 120_000, outputTokens: 20_000 },
     ],
     extraCosts: [
       { modelId: "gemini-flash", inputTokens: 120_000, outputTokens: 20_000 },
-      { modelId: "opus-4.8", inputTokens: 420_000, outputTokens: 40_000 },
+      { modelId: "claude-fable-5", inputTokens: 420_000, outputTokens: 40_000 },
     ],
     totalLine: {
       label: "Total",
-      modelIds: ["opus-4.8", "composer-2.5"],
+      modelIds: ["claude-fable-5", "gpt-5.6-terra"],
       phases: [
-        { modelId: "opus-4.8", inputTokens: 300_000, outputTokens: 20_000 },
-        { modelId: "composer-2.5", inputTokens: 120_000, outputTokens: 20_000 },
+        { modelId: "claude-fable-5", inputTokens: 300_000, outputTokens: 20_000 },
+        { modelId: "gpt-5.6-terra", inputTokens: 120_000, outputTokens: 20_000 },
       ],
     },
     advice:
-      "Use the strong model where it matters most: understanding the problem, reading the codebase, and making the plan. Once the plan is clear, use a cheaper model for the mechanical implementation. Composer 2.5 is usually a better fit than Gemini 3 Flash for codebase implementation work, but Gemini Flash can be useful when the implementation is very mechanical and tightly specified.",
+      "Use Fable or Sol where the reasoning matters most: understanding the problem, reading the codebase, and making the plan. Once the plan is clear, use Terra or Composer for implementation. Luna or Gemini Flash are useful when the implementation is mechanical and tightly specified.",
     paragraphs: [
       "The real cost is not just token price. If a model is too weak, you may spend five extra rounds fixing bad assumptions. That can be more expensive than choosing the right model once.",
     ],

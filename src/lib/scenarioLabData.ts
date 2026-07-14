@@ -81,12 +81,12 @@ export const SCENARIOS: Scenario[] = [
     primarySignal: "speed",
     insight:
       "Fast models handle this as well as expensive ones. The answer is either right or obviously wrong — no back-and-forth needed.",
-    recommendedModelId: "haiku-4.5",
+    recommendedModelId: "gpt-5.6-luna",
     recommendationReason:
-      "Haiku is fast, cheap, and more than capable for error explanation. Paying for Sonnet or Opus here is waste.",
+      "Luna is fast, cheap, and more than capable for error explanation. Paying for Sol or Fable here is waste.",
     results: [
       {
-        modelId: "haiku-4.5",
+        modelId: "gpt-5.6-luna",
         verdict: "best",
         summary: "Fast, correct, no fluff",
         outputExcerpt:
@@ -97,7 +97,7 @@ export const SCENARIOS: Scenario[] = [
           "No unnecessary explanation",
         ],
         weaknesses: [],
-        costCommentary: "Negligible at any volume",
+        costCommentary: "The current GPT-5.6 fast default; negligible at normal volume",
       },
       {
         modelId: "gemini-flash",
@@ -110,7 +110,7 @@ export const SCENARIOS: Scenario[] = [
         costCommentary: "Cheapest option",
       },
       {
-        modelId: "sonnet-4.6",
+        modelId: "sonnet-5",
         verdict: "caution",
         summary: "Correct, but added unrequested refactor suggestions",
         outputExcerpt:
@@ -120,8 +120,8 @@ export const SCENARIOS: Scenario[] = [
           "Expanded scope beyond what was asked",
           "Overkill for a simple error explanation",
         ],
-        costCommentary: "More expensive than Haiku for the same core answer",
-        costContext: { compareToModelId: "haiku-4.5" },
+        costCommentary: "More expensive than Luna for the same core answer",
+        costContext: { compareToModelId: "gpt-5.6-luna" },
       },
       {
         modelId: "opus-4.8",
@@ -134,8 +134,8 @@ export const SCENARIOS: Scenario[] = [
           "40-second response for a 5-second answer",
           "Depth isn't proportional to the task",
         ],
-        costCommentary: "Much more expensive than Haiku for no better result",
-        costContext: { compareToModelId: "haiku-4.5" },
+        costCommentary: "Much more expensive than Luna for no better result",
+        costContext: { compareToModelId: "gpt-5.6-luna" },
       },
     ],
   },
@@ -149,12 +149,12 @@ export const SCENARIOS: Scenario[] = [
     primarySignal: "scope",
     insight:
       "Scope discipline matters here. A model that drifts will touch things you didn't ask about. A model that's too literal might miss the spirit of the refactor.",
-    recommendedModelId: "composer-2.5",
+    recommendedModelId: "gpt-5.6-terra",
     recommendationReason:
-      "Composer 2.5 still handles this well when you keep the scope explicit. You get the same IDE context plus the option to self-check the result if the edit turns out to be slightly trickier than expected.",
+      "Terra is the current balanced default: capable enough to understand the refactor, disciplined enough to keep the public API stable, and cheap enough for everyday use.",
     results: [
       {
-        modelId: "composer-2.5",
+        modelId: "gpt-5.6-terra",
         verdict: "best",
         summary: "Clean refactor, stayed in scope",
         outputExcerpt:
@@ -165,7 +165,7 @@ export const SCENARIOS: Scenario[] = [
           "No surprises in the diff",
         ],
         weaknesses: [],
-        costCommentary: "Fast enough for a focused edit, with extra headroom if verification becomes useful",
+        costCommentary: "Balanced daily-driver pricing with enough headroom for verification",
       },
       {
         modelId: "gemini-flash",
@@ -180,7 +180,7 @@ export const SCENARIOS: Scenario[] = [
         costCommentary: "Very cheap",
       },
       {
-        modelId: "sonnet-4.6",
+        modelId: "sonnet-5",
         verdict: "caution",
         summary: "Good refactor, but touched adjacent code",
         outputExcerpt:
@@ -194,19 +194,19 @@ export const SCENARIOS: Scenario[] = [
           "Requires careful diff review to avoid unintended changes",
         ],
         costCommentary: "Fine if you review the diff, risky if you don't",
-        costContext: { compareToModelId: "composer-2.5" },
+        costContext: { compareToModelId: "gpt-5.6-terra" },
       },
     ],
     planMode: {
-      planModelId: "sonnet-4.6",
-      executeModelId: "composer-2.5",
+      planModelId: "sonnet-5",
+      executeModelId: "gpt-5.6-terra",
       insight:
         "Plan mode turns Sonnet's scope drift into a feature. It reasons about the refactor approach — naming, structure, edge cases — but a fast model executes the actual edit. You get Sonnet's judgment without its tendency to touch adjacent code.",
       recommendationReason:
-        "Sonnet plans the approach (extract helper, simplify conditionals, preserve API), then Composer 2.5 executes it with explicit guardrails. The plan constrains scope while still letting the executor verify the result if needed.",
+        "Sonnet plans the approach (extract helper, simplify conditionals, preserve API), then Terra executes it with explicit guardrails. The plan constrains scope while still letting the executor verify the result if needed.",
       results: [
         {
-          modelId: "sonnet-4.6",
+          modelId: "sonnet-5",
           verdict: "best",
           summary: "Plans the approach without touching code directly",
           outputExcerpt:
@@ -220,7 +220,7 @@ export const SCENARIOS: Scenario[] = [
           costCommentary: "Planning tokens are cheap — the plan is short and focused",
         },
         {
-          modelId: "composer-2.5",
+          modelId: "gpt-5.6-terra",
           verdict: "best",
           summary: "Executes the plan precisely, stays in scope",
           outputExcerpt:
@@ -232,7 +232,7 @@ export const SCENARIOS: Scenario[] = [
           ],
           weaknesses: [],
           costCommentary: "Fast executor — combined plan + execute cost stays reasonable while adding verification headroom",
-          costContext: { compareToModelId: "sonnet-4.6" },
+          costContext: { compareToModelId: "sonnet-5" },
         },
         {
           modelId: "gemini-flash",
@@ -262,9 +262,9 @@ export const SCENARIOS: Scenario[] = [
     primarySignal: "accuracy",
     insight:
       "Fast models produce boilerplate tests quickly. A stronger model reasons about edge cases and failure modes — one good suite beats three mediocre ones you have to fix.",
-    recommendedModelId: "sonnet-4.6",
+    recommendedModelId: "gpt-5.6-terra",
     recommendationReason:
-      "Sonnet notices edge cases you didn't think to mention. For test generation, that proactiveness is a feature — you want the model to think about failure modes.",
+      "Terra is strong enough to reason about edge cases and follow through with verification without making routine test generation a flagship-model expense.",
     results: [
       {
         modelId: "deepseek-v4-flash",
@@ -298,9 +298,9 @@ export const SCENARIOS: Scenario[] = [
         costCommentary: "Fast but shallow — budget option for basic coverage",
       },
       {
-        modelId: "gpt-5.5",
-        verdict: "good",
-        summary: "Strong agentic reasoning — catches edge cases and follows through",
+        modelId: "gpt-5.6-terra",
+        verdict: "best",
+        summary: "Balanced agentic reasoning — catches edge cases and follows through",
         outputExcerpt:
           "Identified the concurrent payment race condition and generated a test using Promise.all. Also covered timeout, partial failure, and idempotency scenarios, then suggested running the suite to verify the behavior.",
         strengths: [
@@ -309,15 +309,15 @@ export const SCENARIOS: Scenario[] = [
           "High reasoning effort is available when the test plan gets subtle",
         ],
         weaknesses: [
-          "More expensive than Sonnet for high-volume test generation",
+          "More expensive than Luna for high-volume boilerplate test generation",
           "Can over-invest in verification unless you set scope",
         ],
-        costCommentary: "Expensive per token, but one verified pass can beat multiple correction rounds",
-        costContext: { compareToModelId: "sonnet-4.6" },
+        costCommentary: "Balanced price for a suite that includes its own verification pass",
+        costContext: { compareToModelId: "sonnet-5" },
       },
       {
-        modelId: "sonnet-4.6",
-        verdict: "best",
+        modelId: "sonnet-5",
+        verdict: "good",
         summary: "Thoughtful tests with real edge cases",
         outputExcerpt:
           "// Edge case: concurrent payments for the same order\nit('should handle duplicate payment attempts', async () => {\n  const [result1, result2] = await Promise.all([processPayment(order), processPayment(order)])\n  expect([result1.status, result2.status]).toContain('duplicate_rejected')\n})",
@@ -333,9 +333,9 @@ export const SCENARIOS: Scenario[] = [
         costCommentary: "Worth it if the suite catches real bugs in CI",
       },
       {
-        modelId: "opus-4.8",
+        modelId: "claude-fable-5",
         verdict: "good",
-        summary: "Excellent coverage, but slower and more expensive than Sonnet",
+        summary: "Exceptional coverage, but far too expensive for routine test generation",
         outputExcerpt:
           "Generated comprehensive test suite including boundary conditions, concurrent access patterns, and failure recovery scenarios. Added property-based test suggestions for the validation logic.",
         strengths: [
@@ -346,12 +346,12 @@ export const SCENARIOS: Scenario[] = [
           "40+ second response time",
           "Marginal improvement over Sonnet for most test suites",
         ],
-        costCommentary: "Reserve for critical payment/auth modules where thoroughness matters",
-        costContext: { compareToModelId: "sonnet-4.6" },
+        costCommentary: "Reserve for critical payment/auth modules where maximum thoroughness matters",
+        costContext: { compareToModelId: "sonnet-5" },
       },
     ],
     planMode: {
-      planModelId: "sonnet-4.6",
+      planModelId: "sonnet-5",
       executeModelId: "haiku-4.5",
       insight:
         "The hard part of test generation is knowing what to test — the edge cases, race conditions, failure modes. The easy part is writing the actual test code. Plan mode lets a strong model do the thinking while a fast model does the typing.",
@@ -359,7 +359,7 @@ export const SCENARIOS: Scenario[] = [
         "Sonnet identifies the edge cases (concurrent payments, timeouts, idempotency) and writes a test plan. Haiku generates the actual test code from that plan. You get Sonnet-quality coverage at a fraction of the cost.",
       results: [
         {
-          modelId: "sonnet-4.6",
+          modelId: "sonnet-5",
           verdict: "best",
           summary: "Identifies every edge case worth testing",
           outputExcerpt:
@@ -418,7 +418,7 @@ export const SCENARIOS: Scenario[] = [
             "Extra depth (property-based testing) often isn't needed",
           ],
           costCommentary: "Sonnet's plan is good enough — save Opus for architecture",
-          costContext: { compareToModelId: "sonnet-4.6" },
+          costContext: { compareToModelId: "sonnet-5" },
         },
       ],
     },
@@ -433,9 +433,9 @@ export const SCENARIOS: Scenario[] = [
     primarySignal: "autonomy",
     insight:
       "This is where raw cost comparisons mislead. A model that ships working code in one shot is often cheaper in practice than a cheap model that needs five rounds of corrections.",
-    recommendedModelId: "composer-2.5",
+    recommendedModelId: "gpt-5.6-sol",
     recommendationReason:
-      "Composer 2.5 navigates the project, finds the relevant files, and makes coordinated changes across all of them — without you having to specify each one. For multi-file work, the agentic overhead pays off.",
+      "Sol combines a 1M-class context window with state-of-the-art long-horizon tool use, so it can navigate, implement, run, and verify the whole feature with less hand-holding.",
     results: [
       {
         modelId: "gemini-flash",
@@ -453,26 +453,26 @@ export const SCENARIOS: Scenario[] = [
         costContext: { effectiveRuns: 3 },
       },
       {
-        modelId: "gpt-5.5",
-        verdict: "good",
-        summary: "1M context plus stronger tool loops — powerful but less IDE-native",
+        modelId: "gpt-5.6-sol",
+        verdict: "best",
+        summary: "1M-class context plus frontier tool loops — owns the feature end-to-end",
         outputExcerpt:
           "Read the project structure into context, implemented the feature across all three layers, used native tool search to follow service conventions, then ran verification and corrected one custom error-handling mismatch.",
         strengths: [
           "1M context window — no chunking or summarization needed",
-          "Stronger autonomous follow-through than earlier GPT-5.x models",
+          "State-of-the-art autonomous follow-through on long tool-use loops",
           "Native tool use found existing patterns without manual guidance",
         ],
         weaknesses: [
-          "Less IDE-native than Composer 2.5 — requires more setup",
+          "Needs a hardened success condition so verification cannot be gamed",
           "Higher per-token cost means scope control matters",
         ],
         costCommentary:
-          "Higher per-token API cost than Composer 2.5 — you pay for GPT-5.5's breadth and autonomous verification, not Cursor's native agent loop",
+          "Higher per-token API cost than Composer 2.5 — you pay for Sol's breadth, computer use, and autonomous verification",
         costContext: { compareToModelId: "composer-2.5" },
       },
       {
-        modelId: "sonnet-4.6",
+        modelId: "sonnet-5",
         verdict: "good",
         summary: "Strong implementation, but required scope guardrails",
         outputExcerpt:
@@ -491,7 +491,7 @@ export const SCENARIOS: Scenario[] = [
       },
       {
         modelId: "composer-2.5",
-        verdict: "best",
+        verdict: "good",
         summary: "Navigated the codebase, implemented end-to-end, self-verified",
         outputExcerpt:
           "Found the existing service layer pattern in `src/services/`. Implemented the new feature following the same pattern. Ran TypeScript compiler — 0 errors. Tests pass.",
@@ -508,7 +508,7 @@ export const SCENARIOS: Scenario[] = [
         costCommentary: "Composer 2.5's API rates are low — with zero correction rounds, effective cost still wins",
       },
       {
-        modelId: "opus-4.8",
+        modelId: "claude-fable-5",
         verdict: "caution",
         summary: "Excellent quality but slow — better for design than implementation",
         outputExcerpt:
@@ -527,15 +527,15 @@ export const SCENARIOS: Scenario[] = [
       },
     ],
     planMode: {
-      planModelId: "opus-4.8",
-      executeModelId: "composer-2.5",
+      planModelId: "claude-fable-5",
+      executeModelId: "gpt-5.6-terra",
       insight:
-        "Multi-file features fail when the executor doesn't understand the big picture. Plan mode flips the direct approach: Opus maps the architecture and file changes, then a fast model executes each file edit. The plan prevents the cross-file inconsistencies that plague cheap models working alone.",
+        "Multi-file features fail when the executor doesn't understand the big picture. Plan mode flips the direct approach: Fable maps the architecture and file changes, then Terra executes each file edit. The plan prevents the cross-file inconsistencies that plague cheap models working alone.",
       recommendationReason:
-        "Opus plans the full feature — which files to touch, what patterns to follow, how the layers connect. Composer 2.5 executes against that plan with less wandering and better verification than working fully autonomously from scratch.",
+        "Fable plans the full feature — which files to touch, what patterns to follow, how the layers connect. Terra executes against that plan at a much lower rate while preserving the review boundary.",
       results: [
         {
-          modelId: "opus-4.8",
+          modelId: "claude-fable-5",
           verdict: "best",
           summary: "Maps the architecture before a single line is written",
           outputExcerpt:
@@ -550,7 +550,7 @@ export const SCENARIOS: Scenario[] = [
           costCommentary: "Planning cost is a fraction of the full implementation — and prevents rework",
         },
         {
-          modelId: "composer-2.5",
+          modelId: "gpt-5.6-terra",
           verdict: "best",
           summary: "Executes each planned file change cleanly",
           outputExcerpt:
@@ -563,24 +563,24 @@ export const SCENARIOS: Scenario[] = [
           weaknesses: [
             "Won't catch issues the plan missed",
           ],
-          costCommentary: "Combined Opus plan + Composer 2.5 execution trades a little extra cost for cleaner verification and less rework",
+          costCommentary: "Combined Fable planning plus Terra execution costs more upfront but buys cleaner verification and less rework",
         },
         {
-          modelId: "sonnet-4.6",
+          modelId: "sonnet-5",
           verdict: "good",
-          summary: "Strong planner, but Opus catches more architectural issues",
+          summary: "Strong planner, but Fable catches more architectural issues",
           outputExcerpt:
-            "Plan covers the three layers and references existing patterns. Missed the service layer coupling issue that Opus flagged.",
+            "Plan covers the three layers and references existing patterns. Missed the service layer coupling issue that Fable flagged.",
           strengths: [
             "Good plan structure",
-            "Cheaper planning phase than Opus",
+            "Cheaper planning phase than Fable",
           ],
           weaknesses: [
             "Missed the architectural coupling issue",
             "Plan was less specific about which patterns to follow",
           ],
-          costCommentary: "Good enough for simpler features — use Opus for complex multi-layer work",
-          costContext: { compareToModelId: "opus-4.8" },
+          costCommentary: "Good enough for simpler features — use Fable for complex multi-layer work",
+          costContext: { compareToModelId: "claude-fable-5" },
         },
         {
           modelId: "gemini-flash",
@@ -610,10 +610,10 @@ export const SCENARIOS: Scenario[] = [
     outputTokens: 2000,
     primarySignal: "accuracy",
     insight:
-      "This is where Opus earns its cost. Architecture decisions have long-term consequences — a model that pattern-matches to the most common answer can lead you to the wrong choice.",
-    recommendedModelId: "opus-4.8",
+      "This is where Fable earns its cost. Architecture decisions have long-term consequences — a model that pattern-matches to the most common answer can lead you to the wrong choice.",
+    recommendedModelId: "claude-fable-5",
     recommendationReason:
-      "Opus traces actual logic, not patterns. It identified that the 'common' caching strategy was wrong for the specific access pattern described — something Sonnet missed.",
+      "Fable traces the specific system constraints, challenges the common answer, and validates the long-term implication before recommending an architecture.",
     results: [
       {
         modelId: "gemini-flash",
@@ -630,25 +630,25 @@ export const SCENARIOS: Scenario[] = [
         costCommentary: "Cheap, but the wrong answer is expensive",
       },
       {
-        modelId: "gpt-5.5",
+        modelId: "gpt-5.6-sol",
         verdict: "good",
-        summary: "Strong reasoning with better follow-through — still less review-focused than Opus",
+        summary: "Strong reasoning with implementation follow-through — still less review-focused than Fable",
         outputExcerpt:
           "At high reasoning effort: Your write-heavy access pattern makes SWR problematic — stale data will be served immediately after writes. Cache invalidation on write with Redis is the better fit here, despite the operational complexity.",
         strengths: [
-          "Caught the same key architectural issue as Opus",
+          "Caught the same key architectural issue as Fable",
           "Better at turning analysis into an implementation loop than earlier GPT-5.x models",
           "Reasoning effort levels let you right-size latency and cost",
         ],
         weaknesses: [
           "Costs more than earlier GPT-5.x models, so cheap analysis loops add up",
-          "Less detailed review-grade reasoning trace than Opus",
+          "Less detailed review-grade reasoning trace than Fable",
         ],
         costCommentary: "Strong value when the decision feeds directly into implementation and verification",
-        costContext: { compareToModelId: "opus-4.8" },
+        costContext: { compareToModelId: "claude-fable-5" },
       },
       {
-        modelId: "sonnet-4.6",
+        modelId: "sonnet-5",
         verdict: "good",
         summary: "Solid analysis, but missed the key access pattern implication",
         outputExcerpt:
@@ -662,10 +662,10 @@ export const SCENARIOS: Scenario[] = [
           "Missed that write-heavy patterns make SWR a poor fit",
         ],
         costCommentary: "Good analysis, but missed the key insight",
-        costContext: { compareToModelId: "opus-4.8" },
+        costContext: { compareToModelId: "claude-fable-5" },
       },
       {
-        modelId: "opus-4.8",
+        modelId: "claude-fable-5",
         verdict: "best",
         summary: "Identified that the common recommendation was wrong for this case",
         outputExcerpt:
@@ -695,7 +695,7 @@ export const SCENARIOS: Scenario[] = [
           "Architecture decisions need reasoning, not implementation speed",
         ],
         costCommentary: "Wrong tool for a design question",
-        costContext: { compareToModelId: "opus-4.8" },
+        costContext: { compareToModelId: "claude-fable-5" },
       },
     ],
   },

@@ -2,7 +2,7 @@
 title: "Jira Ticket to Cursor to PR"
 subtitle: "Turning a Jira ticket into a structured Cursor task with Figma design context"
 publishedAt: "2026-04-17"
-updatedAt: "2026-04-17"
+updatedAt: "2026-07-01"
 chapter: 7
 part: shipping-workflows
 partNumber: 2
@@ -34,11 +34,11 @@ For UI tasks, grab the Figma link for the component you're implementing. In Figm
 
 > Figma design: https://www.figma.com/design/abc123/...?node-id=12-34
 
-Keep **Figma Desktop** open during your session — Cursor's Figma MCP server connects to the running desktop app to pull design tokens, component properties, and layout data directly into your prompt context.
+Install Figma's recommended remote MCP server in Cursor with `/add-plugin figma`, then authenticate once. It connects directly to Figma's hosted endpoint, so you can pull design tokens, component properties, and layout data without keeping the desktop app open.
 
 <InfoBlock title="Setting up the Figma MCP">
 
-**Figma MCP** gives Cursor direct access to design tokens, component variants, and layout data. Keep Figma Desktop open during your session. See [Figma MCP Workflows](/tooling/figma-mcp) for setup.
+**Figma MCP** gives Cursor direct access to design tokens, component variants, and layout data. The remote server is the recommended setup; the desktop server remains available for organization-specific local workflows. See [Figma MCP Workflows](/tooling/figma-mcp) for setup.
 
 </InfoBlock>
 

@@ -2,7 +2,7 @@
 title: "Cursor Max Mode"
 subtitle: "When the 1M token context window earns its cost"
 publishedAt: "2026-04-17"
-updatedAt: "2026-06-03"
+updatedAt: "2026-07-14"
 chapter: 13
 part: tools-infrastructure
 partNumber: 4
@@ -19,7 +19,7 @@ That's the problem Max Mode solves.
 
 ## What Max Mode actually does
 
-By default, Cursor keeps you on the standard context window for the selected model — in practice often the 200K band, roughly 15,000 lines of code, which covers most single-feature work. Max Mode extends that to the model's maximum context window. The models that support Max Mode include Claude 4.6 Sonnet, Claude 4.8 Opus, GPT-5.5, GPT-5.3 Codex, and Gemini 3.1 Pro, among others.
+By default, Cursor keeps you on the standard context window for the selected model — in practice often the 200K band, roughly 15,000 lines of code, which covers most single-feature work. Max Mode extends that to the model's maximum context window. Current million-token-class choices include GPT-5.6 Luna, Terra, and Sol, Claude Fable 5 and Sonnet 5, and Gemini 3.1 Pro, depending on availability in your client and plan.
 
 The catch: on current individual plans, it switches that session onto API-rate billing from your API pool. On legacy request-based plans, a 20% surcharge applies on top. Either way, a few heavy queries can chew through your included API usage fast.
 
@@ -47,7 +47,7 @@ Not a "better" mode. A "bigger context" mode. The model doesn't reason different
 
 Cursor Pro includes $20/month of API usage. Max Mode draws from that API pool at the selected model's rate (no surcharge on current individual plans — the 20% upcharge only applies to legacy request-based plans). The numbers compound quickly:
 
-- A session processing 400K tokens of context can cost well under a dollar on Gemini 3 Flash and several dollars on Sonnet or GPT-5.5 once Max Mode pricing kicks in
+- At raw API rates, a 400K-input / 60K-output session is about $0.76 on Luna, $1.90 on Terra, $3.80 on Sol, and $7.00 on Fable 5 before caching or plan-specific usage pools
 - Run that three or four times a day and you've consumed your monthly pool in a week
 - Overages charge at raw API rates — there's no cap unless you turn off pay-as-you-go
 

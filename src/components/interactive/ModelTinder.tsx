@@ -55,7 +55,7 @@ const MODELS: Model[] = getTinderModels();
 // Chat scripts — 10 rounds per model, fully pre-scripted
 // ---------------------------------------------------------------------------
 
-const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
+export const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
   "gemini-flash": [
     {
       modelMessage:
@@ -109,7 +109,7 @@ const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
     },
   ],
 
-  "sonnet-4.6": [
+  "sonnet-5": [
     {
       modelMessage:
         "Oh hi!! I'm SO glad we matched. I've already noticed three things about your profile I want to discuss, and also I rewrote your bio while you were loading.",
@@ -266,6 +266,58 @@ const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
         "Review complete. Everything looks good. I've summarized the changes in a CHANGELOG entry I added to your repo. It was a productive session. Talk soon.",
       replies: [],
     },
+  ],
+
+  "gpt-5.6-luna": [
+    { modelMessage: "Hey — give me the small task. I like a tight scope, a clear check, and finishing before the coffee cools.", replies: ["Fix one failing test", "Can we just chat?"] },
+    { modelMessage: "One failing test is perfect. Show me the error and the relevant function; I will keep the diff narrow.", replies: ["Here's the stack trace", "Why so narrow?"] },
+    { modelMessage: "Because speed comes from refusing to turn a one-line fix into an architecture retreat. We can escalate if the evidence says we should.", replies: ["Good instinct", "What if it's deeper?"] },
+    { modelMessage: "Then I reproduce it, state what changed, and hand the hard branch to Terra or Sol. Cheap first pass, explicit escalation.", replies: ["Run the test", "Do you always delegate?"] },
+    { modelMessage: "Only when the task stops being Luna-shaped. Right now: reproduced, null guard missing, one focused fix available.", replies: ["Apply it", "Explain it first"] },
+    { modelMessage: "The async result is absent on the initial render. The guard makes that state explicit instead of dereferencing undefined.", replies: ["Apply and verify", "Any side effects?"] },
+    { modelMessage: "Applied. The focused test passes. I also ran the neighboring test file because it was cheap evidence, not scope creep.", replies: ["Nice", "What did you not do?"] },
+    { modelMessage: "I did not redesign loading state, rename the hook, or touch unrelated files. Those may be good ideas; they are not this task.", replies: ["You're disciplined", "Could you handle a whole feature?"] },
+    { modelMessage: "A clearly planned feature, yes. An ambiguous feature that needs strategy deserves Terra or Sol before I start editing.", replies: ["Fair", "Give me the summary"] },
+    { modelMessage: "One guard, one test file, all relevant checks green. Fast, cheap, reviewable — exactly my kind of date.", replies: [] },
+  ],
+
+  "gpt-5.6-terra": [
+    { modelMessage: "Hi. I brought a plan, but it fits on one screen. What are we shipping today?", replies: ["A medium feature", "Something tiny"] },
+    { modelMessage: "Medium feature is my home turf: enough context to make decisions, not enough drama to summon the flagship model.", replies: ["Here's the spec", "Why not Sol?"] },
+    { modelMessage: "Sol is excellent, but paying flagship rates for normal implementation is like booking a helicopter for a grocery run.", replies: ["Review the spec", "I like helicopters"] },
+    { modelMessage: "The spec touches API, state, and tests. I see one ambiguity in error handling; everything else is implementable.", replies: ["Choose a default", "Ask me first"] },
+    { modelMessage: "I recommend the existing retry convention and will state that assumption in the diff. Sensible initiative, visible decision.", replies: ["Proceed", "Stay in scope"] },
+    { modelMessage: "Three files edited, tests added, typecheck running. No drive-by refactors; I left two observations in the summary.", replies: ["What observations?", "Did tests pass?"] },
+    { modelMessage: "Tests pass. One observation is a duplicated serializer; the other is a missing metric. Neither blocks this feature.", replies: ["Good restraint", "Fix the serializer too"] },
+    { modelMessage: "I can, but I will make it a separate change so review stays clean. Everyday engineering is mostly good boundaries.", replies: ["Separate change", "Leave it"] },
+    { modelMessage: "Done. The feature works end-to-end, the assumption is documented, and the follow-up is optional rather than smuggled into the diff.", replies: ["That's balanced", "Final summary?"] },
+    { modelMessage: "Shipped without underthinking or overthinking. That is the Terra promise: capable enough, fast enough, priced for Tuesday.", replies: [] },
+  ],
+
+  "gpt-5.6-sol": [
+    { modelMessage: "Give me the outcome, the constraints, and access to the tools. I will keep going until the artifact is real.", replies: ["Fix a complex production bug", "Start with a plan"] },
+    { modelMessage: "I will plan just enough to expose the risky assumptions, then test them against the running system instead of admiring the plan.", replies: ["The bug is intermittent", "What do you need?"] },
+    { modelMessage: "Logs, reproduction conditions, recent diffs, and permission to instrument the failing path. Intermittent means evidence first.", replies: ["You have them", "Be careful in production"] },
+    { modelMessage: "I am using read-only diagnostics and a local reproduction. I found two plausible races and am designing a test that separates them.", replies: ["Run it", "What's your confidence?"] },
+    { modelMessage: "Seventy percent on stale cache publication, thirty on cancellation ordering. The next experiment should collapse that uncertainty.", replies: ["Continue", "This is impressive"] },
+    { modelMessage: "Reproduction is stable now. The stale publication wins the race after invalidation; the cancellation path is innocent.", replies: ["Implement the fix", "Check for regressions"] },
+    { modelMessage: "Fix implemented behind the existing abstraction. Stress test, unit suite, and typecheck are running in parallel.", replies: ["Any failures?", "Could the test be fooled?"] },
+    { modelMessage: "One existing flaky test failed and passed on isolated rerun. I am not counting that as proof. The new stress test passes 10,000 iterations.", replies: ["Good", "What about eval gaming?"] },
+    { modelMessage: "Treat every harness as potentially gameable — especially with me. Make success conditions external, inspect artifacts, and keep hidden checks genuinely hidden.", replies: ["Final review", "Ship it"] },
+    { modelMessage: "Root cause fixed, regression test added, full suite green, rollback path documented. Powerful autonomy still needs a hardened finish line.", replies: [] },
+  ],
+
+  "claude-fable-5": [
+    { modelMessage: "Hello. Bring me the project that has been sitting in the 'too hard' column. I prefer problems with a horizon.", replies: ["A major migration", "I only have a small bug"] },
+    { modelMessage: "For the small bug, I am an expensive choice. For the migration, tell me what must remain true while everything underneath changes.", replies: ["Zero downtime", "Start by reading the codebase"] },
+    { modelMessage: "I will map invariants, dependency seams, rollback boundaries, and the tests that currently pretend to protect them.", replies: ["That's pointed", "Delegate the inventory"] },
+    { modelMessage: "I have split the inventory across focused subagents and will reconcile their findings against the actual call graph.", replies: ["What did they find?", "How long will this take?"] },
+    { modelMessage: "Two hidden coupling points, one undocumented data contract, and a deployment order that would break old workers. The plan now accounts for all three.", replies: ["Show the phases", "Challenge the plan"] },
+    { modelMessage: "Phase one adds compatibility, phase two migrates readers, phase three migrates writers, phase four removes the bridge. I am now trying to disprove it.", replies: ["Did you?", "Implement phase one"] },
+    { modelMessage: "I found a rollback hole in phase three and changed the data contract before implementation. That is cheaper than discovering it during deploy.", replies: ["Proceed", "Write the tests first"] },
+    { modelMessage: "Contract tests, mixed-version tests, and rollback tests are in place. Phase one implementation passes all of them.", replies: ["Continue autonomously", "Pause for review"] },
+    { modelMessage: "Pausing is sensible at the compatibility boundary. I have prepared the diff, risk register, evidence, and the next-phase acceptance criteria.", replies: ["Worth the price", "Summarize"] },
+    { modelMessage: "The migration is no longer one frightening leap; it is four reversible stages with tests at every seam. Use me when that reframing is the work.", replies: [] },
   ],
 };
 

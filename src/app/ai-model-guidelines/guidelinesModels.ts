@@ -1,6 +1,7 @@
 import {
   MODEL_BY_ID,
   PRICING_META,
+  getEffectiveModelPricing,
   type ModelSpec,
 } from "@/lib/modelSpecs";
 import { formatCost } from "@/lib/scenarioLabData";
@@ -11,10 +12,11 @@ export const GUIDELINES_MODEL_IDS = [
   "gemini-3.1-pro",
   "composer-2.5",
   "composer-2.5-fast",
-  "sonnet-4.6",
-  "gpt-5.4",
-  "gpt-5.5",
-  "opus-4.8",
+  "gpt-5.6-luna",
+  "gpt-5.6-terra",
+  "gpt-5.6-sol",
+  "claude-fable-5",
+  "sonnet-5",
   "opus-fast",
 ] as const;
 
@@ -24,12 +26,13 @@ export type GuidelinesModelId = (typeof GUIDELINES_MODEL_IDS)[number];
 export const GUIDELINES_PRICING_MODEL_IDS: GuidelinesModelId[] = [
   "composer-2.5",
   "composer-2.5-fast",
+  "gpt-5.6-luna",
+  "gpt-5.6-terra",
   "gemini-flash",
   "gemini-3.1-pro",
-  "sonnet-4.6",
-  "gpt-5.4",
-  "gpt-5.5",
-  "opus-4.8",
+  "sonnet-5",
+  "gpt-5.6-sol",
+  "claude-fable-5",
   "opus-fast",
 ];
 
@@ -63,6 +66,14 @@ export function formatPricePer1M(inputPer1M: number, outputPer1M: number): strin
 
 export function formatPriceForModel(id: GuidelinesModelId): string {
   const m = getGuidelinesModel(id);
+  if (m.promotionalPricing) {
+    const promo = formatPricePer1M(
+      m.promotionalPricing.inputPer1M,
+      m.promotionalPricing.outputPer1M
+    );
+    const standard = formatPricePer1M(m.inputPer1M, m.outputPer1M);
+    return `${promo} through Aug 31; ${standard} from Sep 1`;
+  }
   if (id === "opus-fast") {
     return `around ${formatPricePer1M(m.inputPer1M, m.outputPer1M)}`;
   }
@@ -75,9 +86,10 @@ export function calcGuidelinesCost(
   outputTokens: number
 ): number {
   const m = getGuidelinesModel(id);
+  const pricing = getEffectiveModelPricing(m);
   return (
-    (inputTokens / 1_000_000) * m.inputPer1M +
-    (outputTokens / 1_000_000) * m.outputPer1M
+    (inputTokens / 1_000_000) * pricing.inputPer1M +
+    (outputTokens / 1_000_000) * pricing.outputPer1M
   );
 }
 

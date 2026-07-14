@@ -13,7 +13,7 @@ type ModelStub = { id: string; name: string; why: Record<string, string> };
 // Minimal model stubs for getRecommendation tests
 const MODELS: ModelStub[] = [
   { id: "gemini-flash", name: "Gemini Flash", why: { targeted: "Fast targeted edits", vision: "Best vision model" } },
-  { id: "sonnet-4.6", name: "Sonnet 4.6", why: { multifile: "Great at multi-file", writing: "Strong writing" } },
+  { id: "sonnet-5", name: "Sonnet 5", why: { multifile: "Great at multi-file", writing: "Strong writing" } },
   { id: "opus-4.8", name: "Opus 4.8", why: { critical: "Best for critical systems", reasoning: "Deep reasoning" } },
   {
     id: "composer-2.5",
@@ -33,6 +33,10 @@ const ALL_MODELS: ModelStub[] = [
   { id: "haiku-4.5", name: "Claude Haiku 4.5", why: {} },
   { id: "deepseek-v4-flash", name: "DeepSeek-V4-Flash", why: {} },
   { id: "gpt-5.5", name: "GPT-5.5", why: { autonomous: "Runs the loop" } },
+  { id: "gpt-5.6-luna", name: "GPT-5.6 Luna", why: { targeted: "Fast focused work" } },
+  { id: "gpt-5.6-terra", name: "GPT-5.6 Terra", why: { multifile: "Balanced implementation" } },
+  { id: "gpt-5.6-sol", name: "GPT-5.6 Sol", why: { autonomous: "Frontier agent loops" } },
+  { id: "claude-fable-5", name: "Claude Fable 5", why: { reasoning: "Maximum-depth reasoning" } },
 ];
 
 function allAnswers(overrides: Partial<Answers> = {}): Answers {
@@ -96,9 +100,9 @@ describe("score()", () => {
     });
   });
 
-  describe("sonnet-4.6", () => {
+  describe("sonnet-5", () => {
     it("scores high for writing + architecture + balance + gaps", () => {
-      const s = score("sonnet-4.6", allAnswers({
+      const s = score("sonnet-5", allAnswers({
         task: "writing", scope: "architecture", priority: "balance", autonomy: "gaps",
       }));
       // writing(3) + architecture(3) + balance(2) + gaps(3) = 11 + stakes points
@@ -106,14 +110,14 @@ describe("score()", () => {
     });
 
     it("rewards analysis task", () => {
-      const coding = score("sonnet-4.6", allAnswers({ task: "coding" }));
-      const analysis = score("sonnet-4.6", allAnswers({ task: "analysis" }));
+      const coding = score("sonnet-5", allAnswers({ task: "coding" }));
+      const analysis = score("sonnet-5", allAnswers({ task: "analysis" }));
       expect(analysis).toBeGreaterThan(coding);
     });
 
     it("rewards multifile scope", () => {
-      const targeted = score("sonnet-4.6", allAnswers({ scope: "targeted" }));
-      const multi = score("sonnet-4.6", allAnswers({ scope: "multifile" }));
+      const targeted = score("sonnet-5", allAnswers({ scope: "targeted" }));
+      const multi = score("sonnet-5", allAnswers({ scope: "multifile" }));
       expect(multi).toBeGreaterThan(targeted);
     });
   });
@@ -267,12 +271,12 @@ describe("getRecommendation()", () => {
     expect(rec.model.id).toBe("composer-2.5");
   });
 
-  it("recommends sonnet-4.6 for writing + architecture + balance", () => {
+  it("recommends sonnet-5 for writing + architecture + balance", () => {
     const rec = getRecommendation(MODELS, {
       task: "writing", scope: "architecture", stakes: "internal",
       priority: "balance", autonomy: "gaps",
     });
-    expect(rec.model.id).toBe("sonnet-4.6");
+    expect(rec.model.id).toBe("sonnet-5");
   });
 
   it("recommends gemini-flash for vision + targeted", () => {
@@ -344,12 +348,12 @@ describe("real-world scenarios", () => {
     expect(rec.model.id).toBe("composer-2.5");
   });
 
-  it("writing docs: writing + multifile + internal + balance + gaps → sonnet-4.6", () => {
+  it("writing docs: writing + multifile + internal + balance + gaps → sonnet-5", () => {
     const rec = getRecommendation(MODELS, {
       task: "writing", scope: "multifile", stakes: "internal",
       priority: "balance", autonomy: "gaps",
     });
-    expect(rec.model.id).toBe("sonnet-4.6");
+    expect(rec.model.id).toBe("sonnet-5");
   });
 
   it("critical system design: reasoning + architecture + critical + accuracy + gaps → opus-4.8", () => {
@@ -382,17 +386,44 @@ describe("real-world scenarios", () => {
 // ---------------------------------------------------------------------------
 describe("scoreDimensions()", () => {
   it("returns a ModelScore with modelId, total, and dimensions array", () => {
-    const result = scoreDimensions("sonnet-4.6", allAnswers());
-    expect(result.modelId).toBe("sonnet-4.6");
+    const result = scoreDimensions("sonnet-5", allAnswers());
+    expect(result.modelId).toBe("sonnet-5");
     expect(typeof result.total).toBe("number");
     expect(Array.isArray(result.dimensions)).toBe(true);
   });
 
   it("total matches score() for all known models", () => {
-    const modelIds = ["gemini-flash", "sonnet-4.6", "opus-4.8", "composer-2.5"];
+    const modelIds = ["gemini-flash", "sonnet-5", "opus-4.8", "composer-2.5"];
     for (const id of modelIds) {
       const answers = allAnswers({ task: "coding", scope: "multifile", stakes: "production" });
       expect(scoreDimensions(id, answers).total).toBe(score(id, answers));
+    }
+  });
+
+  it("gives every picker model a scoring profile", () => {
+    const modelIds = [
+      "gemini-flash",
+      "gemini-3.1-pro",
+      "deepseek-v4-flash",
+      "haiku-4.5",
+      "gpt-5.4",
+      "sonnet-5",
+      "opus-4.8",
+      "gpt-5.5",
+      "composer-2.5",
+      "composer-2.5-fast",
+      "opus-fast",
+    ];
+    const answers = allAnswers({
+      task: "coding",
+      scope: "multifile",
+      stakes: "production",
+      priority: "balance",
+      autonomy: "gaps",
+    });
+
+    for (const id of modelIds) {
+      expect(scoreDimensions(id, answers).dimensions.length, id).toBeGreaterThan(0);
     }
   });
 
@@ -443,6 +474,34 @@ describe("scoreDimensions()", () => {
 // getRanking() — new top-3 API
 // ---------------------------------------------------------------------------
 describe("getRanking()", () => {
+  it("ranks Luna first for a fast targeted prototype", () => {
+    const ranking = getRanking(ALL_MODELS, allAnswers({
+      task: "coding", scope: "targeted", stakes: "prototype", priority: "speed", autonomy: "targeted",
+    }));
+    expect(ranking.top3[0].model.id).toBe("gpt-5.6-luna");
+  });
+
+  it("ranks Terra first for balanced everyday multi-file work", () => {
+    const ranking = getRanking(ALL_MODELS, allAnswers({
+      task: "coding", scope: "multifile", stakes: "production", priority: "balance", autonomy: "gaps",
+    }));
+    expect(ranking.top3[0].model.id).toBe("gpt-5.6-terra");
+  });
+
+  it("ranks Sol first for autonomous production coding", () => {
+    const ranking = getRanking(ALL_MODELS, allAnswers({
+      task: "coding", scope: "autonomous", stakes: "production", priority: "accuracy", autonomy: "drive",
+    }));
+    expect(ranking.top3[0].model.id).toBe("gpt-5.6-sol");
+  });
+
+  it("ranks Fable first for critical architecture reasoning", () => {
+    const ranking = getRanking(ALL_MODELS, allAnswers({
+      task: "reasoning", scope: "architecture", stakes: "critical", priority: "accuracy", autonomy: "gaps",
+    }));
+    expect(ranking.top3[0].model.id).toBe("claude-fable-5");
+  });
+
   it("returns exactly 3 ranked models (or fewer if model list is small)", () => {
     const ranking = getRanking(MODELS, allAnswers());
     expect(ranking.top3.length).toBeLessThanOrEqual(3);

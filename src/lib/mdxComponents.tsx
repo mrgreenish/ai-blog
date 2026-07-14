@@ -16,6 +16,7 @@ import { ConfigGenerator } from "@/components/interactive/ConfigGenerator";
 import { CostCalculator } from "@/components/interactive/CostCalculator";
 import { MaxModeViz } from "@/components/interactive/MaxModeViz";
 import { InfoBlock } from "@/components/content/InfoBlock";
+import { UpdateBlock } from "@/components/content/UpdateBlock";
 import { IllustrationPlaceholder } from "@/components/content/IllustrationPlaceholder";
 
 export const MDX_COMPONENTS = {
@@ -34,6 +35,7 @@ export const MDX_COMPONENTS = {
   MaxModeViz,
   // Content components
   InfoBlock,
+  UpdateBlock,
   IllustrationPlaceholder,
 } as const;
 
