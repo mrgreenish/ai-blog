@@ -304,30 +304,30 @@ const TEMPLATES: Template[] = [
     id: "fullstack",
     label: "Full-stack feature",
     steps: [
-      { id: "scaffold", label: "Scaffold", description: "Component structure, boilerplate, file setup", defaultTier: "reasoning", defaultModelId: "opus-4.8", recommendedModelId: "opus-4.8", inputTokens: 1000, outputTokens: 2000 },
-      { id: "logic", label: "Business logic", description: "Core feature logic, edge cases, state", defaultTier: "balanced", defaultModelId: "sonnet-5", recommendedModelId: "sonnet-5", inputTokens: 2000, outputTokens: 3000 },
-      { id: "review", label: "Code review", description: "Architecture, patterns, security concerns", defaultTier: "reasoning", defaultModelId: "opus-4.8", recommendedModelId: "opus-4.8", inputTokens: 3000, outputTokens: 1000 },
-      { id: "tests", label: "Tests", description: "Unit tests, edge case coverage", defaultTier: "balanced", defaultModelId: "sonnet-5", recommendedModelId: "sonnet-5", inputTokens: 1500, outputTokens: 2500 },
+      { id: "scaffold", label: "Scaffold", description: "Component structure, boilerplate, file setup", defaultTier: "balanced", defaultModelId: "gpt-5.6-terra", recommendedModelId: "gpt-5.6-terra", inputTokens: 1000, outputTokens: 2000 },
+      { id: "logic", label: "Business logic", description: "Core feature logic, edge cases, state", defaultTier: "balanced", defaultModelId: "gpt-5.6-terra", recommendedModelId: "gpt-5.6-terra", inputTokens: 2000, outputTokens: 3000 },
+      { id: "review", label: "Code review", description: "Architecture, patterns, security concerns", defaultTier: "reasoning", defaultModelId: "gpt-5.6-sol", recommendedModelId: "gpt-5.6-sol", inputTokens: 3000, outputTokens: 1000 },
+      { id: "tests", label: "Tests", description: "Unit tests, edge case coverage", defaultTier: "balanced", defaultModelId: "gpt-5.6-terra", recommendedModelId: "gpt-5.6-terra", inputTokens: 1500, outputTokens: 2500 },
     ],
   },
   {
     id: "bugfix",
     label: "Bug investigation",
     steps: [
-      { id: "reproduce", label: "Reproduce", description: "Isolate the failing case, minimal repro", defaultTier: "reasoning", defaultModelId: "gpt-5.5", recommendedModelId: "gpt-5.5", inputTokens: 1000, outputTokens: 1000 },
-      { id: "diagnose", label: "Diagnose", description: "Trace root cause through execution path", defaultTier: "reasoning", defaultModelId: "opus-4.8", recommendedModelId: "opus-4.8", inputTokens: 2500, outputTokens: 2000 },
-      { id: "fix", label: "Fix", description: "Implement the targeted fix", defaultTier: "balanced", defaultModelId: "sonnet-5", recommendedModelId: "sonnet-5", inputTokens: 2000, outputTokens: 2500 },
-      { id: "verify", label: "Verify", description: "Confirm fix, check for regressions", defaultTier: "fast", defaultModelId: "haiku-4.5", recommendedModelId: "haiku-4.5", inputTokens: 1500, outputTokens: 1000 },
+      { id: "reproduce", label: "Reproduce", description: "Isolate the failing case, minimal repro", defaultTier: "fast", defaultModelId: "gpt-5.6-luna", recommendedModelId: "gpt-5.6-luna", inputTokens: 1000, outputTokens: 1000 },
+      { id: "diagnose", label: "Diagnose", description: "Trace root cause through execution path", defaultTier: "reasoning", defaultModelId: "gpt-5.6-sol", recommendedModelId: "gpt-5.6-sol", inputTokens: 2500, outputTokens: 2000 },
+      { id: "fix", label: "Fix", description: "Implement the targeted fix", defaultTier: "balanced", defaultModelId: "gpt-5.6-terra", recommendedModelId: "gpt-5.6-terra", inputTokens: 2000, outputTokens: 2500 },
+      { id: "verify", label: "Verify", description: "Confirm fix, check for regressions", defaultTier: "fast", defaultModelId: "gpt-5.6-luna", recommendedModelId: "gpt-5.6-luna", inputTokens: 1500, outputTokens: 1000 },
     ],
   },
   {
     id: "spec-to-pr",
     label: "Spec to PR",
     steps: [
-      { id: "plan", label: "Plan", description: "Break spec into files, decisions, approach", defaultTier: "reasoning", defaultModelId: "opus-4.8", recommendedModelId: "opus-4.8", inputTokens: 1500, outputTokens: 2000 },
-      { id: "implement", label: "Implement", description: "Write the code against the plan", defaultTier: "balanced", defaultModelId: "sonnet-5", recommendedModelId: "sonnet-5", inputTokens: 2000, outputTokens: 4000 },
-      { id: "review-arch", label: "Review", description: "Architecture review, catch mistakes", defaultTier: "balanced", defaultModelId: "sonnet-5", recommendedModelId: "sonnet-5", inputTokens: 4000, outputTokens: 1500 },
-      { id: "pr-desc", label: "PR description", description: "Write PR description from spec + diff", defaultTier: "balanced", defaultModelId: "composer-2.5", recommendedModelId: "composer-2.5", inputTokens: 2000, outputTokens: 1000 },
+      { id: "plan", label: "Plan", description: "Break spec into files, decisions, approach", defaultTier: "reasoning", defaultModelId: "claude-fable-5", recommendedModelId: "claude-fable-5", inputTokens: 1500, outputTokens: 2000 },
+      { id: "implement", label: "Implement", description: "Write the code against the plan", defaultTier: "balanced", defaultModelId: "gpt-5.6-terra", recommendedModelId: "gpt-5.6-terra", inputTokens: 2000, outputTokens: 4000 },
+      { id: "review-arch", label: "Review", description: "Architecture review, catch mistakes", defaultTier: "reasoning", defaultModelId: "gpt-5.6-sol", recommendedModelId: "gpt-5.6-sol", inputTokens: 4000, outputTokens: 1500 },
+      { id: "pr-desc", label: "PR description", description: "Write PR description from spec + diff", defaultTier: "fast", defaultModelId: "gpt-5.6-luna", recommendedModelId: "gpt-5.6-luna", inputTokens: 2000, outputTokens: 1000 },
     ],
   },
 ];
@@ -524,19 +524,19 @@ function PipelineBuilder() {
     Object.fromEntries(template.steps.map((s) => [s.id, "sonnet-5"])),
     template.steps
   ), [template]);
-  const opusCostBase = useMemo(() => calcTotalCost(
-    Object.fromEntries(template.steps.map((s) => [s.id, "opus-4.8"])),
+  const fableCostBase = useMemo(() => calcTotalCost(
+    Object.fromEntries(template.steps.map((s) => [s.id, "claude-fable-5"])),
     template.steps
   ), [template]);
 
   // Mixed pipeline cost is NOT multiplied by retries — the premise is that
   // using the right model per step gets it right on the first attempt.
   const sonnetCost = sonnetCostBase * retries;
-  const opusCost = opusCostBase * retries;
+  const fableCost = fableCostBase * retries;
 
   const savingsVsSonnet = sonnetCost > 0 ? Math.round(((sonnetCost - mixedCost) / sonnetCost) * 100) : 0;
-  const savingsVsOpus = opusCost > 0 ? Math.round(((opusCost - mixedCost) / opusCost) * 100) : 0;
-  const maxCost = Math.max(mixedCost, sonnetCost, opusCost);
+  const savingsVsFable = fableCost > 0 ? Math.round(((fableCost - mixedCost) / fableCost) * 100) : 0;
+  const maxCost = Math.max(mixedCost, sonnetCost, fableCost);
 
   return (
     <>
@@ -634,8 +634,8 @@ function PipelineBuilder() {
             colorClass="bg-blue-400"
           />
           <PipelineCostBar
-            label={retries === 1 ? "All Opus 4.8" : `All Opus (${retries} attempts)`}
-            cost={opusCost}
+            label={retries === 1 ? "All Fable 5" : `All Fable (${retries} attempts)`}
+            cost={fableCost}
             maxCost={maxCost}
             colorClass="bg-stone-300"
           />
@@ -652,9 +652,9 @@ function PipelineBuilder() {
           ) : (
             <span className="text-fg-muted">Same cost as all-Sonnet</span>
           )}
-          {savingsVsOpus > 0 && (
+          {savingsVsFable > 0 && (
             <span>
-              <span className="font-medium text-emerald-600">{savingsVsOpus}% cheaper</span> than all-Opus
+              <span className="font-medium text-emerald-600">{savingsVsFable}% cheaper</span> than all-Fable
             </span>
           )}
         </div>

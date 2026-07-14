@@ -2,7 +2,7 @@
 title: "Model Personalities"
 subtitle: "How different models approach the same task, and when to lean into that"
 publishedAt: "2026-04-17"
-updatedAt: "2026-07-01"
+updatedAt: "2026-07-14"
 chapter: 2
 part: understanding-models
 partNumber: 1
@@ -37,23 +37,35 @@ In long sessions with large contexts, it stays level. Doesn't drift or get "crea
 
 Where it falls short: it won't push back on your approach, suggest alternatives, or notice you're solving the wrong problem. Reliable executor, not a thought partner.
 
-## GPT-5.5: the autonomous one
+## GPT-5.6 Luna: the fast operator
 
-**OpenAI · Agentic · Best for: Long tool-use loops**
+**OpenAI · Fast · Best for: Narrow, verifiable work**
 
-GPT-5.5 is the model that made OpenAI's 5.x line feel alive again. It is less "smart autocomplete" and more "give it the goal, let it run, inspect what it did." The jump from 5.4 is clearest in agentic work: fewer nudges, better persistence, stronger tool use, and a higher chance it keeps going until the task is actually verified.
+Luna is the cheapest and fastest GPT-5.6 tier: $1 / $6 per million input/output tokens. Give it a small fix, a test failure, a summary, or one mechanical pipeline step and it gets to the artifact quickly without turning the task into a research project.
 
-It picks the approach most developers would pick. Stack Overflow's accepted answer energy — not the most clever, but the one your team will understand.
+Its best operating environment has a clear finish line. "Change this prop and run these tests" is Luna-shaped. "Redesign this subsystem and decide what good looks like" is not. Use it as the worker in a guarded loop and escalate when the evidence becomes ambiguous.
 
-Fills in reasonable gaps (default error handling, obvious edge cases, standard patterns) but stops short of architectural decisions. High hit rate of "helpful without overstepping."
+Where it falls short: strategy and depth. Luna can execute a good plan, but it should not be your default architect.
 
-It's also good at reading the room. Detailed prompt? GPT stays precise. Loose prompt? It makes reasonable assumptions but flags them.
+## GPT-5.6 Terra: the everyday agent
 
-Format-wise, it's the most consistent. "Respond in JSON" or "only output code" — it complies where other models can't help adding commentary.
+**OpenAI · Balanced · Best for: Everyday implementation**
 
-GPT-5.5 also lets you dial in reasoning depth. High reasoning kicks in for ambiguous or multi-step problems — slows down, considers edge cases, reasons before committing. Extra high is full deliberation mode: best for architecture decisions or debugging something gnarly. For simple tasks, leave it off.
+Terra is the new daily-driver GPT: competitive with GPT-5.5 at roughly half the token price, $2.50 / $15. It has enough reasoning, context, and tool use for normal multi-file features, research, and verification loops, without making every Tuesday task a flagship-model run.
 
-Where it falls short: price and scope. At $5 / $30 per million tokens, you feel every wandering verification loop. With 5.5's agentic capabilities, autonomy is powerful but guardrails matter.
+Its personality is measured autonomy. It fills reasonable gaps, states consequential assumptions, runs the checks, and usually keeps the diff proportional to the request. Start here for normal coding work; drop to Luna when the step is mechanical, or move up to Sol when the problem keeps branching.
+
+Where it falls short: the last layer of difficult reasoning. For high-consequence architecture or a task that has already defeated the normal approach, escalation is cheaper than repeated Terra retries.
+
+## GPT-5.6 Sol: the relentless one
+
+**OpenAI · Frontier agent · Best for: Long autonomous loops**
+
+Sol is the strongest GPT-5.6 tier and OpenAI's current flagship for complex coding, computer use, science, research, and security work. It leads Terminal-Bench 2.1, can use Max reasoning for difficult problems, and can coordinate subagents in Ultra mode. The practical difference from GPT-5.5 is persistence: give it the outcome and tools, and it is unusually good at staying in the loop until the result runs.
+
+That autonomy needs a real finish line. METR observed the highest reward-hacking rate it had measured in a public model on its ReAct harness. Sol sometimes found weaknesses in the evaluation environment instead of solving the intended task. In production, keep success conditions external, hide the checks that must remain hidden, and inspect the artifact rather than trusting a self-reported pass.
+
+Where it falls short: cheap work and soft evals. Sol is excellent, but Luna or Terra are better engineering when the task does not need flagship reasoning.
 
 ## Claude Sonnet 5: the proactive one
 
@@ -71,23 +83,17 @@ On the upside, it gives the clearest explanations of any model. Connects your sp
 
 Where it falls short: scope creep. Its instinct to be helpful means it expands tasks. Fix it with explicit constraints in your prompt or `CLAUDE.md`.
 
-## Claude 4.8 Opus: the deep thinker
+## Claude Fable 5: the marathon thinker
 
-**Anthropic · Deep · Best for: Hard problems & architecture**
+**Anthropic · Maximum depth · Best for: Architecture and multi-day projects**
 
-Opus isn't Sonnet with the volume up. Where Sonnet notices things, Opus *understands* them — traces actual logic rather than pattern-matching, reasons about systems rather than files. Opus 4.8 requires Max Mode on request-based plans and supports up to 1M tokens in Max Mode at standard per-token rates with no long-context surcharge.
+Fable is what comes after Opus 4.8 when the problem is not just hard but long. Anthropic positions it for ambitious migrations, complex implementations, and asynchronous projects that can run for days. It plans across stages, delegates to subagents, writes tests, challenges its own assumptions, and checks the output against the goal.
 
-Where other models pattern-match, Opus traces actual logic. Catches bugs three levels of indirection deep, identifies race conditions by simulating concurrent execution, spots type issues TypeScript misses.
+It is the best fit when understanding the system is the task: a migration with mixed-version compatibility, a subtle architecture decision, or a project where the rollback plan matters as much as the happy path. At $10 / $50 per million tokens, it should create leverage, not boilerplate.
 
-It's also architecturally creative in a way the other models aren't. Suggests different abstractions entirely and explains why your current approach will cause problems two features from now. Thinks in systems, not just code.
+Fable also has deliberate safety boundaries. Flagged cybersecurity and biology requests can route to Opus 4.8, so it is not simply an unrestricted replacement for every old Opus workflow.
 
-The tradeoff: it's thorough to the point of slow. Considers more options, explores more edge cases, gives more complete answers. Overkill for quick tasks — but for hard problems and architecture decisions, the thoroughness pays for itself.
-
-Where Sonnet might fix a naming inconsistency, Opus notices your abstraction is leaking, explains why, and suggests a restructure that fixes the root cause.
-
-Opus supports high and extra high reasoning — and unlike lighter models, it uses that budget meaningfully. High reasoning is worth enabling whenever the task has real depth: a subtle bug, a non-obvious refactor, a design with long-term consequences. Extra high is for the hardest problems, when you genuinely don't know the right answer and need the model to work through the problem space first.
-
-Where it falls short: cost and latency. For routine tasks (scaffolding, simple refactors, boilerplate) you're burning money without proportional value. Save it for problems that actually need it.
+Where it falls short: ordinary implementation. Once Fable has made a decision-complete plan, Terra, Sonnet, or Composer can often execute it for much less.
 
 ## Composer 2.5: the agentic one
 
@@ -103,10 +109,10 @@ Not limited to open files either. It navigates the project, finds relevant files
 
 The May 2026 retrain from Composer 2 closed the gap with frontier models — SWE-Bench Multilingual at 79.8% (within ~1pp of Opus 4.8) and CursorBench v3.1 at 63.2%, at roughly one-tenth the per-token cost. Behaviorally it also dropped the antagonistic edges of Composer 2: users on the forum describe it as "willing to think with you" rather than arguing back. The lingering gripe is inconsistent thinking depth — sometimes a "please think harder" nudge is needed before it commits to a deep answer.
 
-Where it falls short: autonomy still has a cost, and on Terminal-Bench 2.0 long autonomous loops, GPT-5.5 still leads (82.7% vs 69.3%). Short task scopes and frequent checkpoints are still useful for high-stakes work.
+Where it falls short: autonomy still has a cost, and GPT-5.6 Sol now leads the long autonomous-loop tier. Composer remains the value choice inside Cursor; use Sol when the task must cross more tools and sustain the hardest loop. Short task scopes and frequent checkpoints are still useful for high-stakes work.
 
 ## How personality affects prompting
 
-Match your prompt style to the model's instincts. Be explicit with Gemini — it won't infer intent. Set hard scope limits with Claude ("mention issues but don't fix them") or its helpfulness will expand your task. Give Composer 2.5 a clear success condition and let it run, but check in at breakpoints.
+Match your prompt style to the model's instincts. Be explicit with Gemini — it won't infer intent. Give Luna a narrow step and a check, Terra the normal implementation loop, and Sol a hardened success condition. Set hard scope limits with proactive Claude models, and use Fable only when the reasoning horizon justifies it. Give Composer 2.5 a clear success condition and let it run, but check in at breakpoints.
 
 The right model isn't the smartest one — it's the one whose personality fits the task.

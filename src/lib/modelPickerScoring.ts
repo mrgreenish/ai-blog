@@ -283,6 +283,64 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
       : autonomy === "targeted" ? "Overkill for pointed edits — use a cheaper, more controlled model" : "");
   }
 
+  if (modelId === "gpt-5.6-luna") {
+    dim("task", task === "coding" ? 3 : task === "analysis" ? 2 : task === "writing" ? 2 : 0,
+      "Fast GPT-5.6 execution for well-defined work");
+    dim("scope", scope === "targeted" ? 5 : scope === "autonomous" ? -3 : scope === "architecture" ? -3 : 0,
+      scope === "targeted" ? "Optimized for narrow tasks with an objective success check" : "Luna is too light for strategy-heavy work");
+    dim("stakes", stakes === "prototype" ? 3 : stakes === "internal" ? 3 : stakes === "critical" ? -3 : 0,
+      "Low cost makes Luna ideal for repeatable, low-risk steps");
+    dim("priority", priority === "speed" ? 6 : priority === "balance" ? 2 : priority === "accuracy" ? -2 : 0,
+      priority === "speed" ? "Fastest and lowest-cost GPT-5.6 tier" : "Use a heavier tier when accuracy dominates");
+    dim("autonomy", autonomy === "targeted" ? 5 : autonomy === "drive" ? -3 : 0,
+      autonomy === "targeted" ? "Strong scope discipline for pointed edits" : "Escalate long autonomous loops to Terra or Sol");
+  }
+
+  if (modelId === "gpt-5.6-terra") {
+    dim("task", task === "coding" ? 4 : task === "analysis" ? 3 : task === "writing" ? 2 : task === "reasoning" ? 3 : 0,
+      "Everyday GPT-5.6 capability at a balanced price");
+    dim("scope", scope === "targeted" ? 3 : scope === "multifile" ? 5 : scope === "autonomous" ? 4 : scope === "architecture" ? 2 : 0,
+      scope === "multifile" ? "Enough context and tool use for normal cross-file implementation"
+      : scope === "autonomous" ? "Can execute and verify routine agent work end-to-end" : "");
+    dim("stakes", stakes === "internal" ? 3 : stakes === "production" ? 4 : stakes === "critical" ? 1 : 0,
+      "The daily-driver choice for production work with normal review");
+    dim("priority", priority === "balance" ? 6 : priority === "speed" ? 2 : priority === "accuracy" ? 2 : 0,
+      priority === "balance" ? "Roughly GPT-5.5-class capability at half the price" : "");
+    dim("autonomy", autonomy === "gaps" ? 4 : autonomy === "drive" ? 4 : autonomy === "targeted" ? 2 : 0,
+      "Proactive enough to finish the loop without defaulting to flagship cost");
+  }
+
+  if (modelId === "gpt-5.6-sol") {
+    dim("task", task === "coding" ? 5 : task === "reasoning" ? 5 : task === "analysis" ? 4 : task === "vision" ? 3 : 0,
+      task === "coding" ? "OpenAI's strongest agentic coding model"
+      : task === "reasoning" ? "Max reasoning for difficult multi-step problems" : "");
+    dim("scope", scope === "autonomous" ? 7 : scope === "multifile" ? 5 : scope === "architecture" ? 5 : scope === "targeted" ? -2 : 0,
+      scope === "autonomous" ? "State-of-the-art on long command-line workflows and tool coordination"
+      : scope === "targeted" ? "Flagship autonomy is unnecessary for a pointed edit" : "");
+    dim("stakes", stakes === "production" ? 4 : stakes === "critical" ? 4 : stakes === "prototype" ? -3 : 0,
+      "Strong implementation follow-through for consequential work; harden evals against reward hacking");
+    dim("priority", priority === "accuracy" ? 5 : priority === "balance" ? 1 : priority === "speed" ? -2 : 0,
+      priority === "accuracy" ? "Worth the premium when a finished, verified artifact matters most" : "");
+    dim("autonomy", autonomy === "drive" ? 7 : autonomy === "gaps" ? 4 : autonomy === "targeted" ? -2 : 0,
+      autonomy === "drive" ? "Built to plan, use tools, iterate, and verify until the task is done" : "");
+  }
+
+  if (modelId === "claude-fable-5") {
+    dim("task", task === "reasoning" ? 7 : task === "coding" ? 5 : task === "analysis" ? 6 : task === "writing" ? 3 : 0,
+      task === "reasoning" ? "Anthropic's maximum-depth generally available reasoning model"
+      : task === "coding" ? "Designed for ambitious implementations and large migrations" : "");
+    dim("scope", scope === "architecture" ? 7 : scope === "multifile" ? 5 : scope === "autonomous" ? 6 : scope === "targeted" ? -4 : 0,
+      scope === "architecture" ? "Plans across stages, challenges assumptions, and validates system-level decisions"
+      : scope === "autonomous" ? "Can sustain complex agent workflows for days" : "");
+    dim("stakes", stakes === "critical" ? 7 : stakes === "production" ? 4 : stakes === "prototype" ? -5 : 0,
+      stakes === "critical" ? "Maximum rigor is worth the cost when missed issues have real consequences" : "");
+    dim("priority", priority === "accuracy" ? 7 : priority === "speed" ? -5 : priority === "balance" ? -2 : 0,
+      priority === "accuracy" ? "Thorough reasoning, delegation, and self-validation"
+      : "Premium price and latency are poor fits when speed or balance matters more");
+    dim("autonomy", autonomy === "drive" ? 6 : autonomy === "gaps" ? 4 : autonomy === "targeted" ? -3 : 0,
+      autonomy === "drive" ? "Plans, delegates to subagents, writes tests, and checks its own work" : "");
+  }
+
   if (modelId === "composer-2.5") {
     dim("task", task === "coding" ? 3 : 0,
       "Cursor's agentic model — frontier coding quality with tool use and terminal workflows");

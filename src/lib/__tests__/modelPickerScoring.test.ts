@@ -33,6 +33,10 @@ const ALL_MODELS: ModelStub[] = [
   { id: "haiku-4.5", name: "Claude Haiku 4.5", why: {} },
   { id: "deepseek-v4-flash", name: "DeepSeek-V4-Flash", why: {} },
   { id: "gpt-5.5", name: "GPT-5.5", why: { autonomous: "Runs the loop" } },
+  { id: "gpt-5.6-luna", name: "GPT-5.6 Luna", why: { targeted: "Fast focused work" } },
+  { id: "gpt-5.6-terra", name: "GPT-5.6 Terra", why: { multifile: "Balanced implementation" } },
+  { id: "gpt-5.6-sol", name: "GPT-5.6 Sol", why: { autonomous: "Frontier agent loops" } },
+  { id: "claude-fable-5", name: "Claude Fable 5", why: { reasoning: "Maximum-depth reasoning" } },
 ];
 
 function allAnswers(overrides: Partial<Answers> = {}): Answers {
@@ -470,6 +474,34 @@ describe("scoreDimensions()", () => {
 // getRanking() — new top-3 API
 // ---------------------------------------------------------------------------
 describe("getRanking()", () => {
+  it("ranks Luna first for a fast targeted prototype", () => {
+    const ranking = getRanking(ALL_MODELS, allAnswers({
+      task: "coding", scope: "targeted", stakes: "prototype", priority: "speed", autonomy: "targeted",
+    }));
+    expect(ranking.top3[0].model.id).toBe("gpt-5.6-luna");
+  });
+
+  it("ranks Terra first for balanced everyday multi-file work", () => {
+    const ranking = getRanking(ALL_MODELS, allAnswers({
+      task: "coding", scope: "multifile", stakes: "production", priority: "balance", autonomy: "gaps",
+    }));
+    expect(ranking.top3[0].model.id).toBe("gpt-5.6-terra");
+  });
+
+  it("ranks Sol first for autonomous production coding", () => {
+    const ranking = getRanking(ALL_MODELS, allAnswers({
+      task: "coding", scope: "autonomous", stakes: "production", priority: "accuracy", autonomy: "drive",
+    }));
+    expect(ranking.top3[0].model.id).toBe("gpt-5.6-sol");
+  });
+
+  it("ranks Fable first for critical architecture reasoning", () => {
+    const ranking = getRanking(ALL_MODELS, allAnswers({
+      task: "reasoning", scope: "architecture", stakes: "critical", priority: "accuracy", autonomy: "gaps",
+    }));
+    expect(ranking.top3[0].model.id).toBe("claude-fable-5");
+  });
+
   it("returns exactly 3 ranked models (or fewer if model list is small)", () => {
     const ranking = getRanking(MODELS, allAnswers());
     expect(ranking.top3.length).toBeLessThanOrEqual(3);

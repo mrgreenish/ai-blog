@@ -2,7 +2,7 @@
 title: "Reasoning vs Fast Models"
 subtitle: "When to choose reasoning models vs fast models for different coding tasks"
 publishedAt: "2026-04-17"
-updatedAt: "2026-07-01"
+updatedAt: "2026-07-14"
 chapter: 1
 part: understanding-models
 partNumber: 1
@@ -10,7 +10,7 @@ wonderQuestion: "Have you ever wondered why the same task costs 15x more on one 
 interactiveTools: [scenario-lab, model-picker, model-mixer, cost-calculator]
 illustrationPlaceholders:
   - "Side-by-side diagram: a reasoning model building a chain of thought for a multi-constraint refactoring problem vs a fast model instantly returning a boilerplate snippet. Show thinking tokens accumulating on the left, instant output on the right."
-  - "Cost comparison infographic: 10 common developer tasks mapped against cost per task on Opus, Sonnet, Haiku, GPT-5.4, and Gemini 3 Flash."
+  - "Cost comparison infographic: 10 common developer tasks mapped against cost per task on GPT-5.6 Luna, Terra, Sol, Claude Fable 5, Sonnet, and Gemini 3 Flash."
 ---
 
 The first time I used o3 for a coding task, I was impressed — then I checked the latency and the bill. 40 seconds and 15× the cost of Sonnet, for a task Sonnet would have nailed. That moment is what started me keeping notes on *when* the expensive reasoning models actually earn their cost — and when they're just burning money.
@@ -29,7 +29,7 @@ If the task follows a well-known pattern — "write a React form," "add a REST e
 
 Fast models are often *better* at constrained tasks because they don't overthink them. I needed to convert 200 webhook payloads from one shape to another — straightforward field mapping, no ambiguity. Haiku did it in 2 seconds flat, correct on the first pass. o3 took 12 seconds per payload and added defensive null checks, fallback defaults, and logging I never asked for. Same output quality for the actual mapping, 6× slower, 10× more expensive.
 
-Reach for Haiku or Flash when:
+Reach for GPT-5.6 Luna, Haiku, or Flash when:
 
 - **Boilerplate generation.** Component scaffolding, test stubs, migration files — anything where the structure is known and the model just needs to fill in the blanks.
 - **Structured data extraction.** Pulling JSON from unstructured text, classifying support tickets, parsing log lines. Fast models follow extraction schemas reliably without "improving" them.
@@ -39,12 +39,12 @@ Reach for Haiku or Flash when:
 
 I don't pick one model for a task — I use different models for different *steps* in the same task. Here's a real example: building a new API endpoint with auth, validation, and tests.
 
-1. **Opus for the plan.** I described the feature and constraints. Opus mapped out the data model, identified where the new endpoint fit in the existing auth middleware, and flagged a potential race condition with concurrent writes. 45 seconds, but it caught a design issue I would have hit two hours into implementation.
-2. **Sonnet for implementation.** With the plan locked, Sonnet wrote the route handler, validation logic, and database queries. Fast, correct, no scope creep — because the architecture decisions were already made.
-3. **Composer 2.5 for the test suite.** Gave it the implementation and said "full test coverage, including the race condition Opus flagged." It generated the tests, ran them, caught two failures from its own output, and fixed them autonomously.
-4. **GPT-5.5 for review.** Asked it to review the final diff for edge cases and security issues. It spotted a missing rate limit on the new endpoint and a permissive CORS header I'd copied from another route.
+1. **Fable 5 for the plan.** I described the feature and constraints. Fable mapped out the data model, identified where the new endpoint fit in the existing auth middleware, and flagged a potential race condition with concurrent writes. Expensive, but it caught a design issue I would have hit two hours into implementation.
+2. **GPT-5.6 Terra for implementation.** With the plan locked, Terra wrote the route handler, validation logic, and database queries. Fast, correct, no scope creep — because the architecture decisions were already made.
+3. **Composer 2.5 for the test suite.** Gave it the implementation and said "full test coverage, including the race condition Fable flagged." It generated the tests, ran them, caught two failures from its own output, and fixed them autonomously.
+4. **GPT-5.6 Sol for review.** Asked it to review the final diff for edge cases and security issues, run the relevant checks, and verify the result. It spotted a missing rate limit on the new endpoint and a permissive CORS header I'd copied from another route.
 
-Total cost: roughly a third of running Opus end-to-end. Each model played to its strength — deep reasoning where it mattered, speed where it didn't.
+Total cost: a fraction of running Fable end-to-end. Each model played to its strength — deep reasoning where it mattered, balanced execution in the middle, and flagship verification at the boundary.
 
 <ModelMixer />
 

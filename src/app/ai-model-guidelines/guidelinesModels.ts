@@ -12,10 +12,11 @@ export const GUIDELINES_MODEL_IDS = [
   "gemini-3.1-pro",
   "composer-2.5",
   "composer-2.5-fast",
+  "gpt-5.6-luna",
+  "gpt-5.6-terra",
+  "gpt-5.6-sol",
+  "claude-fable-5",
   "sonnet-5",
-  "gpt-5.4",
-  "gpt-5.5",
-  "opus-4.8",
   "opus-fast",
 ] as const;
 
@@ -25,12 +26,13 @@ export type GuidelinesModelId = (typeof GUIDELINES_MODEL_IDS)[number];
 export const GUIDELINES_PRICING_MODEL_IDS: GuidelinesModelId[] = [
   "composer-2.5",
   "composer-2.5-fast",
+  "gpt-5.6-luna",
+  "gpt-5.6-terra",
   "gemini-flash",
   "gemini-3.1-pro",
   "sonnet-5",
-  "gpt-5.4",
-  "gpt-5.5",
-  "opus-4.8",
+  "gpt-5.6-sol",
+  "claude-fable-5",
   "opus-fast",
 ];
 
