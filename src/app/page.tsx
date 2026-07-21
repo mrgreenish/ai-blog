@@ -67,7 +67,7 @@ export default function Home() {
 
         <div className="section-divider mb-16" />
 
-        {/* ASCII brain transition — animated visualization inline in the intro */}
+        {/* Code-textured brain transition — a slow, deliberate turn */}
         <section className="relative -mb-24 min-h-[520px] pointer-events-none">
           <ASCIIBrain className="absolute inset-0 z-0" />
         </section>

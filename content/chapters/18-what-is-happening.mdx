@@ -2,7 +2,7 @@
 title: "What Is Happening"
 subtitle: "The fastest-moving areas in AI agent tooling right now — hooks, harness design, browser automation, and multi-agent orchestration"
 publishedAt: "2026-04-17"
-updatedAt: "2026-07-14"
+updatedAt: "2026-07-21"
 chapter: 18
 part: tools-infrastructure
 partNumber: 4
@@ -16,6 +16,16 @@ illustrationPlaceholders:
 Something's shifted in the last few months. The interesting problems aren't "which model is better" anymore — it's everything around the model. How you feed it context. How you keep it coherent across a long session. How you constrain what it touches. How you recover when it goes sideways.
 
 The models are good. The question is how you harness them. That's where things are moving fast, and where most of my attention is right now. Here's what's actually made a difference.
+
+## Kimi K3 brings a 2.8T open-weight model into the frontier conversation
+
+Moonshot [launched Kimi K3](https://www.kimi.com/blog/kimi-k3) on July 16, and the interesting part is not just the **2.8 trillion** parameters. K3 is a sparse MoE model — it activates 16 of 896 experts per token — with native vision and a **1M-token context window**, aimed directly at long coding runs, research, and knowledge work. It is live now in Kimi, Kimi Work, Kimi Code, and the API. The full weights are promised by July 27, which would make it the first open-weight model in this size class rather than merely another hosted frontier endpoint.
+
+The price is no longer “shockingly cheap Chinese model” territory: **$3 / $15 per million cache-miss input/output tokens**, with cached input at **$0.30**. That is closer to Sonnet pricing than the Kimi K2-era bargain basement. But it stays flat across the full context window, and automatic prefix caching changes the math for coding agents that keep a repository or long spec stable across turns.
+
+Moonshot's charts put K3 near Claude Fable 5 and GPT-5.6 Sol, sometimes ahead, on agentic coding and knowledge-work evaluations. Read the footnotes before treating that as a clean leaderboard win: K3, Claude, and OpenAI results were collected with different harnesses, and some competitor figures are adopted from their own release material. Moonshot is unusually clear about the practical caveats too. K3 expects its full thinking history to be preserved across turns, can get unstable if you switch it into an existing session, and has a habit of making decisions on ambiguous work unless you constrain it hard.
+
+Practical read: this is the first genuinely interesting *prospective* open-weight alternative when the job is a long agent loop rather than a cheap completion. But “weights coming soon” is not “self-hosting is solved.” Until the checkpoint, technical report, inference recipes, and independent long-run tests land, K3 is best treated as a strong hosted model with a credible open-weight promise — not a drop-in replacement for the Fable or Sol stack.
 
 ## GPT-Live rebuilds voice mode as full-duplex
 
@@ -55,11 +65,11 @@ Practical read: apps probably do not disappear cleanly. Identity, payments, perm
 
 ## Claude Fable 5 is available again
 
-Anthropic has [redeployed Claude Fable 5](https://www.anthropic.com/news/redeploying-fable-5) globally after the US government lifted the export controls that forced the company to suspend it on June 12. Access returns today, July 1, in Claude, Claude Code, Cowork, and the Claude API. Amazon Bedrock, Google Cloud Vertex AI, and Microsoft Foundry will follow as Anthropic re-enables them.
+Anthropic [redeployed Claude Fable 5](https://www.anthropic.com/news/redeploying-fable-5) globally on July 1, after the U.S. government lifted the export controls that had suspended it on June 12. It is back in Claude, Claude Code, Cowork, and the Claude API. The return comes with stronger cybersecurity classifiers: when those safeguards trigger, Claude surfaces a notice and can route the request to Opus 4.8 instead. That can happen even on otherwise ordinary coding or debugging work, so “Fable” is not always the model that actually answers.
 
-The suspension started when the government learned that Amazon researchers had bypassed some of Fable's safeguards and used it to identify software vulnerabilities. Anthropic says its review found that less capable models — including Claude Opus 4.8, GPT-5.5, and Kimi K2.7 — could identify the same vulnerabilities. The company is keeping Fable's deliberately conservative classifiers and adding deeper pre-release testing and information sharing with the US government.
+Fable's plan access has settled into a less temporary shape than the initial July 7 launch allowance. On Max and Premium Team or seat-based Enterprise plans, it is included for up to **50% of weekly usage**; after that, usage credits take over. Pro and standard Team or seat-based Enterprise users need usage credits from the start. Mythos 5, the less-restricted version of the same underlying model, remains limited to approved Project Glasswing partners and the U.S. government.
 
-For Pro, Max, Team, and eligible Enterprise plans, Fable can use up to **50% of weekly usage limits through July 7**; after that it moves to usage credits. Mythos 5, the less-restricted version of the same underlying model, is available again only to approved US organisations. Practical read: Fable is back as the high-end option for difficult reasoning and coding, but the two-week interruption is the bigger signal — access to frontier models can now change overnight because of policy, not just product decisions.
+Practical read: Fable is back as the high-end option for difficult reasoning and coding, but the interruption is the bigger signal — access to frontier models can now change overnight because of policy, not just product decisions. And the new fallback behavior means you should log the answering model, especially if you are comparing benchmark runs or paying premium rates for a specific capability.
 
 ## Sakana Fugu hides a multi-agent system behind one model endpoint
 

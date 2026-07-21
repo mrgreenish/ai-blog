@@ -836,11 +836,11 @@ export function getMixerModels(asOf: Date | string = new Date()) {
 
 // ---------------------------------------------------------------------------
 // Pricing metadata — single source of truth for data attribution
-// Prices verified against official API pricing pages on 2026-07-01
+// Prices verified against official API pricing pages on 2026-07-21
 // ---------------------------------------------------------------------------
 
 export const PRICING_META = {
-  verifiedDate: "2026-07-14", // Full registry cross-check against provider API pages and current product docs
+  verifiedDate: "2026-07-21", // Full registry cross-check against provider API pages and current product docs
   source: "Official API pricing pages",
   notes: [
     "Claude Sonnet 5 is $2/$10 per million input/output tokens through August 31, 2026, then $3/$15.",

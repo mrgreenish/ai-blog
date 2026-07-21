@@ -88,6 +88,20 @@ body {
   to   { opacity: 1; }
 }
 
+@keyframes brain-turn {
+  0%, 100% {
+    transform: rotateX(2deg) rotateY(-12deg) translateY(3px);
+  }
+  50% {
+    transform: rotateX(-2deg) rotateY(12deg) translateY(-3px);
+  }
+}
+
+@keyframes brain-scan {
+  0%, 12% { transform: translateX(-130%); }
+  72%, 100% { transform: translateX(130%); }
+}
+
 /* ─── Animation utilities ──────────────────────────────────────────────── */
 
 .animate-fade-up {
@@ -104,6 +118,46 @@ body {
 .delay-300 { animation-delay: 300ms; }
 .delay-400 { animation-delay: 400ms; }
 .delay-500 { animation-delay: 500ms; }
+
+/* A single coherent brain replaces the previous random field animation. */
+.ascii-brain-stage {
+  display: grid;
+  place-items: center;
+  perspective: 1100px;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+}
+
+.ascii-brain-turn {
+  position: relative;
+  width: min(100%, 720px);
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: brain-turn 10s ease-in-out infinite;
+  will-change: transform;
+}
+
+.ascii-brain-scan {
+  position: absolute;
+  inset: 8% 3%;
+  background: linear-gradient(
+    90deg,
+    transparent 38%,
+    rgba(196, 181, 253, 0.42) 50%,
+    transparent 62%
+  );
+  mask: url("/images/ascii-brain.webp") center / contain no-repeat;
+  -webkit-mask: url("/images/ascii-brain.webp") center / contain no-repeat;
+  animation: brain-scan 7s ease-in-out infinite;
+  mix-blend-mode: screen;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ascii-brain-turn,
+  .ascii-brain-scan {
+    animation: none;
+  }
+}
 
 /* ─── Section label ────────────────────────────────────────────────────── */
 
