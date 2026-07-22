@@ -9,7 +9,7 @@ export function NewsFeedList({ entries }: { entries: NewsEntry[] }) {
         id="news-feed-heading"
         className="font-sans text-2xl font-semibold tracking-tight text-fg-primary mb-6"
       >
-        Dated entries
+        Recent developments
       </h2>
       <div className="divide-y divide-border-default border-y border-border-default">
         {entries.map((entry) => (
