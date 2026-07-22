@@ -1,0 +1,16 @@
+---
+title: Browser control is getting lighter-weight
+publishedAt: '2026-04-17'
+lastVerifiedAt: '2026-07-22'
+primarySourceUrl: 'https://github.com/SawyerHood/dev-browser'
+---
+The fastest way for an agent to use a browser is to let it write code. `dev-browser` runs Playwright-style scripts in a sandboxed QuickJS WASM environment — install it globally, point the agent at `dev-browser --help`, and it handles the rest.
+
+```bash
+npm i -g dev-browser
+dev-browser install
+```
+
+From the repo benchmarks: Dev Browser finishes a representative task in 3m 53s at $0.88 with 29 turns. Playwright MCP takes 4m 31s at $1.45 with 51 turns. Batching interactions into scripts beats one-tool-call-per-action.
+
+Pre-approve in `.claude/settings.json`: `"allow": ["Bash(dev-browser *)"]`.

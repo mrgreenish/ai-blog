@@ -1,7 +1,13 @@
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
-import { getAllChapters, getChapter, getAdjacentChapters } from "@/lib/content";
+import {
+  getAllChapters,
+  getChapter,
+  getAdjacentChapters,
+  getNewsEntries,
+} from "@/lib/content";
 import { ChapterLayout } from "@/components/content/ChapterLayout";
+import { NewsFeedList } from "@/components/content/NewsFeedList";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { MDX_COMPONENTS } from "@/lib/mdxComponents";
 import { PART_META } from "@/lib/types";
@@ -84,6 +90,7 @@ export default async function ChapterPage({
   const partMeta = PART_META[chapter.frontmatter.part];
   const canonicalUrl = `${SITE_URL}/chapters/${slug}`;
   const wordCount = countWords(chapter.content);
+  const newsEntries = slug === "what-is-happening" ? getNewsEntries() : [];
 
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -164,6 +171,7 @@ export default async function ChapterPage({
           },
         }}
       />
+      {newsEntries.length > 0 ? <NewsFeedList entries={newsEntries} /> : null}
     </ChapterLayout>
   );
 }

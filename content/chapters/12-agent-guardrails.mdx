@@ -2,7 +2,7 @@
 title: "Agent Guardrails"
 subtitle: "Scope control and failure modes for autonomous coding agents"
 publishedAt: "2026-04-17"
-updatedAt: "2026-07-01"
+updatedAt: "2026-07-22"
 chapter: 12
 part: review-quality
 partNumber: 3
@@ -41,7 +41,7 @@ A good `CLAUDE.md` includes:
 
 ## SKILL.md — guardrails with domain scope
 
-`CLAUDE.md` is always-on and project-wide. `SKILL.md` files are composable and domain-specific — read when working in a specific area, applied automatically.
+The root `CLAUDE.md` provides project-wide instructions; nested `CLAUDE.md` files load when Claude works in their subdirectories. `SKILL.md` files are composable and domain-specific — loaded when relevant or when you invoke them explicitly.
 
 Natural home for domain-scoped guardrails. Your API layer's `SKILL.md` says "never return raw database errors to the client." Your design system's says "never use arbitrary values — map everything to a semantic token." These constraints belong close to the domain knowledge they protect, not buried in a project-wide config.
 

@@ -1,0 +1,13 @@
+---
+title: Claude Sonnet 5 turns the balanced tier into an agent
+publishedAt: '2026-06-30'
+lastVerifiedAt: '2026-07-22'
+primarySourceUrl: 'https://www.anthropic.com/news/claude-sonnet-5'
+---
+Anthropic [announced Claude Sonnet 5](https://www.anthropic.com/news/claude-sonnet-5) on June 30. The short version: the Sonnet tier now does work that needed an Opus model a few months ago. It can plan, use browsers and terminals, keep a multi-step task moving, and check its own output without waiting for another prompt. Anthropic says the biggest gains over Sonnet 4.6 are in reasoning, tool use, coding, and knowledge work; at higher effort levels, it can match Opus 4.8 on some agentic search and computer-use tasks.
+
+The price curve is the interesting part. Sonnet 5 launches at **$2 / $10 per million input/output tokens through August 31**, then moves to the standard Sonnet rate of **$3 / $15**. Opus 4.8 is $5 / $25. That gives you a much wider middle: medium effort for routine agent work, higher effort when the task starts looking Opus-shaped, and Opus itself when maximum accuracy matters more than cost. The context window stays at **1M tokens**, and the API model ID is `claude-sonnet-5`.
+
+There is one billing wrinkle hiding behind the cheaper launch rate. Sonnet 5 uses Anthropic's newer tokenizer, so the same text can turn into roughly **1.0–1.35× as many tokens** depending on the content. Anthropic set the introductory rate to keep migrations roughly cost-neutral, which means the $2 / $10 headline is partly absorbing that tokenizer change rather than being a clean one-third discount forever.
+
+The safety story moved too. Anthropic reports lower hallucination, sycophancy, prompt-injection susceptibility, and undesirable behavior than Sonnet 4.6. Cyber capability is deliberately lower than Opus 4.8 and Mythos 5, and Sonnet 5 ships with cyber safeguards enabled by default. Practical read: this is now the default Claude for creative coding agents — cheaper than the heavyweight tier, much better at finishing the loop than the previous Sonnet, and available across Claude plans, Claude Code, and the Claude Platform. Use Fable for the hardest architecture and long-running knowledge work; start creative implementation here.

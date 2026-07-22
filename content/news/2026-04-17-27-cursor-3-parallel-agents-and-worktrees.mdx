@@ -1,0 +1,13 @@
+---
+title: 'Cursor 3: parallel agents and worktrees'
+publishedAt: '2026-04-02'
+lastVerifiedAt: '2026-07-22'
+primarySourceUrl: 'https://cursor.com/changelog/3-0'
+---
+Cursor 3 shipped several changes that address the same problem — waiting.
+
+The Agents Window and Agent Tabs let you run multiple agent sessions in parallel rather than treating one chat as the only execution lane. For tasks where you want competing implementations, `/best-of-n` can run isolated attempts and compare the results.
+
+Worktree support isolates those tasks on separate branches. Use `/worktree` for an isolated run, then bring the chosen branch into your local foreground when you are ready to test it.
+
+Combined, these features move Cursor toward a model where you describe work across multiple tasks and let the editor figure out execution order. The interface is catching up to what the agents can already do.

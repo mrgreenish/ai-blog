@@ -2,7 +2,7 @@
 title: "Cursor Max Mode"
 subtitle: "When the 1M token context window earns its cost"
 publishedAt: "2026-04-17"
-updatedAt: "2026-07-14"
+updatedAt: "2026-07-22"
 chapter: 13
 part: tools-infrastructure
 partNumber: 4
@@ -19,11 +19,11 @@ That's the problem Max Mode solves.
 
 ## What Max Mode actually does
 
-By default, Cursor keeps you on the standard context window for the selected model — in practice often the 200K band, roughly 15,000 lines of code, which covers most single-feature work. Max Mode extends that to the model's maximum context window. Current million-token-class choices include GPT-5.6 Luna, Terra, and Sol, Claude Fable 5 and Sonnet 5, and Gemini 3.1 Pro, depending on availability in your client and plan.
+Max Mode is a feature of Cursor's legacy request-based plans. It extends supported models beyond their standard context limits, which vary by model rather than sharing one universal default. Cursor currently documents million-token Max context for models including GPT-5.6 Sol, Claude Fable 5, Claude Sonnet 5, and Gemini 3.1 Pro. Check the [legacy-plan documentation](https://cursor.com/docs/account/pricing/request-based-legacy) for the current model matrix.
 
-The catch: on current individual plans, it switches that session onto API-rate billing from your API pool. On legacy request-based plans, a 20% surcharge applies on top. Either way, a few heavy queries can chew through your included API usage fast.
+The catch is billing, and the exact behavior depends on your Cursor plan, model, and current pricing policy. Large-context requests process more tokens and can consume included usage or metered spend quickly. Check Cursor's live [models and pricing documentation](https://cursor.com/docs/models-and-pricing) before treating any fixed allowance or surcharge as universal.
 
-Not a "better" mode. A "bigger context" mode. The model doesn't reason differently — it just sees more of your codebase at once.
+For a selected model, the main technical effect is broader context, not different model weights. On legacy plans, the Max Mode surface also unlocks features such as subagents, image generation, and newer frontier-model access, so it is broader than a context toggle alone.
 
 ## When it earns its cost
 
@@ -37,19 +37,21 @@ Not a "better" mode. A "bigger context" mode. The model doesn't reason different
 
 **Single-file tasks.** Renaming a function, adding a prop, writing a test for one module — none of this needs 1M tokens. Like renting a truck to carry a laptop.
 
-**When Auto handles it.** Cursor's Auto mode picks a cost-efficient model automatically and draws from the separate Auto + Composer pool. If Auto gives you a correct result, no reason to switch.
+**When Auto handles it.** Cursor now offers Auto Cost, Auto Balance, and Auto Intelligence. Composer 2.5 draws from the First-party models pool with Grok 4.5; Auto routing follows its own current pricing rules. If an Auto mode gives you a correct result, there is no reason to pay for broader context.
 
-**Rapid iteration.** "Tweak this", "make it shorter", "add a case" — each exchange processes your full context again at full token rates. Keep Max Mode off during iteration, flip it on when you need the full picture.
+**Rapid iteration.** "Tweak this", "make it shorter", "add a case" — each exchange can resend accumulated context. Cached input may be billed at a lower model-specific cache-read rate, but large sessions still compound. Keep Max Mode off during iteration; use it when you need the full picture.
 
-**When cost matters.** A few extended Max Mode sessions can exhaust a Pro plan's $20 of included API usage surprisingly fast. Budget-conscious? Auto for everyday work, Max Mode surgically.
+**When cost matters.** A few extended Max Mode sessions can consume a meaningful share of a plan's included usage surprisingly fast. Budget-conscious? Auto for everyday work, Max Mode surgically — and confirm the current allowance for your plan.
 
 ## The cost reality
 
-Cursor Pro includes $20/month of API usage. Max Mode draws from that API pool at the selected model's rate (no surcharge on current individual plans — the 20% upcharge only applies to legacy request-based plans). The numbers compound quickly:
+Cursor's allowances, usage pools, and overage rules vary by plan and can change. The stable part is the token math: a larger context means more input tokens billed at the selected model's applicable rate. As an illustrative calculation using the model rates verified for this site on July 22, 2026:
 
-- At raw API rates, a 400K-input / 60K-output session is about $0.76 on Luna, $1.90 on Terra, $3.80 on Sol, and $7.00 on Fable 5 before caching or plan-specific usage pools
-- Run that three or four times a day and you've consumed your monthly pool in a week
-- Overages charge at raw API rates — there's no cap unless you turn off pay-as-you-go
+- At raw API rates, a 400K-input / 60K-output session is about $1.34 on Luna, $3.35 on Terra, $6.70 on Sol, and $7.00 on Fable 5 before caching or plan-specific usage pools. OpenAI applies 2× input and 1.5× output pricing to the full request above 272K input tokens.
+- Run that three or four times a day and the spend compounds quickly
+- Whether that usage comes from an included pool or metered overage depends on your current plan settings
+
+Before relying on a monthly budget, check [Cursor's current pricing](https://cursor.com/docs/models-and-pricing) and your dashboard's usage controls. The examples above explain scale; they are not a promise about what a specific subscription includes.
 
 The calculator below shows how context size and frequency affect when Max Mode makes sense.
 
@@ -61,10 +63,10 @@ I keep Max Mode off by default and flip it on for specific sessions: initial cod
 
 The useful mental shift: think of Max Mode as a session-level decision, not a default setting. When you're starting work on a large, interconnected change, turn it on. When you're doing focused, contained edits, leave it off.
 
-The failure mode is leaving it on because you're not sure whether you need it. If you're not actively working with more than 15K lines of context in a session, you're burning credits for no benefit.
+The failure mode is leaving it on because you're not sure whether you need it. Avoid converting tokens to a fixed source-line count: language, formatting, generated code, images, tool output, and conversation history all change the ratio. Use the context meter and the actual files required by the task.
 
 ## What doesn't change
 
-Max Mode doesn't make the model smarter, more accurate, or better at reasoning. It makes the model aware of more code. If your task doesn't require broad awareness — and most tasks don't — the extra context is just cost.
+Max Mode doesn't change the underlying model weights. Its larger context can improve an answer when missing information was the constraint, while its other legacy-plan features can change the available workflow. If your task doesn't require those capabilities, the extra context is just cost.
 
 The cases where Max Mode actually moves the needle are the ones where the model was producing wrong answers *because* it was reading an incomplete picture of your codebase. Those cases exist, and they're worth paying for. The rest of the time, Auto is the better call.

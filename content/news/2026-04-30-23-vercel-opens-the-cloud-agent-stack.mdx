@@ -1,0 +1,17 @@
+---
+title: Vercel opens the cloud agent stack
+publishedAt: '2026-04-30'
+lastVerifiedAt: '2026-07-22'
+primarySourceUrl: 'https://github.com/vercel-labs/open-agents'
+---
+Cursor's SDK gives you agent infrastructure from an IDE company. Vercel's answer is different: an open-source reference implementation you can actually read.
+
+[Open Agents](https://github.com/vercel-labs/open-agents) is MIT-licensed, deployed at open-agents.dev, and explicitly framed as a reference, not a starter kit. The goal is visibility — see exactly how the pieces wire together, then fork and adapt.
+
+The architecture is three layers: **web app → agent workflow → sandbox VM**. The web layer handles auth (Better Auth, GitHub OAuth), sessions, chat, and streaming UI built on Next.js. The agent runs as a durable workflow via Vercel's Workflows SDK — long-running execution that can hibernate and resume without losing state. The sandbox is an isolated VM with a full filesystem, shell, git, dev servers, and preview ports.
+
+The critical design choice: agent and sandbox are separate. The agent doesn't run inside the VM — it reaches in via tool calls. That means each layer can hibernate independently. Pause a long coding task, come back hours later, the agent picks up without the sandbox burning compute the whole time.
+
+Feature set: file reads and edits, shell commands, web search, git operations, optional auto-commit and PR creation, session sharing via read-only links, voice input via ElevenLabs. Neon PostgreSQL for persistence, optional Redis or Vercel KV for caching.
+
+Practical read: this is the cleanest public example of how Vercel's own stack — Workflows SDK, Sandboxes, Gateway — wires together for a coding agent. If you've been building agent loops yourself over raw APIs, reading this codebase is faster than reading docs. The architectural insight is the same one underneath the Cursor SDK: durable execution plus isolated sandbox plus external tool access is the skeleton of every cloud coding agent. Vercel just made theirs legible.

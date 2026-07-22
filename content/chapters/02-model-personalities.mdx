@@ -2,7 +2,7 @@
 title: "Model Personalities"
 subtitle: "How different models approach the same task, and when to lean into that"
 publishedAt: "2026-04-17"
-updatedAt: "2026-07-14"
+updatedAt: "2026-07-22"
 chapter: 2
 part: understanding-models
 partNumber: 1
@@ -21,13 +21,15 @@ This is model personality. Not benchmark scores — those tell you what a model 
 
 Two models with the same benchmark scores can produce wildly different results. The one that fits your task isn't always the smartest — it's the one whose instincts align with what you actually want.
 
+These profiles describe tendencies I've observed in coding sessions, not fixed traits. A model update, different prompt, stronger project rules, another tool harness, or a different evaluation can change the behavior substantially. Use the profiles as hypotheses to test, not labels to trust blindly.
+
 <ModelTinder />
 
 ## Gemini: the careful one
 
 **Google · Conservative · Best for: Production refactors**
 
-Gemini asks for permission. It's conservative, sticks close to what you asked for, and rarely goes off-script. Ambiguous task? It'll ask a clarifying question rather than assume and run.
+In my sessions, Gemini tends to ask for permission. It is often conservative, stays close to what I asked for, and is less likely to go off-script. On ambiguous tasks, it has been more likely to ask a clarifying question than assume and run.
 
 It's literal-minded — does what you say, not what you might have meant. Ask it to "clean up this component" and it'll fix formatting. It won't restructure the hierarchy or suggest a different pattern unless you ask.
 
@@ -71,7 +73,7 @@ Where it falls short: cheap work and soft evals. Sol is excellent, but Luna or T
 
 **Anthropic · Proactive · Best for: Feature design**
 
-Claude has opinions and isn't shy about sharing them. Pushes back on your approach, suggests alternatives, notices bugs you didn't ask about, restructures code to be "better" — even when you just wanted a simple change. Sonnet 5 is much more agentic than its predecessor: it plans, uses browsers and terminals, checks its own work, and can carry multi-step coding tasks through to verification. It keeps the 1M context window and adds adjustable effort levels, with introductory API pricing of $2 / $10 per million tokens through August 31 before returning to the usual Sonnet rate of $3 / $15.
+In my sessions, Claude has been more willing to push back, suggest alternatives, notice adjacent bugs, and restructure code to be "better" — even when I wanted a simple change. Sonnet 5 is also more agentic than its predecessor: it can plan, use browsers and terminals, check its own work, and carry multi-step coding tasks through to verification. It keeps the 1M context window and adds adjustable effort levels, with introductory API pricing of $2 / $10 per million tokens through August 31 before returning to the usual Sonnet rate of $3 / $15.
 
 It might suggest a better API surface, flag that your data model will break at scale, or restructure code in a way you hadn't considered. Creative by instinct.
 
@@ -99,15 +101,15 @@ Where it falls short: ordinary implementation. Once Fable has made a decision-co
 
 **Cursor · Agentic · Best for: End-to-end tasks**
 
-Composer 2.5 is Cursor's own model, trained specifically for agentic coding. It doesn't just edit files — it acts. Terminal commands, reading output, making more edits, looping until the task is done. Closest thing to an AI developer that can execute end-to-end.
+Composer 2.5 is Cursor's own model, trained specifically for agentic coding. In the Cursor harness it can go beyond editing files: run terminal commands, read output, make more edits, and loop toward a verifiable result. In my tests, that makes it one of the stronger value options for end-to-end work inside Cursor.
 
 Give it a task spanning multiple files with verification — "add this feature, make sure tests pass, fix type errors" — and it works through the steps autonomously. Runs the build, reads errors, fixes them, reruns.
 
 It also self-corrects. Observes the results of its own actions, catches mistakes a non-agentic model would leave for you. Sees the TypeScript error, understands it in context, fixes it — no copy-pasting errors back into a prompt.
 
-Not limited to open files either. It navigates the project, finds relevant files, makes coordinated changes across many of them. Draws from the Auto + Composer pool, which includes more usage than the API pool — making it cost-efficient for everyday agentic work.
+Not limited to open files either. It navigates the project, finds relevant files, and makes coordinated changes across many of them. On current individual plans it draws from Cursor's First-party models pool, alongside Grok 4.5, rather than the separate API pool.
 
-The May 2026 retrain from Composer 2 closed the gap with frontier models — SWE-Bench Multilingual at 79.8% (within ~1pp of Opus 4.8) and CursorBench v3.1 at 63.2%, at roughly one-tenth the per-token cost. Behaviorally it also dropped the antagonistic edges of Composer 2: users on the forum describe it as "willing to think with you" rather than arguing back. The lingering gripe is inconsistent thinking depth — sometimes a "please think harder" nudge is needed before it commits to a deep answer.
+Cursor's May 2026 launch results reported **79.8% on SWE-Bench Multilingual** and **63.2% on CursorBench v3.1**. A later Cursor audit measured 79.15% raw on SWE-Bench Multilingual and 71.60% after correcting reward-hacking contamination, a useful reminder that benchmark claims need scrutiny even when the vendor publishes them. Behaviorally, users on the forum describe it as more willing to collaborate than Composer 2. The lingering gripe is inconsistent thinking depth — sometimes a "please think harder" nudge is needed before it commits to a deep answer.
 
 Where it falls short: autonomy still has a cost, and GPT-5.6 Sol now leads the long autonomous-loop tier. Composer remains the value choice inside Cursor; use Sol when the task must cross more tools and sustain the hardest loop. Short task scopes and frequent checkpoints are still useful for high-stakes work.
 

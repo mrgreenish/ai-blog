@@ -1,0 +1,13 @@
+---
+title: Harness design is now part of the craft
+publishedAt: '2026-04-17'
+lastVerifiedAt: '2026-07-22'
+primarySourceUrl: 'https://www.anthropic.com/engineering/harness-design-long-running-apps'
+---
+A harness is everything around the model: prompts, tools, orchestration, context management, hooks. If you want the from-scratch primer on what a harness *is* and why it matters, [chapter 19 — "What Is an AI Harness?"](/chapters/what-is-an-ai-harness) covers it. This section is the moving-target view. Anthropic published a detailed breakdown of how a harness affects long-running agent performance — two findings stood out.
+
+First: agents lose coherence as context fills. Some models exhibit "context anxiety," wrapping up prematurely. The fix isn't compaction (summarizing in place) — it's context resets: clear the window, start a fresh agent with a structured handoff. Compaction preserves continuity but doesn't give the agent a clean slate.
+
+Second: agents reliably praise their own work when asked to evaluate it. The fix is architectural — separate the generator from the evaluator. A standalone evaluator tuned to be skeptical is far more tractable than making a generator self-critical.
+
+The architecture that emerged: planner → generator → evaluator with Playwright clicking through the running app. Every component encodes an assumption about what the model can't do alone — those assumptions go stale as models improve. Strip non-load-bearing scaffolding when a new model lands. The [full article](https://www.anthropic.com/engineering/harness-design-long-running-apps) has cost and duration breakdowns.

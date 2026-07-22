@@ -62,3 +62,16 @@ export interface Chapter {
   content: string;
 }
 
+export interface NewsEntryFrontmatter {
+  title: string;
+  publishedAt: string;
+  lastVerifiedAt: string;
+  primarySourceUrl: string;
+}
+
+export interface NewsEntry {
+  slug: string;
+  frontmatter: NewsEntryFrontmatter;
+  content: string;
+}
+

@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
-import { getAllChapters } from "@/lib/content";
+import { getAllChapters, getNewsEntries } from "@/lib/content";
 import { SITE_URL as BASE_URL } from "@/lib/siteConfig";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const chapters = getAllChapters();
+  const newsEntries = getNewsEntries();
   const now = new Date();
 
   const chapterEntries: MetadataRoute.Sitemap = chapters.map((chapter) => ({
@@ -12,6 +13,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       chapter.frontmatter.updatedAt ?? chapter.frontmatter.publishedAt ?? now,
     changeFrequency: "monthly",
     priority: 0.8,
+  }));
+  const newsSitemapEntries: MetadataRoute.Sitemap = newsEntries.map((entry) => ({
+    url: `${BASE_URL}/chapters/what-is-happening/${entry.slug}`,
+    lastModified: entry.frontmatter.lastVerifiedAt,
+    changeFrequency: "monthly",
+    priority: 0.6,
   }));
 
   return [
@@ -28,5 +35,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.3,
     },
     ...chapterEntries,
+    ...newsSitemapEntries,
   ];
 }

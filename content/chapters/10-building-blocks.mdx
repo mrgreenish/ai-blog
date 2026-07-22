@@ -2,7 +2,7 @@
 title: "Building Blocks First"
 subtitle: "Why starting from atoms changes how AI writes code"
 publishedAt: "2026-04-17"
-updatedAt: "2026-04-17"
+updatedAt: "2026-07-22"
 chapter: 10
 part: shipping-workflows
 partNumber: 2
@@ -58,7 +58,7 @@ Atomic structure alone isn't enough. The AI benefits from explicit rules about h
 
 Building blocks give the AI something to work with. It still needs to know *how* to work with them — that's where Cursor project rules and skills come in.
 
-**Project rules** (`.cursor/rules/`) are persistent instructions that apply every time the model works in your codebase. The place to encode conventions that live in your head: "always use the `Button` component from `@/components/ui`, never create a new one," "spacing uses Tailwind's scale, never arbitrary values," "every new component gets a Storybook story." Without these, you repeat yourself in every prompt.
+**Project rules** (`.cursor/rules/`) are persistent, version-controlled instructions that apply according to their configuration: always, by file pattern, when the model judges them relevant, or when you mention them manually. Mark a rule `alwaysApply: true` only when it must be present in every chat. They are the place to encode conventions that live in your head: "always use the `Button` component from `@/components/ui`, never create a new one," "spacing uses Tailwind's scale, never arbitrary values," "every new component gets a Storybook story."
 
 The rules I find most valuable:
 
@@ -66,7 +66,7 @@ The rules I find most valuable:
 - **File and naming conventions.** Where new components go, how they're named. The model follows whatever pattern it sees — make sure it sees the right one.
 - **Tech stack constraints.** "Use server components by default," "data fetching goes through `@/lib/api`," "no `useEffect` for data loading." Catches the most common drift.
 
-**Skills** (`.cursor/skills/`) go further — reusable instruction sets for specific types of tasks. Creating a component, implementing a Figma design, setting up a new page. Where rules say "follow these conventions," skills say "here's the full workflow."
+**Project skills** — stored in locations such as `.cursor/skills/` or `.agents/skills/` — go further: reusable instruction sets for specific types of tasks. Creating a component, implementing a Figma design, setting up a new page. Where rules say "follow these conventions," skills say "here's the full workflow." Cursor discovers both locations; see the current [Skills documentation](https://cursor.com/docs/skills) for supported user-level and nested project paths.
 
 A well-written component creation skill: check existing atoms first, use the project's `cva` variant pattern, add TypeScript props interface, create a Storybook story, register in the component index. Same recipe every time, consistent output regardless of how you phrased the prompt.
 

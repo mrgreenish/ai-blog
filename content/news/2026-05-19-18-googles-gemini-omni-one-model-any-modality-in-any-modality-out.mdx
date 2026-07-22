@@ -1,0 +1,12 @@
+---
+title: 'Google''s Gemini Omni: one model, any modality in, any modality out'
+publishedAt: '2026-05-19'
+lastVerifiedAt: '2026-07-22'
+primarySourceUrl: >-
+  https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-omni/
+---
+Google [unveiled Gemini Omni](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-omni/) at I/O 2026 — a model family intended to create across modalities. The first variant, Gemini Omni Flash, accepts combinations of text, images, audio, and video and initially generates video; Google said image and audio output would follow over time. The pitch is that Omni *reasons across* the inputs rather than exposing a chain of specialist models as separate calls.
+
+At launch, Gemini Omni Flash rolled out globally to AI Plus, AI Pro, and AI Ultra subscribers through the Gemini app and Google Flow, with access in YouTube Shorts and the YouTube Create app as well. On June 30, it entered [public preview for developers](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-omni-flash-nano-banana-2-lite/) through Google AI Studio, the Gemini API, and Gemini Enterprise Agent Platform.
+
+Practical read: the structural play here is collapse-the-stack. For agent work the interesting bit isn't the consumer video demo — it's that once Omni hits Vertex, you stop needing text-to-image-then-image-to-video-then-audio-overlay as three separate model calls glued together. Quality vs. specialist models like Seedance 2 or Veo is the open question; early write-ups are [skeptical that one model beats focused ones on pixel quality yet](https://medium.com/ai-analytics-diaries/googles-omni-video-model-impressive-but-does-it-beat-seedance-2-1d2cd3d23dc2). But for multimodal agent outputs where consistency across modalities matters more than per-modality maximum, this changes the wiring.

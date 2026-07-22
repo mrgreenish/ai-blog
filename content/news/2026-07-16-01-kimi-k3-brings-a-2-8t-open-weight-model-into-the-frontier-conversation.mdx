@@ -1,0 +1,13 @@
+---
+title: Kimi K3 brings a 2.8T open-weight model into the frontier conversation
+publishedAt: '2026-07-16'
+lastVerifiedAt: '2026-07-22'
+primarySourceUrl: 'https://www.kimi.com/blog/kimi-k3'
+---
+Moonshot [launched Kimi K3](https://www.kimi.com/blog/kimi-k3) on July 16, and the interesting part is not just the **2.8 trillion** parameters. K3 is a sparse MoE model — it activates 16 of 896 experts per token — with native vision and a **1M-token context window**, aimed directly at long coding runs, research, and knowledge work. It is live now in Kimi, Kimi Work, Kimi Code, and the API. The full weights are promised by July 27, which would make it the first open-weight model in this size class rather than merely another hosted frontier endpoint.
+
+The price is no longer “shockingly cheap Chinese model” territory: **$3 / $15 per million cache-miss input/output tokens**, with cached input at **$0.30**. That is closer to Sonnet pricing than the Kimi K2-era bargain basement. But it stays flat across the full context window, and automatic prefix caching changes the math for coding agents that keep a repository or long spec stable across turns.
+
+Moonshot's charts put K3 near Claude Fable 5 and GPT-5.6 Sol, sometimes ahead, on agentic coding and knowledge-work evaluations. Read the footnotes before treating that as a clean leaderboard win: K3, Claude, and OpenAI results were collected with different harnesses, and some competitor figures are adopted from their own release material. Moonshot is unusually clear about the practical caveats too. K3 expects its full thinking history to be preserved across turns, can get unstable if you switch it into an existing session, and has a habit of making decisions on ambiguous work unless you constrain it hard.
+
+Practical read: this is the first genuinely interesting *prospective* open-weight alternative when the job is a long agent loop rather than a cheap completion. But “weights coming soon” is not “self-hosting is solved.” Until the checkpoint, technical report, inference recipes, and independent long-run tests land, K3 is best treated as a strong hosted model with a credible open-weight promise — not a drop-in replacement for the Fable or Sol stack.

@@ -1,0 +1,12 @@
+---
+title: Gemini 3.5 Flash beats 3.1 Pro on the benchmarks that matter
+publishedAt: '2026-05-19'
+lastVerifiedAt: '2026-07-22'
+primarySourceUrl: >-
+  https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5/
+---
+The other I/O headline: [Gemini 3.5 Flash](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5/) — Google's new Flash-tier model — outperformed Gemini 3.1 Pro on three coding and agentic benchmarks Google highlighted: **Terminal-Bench 2.1 (76.2%)**, **GDPval-AA (1,656 Elo)**, and **MCP Atlas (83.6%)**. Google also reported output throughput roughly 4× that of other frontier models. At launch, 3.5 Flash was generally available through Antigravity, the Gemini API, Google AI Studio, and Android Studio.
+
+Reception is mixed-positive. The long-standing "Gemini feels lazy" complaint has [reportedly mostly faded](https://nokiapoweruser.com/gemini-3-5-flash-leak-pricing-reasoning-upgrade/) in early testing, sub-200ms responses on many prompts make it feel genuinely real-time, and LM Arena coding scores have it ahead of 3.1 Pro at meaningfully lower per-token cost. The honest counterweight: [Hacker News threads](https://news.ycombinator.com/item?id=46301851) on the prior 3.x releases still surface a steady drumbeat of "Gemini is consistently the most frustrating model I use" from developers — benchmarks aren't the same as daily-driver feel, and Google hasn't fully closed that gap yet.
+
+Practical read: two things matter here. First, "Flash beats Pro" inverts the normal model hierarchy on the benchmarks Google selected. The cheap-and-fast tier is no longer automatically a worse version of the expensive one; it is a different point on the price/capability curve that sometimes wins. Second, GDPval-AA and MCP Atlas are agent-shaped benchmarks — tool use and long-horizon tasks. A Flash-tier model leading there lowers the expected cost floor for capable agent runtimes, although real workloads still need their own evaluation.

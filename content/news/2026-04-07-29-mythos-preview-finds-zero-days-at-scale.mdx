@@ -1,0 +1,11 @@
+---
+title: Mythos Preview finds zero-days at scale
+publishedAt: '2026-04-07'
+lastVerifiedAt: '2026-07-22'
+primarySourceUrl: 'https://red.anthropic.com/2026/mythos-preview/'
+---
+On April 7, Anthropic previewed [Claude Mythos](https://red.anthropic.com/2026/mythos-preview/) — an unreleased research model that's dramatically better at exploiting software than anything shipped before. On a Firefox vulnerability set where Opus 4.6 built working JavaScript shell exploits **2 times** in several hundred attempts, Mythos built them **181 times**. On OSS-Fuzz, it produced 595 tier-1/2 crashes versus Opus 4.6's 150–175, with full control flow hijacking demonstrated on ten targets.
+
+The bugs it found are the kind that normally take years of expert attention. A 27-year-old OpenBSD TCP flaw enabling remote DoS. A 16-year-old FFmpeg H.264 codec bug that OSS-Fuzz missed after roughly 5 million fuzzing attempts. A 17-year-old FreeBSD NFS remote code execution, now tracked as CVE-2026-4747. Anthropic also reported thousands of additional *potential* high- and critical-severity findings, most still undergoing human validation and coordinated disclosure. On cybersecurity vulnerability reproduction, Mythos scores 83.1% against Opus 4.6's 66.6%.
+
+Anthropic frames this as a "watershed moment," with their own caveat that "most security tooling has historically benefited defenders more than attackers" but the transition period may be "tumultuous." The practical read for anyone shipping software is blunt: patching cycles that were fine six months ago are not fine now. Threat models that assumed expert attackers were a scarce resource need revisiting. The offensive floor just moved, and it moved a lot.

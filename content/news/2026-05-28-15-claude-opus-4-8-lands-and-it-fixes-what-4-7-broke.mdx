@@ -1,0 +1,13 @@
+---
+title: Claude Opus 4.8 lands — and it fixes what 4.7 broke
+publishedAt: '2026-05-28'
+lastVerifiedAt: '2026-07-22'
+primarySourceUrl: 'https://www.anthropic.com/news/claude-opus-4-8'
+---
+Anthropic shipped [Claude Opus 4.8](https://www.anthropic.com/news/claude-opus-4-8) on May 28, six weeks after the divisive 4.7 release. Generally available on the Claude API, Amazon Bedrock, Google Cloud Vertex AI, and Microsoft Foundry from day one, with pricing held steady at **$5 / $25 per million tokens** and the 1M-token context window unchanged. Same rate card as 4.7 and 4.6 — the upgrade is free if you were already on Opus.
+
+The headline is math. On **USAMO 2026, Opus 4.8 scores 96.7% — up from 69.3% on 4.7**, a 27-point jump that Anthropic calls the biggest single-cycle math improvement in Opus history. The coding-and-reasoning cluster moves with it: **SWE-bench Pro climbs to ~69.2%** (from 4.7's 64.3%, and well clear of GPT-5.5's 58.6%), and OSWorld lands at 83.4%. On **Terminal-Bench 2.1 it reaches 74.6%** — a real gain, but GPT-5.5 still leads the long autonomous-loop benchmark at 78.2%, so the "pick GPT-5.5 for hour-long shell loops" rule survives the release. The Cursor read is more practical: on **CursorBench**, 4.8 is noticeably more efficient than 4.7, and it pushes further on harder tasks before giving up or looping back for help — the persistence gain is the harder-to-benchmark one, but it's the difference between a run that stalls halfway through a complex refactor and one that finishes.
+
+The more important number is the one 4.7 broke. **MRCR v2 at 1M tokens is back above 79%**, erasing the 46-point long-context collapse that made 4.7 unusable for needle-in-a-haystack retrieval and long-document Q&A. The argumentative coding loops and stub-implementation complaints that dogged 4.7's launch are largely gone in early testing — 4.8 reads as the patch release 4.7 needed, not a fresh set of regressions to work around.
+
+Practical read: this is the cleanest Opus upgrade in a while. If you parked on 4.6 or Sonnet 4.6 to dodge 4.7's long-context regression, 4.8 is the one to retest — the retrieval scores are restored and the math/reasoning gains are real. For long autonomous tool-use loops, GPT-5.5 still edges it; for everything else in the reasoning tier, 4.8 retakes the lead without the asterisks 4.7 carried.
