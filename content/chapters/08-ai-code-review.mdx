@@ -2,7 +2,7 @@
 title: "AI-Powered Code Review"
 subtitle: "Using BugBot and Codex as PR reviewers - what they catch and what they miss"
 publishedAt: "2026-04-17"
-updatedAt: "2026-04-17"
+updatedAt: "2026-07-22"
 chapter: 8
 part: shipping-workflows
 partNumber: 2
@@ -27,7 +27,7 @@ BugBot reviews pull requests in Cursor workflows and posts actionable review fee
 - Spotting inconsistencies between the implementation and the surrounding code style
 - Flagging potential performance issues (unnecessary re-renders, missing memoization, N+1 queries)
 
-The workflow: make your changes, open the PR, run BugBot review, fix what it finds, then request human review. By the time a human sees the code, the mechanical stuff is already resolved.
+The workflow: make your changes and open the PR. BugBot can review automatically on each PR update; when you need a manual pass, comment `cursor review` or `bugbot run` on the PR. Fix the useful findings, dismiss the noise, then request human review. By the time a human sees the code, much of the mechanical first pass is already resolved.
 
 ## Codex on GitHub
 
@@ -38,7 +38,7 @@ Codex as a GitHub reviewer can run on every PR and post review comments automati
 - Catching security issues (exposed secrets, SQL injection patterns, missing auth checks)
 - Verifying that error handling is consistent with the rest of the codebase
 
-Key difference from BugBot: Codex has the full repository context, not just the changed files. So it catches things like "this function is now inconsistent with how similar functions work elsewhere in the codebase."
+Both review the PR diff with repository-specific guidance. Codex follows applicable `AGENTS.md` instructions, while BugBot follows its repository rules and applicable `.cursor/BUGBOT.md` files. Either can use that context to catch inconsistencies with nearby patterns; the practical difference is which review workflow and configuration your team already uses.
 
 ## What AI review actually catches
 

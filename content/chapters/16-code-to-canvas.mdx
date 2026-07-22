@@ -2,7 +2,7 @@
 title: "Code to Canvas"
 subtitle: "Pushing live rendered UI back into Figma as editable frames"
 publishedAt: "2026-04-17"
-updatedAt: "2026-04-17"
+updatedAt: "2026-07-22"
 chapter: 16
 part: tools-infrastructure
 partNumber: 4
@@ -50,6 +50,6 @@ The Code to Canvas flow is most valuable when:
 
 The captured frames are static — they capture the visual appearance, not the interactive behavior. For interactive review, sharing a URL is still better. The Figma frame is for visual and layout review.
 
-The quality of the capture depends on the rendering environment. Complex CSS (especially animations and transitions) may not capture perfectly. Static layouts capture very accurately.
+The quality of the capture depends on the rendering environment. Test representative screens — especially animation- and transition-heavy states — before relying on the imported frame as an exact record. Figma does not publish a general accuracy guarantee for one CSS category over another.
 
 <WorkflowRecipe />

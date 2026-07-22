@@ -836,11 +836,11 @@ export function getMixerModels(asOf: Date | string = new Date()) {
 
 // ---------------------------------------------------------------------------
 // Pricing metadata — single source of truth for data attribution
-// Prices verified against official API pricing pages on 2026-07-21
+// Prices verified against official API pricing pages on 2026-07-22
 // ---------------------------------------------------------------------------
 
 export const PRICING_META = {
-  verifiedDate: "2026-07-21", // Full registry cross-check against provider API pages and current product docs
+  verifiedDate: "2026-07-22", // Full registry cross-check against provider API pages and current product docs
   source: "Official API pricing pages",
   notes: [
     "Claude Sonnet 5 is $2/$10 per million input/output tokens through August 31, 2026, then $3/$15.",
@@ -848,8 +848,8 @@ export const PRICING_META = {
     "Claude Fable 5 is $10/$50 per million input/output tokens, with a 90% prompt-cache read discount.",
   ],
   urls: {
-    Anthropic: "https://www.anthropic.com/claude/fable",
-    OpenAI: "https://openai.com/index/previewing-gpt-5-6-sol/",
+    Anthropic: "https://docs.anthropic.com/en/docs/about-claude/pricing",
+    OpenAI: "https://developers.openai.com/api/docs/pricing",
     Google: "https://ai.google.dev/gemini-api/docs/pricing",
     DeepSeek: "https://api-docs.deepseek.com/quick_start/pricing",
     Cursor: "https://cursor.com/docs/models-and-pricing",

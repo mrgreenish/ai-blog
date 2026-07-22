@@ -2,7 +2,7 @@
 title: "Design to Code and Back"
 subtitle: "The full design and code feedback loop with Figma MCP"
 publishedAt: "2026-04-17"
-updatedAt: "2026-04-17"
+updatedAt: "2026-07-22"
 chapter: 17
 part: tools-infrastructure
 partNumber: 4
@@ -15,9 +15,9 @@ illustrationPlaceholders:
 
 You screenshot a Figma comp, ask the model to build it. The layout looks right — but every spacing value is wrong. The issue isn't the model's vision; it's that screenshots are a lossy format for design data.
 
-## What vision is actually good for
+## Where vision is insufficient for exact design-to-code
 
-Not design-to-code. But for reviewing work, it's useful:
+Screenshots are useful design-to-code references, especially for composition, hierarchy, and a quick first pass. They become unreliable when exact token values, component metadata, or production measurements matter. For those, structured design data is stronger. Vision is also useful for:
 
 **UI accessibility review.** Send a screenshot and ask "what accessibility issues do you see?" Good for catching missing focus states, poor contrast, and layout problems that don't surface in code review.
 
@@ -29,7 +29,7 @@ What it can't do reliably: precise measurements, reading small text, or spatial 
 
 ## Design to code with Figma MCP
 
-The Figma MCP bypasses screenshots entirely. Instead of inference from an image, the model gets direct access to design data: exact spacing, colors, component variants, layout constraints. The output lands much closer to production-ready. For the full workflow and setup, see [Figma MCP Workflows](/tooling/figma-mcp).
+The Figma MCP avoids relying on screenshots alone. It supplies structured design context — spacing, colors, component variants, and layout constraints — while Figma's implementation workflow still uses a screenshot as the visual source of truth. The output lands much closer to production-ready. For the full workflow and setup, see [Figma MCP Workflows](/tooling/figma-mcp).
 
 ## Code back to Figma
 

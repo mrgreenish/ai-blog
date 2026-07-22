@@ -1,0 +1,15 @@
+---
+title: Composer 2.5 makes the in-house model competitive
+publishedAt: '2026-05-18'
+lastVerifiedAt: '2026-07-22'
+primarySourceUrl: 'https://cursor.com/blog/composer-2-5'
+---
+Cursor [shipped Composer 2.5](https://cursor.com/blog/composer-2-5) on May 18 — the same Moonshot Kimi K2.5 base as Composer 2, retrained with 25× more synthetic tasks and a new technique they call **Targeted RL with Textual Feedback**: instead of waiting for a final reward, the trainer drops localized hints at the exact tokens where behavior went wrong and distills back from those points. The infrastructure note worth flagging is the Muon optimizer with distributed orthogonalization — 0.2-second optimizer steps on a trillion-parameter model.
+
+The benchmark picture is the headline. On **SWE-Bench Multilingual**, Composer 2.5 lands at **79.8%** against Opus 4.7's 80.5% and GPT-5.5's 77.8%. On **CursorBench v3.1**, **63.2%** vs Opus 4.7 at 64.8% (max) / 61.6% (default) and GPT-5.5 at 59.2%. **Terminal-Bench 2.0** is where the gap shows: 69.3%, basically tied with Opus 4.7 at 69.4%, but well behind GPT-5.5's 82.7% — the long autonomous-loop benchmark is still GPT-5.5's territory.
+
+Pricing is the part that matters. **$0.50 / $2.50 per million tokens** for the standard tier, $3 / $15 for the Fast variant. At that rate, Composer 2.5 hits ~63% on CursorBench at under $1 average per task while Opus 4.7 and GPT-5.5 are several dollars in for comparable scores. Launch week ships with double usage thrown in. The roadmap note is the other interesting one: Cursor confirmed a collaboration with SpaceXAI to train a significantly larger model on Colossus 2 — 10× the compute of this run.
+
+Reception on the [Cursor forum thread](https://forum.cursor.com/t/share-your-thoughts-on-composer-2-5/160935) is warm but not uncritical. The consistent praise is about tone: "willing to think with you and is not antagonistic" — a direct shot at the Opus 4.7 argumentative-loop complaints from last month. One developer admitted forgetting they had Composer 2.5 enabled and not realizing they weren't on GPT-5.5 for a while, which is the highest compliment a default-model swap gets. The gripe that keeps coming up is inconsistent thinking depth: users report adding "please think harder" before the model commits to a real answer instead of a lightweight one.
+
+Practical read: for the first time, the cheap in-IDE model is in the same room as the frontier models on the benchmarks Cursor users actually care about — multi-file refactors, multilingual SWE-Bench, CursorBench. It's not the best at any single thing, but at 10× cheaper it doesn't need to be. The Fast variant is still where the long autonomous loops should live if you can afford it; Composer 2.5 standard is the new sensible default for everything else. The bigger story is structural — Anthropic has been pricing Cursor into a corner by selling Claude Code at rates Cursor pays to serve. Composer 2.5 is the answer to that squeeze: a model Cursor owns end-to-end, priced where the unit economics work.

@@ -1,13 +1,14 @@
 # Chapter authoring notes
 
-## `18-what-is-happening.mdx` — newest-first ordering
+## `18-what-is-happening.mdx` — feed landing page
 
-When adding a new entry to `18-what-is-happening.mdx`, insert it as the **first `##` section after the intro paragraphs**. Do not append to the bottom and do not sort by topic or alphabetically. The chapter is read as a feed: most recently added on top.
+Do not add news sections directly to `18-what-is-happening.mdx`. It is the stable landing page for the feed. Individual dated entries live in `content/news/*.mdx`, appear on the landing page, and render at `/chapters/what-is-happening/<entry-slug>`.
 
-The intent is preserved with a comment at the top of the file:
+Each entry must include:
 
-```mdx
-{/* New entries go at the TOP. Sections are ordered newest-added → oldest-added so recent items surface first. Do not insert in topical or alphabetical order. */}
-```
+- `title`
+- `publishedAt`
+- `lastVerifiedAt`
+- `primarySourceUrl`
 
-Also bump `updatedAt` in the frontmatter to today's date when you add a section.
+Entries are sorted by `publishedAt` descending, then by filename for same-day ties. The entry route renders the title and verification line from frontmatter, so do not repeat them in the MDX body. Also bump the landing chapter's `updatedAt` when adding or materially updating an entry.

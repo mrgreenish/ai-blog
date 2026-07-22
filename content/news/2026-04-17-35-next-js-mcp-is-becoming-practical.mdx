@@ -1,0 +1,26 @@
+---
+title: Next.js MCP is becoming practical
+publishedAt: '2026-04-17'
+lastVerifiedAt: '2026-07-22'
+primarySourceUrl: 'https://github.com/vercel/next-devtools-mcp'
+---
+Next.js 16 ships with a built-in MCP endpoint at `/_next/mcp`. Add `next-devtools-mcp` to `.mcp.json` and your agent gets live access to build errors, runtime errors, routes, page metadata, and server action IDs — no screenshots, no copy-paste.
+
+```json
+{
+  "mcpServers": {
+    "next-devtools": {
+      "command": "npx",
+      "args": ["-y", "next-devtools-mcp@latest"]
+    }
+  }
+}
+```
+
+Useful tools: `get_errors` (source-mapped stacks), `get_routes`, `get_page_metadata`, `get_server_action_by_id`. The agent can diagnose a hydration error and suggest a fix without you describing what's on screen.
+
+Next.js 16 or newer is required. For Next.js 15 or earlier, upgrade first with:
+
+```bash
+npx @next/codemod@latest upgrade latest
+```

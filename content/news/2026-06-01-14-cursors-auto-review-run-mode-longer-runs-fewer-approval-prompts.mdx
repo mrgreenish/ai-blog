@@ -1,0 +1,11 @@
+---
+title: 'Cursor''s Auto Review run mode: longer runs, fewer approval prompts'
+publishedAt: '2026-06-01'
+lastVerifiedAt: '2026-07-22'
+primarySourceUrl: 'https://cursor.com/changelog/auto-review'
+---
+Cursor shipped [Auto Review](https://cursor.com/changelog/auto-review) — a new run mode that lets the agent work for longer stretches with fewer approval prompts while keeping execution safe. It covers the three call types that normally interrupt a run: **Shell, MCP, and Fetch**. Instead of pausing on every one, the agent evaluates each against safety criteria and only stops for the ones that actually warrant a human — destructive shell commands, calls reaching outside the project, the things you'd want to eyeball.
+
+The positioning is the interesting part. Until now the choice was binary: approve every command by hand, or flip on full auto-run (the "YOLO" allowlist) and hope nothing `rm -rf`s your home directory. Auto Review is the middle setting — the allowlist with judgment instead of a static pattern list. Safe-by-inspection calls flow through; risky ones still surface for sign-off.
+
+Practical read: this is the same friction the hooks section below attacks from the other side. Hooks *deterministically* block known-bad writes; Auto Review *probabilistically* waves through known-good calls. Run both and the approval queue collapses to the genuinely ambiguous cases — which is where your attention should have been the whole time. If you've been stuck in manual-approval mode because full auto-run felt reckless, this is the setting to try first. Watch what it pauses on for a few sessions before you trust it on an unattended loop.

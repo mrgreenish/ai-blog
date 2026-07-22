@@ -1,0 +1,15 @@
+---
+title: Hooks move agents from advice to automation
+publishedAt: '2026-04-17'
+lastVerifiedAt: '2026-07-22'
+primarySourceUrl: 'https://docs.anthropic.com/en/docs/claude-code/hooks-guide'
+---
+Skills tell an agent what to do. Hooks make certain things happen regardless of what the agent decides.
+
+They fire on lifecycle events — before a tool executes, after it finishes, on message submit, on stop, before compaction, on permission requests. Unlike skills, they're deterministic: the hook runs every time, not when the model judges it relevant.
+
+Practical uses: auto-format after edits, block writes to protected paths, desktop notifications when Claude is waiting, re-inject context after compaction. Full schema in the [Anthropic hooks guide](https://docs.anthropic.com/en/docs/claude-code/hooks-guide).
+
+The fastest way to start: [Hookify](https://claude.com/plugins/hookify). `/hookify Warn me when I use rm -rf commands` produces a working hook file immediately. Run it with no arguments and it auto-generates rules from behaviors you've already corrected in the current session.
+
+Skills encode knowledge. Hooks enforce behavior. Both belong in a mature setup.

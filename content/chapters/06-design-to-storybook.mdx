@@ -2,7 +2,7 @@
 title: "Design Token to Storybook"
 subtitle: "From Figma tokens to production component to documented Storybook stories"
 publishedAt: "2026-04-17"
-updatedAt: "2026-04-17"
+updatedAt: "2026-07-22"
 chapter: 6
 part: shipping-workflows
 partNumber: 2
@@ -17,7 +17,7 @@ You're building a new component. Three sessions in, and every time you start a f
 
 You explain it. The model builds the component. Next session, you explain it again.
 
-A token-mapping skill file solves this. Write it once — Figma variable names to Tailwind classes, spacing scale, font tokens — commit it to the repo, and every future session has the context from the start. First-session setup, permanent payoff.
+A token-mapping skill file solves this. Write it once — Figma variable names to Tailwind classes, spacing scale, font tokens — and commit it to the repo. Cursor can discover it in future sessions and load it when the task is relevant or when you invoke it explicitly. First-session setup, reusable payoff.
 
 For how the Figma MCP provides structured design data instead of screenshots, see [Figma MCP Workflows](/tooling/figma-mcp).
 
@@ -62,7 +62,7 @@ Create it once, reuse it for every design-to-code task. The skill should cover: 
 
 ## What makes this better than the old way
 
-The token-mapping skill is the biggest improvement. Without it, every new design-to-code session starts from zero — the model has to rediscover how your Figma tokens map to Tailwind classes. With the skill, that knowledge is persistent. It knows your `@theme` block defines `--font-display` as Space Grotesk, your spacing follows Tailwind's default scale, your color palette lives in zinc/blue/emerald. One-time setup, every-session payoff.
+The token-mapping skill is the biggest improvement. Without it, every new design-to-code session starts from zero — the model has to rediscover how your Figma tokens map to Tailwind classes. With the skill committed to the repository, that knowledge is durable and can be loaded when relevant. Once loaded, it knows your `@theme` block defines `--font-display` as Space Grotesk, your spacing follows Tailwind's default scale, and your color palette lives in zinc/blue/emerald.
 
 Second: accurate spacing and color because the model has actual values from Figma, not a screenshot. "The gap between these elements is 12px" — the skill tells it 12px maps to `gap-3` in your Tailwind config.
 

@@ -1,0 +1,11 @@
+---
+title: GPT-Live rebuilds voice mode as full-duplex
+publishedAt: '2026-07-08'
+lastVerifiedAt: '2026-07-22'
+primarySourceUrl: 'https://openai.com/index/introducing-gpt-live'
+---
+OpenAI [shipped GPT-Live](https://openai.com/index/introducing-gpt-live) on July 8 — GPT-Live-1 for Go, Plus, and Pro subscribers, and GPT-Live-1 mini for free users — and the headline change is architectural, not cosmetic. Earlier ChatGPT voice modes used more explicit conversational turns. GPT-Live is full-duplex: it can listen and speak at the same time, so you can interrupt mid-sentence, ask it to slow down, or redirect it without waiting for a gap. It also drops in short verbal acknowledgements — "got it," "mm-hmm" — to signal it is tracking you while you are still talking.
+
+OpenAI's launch evaluation reports strong blind-preference results and substantial GPQA and BrowseComp gains over Advanced Voice Mode. Treat those as vendor-run measurements, but they support the qualitative shift from a voice mode you talk *at* to one that can delegate harder work while staying in the conversation. OpenAI paired the launch with safety guardrails, including monitoring for self-harm signals and parental controls for teen accounts.
+
+Reception is split in a familiar way. The same "got it / mm-hmm" backchannel that scored well in OpenAI's controlled tests is drawing real complaints — social media reaction has called it "annoying," with the constant acknowledgements reading as a new kind of interruption in daily use. Early Hindi demos also drew criticism for language quality in press briefings. Practical read: full-duplex is the correct direction, but the backchannel behavior that makes it feel responsive in a demo is exactly the kind of tuning that needs a knob, not a fixed default. If you build on the Realtime API, expect acknowledgement frequency to be one of the first things people ask to turn down.

@@ -1,0 +1,11 @@
+---
+title: Infra is becoming part of the product
+publishedAt: '2026-04-17'
+lastVerifiedAt: '2026-07-22'
+primarySourceUrl: 'https://www.cursor.com/blog/self-hosted-cloud-agents'
+---
+Cursor's [self-hosted cloud agents](https://www.cursor.com/blog/self-hosted-cloud-agents) are now generally available. A worker process connects outbound via HTTPS — no inbound ports, no firewall changes. Cursor handles inference and planning, sends tool calls to the worker, results flow back. Each session gets its own dedicated worker; Kubernetes operator available for scale.
+
+The practical benefit: agents can access internal caches, dependencies, and network endpoints that can't leave the environment. Code and secrets stay in your infrastructure.
+
+Teams at Brex, Money Forward, and Notion are running this at scale. Notion cited access to more tools more securely as the reason for adopting it over maintaining their own background agent stack. "Agent infrastructure" is now a real architectural decision.

@@ -1,0 +1,21 @@
+---
+title: Cloud agents run on your hardware now
+publishedAt: '2026-04-17'
+lastVerifiedAt: '2026-07-22'
+primarySourceUrl: 'https://cursor.com/docs/cloud-agent/my-machines'
+---
+Cursor's [My Machines](https://cursor.com/docs/cloud-agent/my-machines) takes self-hosted agents from an enterprise feature to an individual one. Instead of running in Cursor's managed VMs, your agent executes on hardware you control — your laptop, a devbox, a remote VM. Three commands to get there:
+
+```bash
+curl https://cursor.com/install -fsS | bash
+agent login
+agent worker start
+```
+
+The worker opens an outbound connection to Cursor — no inbound ports, no firewall changes, just HTTPS to `api2.cursor.sh`. Cursor handles inference and planning, sends tool calls to the worker, and terminal commands, file edits, and browser actions all execute on your machine. Your local repo, dependency caches, build artifacts, internal network — the agent gets all of it.
+
+The MCP routing is worth noting. Stdio-transport MCP servers run on your machine, so they can reach private endpoints your network can access. HTTP/SSE-transport servers run on Cursor's backend, where Cursor handles OAuth and session caching. If your MCP server needs to hit an internal API, use stdio.
+
+Workers are long-lived by default — they stay connected until you stop them and pick up future sessions automatically. Name them with `--name "my-devbox"` when you have multiple machines. For org-wide fleets, Cursor has a separate [Self-Hosted Pool](https://cursor.com/docs/cloud-agent/self-hosted) with Kubernetes operators. My Machines is the individual-developer version: one process, one machine, immediate access.
+
+The shift underneath is conceptual. "Cloud agent" used to mean "runs in a cloud VM." Now the cloud part is just inference. Execution goes wherever makes sense — Cursor's sandboxes for isolation, your laptop for local deps, your company's cluster for compliance.

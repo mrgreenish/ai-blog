@@ -2,7 +2,7 @@
 title: "Reasoning vs Fast Models"
 subtitle: "When to choose reasoning models vs fast models for different coding tasks"
 publishedAt: "2026-04-17"
-updatedAt: "2026-07-14"
+updatedAt: "2026-07-22"
 chapter: 1
 part: understanding-models
 partNumber: 1
@@ -17,9 +17,11 @@ The first time I used o3 for a coding task, I was impressed — then I checked t
 
 I'm Filip van Harreveld, a senior creative developer at [iO](https://www.iodigital.com/). I share work and notes at [filipvanharreveld.com](https://filipvanharreveld.com/) and on [LinkedIn](https://www.linkedin.com/in/fvanharreveld/).
 
+Everything below is an operating heuristic from my own coding sessions, not a permanent ranking. Model behavior shifts with the version, prompt, tool harness, repository context, and how success is measured. Treat the examples as patterns to test against your work.
+
 ## When reasoning models actually earn it
 
-If the task follows a well-known pattern — "write a React form," "add a REST endpoint" — a fast model will nail it because there's nothing novel to figure out. Reasoning models earn their cost when the task requires weighing tradeoffs or holding multiple constraints in tension. "Design the data model for this feature given these constraints" or "find the bug in this async code that only fails under load" — those need the model to actually *think*, not just pattern-match.
+In my tests, fast models usually do well when a task follows a well-known pattern — "write a React form," "add a REST endpoint" — because there is less ambiguity to resolve. Reasoning models have earned their cost more often when the task requires weighing tradeoffs or holding multiple constraints in tension. "Design the data model for this feature given these constraints" or "find the bug in this async code that only fails under load" asks for more than reproducing a familiar pattern.
 
 - **Architecture decisions with real tradeoffs.** I asked Sonnet to choose between three caching strategies for a Next.js app — it picked the most common one. o3 identified that my specific access pattern made the "common" choice wrong and explained why.
 - **Complex refactors with many constraints.** "Refactor this without changing the public API, keeping backward compatibility, and not touching the test files" — the more constraints you stack, the more reasoning models pull ahead.
@@ -27,7 +29,7 @@ If the task follows a well-known pattern — "write a React form," "add a REST e
 
 ## When fast models win
 
-Fast models are often *better* at constrained tasks because they don't overthink them. I needed to convert 200 webhook payloads from one shape to another — straightforward field mapping, no ambiguity. Haiku did it in 2 seconds flat, correct on the first pass. o3 took 12 seconds per payload and added defensive null checks, fallback defaults, and logging I never asked for. Same output quality for the actual mapping, 6× slower, 10× more expensive.
+Fast models have often been *better for my constrained tasks* because they are less likely to expand the scope. In one run, I needed to convert 200 webhook payloads from one shape to another — straightforward field mapping, no ambiguity. Haiku did it in 2 seconds flat, correct on the first pass. o3 took 12 seconds per payload and added defensive null checks, fallback defaults, and logging I never asked for. Same output quality for the actual mapping in that run, 6× slower, 10× more expensive.
 
 Reach for GPT-5.6 Luna, Haiku, or Flash when:
 

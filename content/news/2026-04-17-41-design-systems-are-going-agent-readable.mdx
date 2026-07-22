@@ -1,0 +1,19 @@
+---
+title: Design systems are going agent-readable
+publishedAt: '2026-04-17'
+lastVerifiedAt: '2026-07-22'
+primarySourceUrl: 'https://github.com/VoltAgent/awesome-design-md'
+---
+Google Stitch introduced DESIGN.md — a plain-text design system document that agents read to generate consistent UI. No Figma plugins, no design token APIs. Just a markdown file with nine sections: visual theme, color palette with hex values, typography rules, component styling including states, layout principles, depth and elevation, do's and don'ts, responsive behavior, and an agent prompt guide.
+
+[awesome-design-md](https://github.com/VoltAgent/awesome-design-md) took this further — 74 DESIGN.md files extracted from real companies as of July 22, 2026. Claude, Stripe, Vercel, Linear, Figma, Airbnb, Spotify, Tesla. Drop one into your project and the agent gets a structured reference for that design system.
+
+The insight: agents are already generating UI. The problem was never capability — it was consistency. A DESIGN.md file gives the agent the same reference a human designer would use, in the format it processes best. Markdown over Figma, at least for the agent.
+
+Browse the collection at [getdesign.md](https://getdesign.md).
+
+Stitch just open-sourced the DESIGN.md specification itself — Apache 2.0, formal schema, CLI with a linter, differ, and exporter. Any tool can implement it now, not just Stitch.
+
+The additions that matter: semantic color intent, so agents know what a color is *for* rather than just its hex value. And built-in WCAG validation — the linter catches contrast failures at lint time, before anything ships. Separate `export` invocations can generate Tailwind v3 JSON, Tailwind v4 CSS, or W3C DTCG JSON, so one source file can feed your CSS, build system, and agent.
+
+Spec at [google-labs-code/design.md](https://github.com/google-labs-code/design.md).

@@ -1,4 +1,4 @@
-import { getAllChapters } from "@/lib/content";
+import { getAllChapters, getNewsEntries } from "@/lib/content";
 import { PART_META } from "@/lib/types";
 import {
   SITE_URL,
@@ -17,32 +17,52 @@ function escapeXml(unsafe: string): string {
     .replace(/'/g, "&apos;");
 }
 
+interface FeedItem {
+  title: string;
+  url: string;
+  description: string;
+  date: string;
+  category: string;
+}
+
 export function GET() {
   const chapters = getAllChapters();
+  const newsEntries = getNewsEntries();
   const lastBuildDate = new Date().toUTCString();
 
-  const items = chapters
-    .slice()
-    .reverse()
-    .map((chapter) => {
-      const url = `${SITE_URL}/chapters/${chapter.slug}`;
-      const { title, subtitle, publishedAt, updatedAt, part } =
-        chapter.frontmatter;
-      const pubDate = new Date(
-        updatedAt ?? publishedAt ?? Date.now()
-      ).toUTCString();
-      const category = PART_META[part]?.label ?? "";
+  const feedItems: FeedItem[] = [
+    ...newsEntries.map((entry) => ({
+      title: entry.frontmatter.title,
+      url: `${SITE_URL}/chapters/what-is-happening/${entry.slug}`,
+      description: `AI tooling update last verified ${entry.frontmatter.lastVerifiedAt}.`,
+      date: entry.frontmatter.publishedAt,
+      category: "What Is Happening",
+    })),
+    ...chapters.map((chapter) => ({
+      title: chapter.frontmatter.title,
+      url: `${SITE_URL}/chapters/${chapter.slug}`,
+      description: chapter.frontmatter.subtitle,
+      date:
+        chapter.frontmatter.updatedAt ??
+        chapter.frontmatter.publishedAt ??
+        new Date().toISOString(),
+      category: PART_META[chapter.frontmatter.part]?.label ?? "",
+    })),
+  ];
 
-      return `    <item>
-      <title>${escapeXml(title)}</title>
-      <link>${url}</link>
-      <guid isPermaLink="true">${url}</guid>
-      <description>${escapeXml(subtitle)}</description>
-      <pubDate>${pubDate}</pubDate>
+  const items = feedItems
+    .sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
+    .map(
+      (item) => `    <item>
+      <title>${escapeXml(item.title)}</title>
+      <link>${item.url}</link>
+      <guid isPermaLink="true">${item.url}</guid>
+      <description>${escapeXml(item.description)}</description>
+      <pubDate>${new Date(item.date).toUTCString()}</pubDate>
       <author>${AUTHOR_EMAIL} (${escapeXml(AUTHOR)})</author>
-      <category>${escapeXml(category)}</category>
-    </item>`;
-    })
+      <category>${escapeXml(item.category)}</category>
+    </item>`,
+    )
     .join("\n");
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>

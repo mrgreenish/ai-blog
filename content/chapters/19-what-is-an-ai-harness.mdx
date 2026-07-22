@@ -2,7 +2,7 @@
 title: "What Is an AI Harness?"
 subtitle: "Raw model power is a runaway horse. A harness turns it into directed work."
 publishedAt: "2026-05-20"
-updatedAt: "2026-05-20"
+updatedAt: "2026-07-22"
 chapter: 19
 part: tools-infrastructure
 partNumber: 4
@@ -33,7 +33,7 @@ You can feel it the first time you give a model a real task with no scaffolding.
 
 That's the "zonder harness" panel in the diagram. One model. One shot. Vibes.
 
-The model isn't broken. It's a very strong horse with nothing on it. 🐎 Without something channelling that power — without rules about where it can step, what it has to check, who it hands off to — it will just run.
+The model isn't broken. It's a very strong horse with nothing on it. Without a harness — rules about where it can step, what it has to check, and who it hands off to — it will just run.
 
 ## What an orchestrator actually does
 
@@ -62,7 +62,7 @@ Every harness I've seen — Cursor's, Claude Code's, the homemade ones — is do
 4. **Checks results.** A second agent — or a test, or a browser click — that says "yes this actually works" before the work is marked done. (Generator/evaluator pattern.)
 5. **Coordinates tools.** MCP servers, browser drivers, design system pickers, test runners — wired up so the model can reach for the right one.
 
-Subagents, workflows, plan mode, browser agents, feedback loops — all the pieces you already use are bits of the same tuig. We just didn't have a clean word for the whole thing until recently.
+Subagents, workflows, plan mode, browser agents, feedback loops — all the pieces you already use are parts of the same harness. We just didn't have a clean word for the whole system until recently.
 
 ## A harness should be per project
 
@@ -96,7 +96,7 @@ You don't need agents on day one. You need the docs first. A small bootstrap ski
 5. Generate `AI_WORKFLOWS.md`
 6. Generate `AI_REVIEW_CHECKLIST.md`
 
-Three Markdown files. That's the MVP. Every future agent reads them before doing anything.
+Three Markdown files. That's the MVP. To make future agents load them, reference them from a supported instruction surface such as `CLAUDE.md`, `AGENTS.md`, `.cursor/rules/`, or a relevant skill. Arbitrarily named Markdown files at the repository root are durable documentation, but they are not loaded automatically.
 
 Once that's stable, *then* layer in the roster:
 

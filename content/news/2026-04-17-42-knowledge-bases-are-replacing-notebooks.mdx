@@ -1,0 +1,17 @@
+---
+title: Knowledge bases are replacing notebooks
+publishedAt: '2026-04-17'
+lastVerifiedAt: '2026-07-22'
+primarySourceUrl: 'https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f'
+---
+Andrej Karpathy shared a pattern worth paying attention to: instead of using LLMs to write code, use them to build personal knowledge bases.
+
+The structure is simple. Raw materials — papers, articles, repos, datasets — go into a `raw/` directory. The LLM "compiles" them into a wiki: structured `.md` files with summaries, backlinks, concept pages, and cross-references. You query the wiki, and the LLM synthesizes answers with citations.
+
+This isn't RAG. RAG re-discovers knowledge from scratch on every question — chunk, retrieve, generate, forget. The wiki accumulates. Ask a question that requires synthesizing five documents, and the answer is already on a page, not assembled from fragments at query time.
+
+Karpathy describes the pattern as practical at roughly 100 sources and hundreds of generated pages. Periodic linting passes check for contradictions, stale claims, orphan pages, and missing cross-references. The whole thing is a git repo, so you get version history for free. Instead of sharing code, he published a [GitHub Gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) as an "idea file" — in the era of agents, you share the idea and each person's agent builds a version customized for their needs.
+
+The Obsidian connection makes it practical. Obsidian's web clipper converts pages to markdown, the vault is a local folder an agent can read and write, and backlinks make the wiki navigable by both humans and agents. Several open-source projects — [claude-obsidian](https://github.com/AgriciDaniel/claude-obsidian), [obsidian-claude-code](https://github.com/ashish141199/obsidian-claude-code) — have formalized the workflow.
+
+An increasing fraction of token throughput going to knowledge management instead of code generation. Worth watching.

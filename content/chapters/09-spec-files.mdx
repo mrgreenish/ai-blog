@@ -2,7 +2,7 @@
 title: "Spec Files"
 subtitle: "AI-readable documentation that survives context window resets"
 publishedAt: "2026-04-17"
-updatedAt: "2026-04-17"
+updatedAt: "2026-07-22"
 chapter: 9
 part: shipping-workflows
 partNumber: 2
@@ -11,7 +11,7 @@ illustrationPlaceholders:
   - "Anatomy of a spec file: annotated .spec.md showing each section with callouts."
 ---
 
-You spend the first twenty minutes of a session explaining your component to the model. The constraints. The edge cases. The things you explicitly decided not to build. By the end you have something that works — and a chat transcript that vanishes the moment you close the tab.
+You spend the first twenty minutes of a session explaining your component to the model. The constraints. The edge cases. The things you explicitly decided not to build. By the end you have something that works — and a chat transcript that is not a durable, repo-visible source of truth for the next task.
 
 Next session, you start over.
 
@@ -21,7 +21,7 @@ A `.spec.md` file breaks the cycle. It's a markdown file that lives next to the 
 
 ## Why spec files beat chat-only specs
 
-Write a spec in chat, it exists for one session. Next time you open a new conversation about the same component, the AI has no memory of the decisions you made. You either re-explain everything or the model makes assumptions.
+Write a spec only in chat and it remains conversation context, not shared project documentation. A later conversation may be retrievable, but the next task, teammate, or tool will not reliably receive those decisions unless you attach them again. You either re-explain everything or the model makes assumptions.
 
 A spec file persists:
 
@@ -35,7 +35,7 @@ The most underrated benefit: the "Not in scope" section. Tell the model in chat 
 
 ## Anatomy of a spec file
 
-Here's a real example — the spec for the `Header` component in this codebase:
+Here's a real example — a compact spec for the current `Header` component in this codebase:
 
 ```markdown
 # Spec: `Header` component
@@ -46,17 +46,13 @@ Here's a real example — the spec for the `Header` component in this codebase:
 
 ## Overview
 
-A sticky, floating navigation bar rendered at the top of every page.
-Uses the current pathname to highlight the active route.
+A fixed navigation bar rendered at the top of every page.
 
 ---
 
 ## Inputs
 
-| Input | Type | Source | Notes |
-|---|---|---|---|
-| `pathname` | `string` | `usePathname()` hook | Read from Next.js router; no prop |
-| `NAV_LINKS` | `{ href: string; label: string }[]` | Module-level constant | Hardcoded — not a prop |
+The component accepts no props. Its three navigation links are defined directly in the rendered JSX.
 
 ---
 
@@ -64,29 +60,25 @@ Uses the current pathname to highlight the active route.
 
 Renders a `<header>` element containing:
 
-1. **Logo link** — navigates to `/`, displays `field notes / ai` with a `Terminal` icon
-2. **Nav links** — one `<Link>` per entry in `NAV_LINKS`, each with active/inactive visual state
-3. **Active indicator** — a horizontal gradient line rendered below the active nav item
+1. **Site link** — navigates to `/` and displays `AI Field Notes`
+2. **Contents link** — navigates to `/#contents`
+3. **What's Happening link** — navigates to `/chapters/what-is-happening`
+4. **Search link** — navigates to `/search`
 
 ---
 
 ## Behaviour / Logic
 
-**Active state detection:**
-
-const isActive = pathname === href || pathname.startsWith(`${href}/`);
-
-A link is active if the pathname exactly matches or is a sub-path
-(e.g. `/models/gpt-4` activates `/models`).
+All links use Next.js `Link`. Navigation styling is static, with hover color transitions and no active-route state.
 
 ---
 
 ## Constraints
 
-- Must be a **Client Component** (`"use client"`) — required for `usePathname()`
-- Sticky positioning (`sticky top-0 z-50`) — assumes no other `z-50` element conflicts
-- Max content width is capped at `max-w-5xl` — must match the page layout container width
-- `NAV_LINKS` is a module constant — adding/removing nav items requires a code change
+- Remains fixed at `top-0` with `z-50`
+- Max content width is `max-w-4xl` to match the page layout
+- Uses existing foreground, background, and border tokens
+- Adding or removing navigation items requires a code change
 
 ---
 
@@ -94,18 +86,18 @@ A link is active if the pathname exactly matches or is a sub-path
 
 | Scenario | Behaviour |
 |---|---|
-| Pathname is `/` (home) | No nav link is active |
-| Pathname is `/models/some-slug` | `/models` link is active (prefix match) |
-| Pathname is `/modelsfoo` | `/models` link is **not** active — `startsWith("/models/")` prevents false positives |
-| `NAV_LINKS` is empty | Nav renders an empty `<nav>` — no links, no errors |
+| Narrow viewport | Links remain on one row; labels must stay concise |
+| Long page content | Fixed header remains visible and content needs top spacing |
+| JavaScript disabled | Next.js links still render as standard anchors |
 
 ---
 
 ## Not in scope
 
-- Mobile/hamburger menu — no responsive collapse behaviour
-- Authentication state — header has no user/session awareness
-- Dark/light mode toggle — theme is hardcoded dark
+- Mobile/hamburger menu
+- Authentication state
+- Active-route highlighting
+- Theme toggle
 ```
 
 Each section does specific work for the AI:

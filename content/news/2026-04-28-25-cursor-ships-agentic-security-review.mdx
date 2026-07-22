@@ -1,0 +1,13 @@
+---
+title: Cursor ships agentic security review
+publishedAt: '2026-04-28'
+lastVerifiedAt: '2026-07-22'
+primarySourceUrl: 'https://cursor.com/blog/security-agents'
+---
+Cursor released [four automation templates](https://cursor.com/blog/security-agents) based on security agents it runs internally, including Agentic Security Review. That template runs on pull requests, posts findings as PR comments, and can block CI on high-severity issues. It audits diffs for exploitable vulnerabilities, skips items already discussed in the PR, and routes high-risk findings to a private Slack channel. Cursor's current managed product instead exposes Security Reviewer and Vulnerability Scanner.
+
+The review agent ships alongside three other security agents Cursor runs internally — Vuln Hunter (segments the repo and hunts for vulnerabilities), Anybump (handles dependency patching, runs tests, opens a PR if they pass), and Invariant Sentinel (runs daily to detect drift against a list of compliance and privacy invariants). Templates and Terraform for all four are public, with a custom MCP server deployed as a serverless Lambda handling persistent state, deduplication, and Slack formatting. The [Cursor blog post](https://cursor.com/blog/security-agents) has the full architecture.
+
+In Cursor's own deployment, the review agent has run on thousands of PRs and prevented hundreds of issues from reaching production in the last two months. The rollout sequence they used is worth copying: silent mode to a private Slack channel first, then PR comments once precision was high enough, then a blocking CI gate.
+
+Practical read: ad hoc skills such as `/review-security` and `/review` still depend on someone remembering to run them. As an always-on automation tied to CI, review stops being a discipline problem and starts becoming infrastructure. Worth pairing with hooks — the hook blocks bad writes locally, the review agent catches what makes it through.

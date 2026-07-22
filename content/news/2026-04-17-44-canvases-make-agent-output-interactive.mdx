@@ -1,0 +1,11 @@
+---
+title: Canvases make agent output interactive
+publishedAt: '2026-04-15'
+lastVerifiedAt: '2026-07-22'
+primarySourceUrl: 'https://cursor.com/blog/canvas'
+---
+Cursor shipped [canvases](https://cursor.com/blog/canvas) — interactive visual surfaces that agents create inline. Instead of reading a text-based summary of your data, the agent generates a custom dashboard, chart, or visualization you can click through.
+
+The shift is in the output format. Most agent responses are text. Canvases let the agent build a small interactive application as the response — a dependency graph you can explore, a timeline you can scrub, a layout you can rearrange. The agent writes the visualization code, renders it in a sandboxed canvas, and you interact with the result directly.
+
+This matters because some information is fundamentally better explored than read. A table of API response times is less useful than a chart you can filter by endpoint. A list of component dependencies is less useful than a graph you can zoom into. Canvases give the agent a richer output vocabulary.

@@ -1,0 +1,24 @@
+---
+title: 'Subagents: the Cursor model is worth studying'
+publishedAt: '2026-04-17'
+lastVerifiedAt: '2026-07-22'
+primarySourceUrl: 'https://cursor.com/docs/context/subagents'
+---
+Cursor's [subagents](https://cursor.com/docs/context/subagents) go further than the `AGENTS.md` pattern. Each gets its own context window and model config, runs foreground or background, and three built-ins (Explore, Bash, Browser) handle the noisiest operations automatically.
+
+Custom subagents are markdown files with YAML frontmatter in `.cursor/agents/` (or `.claude/agents/`):
+
+```markdown
+---
+name: security-auditor
+description: Security specialist. Use when implementing auth, payments, or handling sensitive data.
+model: inherit
+readonly: true
+---
+
+You are a security expert auditing code for vulnerabilities.
+```
+
+The `description` field determines when the parent delegates — spend time on it. The `model` field lets you route high-volume tasks to a faster model and depth tasks to a more capable one.
+
+Anti-pattern: dozens of vague subagents. Five focused ones with sharp descriptions outperform fifty the parent doesn't know when to use.

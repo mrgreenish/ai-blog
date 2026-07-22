@@ -25,6 +25,7 @@ import matter from "gray-matter";
 
 const ROOT = path.resolve(__dirname, "../../../");
 const CHAPTERS_DIR = path.join(ROOT, "content/chapters");
+const NEWS_DIR = path.join(ROOT, "content/news");
 
 const VALID_PARTS = new Set([
   "understanding-models",
@@ -50,6 +51,25 @@ function loadAllChapters(): ChapterInfo[] {
     const slug = file.replace(/^\d+-/, "").replace(/\.mdx$/, "");
     return { slug, filePath, raw, frontmatter: data };
   });
+}
+
+interface NewsEntryInfo {
+  filePath: string;
+  content: string;
+  frontmatter: Record<string, unknown>;
+}
+
+function loadAllNewsEntries(): NewsEntryInfo[] {
+  if (!fs.existsSync(NEWS_DIR)) return [];
+  return fs
+    .readdirSync(NEWS_DIR)
+    .filter((file) => file.endsWith(".mdx"))
+    .map((file) => {
+      const filePath = path.join(NEWS_DIR, file);
+      const raw = fs.readFileSync(filePath, "utf-8");
+      const { data, content } = matter(raw);
+      return { filePath, content, frontmatter: data };
+    });
 }
 
 const VALID_TOOL_SLUGS = new Set([
@@ -108,6 +128,50 @@ describe("Chapter frontmatter schema", () => {
       (c) => c.frontmatter.updatedAt !== undefined && isNaN(Date.parse(c.frontmatter.updatedAt as string))
     );
     expect(bad.map((c) => `${c.slug}: "${c.frontmatter.updatedAt}"`), "unparseable updatedAt").toEqual([]);
+  });
+});
+
+describe("Dated news entry schema", () => {
+  const entries = loadAllNewsEntries();
+
+  it("has at least one split news entry", () => {
+    expect(entries.length).toBeGreaterThan(0);
+  });
+
+  it("every entry has dated, primary-source-backed frontmatter", () => {
+    const invalid = entries.filter(({ frontmatter }) => {
+      const publishedAt = frontmatter.publishedAt;
+      const lastVerifiedAt = frontmatter.lastVerifiedAt;
+      const primarySourceUrl = frontmatter.primarySourceUrl;
+      return (
+        typeof frontmatter.title !== "string" ||
+        typeof publishedAt !== "string" ||
+        isNaN(Date.parse(publishedAt)) ||
+        typeof lastVerifiedAt !== "string" ||
+        isNaN(Date.parse(lastVerifiedAt)) ||
+        typeof primarySourceUrl !== "string" ||
+        !primarySourceUrl.startsWith("https://")
+      );
+    });
+
+    expect(
+      invalid.map(({ filePath }) => path.basename(filePath)),
+      "news entries missing dates or a primary source"
+    ).toEqual([]);
+  });
+
+  it("keeps visible metadata out of entry bodies", () => {
+    const invalid = entries.filter(
+      ({ content }) =>
+        content.trimStart().startsWith("## ") ||
+        content.includes("Entry date:") ||
+        content.includes("Last verified:")
+    );
+
+    expect(
+      invalid.map(({ filePath }) => path.basename(filePath)),
+      "news entries duplicate frontmatter in their body"
+    ).toEqual([]);
   });
 });
 

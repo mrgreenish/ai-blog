@@ -2,7 +2,7 @@
 title: "Prompting and Pitfalls"
 subtitle: "The mindset shift that makes AI coding actually work"
 publishedAt: "2026-04-17"
-updatedAt: "2026-04-17"
+updatedAt: "2026-07-22"
 chapter: 3
 part: understanding-models
 partNumber: 1
@@ -53,7 +53,7 @@ Want the model to match your style? Show it examples. Don't describe your style 
 
 ### Work in small iterations
 
-Long, multi-step prompts that ask for everything at once tend to produce worse results than breaking things into steps. More context, more assumptions, more output in one shot — errors compound.
+Long, interdependent prompts can produce worse results than breaking the work into reviewable steps. More context, more assumptions, more output in one shot — errors compound. Independent, easily verified steps can still be batched when the shared context makes that cheaper and clearer.
 
 Spec first, then plan, then implement, then review. Each step is a separate prompt. You review each output before moving to the next.
 
@@ -99,7 +99,7 @@ This one's dangerous because it feels like success. The code works — until it 
 
 AI-generated code *looks* polished. Formatted correctly, reasonable variable names, familiar patterns. The visual signal of "good code" is there even when the logic is subtly wrong. Easy to skim past a wrong assumption when everything looks clean.
 
-So: read every line the model writes before accepting it. Not skim — read. If you can't explain what a block does, ask the model to explain it. If the explanation doesn't hold up, don't merge it.
+For high-risk or behavior-changing code, read the relevant diff line by line before accepting it. For mechanical changes, generated files, or large repetitive edits, review the transformation and verify it with focused tests instead of pretending every line deserves equal attention. If you can't explain an important block, ask the model to explain it. If the explanation doesn't hold up, don't merge it.
 
 Yes, this slows you down. Worth it. The goal isn't to generate code faster — it's to ship code you understand and can maintain.
 

@@ -2,7 +2,7 @@
 title: "Bug Report to Fix"
 subtitle: "A repeatable AI-assisted debugging flow, centered on minimal reproduction"
 publishedAt: "2026-04-17"
-updatedAt: "2026-04-17"
+updatedAt: "2026-07-22"
 chapter: 5
 part: shipping-workflows
 partNumber: 2
@@ -29,7 +29,7 @@ For frontend bugs, don't debug from a pasted error string alone. Open the app in
 
 A lot of bugs are only obvious in the browser — hydration mismatches, broken form submissions, race conditions after navigation, event handlers that never fire, client-side state that diverges from what the server rendered. A terminal stack trace often misses the part you actually need.
 
-If you have Browser MCP connected, the debugging loop gets tighter. Instead of saying "the page looks broken," you can ask the model to open the page, reproduce the issue, inspect the browser state, and use that evidence as part of the diagnosis. That's much better context than screenshots or vague descriptions.
+With Cursor's built-in Agent browser available, the debugging loop gets tighter. Instead of saying "the page looks broken," you can ask the model to open the page, reproduce the issue, inspect the browser state, and use that evidence as part of the diagnosis. That's much better context than screenshots or vague descriptions.
 
 <InfoBlock title="Browser-first debugging in Cursor">
 
@@ -37,7 +37,7 @@ For bugs on `localhost`, I want the model to use the browser as evidence, not ju
 
 **In Cursor:** open the page in Cursor's built-in browser and reproduce the issue with the console and network information visible.
 
-**With Browser MCP:** let the model navigate the page, inspect the rendered UI, and reason from actual browser state instead of guessed behavior.
+**With the Agent browser:** let the model navigate the page, inspect the rendered UI, and reason from actual browser state instead of guessed behavior. Workspace administrators can restrict browser access.
 
 The useful prompt shape is: "Open `http://localhost:3000/...`, reproduce the bug, check console errors / network failures / visible UI state, then explain the likely cause before changing code."
 
