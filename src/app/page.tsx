@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { TableOfContents } from "@/components/content/TableOfContents";
 import { DotField } from "@/components/interactive/DotField";
-import { ASCIIBrain } from "@/components/interactive/ASCIIBrain";
+import { Brain3D } from "@/components/interactive/Brain3D";
 
 export const metadata: Metadata = {
   title: "Working With AI as a Developer",
@@ -30,7 +30,7 @@ export default function Home() {
     <div className="relative">
       <DotField className="absolute inset-x-0 top-0 h-[600px] z-0" />
 
-      <div className="relative z-10 mx-auto max-w-4xl px-6 py-16">
+      <div className="relative z-10 mx-auto max-w-4xl px-6 pt-16">
         {/* Title block */}
         <div className="mb-16">
           <p className="font-mono text-xs uppercase tracking-widest text-fg-muted mb-6">
@@ -65,16 +65,22 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="section-divider mb-16" />
-
-        {/* Code-textured brain transition — a slow, deliberate turn */}
-        <section className="relative -mb-24 min-h-[520px] pointer-events-none">
-          <ASCIIBrain className="absolute inset-0 z-0" />
-        </section>
-
-        {/* Table of Contents */}
-        <TableOfContents />
+        <div className="section-divider" />
       </div>
+
+      {/*
+        Particle visualization: assembles into a thinking brain, then as you
+        scroll it morphs into a visualization of how an LLM works. It's a
+        pinned, full-width background; the table of contents scrolls over its
+        lower half. The morph completes partway down the chapter list.
+      */}
+      <Brain3D>
+        <div className="mx-auto max-w-4xl px-6 pb-24">
+          {/* Hero space: the brain plays alone before the chapters arrive */}
+          <div className="brain3d-hero" aria-hidden="true" />
+          <TableOfContents />
+        </div>
+      </Brain3D>
     </div>
   );
 }

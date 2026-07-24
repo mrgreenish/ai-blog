@@ -120,6 +120,38 @@ body {
 .delay-500 { animation-delay: 500ms; }
 
 /* A single coherent brain replaces the previous random field animation. */
+.brain3d-track {
+  position: relative;
+}
+
+/* Pinned canvas host: the model stays centred in the viewport while the
+   chapter list scrolls over it. The negative margin pulls the following
+   content up so it overlaps the pinned viz instead of sitting below it. */
+.brain3d-stage {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  margin-bottom: -100dvh;
+  z-index: 0;
+  pointer-events: none;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 82%, transparent 98%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 82%, transparent 98%);
+}
+
+/* Empty space that lets the brain play alone before the chapters arrive. */
+.brain3d-hero {
+  height: 60vh;
+}
+
+/* Static fallback (WebGL unavailable): a short brain image above the list. */
+.brain3d-fallback {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 60vh;
+  z-index: 0;
+  pointer-events: none;
+}
+
 .ascii-brain-stage {
   display: grid;
   place-items: center;
