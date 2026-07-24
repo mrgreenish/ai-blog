@@ -40,12 +40,22 @@ const MORPH_START = 0.4;
 const MORPH_END = 0.58;
 const SCROLL_SMOOTHING = 0.09;
 
-// The viz doubles as a background behind the chapter list. Once the
-// chapters begin to overlap it, dim the whole thing so dark body text
-// stays readable on top.
-const BG_FADE_START = 0.32;
-const BG_FADE_END = 0.5;
-const BG_FADE_MIN = 0.54;
+// The hero viz sits at the very top of the page. Scroll progress is
+// measured from the page top: HERO_BASE is the story position at scroll 0
+// (an assembled, thinking brain), rising to 1 over HERO_STORY_VH viewport
+// heights of scroll as it morphs into the forward-pass diagram.
+const HERO_BASE = 0.3;
+const HERO_STORY_VH = 0.75;
+
+// The chapter list now has its own clean background, so the viz no longer
+// dims for text underneath. A global transparency ceiling keeps it a quiet
+// hero rather than a heavy graphic; the scroll-fade is disabled.
+const BG_FADE_START = 0.35;
+const BG_FADE_END = 0.7;
+const BG_FADE_MIN = 1.0;
+const GLOBAL_ALPHA = 0.5;
+// Small lift so the model sits nicely below the title in the hero.
+const MODEL_LIFT = 0.06;
 
 // Rotation: the brain sweeps left→right; the plate settles nearly
 // front-on (a figure you read) with a slight downward tilt.
@@ -67,7 +77,7 @@ const FP_LAYER_DY = 0.84 / (FP_LAYERS - 1); // → layer 8 at +0.42
 // out of the centred reading column.
 const SOFTMAX_X0 = 0.34;
 const SOFTMAX_XSPAN = 0.54;
-const SOFTMAX_Y0 = 0.5;
+const SOFTMAX_Y0 = 0.42;
 // One full forward-pass wavefront every ~9s.
 const SWEEP_SPEED = 0.11;
 
@@ -764,7 +774,7 @@ function buildForwardPass(count: number): LLMAttributes {
         0.48
       );
     } else {
-      put(0.2 + jit() * 0.05, 0.72 + jit() * 0.05, jit() * 0.01, 0, 0, 1, 0.85);
+      put(0.2 + jit() * 0.05, 0.63 + jit() * 0.05, jit() * 0.01, 0, 0, 1, 0.85);
     }
   }
 
@@ -977,22 +987,22 @@ export function Brain3D({ className = "", children }: Brain3DProps) {
     let lastNow = 0;
     let smoothed = 0;
     let fadeIn = 0;
+    let loadT = 0; // load-time assemble ramp (0→1), independent of scroll
 
     let state: GLState | null = null;
     let camZ = CAMERA_Z_MIN;
     const mvMat = new Float32Array(16);
     const nrmMat = new Float32Array(9);
 
-    // --- Scroll progress across the (tall) track: 0 when its top hits
-    // the viewport bottom, 1 when its bottom leaves the viewport top. The
-    // canvas is pinned (sticky) inside the track, so the model stays
-    // centred while the chapters scroll over it.
+    // --- Story progress, measured from the page top. At scroll 0 the
+    // brain is assembled and thinking (HERO_BASE); it morphs into the
+    // forward pass over the next HERO_STORY_VH viewport heights of scroll.
+    // The canvas is pinned (sticky) in the hero, so the model stays
+    // centred while the title and intro scroll over it.
     const sectionProgress = () => {
-      const rect = track.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const total = vh + rect.height;
-      if (total <= 0) return 0;
-      return Math.min(Math.max((vh - rect.top) / total, 0), 1);
+      const vh = window.innerHeight || 1;
+      const s = Math.max(window.scrollY, 0);
+      return Math.min(HERO_BASE + (1 - HERO_BASE) * (s / (HERO_STORY_VH * vh)), 1);
     };
 
     const resize = () => {
@@ -1020,18 +1030,27 @@ export function Brain3D({ className = "", children }: Brain3DProps) {
     };
 
     /** Set pose + timeline uniforms and issue both draw calls. */
-    const drawScene = (sp: number, wobble: number, opacity: number) => {
+    const drawScene = (
+      sp: number,
+      wobble: number,
+      opacity: number,
+      load: number
+    ) => {
       if (!state) return;
       const { gl } = state;
 
       const morph = clamp01((sp - MORPH_START) / (MORPH_END - MORPH_START));
       const mPose = morph * morph * (3 - 2 * morph);
-      const progress = Math.min(sp / ASSEMBLE_END, 1);
+      // Assemble is driven by the load ramp, not scroll, so the brain
+      // flies together on page load rather than needing a scroll.
+      const progress = load;
 
       // Dim once the chapters begin to overlap so dark body text stays
       // readable on top of the viz.
       const op =
-        opacity * (1 - smoothstep(BG_FADE_START, BG_FADE_END, sp) * (1 - BG_FADE_MIN));
+        opacity *
+        GLOBAL_ALPHA *
+        (1 - smoothstep(BG_FADE_START, BG_FADE_END, sp) * (1 - BG_FADE_MIN));
 
       // Compute wavefront (only meaningful on the plate): cycles up the
       // layer stack, driving the forward-pass animation.
@@ -1043,8 +1062,9 @@ export function Brain3D({ className = "", children }: Brain3DProps) {
       const plateRy = wobble * 0.5; // gentle sway, faces the viewer
       const rx = brx + (PLATE_ROT_X - brx) * mPose;
       const ry = bry + (plateRy - bry) * mPose;
-      // Gentle parallax: the model drifts slower than the page
-      const ty = (sp - 0.5) * 0.22;
+      // Lift the model up the viewport, plus gentle parallax (it drifts
+      // slower than the page).
+      const ty = MODEL_LIFT + (sp - 0.5) * 0.22;
       modelViewMatrix(rx, ry, ty, camZ, mvMat, nrmMat);
 
       let scan = 3; // parked off-model
@@ -1085,10 +1105,7 @@ export function Brain3D({ className = "", children }: Brain3DProps) {
     const renderStatic = () => {
       if (!state) return;
       // Assembled brain thinking, 3/4 view, frozen pulses
-      const { gl } = state;
-      gl.useProgram(state.points.program);
-      gl.uniform1f(state.points.locs.uProgress, 1);
-      drawScene(0.3, 0, 1);
+      drawScene(HERO_BASE, 0, 1, 1);
     };
 
     const frame = (now: number) => {
@@ -1100,12 +1117,13 @@ export function Brain3D({ className = "", children }: Brain3DProps) {
       time += dt;
 
       fadeIn = Math.min(fadeIn + dt * 1.4, 1);
+      loadT = Math.min(loadT + dt / 1.6, 1);
 
       const target = sectionProgress();
       smoothed += (target - smoothed) * SCROLL_SMOOTHING;
 
       // Idle drift keeps it alive between scrolls
-      drawScene(smoothed, Math.sin(time * 0.25) * 0.045, fadeIn);
+      drawScene(smoothed, Math.sin(time * 0.25) * 0.045, fadeIn, loadT);
 
       rafId = requestAnimationFrame(frame);
     };
@@ -1308,7 +1326,7 @@ export function Brain3D({ className = "", children }: Brain3DProps) {
       // Present a frame immediately so the compositor never holds an
       // empty accelerated layer.
       smoothed = sectionProgress();
-      drawScene(smoothed, 0, 0);
+      drawScene(smoothed, 0, 0, 0);
       return true;
     };
 

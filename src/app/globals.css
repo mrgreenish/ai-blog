@@ -134,13 +134,15 @@ body {
   margin-bottom: -100dvh;
   z-index: 0;
   pointer-events: none;
-  mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 82%, transparent 98%);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 82%, transparent 98%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 84%, transparent 98%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 84%, transparent 98%);
 }
 
-/* Empty space that lets the brain play alone before the chapters arrive. */
+/* Scroll room inside the hero for the brain to morph into the forward
+   pass. It also keeps the sticky canvas pinned long enough for the story
+   to finish before the (clean) chapter list begins. */
 .brain3d-hero {
-  height: 60vh;
+  height: 115vh;
 }
 
 /* Static fallback (WebGL unavailable): a short brain image above the list. */
