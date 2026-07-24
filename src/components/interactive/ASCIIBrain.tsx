@@ -15,7 +15,6 @@ export function ASCIIBrain({ className = "" }: ASCIIBrainProps) {
           src="/images/ascii-brain.webp"
           alt=""
           fill
-          priority
           sizes="(max-width: 768px) 100vw, 896px"
           className="object-contain"
         />

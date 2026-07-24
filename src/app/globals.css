@@ -152,10 +152,49 @@ body {
   mix-blend-mode: screen;
 }
 
+/* A quiet continuation of the hero artwork. It stays outside the prose column
+   and never participates in hit testing, keeping reading and navigation clear. */
+.hero-brain::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 100%;
+  left: 50%;
+  width: 1px;
+  height: clamp(4rem, 13vw, 10rem);
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(91, 33, 182, 0.26),
+    rgba(196, 181, 253, 0.12) 58%,
+    transparent
+  );
+}
+
+.hero-brain::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: calc(100% + clamp(2rem, 6vw, 4.5rem));
+  left: calc(50% - 2px);
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  pointer-events: none;
+  background: rgba(91, 33, 182, 0.3);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ascii-brain-turn,
   .ascii-brain-scan {
     animation: none;
+  }
+}
+
+@media (max-width: 1023px) {
+  .hero-brain::before,
+  .hero-brain::after {
+    display: none;
   }
 }
 

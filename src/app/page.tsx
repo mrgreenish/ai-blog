@@ -31,21 +31,29 @@ export default function Home() {
       <DotField className="absolute inset-x-0 top-0 h-[600px] z-0" />
 
       <div className="relative z-10 mx-auto max-w-4xl px-6 py-16">
-        {/* Title block */}
-        <div className="mb-16">
-          <p className="font-mono text-xs uppercase tracking-widest text-fg-muted mb-6">
-            A developer&apos;s reference
-          </p>
-          <h1 className="font-sans text-5xl font-semibold tracking-tight text-fg-primary leading-tight mb-6">
-            Working With AI
-            <br />
-            as a Developer
-          </h1>
-          <p className="editorial-lead max-w-xl">
-            Field notes on shipping with AI — models, workflows, and tooling.
-            What actually works in production, kept up to date as the space moves.
-          </p>
-        </div>
+        <header className="relative mb-16 grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(16rem,0.75fr)] lg:gap-12">
+          <div className="relative z-10">
+            <p className="font-mono text-xs uppercase tracking-widest text-fg-muted mb-6">
+              A developer&apos;s reference
+            </p>
+            <h1 className="font-sans text-5xl font-semibold tracking-tight text-fg-primary leading-tight mb-6">
+              Working With AI
+              <br />
+              as a Developer
+            </h1>
+            <p className="editorial-lead max-w-xl">
+              Field notes on shipping with AI — models, workflows, and tooling.
+              What actually works in production, kept up to date as the space moves.
+            </p>
+          </div>
+
+          <section
+            aria-hidden="true"
+            className="hero-brain pointer-events-none relative z-0 h-44 overflow-visible border-y border-border-subtle opacity-60 sm:h-56 lg:h-72 lg:translate-y-14"
+          >
+            <ASCIIBrain className="absolute inset-0 pointer-events-none" />
+          </section>
+        </header>
 
         <div className="section-divider mb-6" />
 
@@ -65,15 +73,9 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="section-divider mb-16" />
-
-        {/* Code-textured brain transition — a slow, deliberate turn */}
-        <section className="relative -mb-24 min-h-[520px] pointer-events-none">
-          <ASCIIBrain className="absolute inset-0 z-0" />
-        </section>
-
         {/* Table of Contents */}
         <TableOfContents />
+
       </div>
     </div>
   );
