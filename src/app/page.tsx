@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { TableOfContents } from "@/components/content/TableOfContents";
-import { DotField } from "@/components/interactive/DotField";
 import { ASCIIBrain } from "@/components/interactive/ASCIIBrain";
 
 export const metadata: Metadata = {
@@ -28,8 +27,6 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <div className="relative">
-      <DotField className="absolute inset-x-0 top-0 h-[600px] z-0" />
-
       <div className="relative z-10 mx-auto max-w-4xl px-6 py-16">
         <header className="relative mb-16 grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(16rem,0.75fr)] lg:gap-12">
           <div className="relative z-10">
@@ -49,7 +46,7 @@ export default function Home() {
 
           <section
             aria-hidden="true"
-            className="hero-brain pointer-events-none relative z-0 h-44 overflow-visible border-y border-border-subtle opacity-60 sm:h-56 lg:h-72 lg:translate-y-14"
+            className="hero-brain pointer-events-none relative z-10 h-44 overflow-visible border-y border-border-subtle opacity-70 sm:h-56 lg:h-72 lg:translate-y-14"
           >
             <ASCIIBrain className="absolute inset-0 pointer-events-none" />
           </section>
