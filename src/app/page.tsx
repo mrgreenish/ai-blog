@@ -28,10 +28,8 @@ export default function Home() {
   return (
     <div className="relative">
       {/*
-        Hero: the top-of-page visual is a particle animation that assembles
-        into a thinking brain and, as you scroll, morphs into a diagram of
-        how an LLM works (a transformer forward pass). It's pinned behind
-        the title and intro only — the chapter list below has a clean
+        Hero: a restrained particle animation sits behind the introduction
+        as a small visual accent. The chapter list below keeps a clean
         background so it stays easy to read.
       */}
       <Brain3D>
@@ -72,7 +70,7 @@ export default function Home() {
 
           <div className="section-divider" />
 
-          {/* Scroll room for the brain to morph into the forward-pass diagram */}
+          {/* A compact pause before the chapter list begins. */}
           <div className="brain3d-hero" aria-hidden="true" />
         </div>
       </Brain3D>
@@ -80,6 +78,7 @@ export default function Home() {
       {/* Table of Contents — clean background, no visualization behind it */}
       <div className="relative z-10 mx-auto max-w-4xl px-6 pb-24">
         <TableOfContents />
+
       </div>
     </div>
   );

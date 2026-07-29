@@ -2,7 +2,7 @@
 title: "Model Personalities"
 subtitle: "How different models approach the same task, and when to lean into that"
 publishedAt: "2026-04-17"
-updatedAt: "2026-07-22"
+updatedAt: "2026-07-29"
 chapter: 2
 part: understanding-models
 partNumber: 1
@@ -97,6 +97,26 @@ Fable also has deliberate safety boundaries. Flagged cybersecurity and biology r
 
 Where it falls short: ordinary implementation. Once Fable has made a decision-complete plan, Terra, Sonnet, or Composer can often execute it for much less.
 
+## Claude Opus 5: the rigorous reviewer
+
+**Anthropic · Review-grade reasoning · Best for: Critical decisions and subtle bugs**
+
+Opus 5 belongs alongside Fable, not in place of it. Reach for it when the important work is a careful reasoning pass: pressure-testing an architecture decision, tracing a hard-to-reproduce bug, or reviewing a consequential change for hidden coupling and missing rollback paths. It is deliberate rather than fast, and it should show its evidence rather than simply sounding confident.
+
+Where Fable is the better fit for an expansive, multi-day agent workflow, Opus 5 is the tighter choice for a high-stakes review or a difficult decision that benefits from focused scrutiny. Keep Opus 4.8 available for established workflows and comparisons; the two versions are separate options in the model tools.
+
+Where it falls short: routine implementation and high-volume work. Use a lighter model for a clear task, then bring Opus 5 in when a review can prevent expensive cleanup.
+
+## Kimi K3: the open-weight marathoner
+
+**Moonshot AI · Always-on reasoning · Best for: Long-context coding and knowledge work**
+
+Kimi K3 is built for long-horizon coding and end-to-end knowledge work. Its 1,048,576-token context window can hold a large codebase or document set, and native visual understanding lets screenshots, diagrams, code, and prose stay in one workflow. It always reasons, with low, high, and max effort settings rather than a separate non-thinking mode.
+
+At API rates of $3 per million cache-miss input tokens and $15 per million output tokens, it sits near the balanced frontier tier; automatic context caching lowers repeated input to $0.30 per million tokens. That makes it especially interesting for agents that repeatedly carry a stable repository or specification across turns.
+
+Where it falls short: small, latency-sensitive work. Always-on reasoning is useful when the task branches, but it is unnecessary overhead for a one-line edit with an obvious test.
+
 ## Composer 2.5: the agentic one
 
 **Cursor · Agentic · Best for: End-to-end tasks**
@@ -107,7 +127,7 @@ Give it a task spanning multiple files with verification — "add this feature, 
 
 It also self-corrects. Observes the results of its own actions, catches mistakes a non-agentic model would leave for you. Sees the TypeScript error, understands it in context, fixes it — no copy-pasting errors back into a prompt.
 
-Not limited to open files either. It navigates the project, finds relevant files, and makes coordinated changes across many of them. On current individual plans it draws from Cursor's First-party models pool, alongside Grok 4.5, rather than the separate API pool.
+Not limited to open files either. It navigates the project, finds relevant files, and makes coordinated changes across many of them. On current individual plans it draws from the Cursor Models pool, alongside Grok 4.5, rather than the separate Other Models pool.
 
 Cursor's May 2026 launch results reported **79.8% on SWE-Bench Multilingual** and **63.2% on CursorBench v3.1**. A later Cursor audit measured 79.15% raw on SWE-Bench Multilingual and 71.60% after correcting reward-hacking contamination, a useful reminder that benchmark claims need scrutiny even when the vendor publishes them. Behaviorally, users on the forum describe it as more willing to collaborate than Composer 2. The lingering gripe is inconsistent thinking depth — sometimes a "please think harder" nudge is needed before it commits to a deep answer.
 

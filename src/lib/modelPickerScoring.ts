@@ -247,6 +247,38 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
       "Proactive with high-signal observations");
   }
 
+  if (modelId === "opus-5") {
+    dim("task", task === "reasoning" ? 5 : task === "coding" ? 4 : task === "analysis" ? 4 : task === "writing" ? 2 : 0,
+      task === "reasoning" ? "Rigorous review-grade reasoning for ambiguous, consequential decisions"
+      : task === "coding" ? "Traces control flow and pressure-tests implementation assumptions" : "");
+    dim("scope", scope === "architecture" ? 5 : scope === "multifile" ? 4 : scope === "autonomous" ? 2 : 0,
+      scope === "architecture" ? "Pressure-tests system design, tradeoffs, and hidden coupling"
+      : scope === "multifile" ? "Keeps cross-module consequences in view" : "");
+    dim("stakes", stakes === "critical" ? 6 : stakes === "production" ? 3 : stakes === "prototype" ? -3 : 0,
+      stakes === "critical" ? "Deliberate verification is worth the time when a subtle mistake is expensive" : "");
+    dim("priority", priority === "accuracy" ? 6 : priority === "balance" ? 1 : priority === "speed" ? -4 : 0,
+      priority === "accuracy" ? "Best when a careful, evidence-seeking review matters more than response speed" : "");
+    dim("autonomy", autonomy === "gaps" ? 3 : autonomy === "drive" ? 2 : autonomy === "targeted" ? -1 : 0,
+      "Strong for reviewing and refining a plan; use Fable or Sol for long autonomous execution");
+  }
+
+  if (modelId === "kimi-k3") {
+    dim("task", task === "coding" ? 5 : task === "reasoning" ? 5 : task === "analysis" ? 5 : task === "vision" ? 4 : task === "writing" ? 2 : 0,
+      task === "coding" ? "Built for long-horizon coding with tools and structured outputs"
+      : task === "analysis" ? "A 1M context window and always-on reasoning suit large research and knowledge-work inputs"
+      : task === "vision" ? "Native visual understanding keeps screenshots and diagrams in the same reasoning workflow" : "");
+    dim("scope", scope === "autonomous" ? 6 : scope === "multifile" ? 6 : scope === "architecture" ? 4 : scope === "targeted" ? -2 : 0,
+      scope === "autonomous" ? "Moonshot positions K3 for long-horizon, end-to-end work"
+      : scope === "multifile" ? "Its 1M context can hold broad codebase context for coordinated changes" : "");
+    dim("stakes", stakes === "production" ? 3 : stakes === "critical" ? 3 : stakes === "prototype" ? -3 : 0,
+      stakes === "production" ? "Strong context and tool support fit production workflows with external verification" : "");
+    dim("priority", priority === "accuracy" ? 4 : priority === "balance" ? 3 : priority === "speed" ? -4 : 0,
+      priority === "balance" ? "$3/$15 pricing puts flagship long-context reasoning near the balanced tier"
+      : priority === "speed" ? "Always-on reasoning is a poor fit when raw latency is the priority" : "");
+    dim("autonomy", autonomy === "drive" ? 6 : autonomy === "gaps" ? 4 : autonomy === "targeted" ? -2 : 0,
+      autonomy === "drive" ? "Designed for long-horizon coding and end-to-end knowledge work" : "");
+  }
+
   if (modelId === "gpt-5.4") {
     dim("task", task === "coding" ? 3 : task === "reasoning" ? 3 : task === "analysis" ? 2 : task === "vision" ? 2 : 0,
       task === "reasoning" ? "Reasoning effort levels (low → xhigh) let you dial in exactly how much thinking the model does"
@@ -389,10 +421,10 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
     if (modelId === "composer-2.5") dims.push({ dimension: "interaction", points: -2, reason: "Dampen double-counting: autonomous scope + drive autonomy overlap" });
   }
   if (stakes === "critical" && scope === "autonomous") {
-    if (modelId === "opus-4.8") dims.push({ dimension: "interaction", points: 2, reason: "Critical stakes + autonomous scope: frontier reasoning earns its cost" });
+    if (modelId === "opus-4.8" || modelId === "opus-5") dims.push({ dimension: "interaction", points: 2, reason: "Critical stakes + autonomous scope: frontier reasoning earns its cost" });
   }
   if (stakes === "critical" && priority === "accuracy") {
-    if (modelId === "opus-4.8") dims.push({ dimension: "interaction", points: 2, reason: "Critical + accuracy: strongest quality signal — Opus is the right choice" });
+    if (modelId === "opus-4.8" || modelId === "opus-5") dims.push({ dimension: "interaction", points: 2, reason: "Critical + accuracy: strongest quality signal — Opus is the right choice" });
     if (modelId === "composer-2.5") dims.push({ dimension: "interaction", points: -1, reason: "Critical + accuracy: autonomy risk outweighs speed benefit" });
   }
 

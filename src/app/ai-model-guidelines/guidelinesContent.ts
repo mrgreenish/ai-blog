@@ -62,7 +62,7 @@ export const AT_A_GLANCE_ROWS: {
       simple: { modelIds: ["gpt-5.6-luna", "gemini-flash"] },
       mediumLow: { modelIds: ["gpt-5.6-terra", "composer-2.5"] },
       mediumCreative: { modelIds: ["sonnet-5"] },
-      complex: { modelIds: ["gpt-5.6-sol", "claude-fable-5"] },
+      complex: { modelIds: ["gpt-5.6-sol", "claude-fable-5", "opus-5", "kimi-k3"] },
     },
   },
   {
@@ -109,7 +109,7 @@ export const AT_A_GLANCE_ROWS: {
   {
     label: "Avoid",
     cells: {
-      simple: "GPT-5.6 Sol, Claude Fable 5, Max Mode, Fast Mode",
+      simple: "GPT-5.6 Sol, Claude Fable 5, Claude Opus 5, Kimi K3, Max Mode, Fast Mode",
       mediumLow: "Opus Fast, defaulting to Max Mode",
       mediumCreative: "Jumping straight to the heaviest model",
       complex:
@@ -151,7 +151,7 @@ export interface RecommendationBlock {
 export const RECOMMENDED_PICKS: RecommendationBlock[] = [
   {
     title: "Complex tasks",
-    modelIds: ["gpt-5.6-sol", "claude-fable-5"],
+    modelIds: ["gpt-5.6-sol", "claude-fable-5", "opus-5", "kimi-k3"],
     note: "Use Plan Mode for complex multi-file tasks — see the Tips section below.",
   },
   {
@@ -224,7 +224,7 @@ export const REASONING_RULE_OF_THUMB =
 
 export const PLAN_MODE_EXAMPLE = {
   quote: "Create a new component in our application.",
-  planModelIds: ["gpt-5.6-sol", "claude-fable-5"] as GuidelinesModelId[],
+  planModelIds: ["gpt-5.6-sol", "claude-fable-5", "opus-5", "kimi-k3"] as GuidelinesModelId[],
   implementModelIds: ["gpt-5.6-terra", "sonnet-5", "composer-2.5"] as GuidelinesModelId[],
 };
 
@@ -263,10 +263,12 @@ export const COST_EXAMPLES: CostExample[] = [
       { modelId: "gpt-5.6-terra", inputTokens: 20_000, outputTokens: 2_000 },
       { modelId: "gpt-5.6-sol", inputTokens: 20_000, outputTokens: 2_000 },
       { modelId: "claude-fable-5", inputTokens: 20_000, outputTokens: 2_000 },
+      { modelId: "opus-5", inputTokens: 20_000, outputTokens: 2_000 },
+      { modelId: "kimi-k3", inputTokens: 20_000, outputTokens: 2_000 },
       { modelId: "opus-fast", inputTokens: 20_000, outputTokens: 2_000 },
     ],
     advice:
-      "Do not use Sol or Fable for this unless there is hidden complexity. GPT-5.6 Luna or Gemini 3 Flash is enough.",
+      "Do not use Sol, Fable, Opus, or Kimi K3 for this unless there is hidden complexity. GPT-5.6 Luna or Gemini 3 Flash is enough.",
   },
   {
     id: "medium-creative",
@@ -282,6 +284,8 @@ export const COST_EXAMPLES: CostExample[] = [
       { modelId: "gpt-5.6-terra", inputTokens: 80_000, outputTokens: 8_000 },
       { modelId: "gpt-5.6-sol", inputTokens: 80_000, outputTokens: 8_000 },
       { modelId: "claude-fable-5", inputTokens: 80_000, outputTokens: 8_000 },
+      { modelId: "opus-5", inputTokens: 80_000, outputTokens: 8_000 },
+      { modelId: "kimi-k3", inputTokens: 80_000, outputTokens: 8_000 },
     ],
     advice:
       "Sonnet 5 is probably the best fit here. It is strong creatively without jumping straight to the most expensive models.",
@@ -295,7 +299,7 @@ export const COST_EXAMPLES: CostExample[] = [
       { label: "Implementation phase", inputTokens: 120_000, outputTokens: 20_000 },
     ],
     approach: [
-      { label: "Plan in Plan Mode with", modelIds: ["claude-fable-5"] },
+      { label: "Plan in Plan Mode with", modelIds: ["claude-fable-5", "opus-5", "kimi-k3"] },
       {
         label: "Implement with",
         modelIds: ["gpt-5.6-terra", "composer-2.5"],
@@ -304,6 +308,8 @@ export const COST_EXAMPLES: CostExample[] = [
     ],
     modelCosts: [
       { modelId: "claude-fable-5", inputTokens: 300_000, outputTokens: 20_000 },
+      { modelId: "opus-5", inputTokens: 300_000, outputTokens: 20_000 },
+      { modelId: "kimi-k3", inputTokens: 300_000, outputTokens: 20_000 },
       { modelId: "gpt-5.6-terra", inputTokens: 120_000, outputTokens: 20_000 },
     ],
     extraCosts: [
@@ -319,7 +325,7 @@ export const COST_EXAMPLES: CostExample[] = [
       ],
     },
     advice:
-      "Use Fable or Sol where the reasoning matters most: understanding the problem, reading the codebase, and making the plan. Once the plan is clear, use Terra or Composer for implementation. Luna or Gemini Flash are useful when the implementation is mechanical and tightly specified.",
+      "Use Fable, Opus 5, Kimi K3, or Sol where the reasoning matters most: understanding the problem, reading the codebase, and making the plan. Once the plan is clear, use Terra or Composer for implementation. Luna or Gemini Flash are useful when the implementation is mechanical and tightly specified.",
     paragraphs: [
       "The real cost is not just token price. If a model is too weak, you may spend five extra rounds fixing bad assumptions. That can be more expensive than choosing the right model once.",
     ],

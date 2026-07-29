@@ -31,7 +31,10 @@ function formatK(n: number) {
 
 const COLUMNS = getDevBenchmarkColumns();
 
-function Pass({ val }: { val: boolean }) {
+function Pass({ val }: { val: boolean | null }) {
+  if (val === null) {
+    return <span className="font-mono text-xs text-stone-400">— not tested</span>;
+  }
   return (
     <span className={`font-mono text-xs ${val ? "text-red-600" : "text-emerald-600"}`}>
       {val ? "✗ fail" : "✓ pass"}
@@ -134,7 +137,7 @@ function CombinedPreview() {
             </table>
           </div>
           <p className="mt-2 text-xs text-stone-400">
-            Not leaderboard scores — checks that matter when shipping.
+            Project checks, not leaderboard scores. “Not tested” means no local result has been recorded yet.
           </p>
         </div>
       )}

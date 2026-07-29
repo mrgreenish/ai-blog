@@ -52,8 +52,8 @@ const HERO_STORY_VH = 0.75;
 // hero rather than a heavy graphic; the scroll-fade is disabled.
 const BG_FADE_START = 0.35;
 const BG_FADE_END = 0.7;
-const BG_FADE_MIN = 1.0;
-const GLOBAL_ALPHA = 0.5;
+const BG_FADE_MIN = 0.18;
+const GLOBAL_ALPHA = 0.28;
 // Small lift so the model sits nicely below the title in the hero.
 const MODEL_LIFT = 0.06;
 

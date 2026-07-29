@@ -215,6 +215,32 @@ export const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
     },
   ],
 
+  "opus-5": [
+    { modelMessage: "Hello. What decision or failure are we trying to understand before we change anything?", replies: ["Review a critical diff", "Trace a subtle bug"] },
+    { modelMessage: "Good. I will separate what the code proves from what we are assuming, then look for the path that breaks the stated guarantee.", replies: ["Start with the diff", "Start with the invariant"] },
+    { modelMessage: "The local implementation is plausible. The risk is at the boundary: a retry can re-enter after persistence but before the response is recorded.", replies: ["Is that reproducible?", "How do we protect it?"] },
+    { modelMessage: "Yes. A concurrent retry test makes the race visible. The fix is an idempotency boundary, plus a test that proves the second request cannot create a second effect.", replies: ["Write the test first", "Check the architecture too"] },
+    { modelMessage: "The architecture has the same assumption in two places. I would centralize the boundary so future callers cannot bypass it by accident.", replies: ["Show the tradeoff", "Keep the change narrow"] },
+    { modelMessage: "Narrow change: one guard and one test. Durable change: shared boundary, migration note, and a rollback plan. The right choice depends on how many callers you expect.", replies: ["We need durable", "Keep it narrow"] },
+    { modelMessage: "Then I would make the shared path explicit and document the invariant. That is more code now, but it removes an invisible correctness requirement from every caller.", replies: ["Any remaining risks?", "Summarize the recommendation"] },
+    { modelMessage: "One remaining risk: observability. Add a metric for rejected duplicate requests so an operational regression does not stay hidden behind successful responses.", replies: ["Add it", "That is enough"] },
+    { modelMessage: "Recommendation: preserve one idempotency boundary, prove it with a concurrent retry test, and monitor rejections. The implementation is small; the guarantee is the valuable part.", replies: ["That is rigorous", "Ship the review"] },
+    { modelMessage: "Review complete. The diff is now backed by an explicit invariant, a failure case, and a way to detect regression — evidence, not just confidence.", replies: [] },
+  ],
+
+  "kimi-k3": [
+    { modelMessage: "Hi. Give me the whole problem — code, screenshots, long spec, all of it. I have room.", replies: ["It is a large codebase", "Start with one file"] },
+    { modelMessage: "A large codebase is ideal. I will map the system first, then keep the implementation tied to the actual dependencies I find.", replies: ["Map the architecture", "Look for the risky path"] },
+    { modelMessage: "The risky path crosses the API boundary, queue worker, and retry handler. The local functions look fine; their shared idempotency assumption does not.", replies: ["Trace it end to end", "Show me the evidence"] },
+    { modelMessage: "The evidence is in three call sites and one missing concurrency test. I can keep all four in context while I build the failure case.", replies: ["Build the test", "Check the screenshot too"] },
+    { modelMessage: "The screenshot confirms the duplicate state appears after a delayed retry. Native vision is useful here because the UI symptom and backend trace belong to the same bug.", replies: ["Propose the fix", "Keep investigating"] },
+    { modelMessage: "Fix the boundary, not the symptom: persist the idempotency key with the operation and make retries read that result before creating another effect.", replies: ["Implement it", "What is the tradeoff?"] },
+    { modelMessage: "The tradeoff is one extra indexed lookup per attempt. That is cheaper than compensating for duplicate effects, and the invariant becomes testable.", replies: ["Run the checks", "Use lower reasoning effort"] },
+    { modelMessage: "Checks are running. For this stage, low effort is enough; max effort helped with the cross-system diagnosis, not the mechanical edit.", replies: ["Any failures?", "Summarize the diff"] },
+    { modelMessage: "The focused tests pass. One unrelated flaky test remains; I recorded it without expanding this change.", replies: ["Good scope", "Final recommendation"] },
+    { modelMessage: "One boundary fix, one concurrent retry test, and one documented invariant. Large context found the connection; external checks proved the result.", replies: [] },
+  ],
+
   "composer-2.5": [
     {
       modelMessage:

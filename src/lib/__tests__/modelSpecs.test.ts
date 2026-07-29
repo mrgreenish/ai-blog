@@ -5,6 +5,11 @@ import {
   getContextWindowModels,
   getDevBenchmarkColumns,
   getEffectiveModelPricing,
+  getFailureGalleryModels,
+  getMixerModels,
+  getPickerModels,
+  getPickerModelsV2,
+  getScenarioLabModels,
   getTinderModels,
 } from "../modelSpecs";
 
@@ -45,12 +50,14 @@ describe("Claude Sonnet 5 pricing", () => {
   });
 });
 
-describe("GPT-5.6 and Claude Fable registry", () => {
+describe("current frontier model registry", () => {
   const expected = [
     { id: "gpt-5.6-luna", input: 1, output: 6, tier: "fast", context: 1_050_000 },
     { id: "gpt-5.6-terra", input: 2.5, output: 15, tier: "balanced", context: 1_050_000 },
     { id: "gpt-5.6-sol", input: 5, output: 30, tier: "reasoning", context: 1_050_000 },
     { id: "claude-fable-5", input: 10, output: 50, tier: "reasoning", context: 1_000_000 },
+    { id: "opus-5", input: 5, output: 25, tier: "reasoning", context: 1_000_000 },
+    { id: "kimi-k3", input: 3, output: 15, tier: "reasoning", context: 1_048_576 },
   ] as const;
 
   it.each(expected)("registers $id with verified specs", ({ id, input, output, tier, context }) => {
@@ -63,9 +70,22 @@ describe("GPT-5.6 and Claude Fable registry", () => {
     });
   });
 
-  it("surfaces the current models in cost, context, Tinder, and benchmark selectors", () => {
+  it("surfaces the current models in every shared model tool selector", () => {
     const ids = expected.map((model) => model.id);
+    expect(getMixerModels("2026-07-29").map((model) => model.id)).toEqual(
+      expect.arrayContaining(ids)
+    );
     expect(getCostCalculatorModels("2026-07-14").map((model) => model.id)).toEqual(
+      expect.arrayContaining(ids)
+    );
+    expect(getPickerModels().map((model) => model.id)).toEqual(expect.arrayContaining(ids));
+    expect(getPickerModelsV2("2026-07-29").map((model) => model.id)).toEqual(
+      expect.arrayContaining(ids)
+    );
+    expect(getScenarioLabModels("2026-07-29").map((model) => model.id)).toEqual(
+      expect.arrayContaining(ids)
+    );
+    expect(getFailureGalleryModels().map((model) => model.id)).toEqual(
       expect.arrayContaining(ids)
     );
     expect(getTinderModels().map((model) => model.id)).toEqual(expect.arrayContaining(ids));
@@ -73,5 +93,11 @@ describe("GPT-5.6 and Claude Fable registry", () => {
     expect(getContextWindowModels().map((model) => model.name)).toEqual(
       expect.arrayContaining(expected.map((model) => MODEL_BY_ID[model.id].name))
     );
+  });
+
+  it("marks models without local developer checks as not tested", () => {
+    for (const id of ["opus-5", "kimi-k3"]) {
+      expect(Object.values(MODEL_BY_ID[id].benchmark)).toEqual([null, null, null, null]);
+    }
   });
 });
