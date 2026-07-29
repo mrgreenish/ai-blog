@@ -6,7 +6,7 @@
 // ---------------------------------------------------------------------------
 
 export type Tier = "fast" | "balanced" | "reasoning";
-export type Provider = "Anthropic" | "OpenAI" | "Google" | "DeepSeek" | "Cursor";
+export type Provider = "Anthropic" | "OpenAI" | "Google" | "DeepSeek" | "Moonshot AI" | "Cursor";
 /** Rough latency band for a typical developer task */
 export type LatencyBand = "instant" | "fast" | "moderate" | "slow";
 /** How aggressively the model expands scope beyond what was asked */
@@ -76,10 +76,10 @@ export interface ModelSpec {
 
   // DevBenchmark — pass/fail per check key
   benchmark: {
-    correctServerAction: boolean;
-    followedConstraints: boolean;
-    madeUpDocs: boolean;
-    hiddenBugsInRefactor: boolean;
+    correctServerAction: boolean | null;
+    followedConstraints: boolean | null;
+    madeUpDocs: boolean | null;
+    hiddenBugsInRefactor: boolean | null;
   };
 }
 
@@ -635,10 +635,54 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     pickWhen: "You need a rigorous Claude review of a consequential decision, design, or implementation",
     avoidWhen: "The task is routine, latency-sensitive, or primarily a long autonomous execution loop",
     benchmark: {
-      correctServerAction: false,
-      followedConstraints: true,
-      madeUpDocs: false,
-      hiddenBugsInRefactor: false,
+      correctServerAction: null,
+      followedConstraints: null,
+      madeUpDocs: null,
+      hiddenBugsInRefactor: null,
+    },
+  },
+  {
+    id: "kimi-k3",
+    name: "Kimi K3",
+    provider: "Moonshot AI",
+    inputPer1M: 3.00,
+    outputPer1M: 15.00,
+    tier: "reasoning",
+    contextWindowTokens: 1_048_576,
+    tagline: "The Open-Weight Marathoner",
+    emoji: "🌙",
+    gradientFrom: "from-violet-700",
+    gradientTo: "to-fuchsia-500",
+    accentColor: "text-violet-700",
+    contextBarColor: "bg-violet-500",
+    costColor: "text-violet-300",
+    why: {
+      coding: "Kimi K3 is built for long-horizon coding and can keep a large codebase in its 1M-token context while using tools and structured outputs.",
+      analysis: "Its 1M context, always-on reasoning, and end-to-end knowledge-work focus make it a strong fit for large document sets and research-heavy analysis.",
+      vision: "K3 has native visual understanding, so screenshots and diagrams can stay in the same reasoning workflow as code and text.",
+      multifile: "A full 1M-token context window gives K3 room for broad codebase analysis and coordinated multi-file changes.",
+      autonomous: "Moonshot positions K3 for long-horizon coding and end-to-end knowledge work, with tool calling and structured output support.",
+      reasoning: "K3 always reasons and exposes low, high, and max reasoning-effort settings for difficult work.",
+      architecture: "Large context and always-on reasoning make K3 useful for comparing system-wide constraints before implementation.",
+    },
+    whenWrong: "For narrow, latency-sensitive edits. K3 always reasons, so Luna, Flash, or another lighter model is a better fit when the task has a short, mechanical finish line.",
+    traits: [
+      "Always-on reasoning with low, high, and max effort",
+      "Native vision and a 1M-token context window",
+      "Open-weight 2.8T sparse mixture-of-experts model",
+    ],
+    bestFor: "Long-horizon coding, large codebase analysis, and end-to-end knowledge work",
+    worstFor: "Tiny, latency-sensitive edits that do not need a reasoning pass",
+    latencyBand: "slow",
+    initiativeStyle: "autonomous",
+    scopeDiscipline: "good",
+    pickWhen: "You need long-context reasoning across code, documents, and images at Sonnet-class API pricing",
+    avoidWhen: "The task is small enough that always-on reasoning only adds latency and tokens",
+    benchmark: {
+      correctServerAction: null,
+      followedConstraints: null,
+      madeUpDocs: null,
+      hiddenBugsInRefactor: null,
     },
   },
   {
@@ -892,12 +936,14 @@ export const PRICING_META = {
     "GPT-5.6 Luna, Terra, and Sol are $1/$6, $2.50/$15, and $5/$30 per million input/output tokens.",
     "Claude Fable 5 is $10/$50 per million input/output tokens, with a 90% prompt-cache read discount.",
     "Claude Opus 5 is $5/$25 per million input/output tokens.",
+    "Kimi K3 is $3/$15 per million cache-miss input/output tokens; cached input is $0.30 per million tokens.",
   ],
   urls: {
     Anthropic: "https://docs.anthropic.com/en/docs/about-claude/pricing",
     OpenAI: "https://developers.openai.com/api/docs/pricing",
     Google: "https://ai.google.dev/gemini-api/docs/pricing",
     DeepSeek: "https://api-docs.deepseek.com/quick_start/pricing",
+    "Moonshot AI": "https://www.kimi.com/help/kimi-api/api-pricing",
     Cursor: "https://cursor.com/docs/models-and-pricing",
   },
 } as const;
@@ -913,6 +959,7 @@ export function getCostCalculatorModels(asOf: Date | string = new Date()) {
     "composer-2.5",
     "opus-4.8",
     "opus-5",
+    "kimi-k3",
     "gpt-5.6-sol",
     "claude-fable-5",
   ];
@@ -939,6 +986,7 @@ export function getContextWindowModels() {
     "gpt-5.6-luna",
     "claude-fable-5",
     "opus-5",
+    "kimi-k3",
     "gemini-flash",
     "sonnet-5",
   ];
@@ -960,6 +1008,7 @@ export function getPickerModels() {
     "gpt-5.6-sol",
     "claude-fable-5",
     "opus-5",
+    "kimi-k3",
   ];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
@@ -1020,6 +1069,7 @@ export function getScenarioLabModels(asOf: Date | string = new Date()) {
     "composer-2.5",
     "opus-4.8",
     "opus-5",
+    "kimi-k3",
     "gpt-5.6-sol",
     "claude-fable-5",
   ];
@@ -1066,6 +1116,7 @@ export function getTinderModels() {
     "sonnet-5",
     "opus-4.8",
     "opus-5",
+    "kimi-k3",
     "composer-2.5",
     "gpt-5.6-luna",
     "gpt-5.6-terra",
@@ -1105,7 +1156,7 @@ export const BENCHMARK_CHECKS: BenchmarkCheck[] = [
 
 /** Models shown as columns in DevBenchmark */
 export function getDevBenchmarkColumns() {
-  const ids = ["gpt-5.6-luna", "gpt-5.6-terra", "gpt-5.6-sol", "claude-fable-5", "opus-5"];
+  const ids = ["gpt-5.6-luna", "gpt-5.6-terra", "gpt-5.6-sol", "claude-fable-5", "opus-5", "kimi-k3"];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
     return {

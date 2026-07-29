@@ -2,7 +2,7 @@
 title: "Model Personalities"
 subtitle: "How different models approach the same task, and when to lean into that"
 publishedAt: "2026-04-17"
-updatedAt: "2026-07-22"
+updatedAt: "2026-07-29"
 chapter: 2
 part: understanding-models
 partNumber: 1
@@ -106,6 +106,16 @@ Opus 5 belongs alongside Fable, not in place of it. Reach for it when the import
 Where Fable is the better fit for an expansive, multi-day agent workflow, Opus 5 is the tighter choice for a high-stakes review or a difficult decision that benefits from focused scrutiny. Keep Opus 4.8 available for established workflows and comparisons; the two versions are separate options in the model tools.
 
 Where it falls short: routine implementation and high-volume work. Use a lighter model for a clear task, then bring Opus 5 in when a review can prevent expensive cleanup.
+
+## Kimi K3: the open-weight marathoner
+
+**Moonshot AI · Always-on reasoning · Best for: Long-context coding and knowledge work**
+
+Kimi K3 is built for long-horizon coding and end-to-end knowledge work. Its 1,048,576-token context window can hold a large codebase or document set, and native visual understanding lets screenshots, diagrams, code, and prose stay in one workflow. It always reasons, with low, high, and max effort settings rather than a separate non-thinking mode.
+
+At API rates of $3 per million cache-miss input tokens and $15 per million output tokens, it sits near the balanced frontier tier; automatic context caching lowers repeated input to $0.30 per million tokens. That makes it especially interesting for agents that repeatedly carry a stable repository or specification across turns.
+
+Where it falls short: small, latency-sensitive work. Always-on reasoning is useful when the task branches, but it is unnecessary overhead for a one-line edit with an obvious test.
 
 ## Composer 2.5: the agentic one
 

@@ -38,6 +38,7 @@ const ALL_MODELS: ModelStub[] = [
   { id: "gpt-5.6-terra", name: "GPT-5.6 Terra", why: { multifile: "Balanced implementation" } },
   { id: "gpt-5.6-sol", name: "GPT-5.6 Sol", why: { autonomous: "Frontier agent loops" } },
   { id: "claude-fable-5", name: "Claude Fable 5", why: { reasoning: "Maximum-depth reasoning" } },
+  { id: "kimi-k3", name: "Kimi K3", why: { autonomous: "Long-horizon coding", reasoning: "Always-on reasoning" } },
 ];
 
 function allAnswers(overrides: Partial<Answers> = {}): Answers {
@@ -416,6 +417,8 @@ describe("scoreDimensions()", () => {
       "composer-2.5",
       "composer-2.5-fast",
       "opus-fast",
+      "opus-5",
+      "kimi-k3",
     ];
     const answers = allAnswers({
       task: "coding",

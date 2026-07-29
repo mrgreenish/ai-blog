@@ -490,6 +490,24 @@ export const SCENARIOS: Scenario[] = [
         costContext: { compareToModelId: "composer-2.5" },
       },
       {
+        modelId: "kimi-k3",
+        verdict: "caution",
+        summary: "Strong published fit for long-context coding; local scenario result not yet recorded",
+        outputExcerpt:
+          "Not locally benchmarked for this scenario yet. Published capabilities include a 1M-token context window, always-on reasoning, native vision, tool calling, JSON mode, and structured outputs for long-horizon coding.",
+        strengths: [
+          "Designed for long-horizon coding and end-to-end knowledge work",
+          "Can keep the broad multi-file context in a single request",
+          "$3/$15 cache-miss pricing is competitive for a flagship reasoning model",
+        ],
+        weaknesses: [
+          "No controlled local result for this scenario yet",
+          "Vendor benchmark comparisons use different harnesses and should not be treated as a direct ranking",
+        ],
+        costCommentary: "Promising price-to-context ratio; validate quality on the project before making it the default",
+        costContext: { compareToModelId: "gpt-5.6-sol" },
+      },
+      {
         modelId: "sonnet-5",
         verdict: "good",
         summary: "Strong implementation, but required scope guardrails",

@@ -262,6 +262,23 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
       "Strong for reviewing and refining a plan; use Fable or Sol for long autonomous execution");
   }
 
+  if (modelId === "kimi-k3") {
+    dim("task", task === "coding" ? 5 : task === "reasoning" ? 5 : task === "analysis" ? 5 : task === "vision" ? 4 : task === "writing" ? 2 : 0,
+      task === "coding" ? "Built for long-horizon coding with tools and structured outputs"
+      : task === "analysis" ? "A 1M context window and always-on reasoning suit large research and knowledge-work inputs"
+      : task === "vision" ? "Native visual understanding keeps screenshots and diagrams in the same reasoning workflow" : "");
+    dim("scope", scope === "autonomous" ? 6 : scope === "multifile" ? 6 : scope === "architecture" ? 4 : scope === "targeted" ? -2 : 0,
+      scope === "autonomous" ? "Moonshot positions K3 for long-horizon, end-to-end work"
+      : scope === "multifile" ? "Its 1M context can hold broad codebase context for coordinated changes" : "");
+    dim("stakes", stakes === "production" ? 3 : stakes === "critical" ? 3 : stakes === "prototype" ? -3 : 0,
+      stakes === "production" ? "Strong context and tool support fit production workflows with external verification" : "");
+    dim("priority", priority === "accuracy" ? 4 : priority === "balance" ? 3 : priority === "speed" ? -4 : 0,
+      priority === "balance" ? "$3/$15 pricing puts flagship long-context reasoning near the balanced tier"
+      : priority === "speed" ? "Always-on reasoning is a poor fit when raw latency is the priority" : "");
+    dim("autonomy", autonomy === "drive" ? 6 : autonomy === "gaps" ? 4 : autonomy === "targeted" ? -2 : 0,
+      autonomy === "drive" ? "Designed for long-horizon coding and end-to-end knowledge work" : "");
+  }
+
   if (modelId === "gpt-5.4") {
     dim("task", task === "coding" ? 3 : task === "reasoning" ? 3 : task === "analysis" ? 2 : task === "vision" ? 2 : 0,
       task === "reasoning" ? "Reasoning effort levels (low → xhigh) let you dial in exactly how much thinking the model does"
