@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { TableOfContents } from "@/components/content/TableOfContents";
-import { ASCIIBrain } from "@/components/interactive/ASCIIBrain";
+import { Brain3D } from "@/components/interactive/Brain3D";
 
 export const metadata: Metadata = {
   title: "Working With AI as a Developer",
@@ -27,9 +27,17 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <div className="relative">
-      <div className="relative z-10 mx-auto max-w-4xl px-6 py-16">
-        <header className="relative mb-16 grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(16rem,0.75fr)] lg:gap-12">
-          <div className="relative z-10">
+      {/*
+        Hero: the top-of-page visual is a particle animation that assembles
+        into a thinking brain and, as you scroll, morphs into a diagram of
+        how an LLM works (a transformer forward pass). It's pinned behind
+        the title and intro only — the chapter list below has a clean
+        background so it stays easy to read.
+      */}
+      <Brain3D>
+        <div className="mx-auto max-w-4xl px-6 pt-16">
+          {/* Title block */}
+          <div className="mb-16">
             <p className="font-mono text-xs uppercase tracking-widest text-fg-muted mb-6">
               A developer&apos;s reference
             </p>
@@ -44,33 +52,33 @@ export default function Home() {
             </p>
           </div>
 
-          <section
-            aria-hidden="true"
-            className="hero-brain pointer-events-none relative z-10 h-44 overflow-visible border-y border-border-subtle opacity-70 sm:h-56 lg:h-72 lg:translate-y-14"
-          >
-            <ASCIIBrain className="absolute inset-0 pointer-events-none" />
-          </section>
-        </header>
+          <div className="section-divider mb-6" />
 
-        <div className="section-divider mb-6" />
+          <div className="mb-16 max-w-xl">
+            <p className="font-sans text-sm leading-relaxed text-fg-muted">
+              Over the past year I&apos;ve been using AI inside real projects — specs,
+              tickets, production code. What started as curiosity turned into a set
+              of habits I now run every day. This site is the distilled version of
+              what I&apos;ve learned: which models for which tasks, how to build
+              workflows that don&apos;t spiral, and how to configure the tooling
+              without fighting it.
+            </p>
+            <p className="font-sans text-sm leading-relaxed text-fg-muted mt-4">
+              It&apos;s not theory. Every pattern here has been tested inside a real
+              codebase, on real tickets, under real deadlines. Each chapter includes
+              an interactive tool so you can apply it immediately.
+            </p>
+          </div>
 
-        <div className="mb-16 max-w-xl">
-          <p className="font-sans text-sm leading-relaxed text-fg-muted">
-            Over the past year I&apos;ve been using AI inside real projects — specs,
-            tickets, production code. What started as curiosity turned into a set
-            of habits I now run every day. This site is the distilled version of
-            what I&apos;ve learned: which models for which tasks, how to build
-            workflows that don&apos;t spiral, and how to configure the tooling
-            without fighting it.
-          </p>
-          <p className="font-sans text-sm leading-relaxed text-fg-muted mt-4">
-            It&apos;s not theory. Every pattern here has been tested inside a real
-            codebase, on real tickets, under real deadlines. Each chapter includes
-            an interactive tool so you can apply it immediately.
-          </p>
+          <div className="section-divider" />
+
+          {/* Scroll room for the brain to morph into the forward-pass diagram */}
+          <div className="brain3d-hero" aria-hidden="true" />
         </div>
+      </Brain3D>
 
-        {/* Table of Contents */}
+      {/* Table of Contents — clean background, no visualization behind it */}
+      <div className="relative z-10 mx-auto max-w-4xl px-6 pb-24">
         <TableOfContents />
 
       </div>
