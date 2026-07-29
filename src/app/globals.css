@@ -124,11 +124,10 @@ body {
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 84%, transparent 98%);
 }
 
-/* Scroll room inside the hero for the brain to morph into the forward
-   pass. It also keeps the sticky canvas pinned long enough for the story
-   to finish before the (clean) chapter list begins. */
+/* A brief visual pause after the intro lets the brain settle without making
+   the chapter list feel delayed. */
 .brain3d-hero {
-  height: 115vh;
+  height: clamp(10rem, 28vh, 18rem);
 }
 
 /* Static fallback (WebGL unavailable): a short brain image above the list. */
