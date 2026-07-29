@@ -62,7 +62,7 @@ export const AT_A_GLANCE_ROWS: {
       simple: { modelIds: ["gpt-5.6-luna", "gemini-flash"] },
       mediumLow: { modelIds: ["gpt-5.6-terra", "composer-2.5"] },
       mediumCreative: { modelIds: ["sonnet-5"] },
-      complex: { modelIds: ["gpt-5.6-sol", "claude-fable-5"] },
+      complex: { modelIds: ["gpt-5.6-sol", "claude-fable-5", "opus-5"] },
     },
   },
   {
@@ -151,7 +151,7 @@ export interface RecommendationBlock {
 export const RECOMMENDED_PICKS: RecommendationBlock[] = [
   {
     title: "Complex tasks",
-    modelIds: ["gpt-5.6-sol", "claude-fable-5"],
+    modelIds: ["gpt-5.6-sol", "claude-fable-5", "opus-5"],
     note: "Use Plan Mode for complex multi-file tasks — see the Tips section below.",
   },
   {
@@ -263,6 +263,7 @@ export const COST_EXAMPLES: CostExample[] = [
       { modelId: "gpt-5.6-terra", inputTokens: 20_000, outputTokens: 2_000 },
       { modelId: "gpt-5.6-sol", inputTokens: 20_000, outputTokens: 2_000 },
       { modelId: "claude-fable-5", inputTokens: 20_000, outputTokens: 2_000 },
+      { modelId: "opus-5", inputTokens: 20_000, outputTokens: 2_000 },
       { modelId: "opus-fast", inputTokens: 20_000, outputTokens: 2_000 },
     ],
     advice:
@@ -282,6 +283,7 @@ export const COST_EXAMPLES: CostExample[] = [
       { modelId: "gpt-5.6-terra", inputTokens: 80_000, outputTokens: 8_000 },
       { modelId: "gpt-5.6-sol", inputTokens: 80_000, outputTokens: 8_000 },
       { modelId: "claude-fable-5", inputTokens: 80_000, outputTokens: 8_000 },
+      { modelId: "opus-5", inputTokens: 80_000, outputTokens: 8_000 },
     ],
     advice:
       "Sonnet 5 is probably the best fit here. It is strong creatively without jumping straight to the most expensive models.",
@@ -295,7 +297,7 @@ export const COST_EXAMPLES: CostExample[] = [
       { label: "Implementation phase", inputTokens: 120_000, outputTokens: 20_000 },
     ],
     approach: [
-      { label: "Plan in Plan Mode with", modelIds: ["claude-fable-5"] },
+      { label: "Plan in Plan Mode with", modelIds: ["claude-fable-5", "opus-5"] },
       {
         label: "Implement with",
         modelIds: ["gpt-5.6-terra", "composer-2.5"],
@@ -304,6 +306,7 @@ export const COST_EXAMPLES: CostExample[] = [
     ],
     modelCosts: [
       { modelId: "claude-fable-5", inputTokens: 300_000, outputTokens: 20_000 },
+      { modelId: "opus-5", inputTokens: 300_000, outputTokens: 20_000 },
       { modelId: "gpt-5.6-terra", inputTokens: 120_000, outputTokens: 20_000 },
     ],
     extraCosts: [

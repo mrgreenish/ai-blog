@@ -215,6 +215,19 @@ export const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
     },
   ],
 
+  "opus-5": [
+    { modelMessage: "Hello. What decision or failure are we trying to understand before we change anything?", replies: ["Review a critical diff", "Trace a subtle bug"] },
+    { modelMessage: "Good. I will separate what the code proves from what we are assuming, then look for the path that breaks the stated guarantee.", replies: ["Start with the diff", "Start with the invariant"] },
+    { modelMessage: "The local implementation is plausible. The risk is at the boundary: a retry can re-enter after persistence but before the response is recorded.", replies: ["Is that reproducible?", "How do we protect it?"] },
+    { modelMessage: "Yes. A concurrent retry test makes the race visible. The fix is an idempotency boundary, plus a test that proves the second request cannot create a second effect.", replies: ["Write the test first", "Check the architecture too"] },
+    { modelMessage: "The architecture has the same assumption in two places. I would centralize the boundary so future callers cannot bypass it by accident.", replies: ["Show the tradeoff", "Keep the change narrow"] },
+    { modelMessage: "Narrow change: one guard and one test. Durable change: shared boundary, migration note, and a rollback plan. The right choice depends on how many callers you expect.", replies: ["We need durable", "Keep it narrow"] },
+    { modelMessage: "Then I would make the shared path explicit and document the invariant. That is more code now, but it removes an invisible correctness requirement from every caller.", replies: ["Any remaining risks?", "Summarize the recommendation"] },
+    { modelMessage: "One remaining risk: observability. Add a metric for rejected duplicate requests so an operational regression does not stay hidden behind successful responses.", replies: ["Add it", "That is enough"] },
+    { modelMessage: "Recommendation: preserve one idempotency boundary, prove it with a concurrent retry test, and monitor rejections. The implementation is small; the guarantee is the valuable part.", replies: ["That is rigorous", "Ship the review"] },
+    { modelMessage: "Review complete. The diff is now backed by an explicit invariant, a failure case, and a way to detect regression — evidence, not just confidence.", replies: [] },
+  ],
+
   "composer-2.5": [
     {
       modelMessage:

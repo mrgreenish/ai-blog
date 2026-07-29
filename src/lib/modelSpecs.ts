@@ -597,6 +597,51 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     },
   },
   {
+    id: "opus-5",
+    name: "Claude Opus 5",
+    provider: "Anthropic",
+    inputPer1M: 5.00,
+    outputPer1M: 25.00,
+    tier: "reasoning",
+    contextWindowTokens: 1_000_000,
+    tagline: "The Rigorous Reviewer",
+    emoji: "🧠",
+    gradientFrom: "from-amber-700",
+    gradientTo: "to-yellow-500",
+    accentColor: "text-amber-700",
+    contextBarColor: "bg-amber-500",
+    costColor: "text-amber-300",
+    why: {
+      coding: "Opus 5 is the Claude choice for difficult code review: it follows control flow across a system, tests assumptions against the implementation, and calls out the failure modes a plausible-looking diff can hide.",
+      production: "For consequential production changes, Opus 5 combines careful reasoning with a reviewer's instinct for edge cases, rollback paths, and the assumptions that need evidence.",
+      multifile: "Opus 5 keeps the relationships between modules in view, which makes it valuable when a change is locally tidy but globally risky.",
+      critical: "When a subtle mistake would be expensive, Opus 5 earns its slower pace by examining the evidence rather than accepting the first coherent explanation.",
+      architecture: "Opus 5 is strong at pressure-testing architectural choices: it identifies hidden coupling, tests tradeoffs, and makes the consequences explicit.",
+      reasoning: "This is the current standard Opus tier for rigorous, review-grade reasoning — deliberate, evidence-seeking, and best used where correctness matters more than speed.",
+      hard: "Opus 5 works through ambiguous, multi-step problems carefully and flags the assumptions that should be checked before implementation proceeds.",
+      accuracy: "Its value is careful verification: more alternatives considered, more edge cases surfaced, and clearer evidence for a high-stakes decision.",
+    },
+    whenWrong: "For routine implementation or long autonomous execution where a cheaper model or Fable's agent workflow is a better fit. Opus 5 is most useful as a deliberate reasoning and review pass.",
+    traits: [
+      "Review-grade reasoning with explicit evidence",
+      "Finds hidden coupling and edge cases",
+      "Deliberate, high-signal recommendations",
+    ],
+    bestFor: "Critical reviews, architecture decisions, and subtle cross-system bugs",
+    worstFor: "Routine edits or cheap high-volume execution",
+    latencyBand: "slow",
+    initiativeStyle: "proactive",
+    scopeDiscipline: "good",
+    pickWhen: "You need a rigorous Claude review of a consequential decision, design, or implementation",
+    avoidWhen: "The task is routine, latency-sensitive, or primarily a long autonomous execution loop",
+    benchmark: {
+      correctServerAction: false,
+      followedConstraints: true,
+      madeUpDocs: false,
+      hiddenBugsInRefactor: false,
+    },
+  },
+  {
     id: "gpt-5.5",
     name: "GPT-5.5",
     provider: "OpenAI",
@@ -846,6 +891,7 @@ export const PRICING_META = {
     "Claude Sonnet 5 is $2/$10 per million input/output tokens through August 31, 2026, then $3/$15.",
     "GPT-5.6 Luna, Terra, and Sol are $1/$6, $2.50/$15, and $5/$30 per million input/output tokens.",
     "Claude Fable 5 is $10/$50 per million input/output tokens, with a 90% prompt-cache read discount.",
+    "Claude Opus 5 is $5/$25 per million input/output tokens.",
   ],
   urls: {
     Anthropic: "https://docs.anthropic.com/en/docs/about-claude/pricing",
@@ -866,6 +912,7 @@ export function getCostCalculatorModels(asOf: Date | string = new Date()) {
     "sonnet-5",
     "composer-2.5",
     "opus-4.8",
+    "opus-5",
     "gpt-5.6-sol",
     "claude-fable-5",
   ];
@@ -891,6 +938,7 @@ export function getContextWindowModels() {
     "gpt-5.6-terra",
     "gpt-5.6-luna",
     "claude-fable-5",
+    "opus-5",
     "gemini-flash",
     "sonnet-5",
   ];
@@ -911,6 +959,7 @@ export function getPickerModels() {
     "gpt-5.6-terra",
     "gpt-5.6-sol",
     "claude-fable-5",
+    "opus-5",
   ];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
@@ -970,6 +1019,7 @@ export function getScenarioLabModels(asOf: Date | string = new Date()) {
     "sonnet-5",
     "composer-2.5",
     "opus-4.8",
+    "opus-5",
     "gpt-5.6-sol",
     "claude-fable-5",
   ];
@@ -1015,6 +1065,7 @@ export function getTinderModels() {
     "gemini-flash",
     "sonnet-5",
     "opus-4.8",
+    "opus-5",
     "composer-2.5",
     "gpt-5.6-luna",
     "gpt-5.6-terra",
@@ -1054,7 +1105,7 @@ export const BENCHMARK_CHECKS: BenchmarkCheck[] = [
 
 /** Models shown as columns in DevBenchmark */
 export function getDevBenchmarkColumns() {
-  const ids = ["gpt-5.6-luna", "gpt-5.6-terra", "gpt-5.6-sol", "claude-fable-5"];
+  const ids = ["gpt-5.6-luna", "gpt-5.6-terra", "gpt-5.6-sol", "claude-fable-5", "opus-5"];
   return ids.map((id) => {
     const m = MODEL_BY_ID[id];
     return {

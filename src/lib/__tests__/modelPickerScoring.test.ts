@@ -15,6 +15,7 @@ const MODELS: ModelStub[] = [
   { id: "gemini-flash", name: "Gemini Flash", why: { targeted: "Fast targeted edits", vision: "Best vision model" } },
   { id: "sonnet-5", name: "Sonnet 5", why: { multifile: "Great at multi-file", writing: "Strong writing" } },
   { id: "opus-4.8", name: "Opus 4.8", why: { critical: "Best for critical systems", reasoning: "Deep reasoning" } },
+  { id: "opus-5", name: "Opus 5", why: { critical: "Rigorous critical review", reasoning: "Review-grade reasoning" } },
   {
     id: "composer-2.5",
     name: "Composer 2.5",
@@ -242,12 +243,12 @@ describe("interaction effects", () => {
 // ---------------------------------------------------------------------------
 describe("getRecommendation()", () => {
   it("returns the highest-scoring model as the winner", () => {
-    // This combo strongly favors opus-4.8
+    // This combo strongly favors the current Opus tier.
     const rec = getRecommendation(MODELS, {
       task: "reasoning", scope: "architecture", stakes: "critical",
       priority: "accuracy", autonomy: "gaps",
     });
-    expect(rec.model.id).toBe("opus-4.8");
+    expect(rec.model.id).toBe("opus-5");
   });
 
   it("returns a runner-up different from the winner", () => {
@@ -316,7 +317,9 @@ describe("getRecommendation()", () => {
       // Should match one of the why keys from opus model stub
       expect(
         rec.reason === "Best for critical systems" ||
-        rec.reason === "Deep reasoning"
+        rec.reason === "Deep reasoning" ||
+        rec.reason === "Rigorous critical review" ||
+        rec.reason === "Review-grade reasoning"
       ).toBe(true);
     });
 
@@ -356,12 +359,12 @@ describe("real-world scenarios", () => {
     expect(rec.model.id).toBe("sonnet-5");
   });
 
-  it("critical system design: reasoning + architecture + critical + accuracy + gaps → opus-4.8", () => {
+  it("critical system design: reasoning + architecture + critical + accuracy + gaps → opus-5", () => {
     const rec = getRecommendation(MODELS, {
       task: "reasoning", scope: "architecture", stakes: "critical",
       priority: "accuracy", autonomy: "gaps",
     });
-    expect(rec.model.id).toBe("opus-4.8");
+    expect(rec.model.id).toBe("opus-5");
   });
 
   it("full autonomous agent task: coding + autonomous + prototype + speed + drive → composer-2", () => {

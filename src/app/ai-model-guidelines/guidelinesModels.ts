@@ -16,6 +16,7 @@ export const GUIDELINES_MODEL_IDS = [
   "gpt-5.6-terra",
   "gpt-5.6-sol",
   "claude-fable-5",
+  "opus-5",
   "sonnet-5",
   "opus-fast",
 ] as const;
@@ -33,6 +34,7 @@ export const GUIDELINES_PRICING_MODEL_IDS: GuidelinesModelId[] = [
   "sonnet-5",
   "gpt-5.6-sol",
   "claude-fable-5",
+  "opus-5",
   "opus-fast",
 ];
 

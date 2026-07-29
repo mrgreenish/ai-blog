@@ -420,6 +420,24 @@ export const SCENARIOS: Scenario[] = [
           costCommentary: "Sonnet's plan is good enough — save Opus for architecture",
           costContext: { compareToModelId: "sonnet-5" },
         },
+        {
+          modelId: "opus-5",
+          verdict: "good",
+          summary: "Strong architecture review when the payment boundary is genuinely high-stakes",
+          outputExcerpt:
+            "The test plan is sound, but the key invariant belongs at the payment boundary: a retry must be idempotent even if the original request completed persistence before its response was delivered. Add a concurrent retry test and make the idempotency key part of the service contract…",
+          strengths: [
+            "Identified the cross-request invariant",
+            "Turned the risk into a testable failure case",
+            "Kept the recommendation tied to a concrete boundary",
+          ],
+          weaknesses: [
+            "More rigor than a routine test-plan task needs",
+            "Slower than Sonnet when the architecture is already settled",
+          ],
+          costCommentary: "Worth the review pass when payment correctness is the actual risk, not just test coverage",
+          costContext: { compareToModelId: "sonnet-5" },
+        },
       ],
     },
   },

@@ -45,12 +45,13 @@ describe("Claude Sonnet 5 pricing", () => {
   });
 });
 
-describe("GPT-5.6 and Claude Fable registry", () => {
+describe("GPT-5.6 and frontier Claude registry", () => {
   const expected = [
     { id: "gpt-5.6-luna", input: 1, output: 6, tier: "fast", context: 1_050_000 },
     { id: "gpt-5.6-terra", input: 2.5, output: 15, tier: "balanced", context: 1_050_000 },
     { id: "gpt-5.6-sol", input: 5, output: 30, tier: "reasoning", context: 1_050_000 },
     { id: "claude-fable-5", input: 10, output: 50, tier: "reasoning", context: 1_000_000 },
+    { id: "opus-5", input: 5, output: 25, tier: "reasoning", context: 1_000_000 },
   ] as const;
 
   it.each(expected)("registers $id with verified specs", ({ id, input, output, tier, context }) => {
