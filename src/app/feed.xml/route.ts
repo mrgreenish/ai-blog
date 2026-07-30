@@ -1,4 +1,8 @@
-import { getAllChapters, getNewsEntries } from "@/lib/content";
+import {
+  getAllChapters,
+  getContentExcerpt,
+  getNewsEntries,
+} from "@/lib/content";
 import { PART_META } from "@/lib/types";
 import {
   SITE_URL,
@@ -34,7 +38,7 @@ export function GET() {
     ...newsEntries.map((entry) => ({
       title: entry.frontmatter.title,
       url: `${SITE_URL}/chapters/what-is-happening/${entry.slug}`,
-      description: `AI tooling update last verified ${entry.frontmatter.lastVerifiedAt}.`,
+      description: getContentExcerpt(entry.content, 240),
       date: entry.frontmatter.publishedAt,
       category: "What Is Happening",
     })),

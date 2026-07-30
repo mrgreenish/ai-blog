@@ -93,11 +93,10 @@ export const TREE_NODES: Record<string, TreeNode> = {
           output:
             "Clean PR with mechanical issues resolved before human review begins.",
           articleLink: {
-            href: "/chapters/ai-code-review",
-            label: "AI Code Review",
+            href: "/chapters/diff-review-loops",
+            label: "AI Code Review Checklist",
           },
           relatedLinks: [
-            { href: "/chapters/diff-review-loops", label: "Diff Review Loops" },
             {
               href: "/chapters/agent-guardrails",
               label: "Agent Guardrails",

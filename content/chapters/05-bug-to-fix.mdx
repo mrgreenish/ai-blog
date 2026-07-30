@@ -1,8 +1,8 @@
 ---
-title: "Bug Report to Fix"
-subtitle: "A repeatable AI-assisted debugging flow, centered on minimal reproduction"
+title: "AI Debugging: From Bug Report to Fix"
+subtitle: "A repro-first workflow for diagnosing, fixing, and proving software bugs with AI"
 publishedAt: "2026-04-17"
-updatedAt: "2026-07-22"
+updatedAt: "2026-07-30"
 chapter: 5
 part: shipping-workflows
 partNumber: 2
@@ -13,6 +13,8 @@ illustrationPlaceholders:
   - "Comparison: debugging with and without a minimal repro. Show context window usage and fix accuracy."
 ---
 
+The shortest reliable AI debugging workflow is: **reproduce the failure, capture runtime evidence, reduce it to the smallest failing case, explain the cause, make one narrow fix, and add a regression test**.
+
 Debugging with AI has a clear failure mode: paste a stack trace, ask "what's wrong?", get a plausible-sounding but wrong answer. The model doesn't have enough context to diagnose the real issue, so it pattern-matches to the most common cause of that error.
 
 The fix is the same as good debugging in general: minimal reproduction first. Once you have that, the model has enough context to actually help.
@@ -22,6 +24,34 @@ The fix is the same as good debugging in general: minimal reproduction first. On
 Most people skip this. It's the most important step. A minimal repro is the smallest amount of code that demonstrates the bug — and creating it forces you to understand the bug well enough to isolate it. Often you find the bug yourself in the process.
 
 When you do need model help, "here's a 10-line example that reproduces the bug" is dramatically more useful than "here's my 500-line component that has a bug somewhere."
+
+Use this minimal-reproduction template:
+
+```markdown
+## Expected behavior
+What should happen?
+
+## Actual behavior
+What happens instead?
+
+## Reproduction
+1. Start from ...
+2. Perform ...
+3. Observe ...
+
+## Evidence
+- Exact error or failed request:
+- Console/server logs:
+- First bad version or recent change:
+
+## Minimal code
+Only the files and data required to reproduce the failure.
+
+## Constraints
+Behavior and public APIs that must not change.
+```
+
+If those constraints should survive beyond this incident, capture them in a [spec file](/chapters/spec-files) rather than leaving them only in a chat.
 
 ## When the bug lives in the browser
 
@@ -71,6 +101,8 @@ Use Debug Mode when the cause isn't obvious from reading the code: race conditio
 
 **Step 6: Regression test.** Write a test that would have caught this bug. "Write a test that verifies this specific behavior." This is the most valuable step — it prevents the bug from coming back.
 
+**Step 7: Review the diff.** Confirm that the fix addresses the cause, not just the visible symptom. Use the [AI-generated code review checklist](/chapters/diff-review-loops) to inspect boundaries, test quality, security, and unrelated changes.
+
 ## What I've learned about AI-assisted debugging
 
 Models are good at pattern recognition — they've seen most common bugs before. Less good at reasoning about your specific system's behavior. More context (the minimal repro, expected vs actual behavior, the relevant code) = better results.
@@ -78,5 +110,7 @@ Models are good at pattern recognition — they've seen most common bugs before.
 Browser context helps too. A model that can see the runtime evidence is less likely to invent a plausible-sounding cause that doesn't match what's actually happening.
 
 The failure mode to watch for: a fix that addresses the symptom but not the cause. Always ask "why does this fix work?" If the explanation doesn't hold up, the fix might be wrong.
+
+Prompting still matters, especially when evidence is incomplete. [Prompting and Pitfalls](/chapters/prompting-and-pitfalls) covers how to state constraints, ask for uncertainty, and keep a model from silently expanding the task.
 
 <WorkflowRecipe />

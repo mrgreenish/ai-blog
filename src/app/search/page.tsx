@@ -11,6 +11,10 @@ const SEARCH_DESCRIPTION =
 export const metadata: Metadata = {
   title: SEARCH_TITLE,
   description: SEARCH_DESCRIPTION,
+  robots: {
+    index: false,
+    follow: true,
+  },
   alternates: {
     canonical: "/search",
   },

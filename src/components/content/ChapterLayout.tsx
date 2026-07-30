@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Chapter } from "@/lib/types";
+import { AUTHOR_NAME, AUTHOR_URL } from "@/lib/siteConfig";
 
 interface ChapterLayoutProps {
   chapter: Chapter;
@@ -11,6 +12,13 @@ interface ChapterLayoutProps {
 
 function toRoman(n: number): string {
   return (["I", "II", "III", "IV", "V"] as const)[n - 1] ?? String(n);
+}
+
+function formatDate(date: string): string {
+  return new Intl.DateTimeFormat("en", {
+    dateStyle: "medium",
+    timeZone: "UTC",
+  }).format(new Date(date));
 }
 
 export function ChapterLayout({ chapter, partMeta, prev, next, children }: ChapterLayoutProps) {
@@ -45,6 +53,33 @@ export function ChapterLayout({ chapter, partMeta, prev, next, children }: Chapt
             {frontmatter.subtitle}
           </p>
         )}
+        <p className="mt-5 font-mono text-xs text-fg-muted">
+          By{" "}
+          <a
+            href={AUTHOR_URL}
+            rel="author"
+            className="underline underline-offset-2 hover:text-fg-primary"
+          >
+            {AUTHOR_NAME}
+          </a>
+          {frontmatter.publishedAt ? (
+            <>
+              {" · "}
+              <time dateTime={frontmatter.publishedAt}>
+                Published {formatDate(frontmatter.publishedAt)}
+              </time>
+            </>
+          ) : null}
+          {frontmatter.updatedAt &&
+          frontmatter.updatedAt !== frontmatter.publishedAt ? (
+            <>
+              {" · "}
+              <time dateTime={frontmatter.updatedAt}>
+                Updated {formatDate(frontmatter.updatedAt)}
+              </time>
+            </>
+          ) : null}
+        </p>
         {frontmatter.wonderQuestion && (
           <p className="mt-6 font-sans text-sm italic text-fg-muted border-l-2 border-border-default pl-4">
             {frontmatter.wonderQuestion}

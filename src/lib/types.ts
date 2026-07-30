@@ -67,6 +67,7 @@ export interface NewsEntryFrontmatter {
   publishedAt: string;
   lastVerifiedAt: string;
   primarySourceUrl: string;
+  indexable: boolean;
 }
 
 export interface NewsEntry {
@@ -74,4 +75,3 @@ export interface NewsEntry {
   frontmatter: NewsEntryFrontmatter;
   content: string;
 }
-

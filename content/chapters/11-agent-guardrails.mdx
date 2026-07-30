@@ -3,7 +3,7 @@ title: "Agent Guardrails"
 subtitle: "Scope control and failure modes for autonomous coding agents"
 publishedAt: "2026-04-17"
 updatedAt: "2026-07-22"
-chapter: 12
+chapter: 11
 part: review-quality
 partNumber: 3
 interactiveTools: [failure-gallery]
@@ -47,7 +47,7 @@ Natural home for domain-scoped guardrails. Your API layer's `SKILL.md` says "nev
 
 The layering: `SKILL.md` for domain guardrails, `CLAUDE.md` for project-wide guardrails, task prompt for the specific request.
 
-See [Agents and Skills](/tooling/agents-and-skills) for how to write and structure skill files.
+See [Agents and Skills](/chapters/agents-and-skills) for how to write and structure skill files.
 
 ## When guardrails fail
 
@@ -57,6 +57,6 @@ Guardrails reduce failure frequency. They don't eliminate it. What they can't pr
 - **Subtle behavior changes.** Technically within scope, but changes behavior in a non-obvious way.
 - **Context drift.** In long sessions, the agent's understanding of the task drifts from your original intent.
 
-So: review every diff carefully, even when the agent followed all the guardrails.
+So: review every diff carefully, even when the agent followed all the guardrails. The [AI-generated code review checklist](/chapters/diff-review-loops) turns that review into explicit correctness, security, test, and human-judgment passes.
 
 <FailureGallery />

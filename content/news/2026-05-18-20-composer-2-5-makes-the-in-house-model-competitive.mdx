@@ -3,6 +3,7 @@ title: Composer 2.5 makes the in-house model competitive
 publishedAt: '2026-05-18'
 lastVerifiedAt: '2026-07-22'
 primarySourceUrl: 'https://cursor.com/blog/composer-2-5'
+indexable: true
 ---
 Cursor [shipped Composer 2.5](https://cursor.com/blog/composer-2-5) on May 18 — the same Moonshot Kimi K2.5 base as Composer 2, retrained with 25× more synthetic tasks and a new technique they call **Targeted RL with Textual Feedback**: instead of waiting for a final reward, the trainer drops localized hints at the exact tokens where behavior went wrong and distills back from those points. The infrastructure note worth flagging is the Muon optimizer with distributed orthogonalization — 0.2-second optimizer steps on a trillion-parameter model.
 

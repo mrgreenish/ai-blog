@@ -1,38 +1,35 @@
 import type { MetadataRoute } from "next";
-import { getAllChapters, getNewsEntries } from "@/lib/content";
+import { getAllChapters, getIndexableNewsEntries } from "@/lib/content";
 import { SITE_URL as BASE_URL } from "@/lib/siteConfig";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const chapters = getAllChapters();
-  const newsEntries = getNewsEntries();
-  const now = new Date();
+  const newsEntries = getIndexableNewsEntries();
+  const contentDates = [
+    ...chapters.flatMap((chapter) => [
+      chapter.frontmatter.updatedAt,
+      chapter.frontmatter.publishedAt,
+    ]),
+    ...newsEntries.flatMap((entry) => [
+      entry.frontmatter.lastVerifiedAt,
+      entry.frontmatter.publishedAt,
+    ]),
+  ].filter((date): date is string => Boolean(date));
+  const latestContentDate = contentDates.sort((a, b) => b.localeCompare(a))[0];
 
   const chapterEntries: MetadataRoute.Sitemap = chapters.map((chapter) => ({
     url: `${BASE_URL}/chapters/${chapter.slug}`,
-    lastModified:
-      chapter.frontmatter.updatedAt ?? chapter.frontmatter.publishedAt ?? now,
-    changeFrequency: "monthly",
-    priority: 0.8,
+    lastModified: chapter.frontmatter.updatedAt ?? chapter.frontmatter.publishedAt,
   }));
   const newsSitemapEntries: MetadataRoute.Sitemap = newsEntries.map((entry) => ({
     url: `${BASE_URL}/chapters/what-is-happening/${entry.slug}`,
     lastModified: entry.frontmatter.lastVerifiedAt,
-    changeFrequency: "monthly",
-    priority: 0.6,
   }));
 
   return [
     {
       url: BASE_URL,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 1,
-    },
-    {
-      url: `${BASE_URL}/search`,
-      lastModified: now,
-      changeFrequency: "yearly",
-      priority: 0.3,
+      lastModified: latestContentDate,
     },
     ...chapterEntries,
     ...newsSitemapEntries,

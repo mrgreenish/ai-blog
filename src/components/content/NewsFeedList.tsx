@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { NewsEntry } from "@/lib/types";
+import { getContentExcerpt } from "@/lib/content";
 
 export function NewsFeedList({ entries }: { entries: NewsEntry[] }) {
   return (
@@ -25,6 +26,9 @@ export function NewsFeedList({ entries }: { entries: NewsEntry[] }) {
                 {entry.frontmatter.title}
               </h3>
             </Link>
+            <p className="mt-2 max-w-2xl font-sans text-sm leading-relaxed text-fg-muted">
+              {getContentExcerpt(entry.content, 180)}
+            </p>
             <p className="font-sans text-xs text-fg-muted mt-2">
               Last verified {entry.frontmatter.lastVerifiedAt}
               {" · "}

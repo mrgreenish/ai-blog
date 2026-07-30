@@ -27,6 +27,11 @@ const nextConfig: NextConfig = {
       { source: "/notes/:slug",      destination: "/chapters/:slug", permanent: true },
       // Renamed chapters
       { source: "/chapters/on-my-radar", destination: "/chapters/what-is-happening", permanent: true },
+      {
+        source: "/chapters/ai-code-review",
+        destination: "/chapters/diff-review-loops",
+        statusCode: 301,
+      },
       // Category landing pages → home
       { source: "/models",    destination: "/", permanent: true },
       { source: "/workflows", destination: "/", permanent: true },

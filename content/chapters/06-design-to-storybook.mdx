@@ -1,71 +1,231 @@
 ---
-title: "Design Token to Storybook"
-subtitle: "From Figma tokens to production component to documented Storybook stories"
+title: "Figma Design Tokens to Storybook with Cursor"
+subtitle: "A repeatable Figma-to-code token workflow, plus where the Storybook design-token addon fits"
 publishedAt: "2026-04-17"
-updatedAt: "2026-07-22"
+updatedAt: "2026-07-30"
 chapter: 6
 part: shipping-workflows
 partNumber: 2
-wonderQuestion: "Have you ever had a model regenerate the same token-to-class mapping from scratch in every session?"
+wonderQuestion: "How do you keep an AI coding agent from remapping the same design tokens differently in every session?"
 interactiveTools: [workflow-recipe]
 illustrationPlaceholders:
-  - "Three-column flow: Figma (token source) to spec file (encoded mapping) to component and Storybook output."
-  - "Before/after: component built without design token context vs with token mapping skill file."
+  - "Four-stage flow: Figma variables to semantic token source to production component to Storybook documentation and visual review."
+  - "Boundary diagram: Figma MCP supplies design context, a token skill supplies repository rules, and the Storybook addon displays code-owned tokens."
 ---
 
-You're building a new component. Three sessions in, and every time you start a fresh chat the model asks you to explain how your tokens work. What does `Primary/500` map to? Is the spacing scale custom or Tailwind's default? Which font is the display font?
+The reliable path from Figma design tokens to Storybook is:
 
-You explain it. The model builds the component. Next session, you explain it again.
+**Figma variables → semantic token names → code-owned CSS or theme tokens → components → Storybook documentation and visual checks.**
 
-A token-mapping skill file solves this. Write it once — Figma variable names to Tailwind classes, spacing scale, font tokens — and commit it to the repo. Cursor can discover it in future sessions and load it when the task is relevant or when you invoke it explicitly. First-session setup, reusable payoff.
+Cursor and Figma MCP can accelerate the translation and detect drift. The Storybook design-token addon can document the tokens already present in stylesheets. None of those tools should become a second source of truth.
 
-For how the Figma MCP provides structured design data instead of screenshots, see [Figma MCP Workflows](/tooling/figma-mcp).
+## The Storybook addon is a viewer, not a Figma sync
 
-## The workflow
+The official [`storybook-design-token`](https://storybook.js.org/addons/storybook-design-token) addon reads annotated CSS, SCSS, Less, and icon files and displays their tokens in Storybook. It can render token categories in the addon panel or through a `DesignTokenDocBlock`.
 
-**Step 1: Token skill.** Before touching any component, create a SKILL.md that documents how your Figma tokens map to your existing Tailwind setup. This is the highest-leverage step — it gives the model persistent context about your design system so it doesn't reinvent token mappings every session.
+It does **not** pull variables from Figma, decide how Figma names map to code, or update production components. That mapping belongs in your repository.
 
-Here's what a minimal token skill looks like:
+As of the current addon documentation:
 
-```markdown
-# Design Token Mapping
+- v5 supports Storybook 10 and newer and is ESM-only.
+- The v4 branch targets Storybook 9.
+- The v3 branch targets Storybook 7 and 8.
 
-## Colors
-- Figma `Primary/500` → `text-blue-500` / `bg-blue-500`
-- Figma `Neutral/900` → `text-zinc-900` / `bg-zinc-900`
-- Figma `Surface/Default` → `bg-white dark:bg-zinc-950`
+Choose the addon version for your Storybook version before copying configuration from an example.
 
-## Typography
-- Figma `Display/Large` → `font-display text-4xl font-bold tracking-tight`
-- Figma `Body/Default` → `font-sans text-base leading-relaxed`
-- Display font: Space Grotesk (`--font-display` in `@theme`)
+## Decide the source of truth first
 
-## Spacing
-- Figma spacing tokens follow Tailwind's default scale: 4px = `gap-1`, 8px = `gap-2`, 16px = `gap-4`, 24px = `gap-6`
+Pick one code-owned token layer:
 
-## Rules
-- Never use arbitrary values (no `text-[36px]`, no `#hexvalue`)
-- All colors from the token list above — flag anything that doesn't map
+- CSS custom properties such as `--color-action-primary`
+- a token JSON package transformed into CSS and platform outputs
+- framework theme variables that compile to stable CSS tokens
+
+Figma variables can mirror that layer, but production behavior comes from the versioned repository. This keeps review, testing, releases, and rollback in the same system as the components that consume the tokens.
+
+Avoid mapping a component directly from `Primary/500` to a raw hex value. Prefer semantic intent:
+
+```text
+Figma: Button/Background/Primary
+Token: color.action.primary
+CSS:   --color-action-primary
+Usage: background: var(--color-action-primary)
 ```
 
-Create it once, reuse it for every design-to-code task. The skill should cover: Figma color variable names → Tailwind color classes, spacing tokens → Tailwind spacing scale, typography tokens → font-family/size/weight classes, and any CSS custom properties you define in your `@theme` block.
+Semantic names survive palette changes. Raw scale names tend to leak design implementation into component behavior.
 
-**Step 2: Design tokens.** With the skill loaded, ask the model to map the specific Figma component's variables to your Tailwind config. The skill tells it that `Primary/500` means `text-blue-500` and `spacing/md` means `gap-4` — it doesn't have to guess.
+## Step 1: create a reusable token skill
 
-**Step 3: Component spec.** Use the Figma MCP to pull the component's properties, variants, and constraints. Ask the model to generate a TypeScript interface from the Figma component properties.
+A committed skill gives Cursor the repository-specific mapping it cannot infer safely:
 
-**Step 4: Implementation.** Implement the component against the spec. The model has the design data and the token mapping skill, so it can make accurate decisions about spacing, color, and layout without you translating from a screenshot.
+```markdown
+---
+name: design-token-mapping
+description: Apply this repository's Figma-to-code token rules.
+---
 
-**Step 5: Storybook stories.** Generate stories for each variant. "Given this component and its props, generate Storybook stories for each variant defined in the Figma component." The stories document the component and make it easy to verify against the design.
+# Design Token Mapping
 
-**Step 6: Visual review.** Use the Storybook output to do a visual review against the Figma design. The Figma MCP makes it easy to pull the design back into the loop for comparison.
+## Source of truth
+- Production tokens: `src/styles/tokens.css`
+- Figma collection: `Product UI`
+- Never introduce a raw color or spacing value when a semantic token exists.
 
-## What makes this better than the old way
+## Mapping
+- Figma `Button/Background/Primary` → `--color-action-primary`
+- Figma `Text/Default` → `--color-text-default`
+- Figma `Space/300` → `--space-3`
+- Figma `Type/Body/Default` → `--font-body`, `--text-body`, `--leading-body`
 
-The token-mapping skill is the biggest improvement. Without it, every new design-to-code session starts from zero — the model has to rediscover how your Figma tokens map to Tailwind classes. With the skill committed to the repository, that knowledge is durable and can be loaded when relevant. Once loaded, it knows your `@theme` block defines `--font-display` as Space Grotesk, your spacing follows Tailwind's default scale, and your color palette lives in zinc/blue/emerald.
+## Verification
+- Run the token build.
+- Run Storybook.
+- Cover default, hover, focus, disabled, loading, and error states.
+- Report any Figma variable with no code mapping instead of inventing one.
+```
 
-Second: accurate spacing and color because the model has actual values from Figma, not a screenshot. "The gap between these elements is 12px" — the skill tells it 12px maps to `gap-3` in your Tailwind config.
+[Download the reusable design-token skill](/resources/design-token-to-storybook-skill.md) and replace the example paths and mappings with your own.
 
-Third: Storybook story generation from Figma variants. A component with 4 variants, 3 sizes, and 2 states has 24 combinations. Generating stories for all of them manually is tedious. The model does it in one shot.
+## Step 2: retrieve structured Figma context
+
+Use the exact component or frame selection. Figma MCP is valuable because it can expose structured design context rather than making the agent estimate values from a screenshot. Figma's own workflow examples also show agents comparing tokens used in code with variables in a Figma library to identify drift.
+
+Ask for a mapping report before code:
+
+```markdown
+Inspect this Figma selection and the repository token source.
+
+Return:
+1. Figma variables used by the selection
+2. Existing code token for each variable
+3. Missing or ambiguous mappings
+4. Component variants and interactive states
+
+Do not edit files until I approve the mapping.
+```
+
+See [Figma MCP Workflows](/chapters/figma-mcp) for context selection and connection patterns. If the design is evolving in both directions, use the broader [design-to-code-and-back workflow](/chapters/design-to-code-and-back).
+
+## Step 3: encode the tokens in code
+
+For a CSS-owned system:
+
+```css
+:root {
+  /**
+   * @tokens Action colors
+   * @presenter Color
+   */
+  --color-action-primary: #2563eb;
+  --color-action-primary-hover: #1d4ed8;
+
+  /**
+   * @tokens Spacing
+   * @presenter Spacing
+   */
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+}
+```
+
+The special comments are for the Storybook addon. The custom properties remain ordinary production CSS.
+
+A component consumes semantic tokens:
+
+```tsx
+export function PrimaryButton(
+  props: React.ButtonHTMLAttributes<HTMLButtonElement>,
+) {
+  return (
+    <button
+      {...props}
+      className="rounded-md bg-[var(--color-action-primary)] px-[var(--space-4)] py-[var(--space-2)] text-white hover:bg-[var(--color-action-primary-hover)]"
+    />
+  );
+}
+```
+
+If the repository uses Tailwind theme aliases or a token build package, encode the same semantic relationship there instead of mixing approaches.
+
+## Step 4: configure Storybook token documentation
+
+Install the addon version compatible with your Storybook release:
+
+```bash
+pnpm add -D storybook-design-token
+```
+
+Add it to `.storybook/main.ts`:
+
+```ts
+import type { StorybookConfig } from "@storybook/react-vite";
+
+const config: StorybookConfig = {
+  addons: ["storybook-design-token"],
+};
+
+export default config;
+```
+
+Then add token documentation to an MDX page:
+
+```mdx
+import { DesignTokenDocBlock } from "storybook-design-token";
+
+# Action tokens
+
+<DesignTokenDocBlock
+  categoryName="Action colors"
+  viewType="card"
+  maxHeight={560}
+/>
+```
+
+The category name must match the `@tokens` annotation in the stylesheet.
+
+## Step 5: generate stories from behavior, not permutations alone
+
+Figma variants can seed the story matrix, but a useful story set reflects behavior:
+
+- primary, secondary, and destructive intent
+- compact and regular size
+- hover, focus-visible, disabled, loading, and error states
+- long labels and narrow containers
+- light and dark themes when supported
+
+Generating every Cartesian combination can create a noisy Storybook. Start with representative stories, then add interaction tests for states that can regress.
+
+## Step 6: detect drift
+
+Run three checks:
+
+1. **Mapping check:** every Figma variable used by the component maps to a known code token.
+2. **Code check:** components use semantic tokens rather than raw values.
+3. **Visual check:** representative stories match the intended Figma states at relevant viewport sizes.
+
+When a mismatch appears, record which side should change. “Sync the design and code” is ambiguous; “Figma is approved, update `--space-3` consumers” is actionable.
+
+For workflows that bring a running component back onto the canvas, continue with [Code to Canvas](/chapters/code-to-canvas).
+
+## Common failure modes
+
+**The agent invents a new token.** Require it to report missing mappings and wait for approval.
+
+**Figma and code use different names.** Keep an explicit mapping table in the skill. Renaming both systems at once should be a deliberate migration.
+
+**Storybook shows no tokens.** Confirm the stylesheet is loaded, the addon version matches Storybook, and `@tokens` annotations are attached to the declarations.
+
+**The docs look correct but the component is wrong.** The addon documents stylesheet values; it does not prove that a component consumes the intended token. Add component stories and interaction or visual checks.
+
+**Every session starts from zero.** Commit the token skill near the design-system code and keep it short enough to stay current.
+
+## Definition of done
+
+- The repository has one documented token source of truth.
+- Every Figma variable used by the component has an approved semantic mapping.
+- Production components consume code-owned tokens.
+- Storybook documents the same tokens and covers representative component states.
+- The mapping, component tests, and visual evidence are reviewable in the PR.
 
 <WorkflowRecipe />

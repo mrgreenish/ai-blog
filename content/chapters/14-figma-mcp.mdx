@@ -3,7 +3,7 @@ title: "Figma MCP Workflows"
 subtitle: "Design context in the coding loop - from interpretation to direct translation"
 publishedAt: "2026-04-17"
 updatedAt: "2026-07-22"
-chapter: 15
+chapter: 14
 part: tools-infrastructure
 partNumber: 4
 interactiveTools: [workflow-recipe]
@@ -43,6 +43,8 @@ The model can also answer questions about the design: "What's the hover state fo
 
 One of the most useful applications: mapping Figma variables to your Tailwind config. Give the model access to your Figma variables and your `tailwind.config.ts`, and ask it to keep them in sync. When a designer updates a color token in Figma, the model can update the Tailwind config to match.
 
+Do not let the model invent that mapping on every run. The [Figma design tokens to Storybook workflow](/chapters/design-to-storybook) shows how to keep semantic mappings in a reusable skill, make code the production source of truth, and document the result in Storybook.
+
 ## Iterating with designers
 
 The Figma MCP enables a tighter design-developer loop. Instead of the designer exporting specs and the developer interpreting them, you can:
@@ -56,7 +58,7 @@ The model mediates the translation in both directions.
 
 ## The reverse direction: Code to Figma
 
-The loop runs both ways. Figma's [Claude Code to Figma](https://www.figma.com/blog/introducing-claude-code-to-figma/) capability lets you capture a live rendered UI and push it into Figma as editable frames for design review. See [Code to Canvas](/tooling/code-to-canvas) for the full reverse-loop workflow.
+The loop runs both ways. Figma's [Claude Code to Figma](https://www.figma.com/blog/introducing-claude-code-to-figma/) capability lets you capture a live rendered UI and push it into Figma as editable frames for design review. See [Code to Canvas](/chapters/code-to-canvas) for the full reverse-loop workflow.
 
 Together, the two directions create a complete design-developer loop — no manual export, screenshot interpretation, or spec handoff required.
 

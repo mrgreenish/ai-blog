@@ -1,0 +1,235 @@
+---
+title: "How to Review AI-Generated Code"
+subtitle: "A practical diff review checklist for correctness, tests, security, and human judgment"
+publishedAt: "2026-04-17"
+updatedAt: "2026-07-30"
+chapter: 10
+part: review-quality
+partNumber: 3
+wonderQuestion: "How do you review code that looks clean, compiles, and is still subtly wrong?"
+interactiveTools: [workflow-recipe, failure-gallery, scenario-lab]
+illustrationPlaceholders:
+  - "Annotated AI-generated diff showing behavior, boundary, security, and test-review passes."
+  - "Review pipeline: deterministic CI to AI review to human review to merge, with ownership at each gate."
+---
+
+AI-generated code should be reviewed as untrusted code from a fast, confident contributor. The useful question is not “does this look clean?” It is:
+
+> **What behavior changed, where can it fail, and what evidence proves the change is safe?**
+
+Use four passes: understand the intended behavior, inspect the changed boundaries, challenge the tests, then run targeted AI and human review. The checklist is available as a [downloadable Markdown resource](/resources/ai-code-review-checklist.md).
+
+## Why plausible code gets through review
+
+AI-generated code often has the right shape:
+
+- names match the surrounding repository
+- error handling looks deliberate
+- tests compile
+- the diff is formatted
+- the happy path works
+
+That surface quality makes an incomplete implementation easier to approve. The defect is usually at a boundary the prompt did not make explicit: an empty value, a stale request, an authorization check, an existing caller, or a test that only confirms its own mock.
+
+Consider pagination:
+
+```ts
+const start = (page - 1) * pageSize;
+const end = start + pageSize - 1;
+return items.slice(start, end);
+```
+
+The code is readable, but `slice` excludes the end index. Every full page loses one item. A test that asserts the first result or merely checks that the array is non-empty still passes.
+
+A reviewer has to reconstruct the contract: page one starts at zero, each full page contains `pageSize` items, and no item disappears between pages.
+
+## Before reading line by line
+
+Start with the change contract:
+
+1. Read the ticket, spec, or PR description.
+2. Write down the promised behavior in one or two sentences.
+3. Identify explicit non-goals and compatibility constraints.
+4. List the trust boundaries touched: user input, authentication, database, network, filesystem, environment, or third-party API.
+5. Compare the changed-file list with the promised scope.
+
+If the contract is missing, stop. A reviewer cannot verify “correct” without knowing what correct means. The [spec-file workflow](/chapters/spec-files) is useful when those constraints should live with the code.
+
+## Pass 1: review behavior
+
+Trace the normal path with real values:
+
+- What enters the changed code?
+- Which branches can run?
+- What state or external system changes?
+- What is returned or rendered?
+- Which existing callers observe a different result?
+
+Then test the boundaries mentally:
+
+- empty, missing, zero, negative, and maximum values
+- first and last items
+- duplicate and out-of-order events
+- slow, failed, and repeated requests
+- cancellation, retry, and concurrent execution
+- locale, time-zone, Unicode, and rounding boundaries where relevant
+
+Do not reward a diff merely for being narrow. A small change in shared middleware, a schema, or an exported type can have a wide behavioral effect.
+
+## Pass 2: review data and security boundaries
+
+Security review is not a final grep for obvious secrets. Follow data across the boundary.
+
+### Authorization
+
+- Is the action allowed for this user, tenant, repository, or resource?
+- Does the server enforce the rule, or only the UI?
+- Can an identifier be changed to access another user's data?
+- Did a new code path bypass an existing policy or middleware layer?
+
+### Input and output
+
+- Is untrusted input validated at the boundary?
+- Is validation performed on the actual runtime value?
+- Can output expose secrets, personal data, stack traces, or internal identifiers?
+- Are generated URLs, HTML, SQL, shell arguments, and file paths constructed safely?
+
+### Side effects
+
+- Is the operation idempotent when retries are possible?
+- Can partial failure leave state inconsistent?
+- Are destructive operations scoped and recoverable?
+- Do logs and analytics avoid sensitive payloads?
+
+Apply the same principle as [agent guardrails](/chapters/agent-guardrails): permissions, verification, and stop conditions should be structural rather than implied by a prompt.
+
+## Pass 3: review the tests
+
+AI-generated tests often mirror the implementation instead of proving the requirement. Ask:
+
+- Would this test fail if the implementation returned a plausible wrong result?
+- Does it assert the user-visible or API-visible behavior?
+- Are mocks hiding serialization, permissions, timing, or integration behavior?
+- Are failure and boundary cases represented?
+- Is the regression test specific to the reported bug?
+- Did the change weaken, skip, or delete an existing assertion?
+
+For the pagination example, useful assertions include:
+
+```ts
+expect(paginate(items, 1, 10)).toHaveLength(10);
+expect(paginate(items, 2, 10)[0]).toBe(items[10]);
+expect(paginate(items, 3, 10)).toEqual(items.slice(20, 23));
+```
+
+The second assertion proves continuity between pages; the third proves the partial final page.
+
+When the change fixes a defect, follow the [bug-report-to-fix workflow](/chapters/bug-to-fix): reproduce, isolate, fix narrowly, and add a test that fails before the fix.
+
+## Pass 4: use AI reviewers deliberately
+
+AI review is useful as an additional pass, not as a merge authority.
+
+### Cursor BugBot
+
+BugBot reviews pull-request diffs and posts findings with explanations and suggested fixes. It can run on PR updates or through manual review triggers. Current Cursor releases also support running BugBot and Security Review before pushing through `/review`, with focused commands such as `/review-bugbot` and `/review-security`.
+
+Project-specific review rules belong in `.cursor/BUGBOT.md`. Good rules encode repository facts that a generic reviewer cannot know:
+
+```markdown
+## Authorization
+- Every route under `app/api/accounts/[accountId]` must call
+  `requireAccountMembership(accountId)` before reading or mutating data.
+
+## Compatibility
+- Events in `packages/events/public.ts` are consumed outside this repository.
+  Flag removals, renames, and payload-shape changes.
+```
+
+### Codex code review
+
+With Codex code review enabled for the repository, comment `@codex review` on a GitHub pull request or enable automatic reviews. Codex reads applicable `AGENTS.md` guidance and focuses its GitHub comments on serious findings.
+
+Repository guidance should state the invariant and the safe path. Leave formatting, type checking, linting, and other deterministic checks to CI.
+
+### A useful review prompt
+
+```text
+Review this diff against the PR description.
+
+Prioritize:
+1. behavior that contradicts an acceptance criterion
+2. authorization or data-boundary regressions
+3. missing failure, retry, and concurrency handling
+4. tests that would pass with a plausible wrong implementation
+5. public API or compatibility changes
+
+Report only actionable findings. For each finding, name the failing scenario,
+the relevant code, and the smallest safe correction.
+```
+
+## Triage findings instead of accepting them
+
+For each AI finding:
+
+1. **Reproduce or trace it.** Identify the concrete input and path.
+2. **Classify it.** Real defect, missing evidence, useful follow-up, or false positive.
+3. **Fix narrowly.** Do not accept an unrelated refactor because it arrived inside a review comment.
+4. **Add proof.** Prefer a regression test or observable verification step.
+5. **Resolve with context.** Record why a false positive does not apply.
+
+Common false positives come from intentional compatibility code, repository conventions the reviewer cannot see, or warnings about states already ruled out by a trusted boundary. The answer is not to ignore AI review; it is to give the reviewer better durable context and demand a concrete failure scenario.
+
+## Human and AI responsibilities
+
+| Review layer | Best at | Should not own alone |
+| --- | --- | --- |
+| Deterministic CI | Types, formatting, lint, known tests, builds | Product correctness |
+| AI reviewer | Diff-wide pattern matching, suspicious omissions, cross-file consistency | Business intent and risk acceptance |
+| Human reviewer | Product behavior, architecture, security judgment, operational tradeoffs | Repeating mechanical checks CI can enforce |
+
+Humans still decide whether the implementation matches the product, whether a risk is acceptable, and whether the evidence is strong enough to merge.
+
+## The final checklist
+
+### Intent and scope
+
+- [ ] The PR states the behavior being changed.
+- [ ] Changed files match the intended scope.
+- [ ] Non-goals and compatibility constraints are preserved.
+
+### Correctness
+
+- [ ] Happy path and boundary inputs were traced.
+- [ ] Failure, retry, cancellation, and concurrency behavior were considered.
+- [ ] Shared callers, state, and execution order were checked.
+
+### Security and data
+
+- [ ] Authorization is enforced server-side.
+- [ ] Untrusted input is validated at the boundary.
+- [ ] Logs and responses do not expose sensitive data.
+- [ ] Destructive or external side effects are scoped and recoverable.
+
+### Tests and evidence
+
+- [ ] Tests assert behavior rather than implementation details.
+- [ ] The regression test fails without the intended fix.
+- [ ] Relevant CI, build, and runtime checks pass.
+- [ ] UI changes have browser or visual evidence where appropriate.
+
+### Review
+
+- [ ] AI findings were reproduced or dismissed with a reason.
+- [ ] A human reviewed business logic and risk.
+- [ ] The PR description maps acceptance criteria to evidence.
+
+## Definition of done
+
+A review is complete when the change contract is satisfied, risky boundaries have evidence, false positives are resolved intentionally, and the remaining uncertainty is explicit. “The diff looks fine” is not evidence.
+
+<WorkflowRecipe />
+
+<FailureGallery />
+
+<ScenarioLab />

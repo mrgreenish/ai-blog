@@ -26,6 +26,7 @@ import matter from "gray-matter";
 const ROOT = path.resolve(__dirname, "../../../");
 const CHAPTERS_DIR = path.join(ROOT, "content/chapters");
 const NEWS_DIR = path.join(ROOT, "content/news");
+const PUBLIC_DIR = path.join(ROOT, "public");
 
 const VALID_PARTS = new Set([
   "understanding-models",
@@ -143,6 +144,7 @@ describe("Dated news entry schema", () => {
       const publishedAt = frontmatter.publishedAt;
       const lastVerifiedAt = frontmatter.lastVerifiedAt;
       const primarySourceUrl = frontmatter.primarySourceUrl;
+      const indexable = frontmatter.indexable;
       return (
         typeof frontmatter.title !== "string" ||
         typeof publishedAt !== "string" ||
@@ -150,14 +152,22 @@ describe("Dated news entry schema", () => {
         typeof lastVerifiedAt !== "string" ||
         isNaN(Date.parse(lastVerifiedAt)) ||
         typeof primarySourceUrl !== "string" ||
-        !primarySourceUrl.startsWith("https://")
+        !primarySourceUrl.startsWith("https://") ||
+        typeof indexable !== "boolean"
       );
     });
 
     expect(
       invalid.map(({ filePath }) => path.basename(filePath)),
-      "news entries missing dates or a primary source"
+      "news entries missing dates, a primary source, or an indexability decision"
     ).toEqual([]);
+  });
+
+  it("keeps the focused news index at 22 entries", () => {
+    const indexable = entries.filter(
+      ({ frontmatter }) => frontmatter.indexable === true,
+    );
+    expect(indexable).toHaveLength(22);
   });
 
   it("keeps visible metadata out of entry bodies", () => {
@@ -172,6 +182,21 @@ describe("Dated news entry schema", () => {
       invalid.map(({ filePath }) => path.basename(filePath)),
       "news entries duplicate frontmatter in their body"
     ).toEqual([]);
+  });
+});
+
+describe("Public SEO resources", () => {
+  const resources = [
+    "resources/ai-code-review-checklist.md",
+    "resources/jira-to-cursor-workflow.md",
+    "resources/design-token-to-storybook-skill.md",
+  ];
+
+  it("ships every linked resource", () => {
+    const missing = resources.filter(
+      (resource) => !fs.existsSync(path.join(PUBLIC_DIR, resource)),
+    );
+    expect(missing).toEqual([]);
   });
 });
 
@@ -212,6 +237,15 @@ describe("Chapter number uniqueness", () => {
       }
     }
     expect(dupes, "duplicate chapter numbers").toEqual([]);
+  });
+
+  it("chapter numbers are consecutive from one", () => {
+    const chapterNumbers = chapters
+      .map((chapter) => chapter.frontmatter.chapter as number)
+      .sort((a, b) => a - b);
+    expect(chapterNumbers).toEqual(
+      Array.from({ length: chapters.length }, (_, index) => index + 1),
+    );
   });
 });
 
