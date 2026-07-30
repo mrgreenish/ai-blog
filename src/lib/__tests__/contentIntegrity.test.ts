@@ -143,6 +143,7 @@ describe("Dated news entry schema", () => {
       const publishedAt = frontmatter.publishedAt;
       const lastVerifiedAt = frontmatter.lastVerifiedAt;
       const primarySourceUrl = frontmatter.primarySourceUrl;
+      const indexable = frontmatter.indexable;
       return (
         typeof frontmatter.title !== "string" ||
         typeof publishedAt !== "string" ||
@@ -150,14 +151,22 @@ describe("Dated news entry schema", () => {
         typeof lastVerifiedAt !== "string" ||
         isNaN(Date.parse(lastVerifiedAt)) ||
         typeof primarySourceUrl !== "string" ||
-        !primarySourceUrl.startsWith("https://")
+        !primarySourceUrl.startsWith("https://") ||
+        typeof indexable !== "boolean"
       );
     });
 
     expect(
       invalid.map(({ filePath }) => path.basename(filePath)),
-      "news entries missing dates or a primary source"
+      "news entries missing dates, a primary source, or an indexability decision"
     ).toEqual([]);
+  });
+
+  it("keeps the focused news index at 22 entries", () => {
+    const indexable = entries.filter(
+      ({ frontmatter }) => frontmatter.indexable === true,
+    );
+    expect(indexable).toHaveLength(22);
   });
 
   it("keeps visible metadata out of entry bodies", () => {
@@ -212,6 +221,15 @@ describe("Chapter number uniqueness", () => {
       }
     }
     expect(dupes, "duplicate chapter numbers").toEqual([]);
+  });
+
+  it("chapter numbers are consecutive from one", () => {
+    const chapterNumbers = chapters
+      .map((chapter) => chapter.frontmatter.chapter as number)
+      .sort((a, b) => a - b);
+    expect(chapterNumbers).toEqual(
+      Array.from({ length: chapters.length }, (_, index) => index + 1),
+    );
   });
 });
 

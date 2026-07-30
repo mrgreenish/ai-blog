@@ -15,6 +15,24 @@ import type {
 const CHAPTERS_DIR = path.join(process.cwd(), "content/chapters");
 const NEWS_DIR = path.join(process.cwd(), "content/news");
 
+export function getContentExcerpt(markdown: string, maxLength = 160): string {
+  const plainText = markdown
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/!\[([^\]]*)\]\([^)]+\)/g, "$1")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/[#>*_`~]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (plainText.length <= maxLength) return plainText;
+
+  const shortened = plainText.slice(0, maxLength - 1);
+  const lastSpace = shortened.lastIndexOf(" ");
+  const boundary = lastSpace > maxLength * 0.7 ? lastSpace : shortened.length;
+  return `${shortened.slice(0, boundary).trimEnd()}…`;
+}
+
 export const getNewsEntries = cache(function getNewsEntries(): NewsEntry[] {
   if (!fs.existsSync(NEWS_DIR)) return [];
 
@@ -64,6 +82,10 @@ export const getNewsEntry = cache(function getNewsEntry(slug: string): NewsEntry
   return getNewsEntries().find((entry) => entry.slug === slug) ?? null;
 });
 
+export const getIndexableNewsEntries = cache(function getIndexableNewsEntries(): NewsEntry[] {
+  return getNewsEntries().filter((entry) => entry.frontmatter.indexable);
+});
+
 export const getAdjacentNewsEntries = cache(function getAdjacentNewsEntries(slug: string) {
   const entries = getNewsEntries();
   const index = entries.findIndex((entry) => entry.slug === slug);
@@ -85,4 +107,3 @@ export const getAdjacentChapters = cache(function getAdjacentChapters(slug: stri
     next: idx < all.length - 1 ? all[idx + 1] : null,
   };
 });
-

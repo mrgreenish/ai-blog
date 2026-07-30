@@ -10,5 +10,11 @@ Each entry must include:
 - `publishedAt`
 - `lastVerifiedAt`
 - `primarySourceUrl`
+- `indexable`
 
 Entries are sorted by `publishedAt` descending, then by filename for same-day ties. The entry route renders the title and verification line from frontmatter, so do not repeat them in the MDX body. Also bump the landing chapter's `updatedAt` when adding or materially updating an entry.
+
+Set `indexable: true` only for self-contained, primary-source-backed original
+analysis that serves durable search intent. Brief reports remain public and in
+RSS with `indexable: false`; the page uses `noindex,follow` and stays out of the
+sitemap.
