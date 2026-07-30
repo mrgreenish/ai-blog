@@ -68,12 +68,11 @@ are excluded from the sitemap.
 
 ## Post-deployment checks
 
-- [ ] Production sitemap contains 41 URLs.
+- [ ] Production sitemap contains 42 URLs.
 - [ ] Five priority chapters return 200 and self-canonical.
-- [ ] `/chapters/ai-code-review` returns 301 to `/chapters/diff-review-loops`.
+- [ ] `/chapters/ai-code-review` and `/chapters/diff-review-loops` remain separate, indexable chapters.
 - [ ] A selected news report is indexable and present in the sitemap.
 - [ ] A noindex report remains accessible and is absent from the sitemap.
-- [ ] Three Markdown resources return 200.
 - [ ] Resubmit `https://www.aifieldnotes.dev/sitemap.xml`.
 - [ ] Request indexing for the five priority chapters.
 
@@ -81,11 +80,10 @@ are excluded from the sitemap.
 
 | Checkpoint | Indexed chapters | Discovered, not indexed | Crawled, not indexed | Priority-page impressions | Priority-page clicks | Notes |
 | --- | ---: | ---: | ---: | ---: | ---: | --- |
-| Baseline — 2026-07-30 | 5 of 19 | 30 total / 14 chapters | 7 | 159 | 0 | Before consolidation |
+| Baseline — 2026-07-30 | 5 of 19 | 30 total / 14 chapters | 7 | 159 | 0 | Before technical SEO changes |
 | Day 7 |  |  |  |  |  |  |
 | Day 14 |  |  |  |  |  |  |
-| Day 28 |  |  |  |  |  | Directional goal: at least 10 of 18 chapters indexed |
+| Day 28 |  |  |  |  |  | Directional goal: at least 10 of 19 chapters indexed |
 
 Do not interpret intentional `noindex` reports as indexing failures. Compare
 Google's exclusion reasons with the frontmatter policy before changing scope.
-

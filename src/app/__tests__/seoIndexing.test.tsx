@@ -2,7 +2,6 @@
 
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import nextConfig from "../../../next.config";
 import { NewsFeedList } from "@/components/content/NewsFeedList";
 import {
   getIndexableNewsEntries,
@@ -41,9 +40,9 @@ describe("selective news indexing", () => {
     }
   });
 
-  it("puts only indexable reports in the 41-URL sitemap", () => {
+  it("puts only indexable reports in the 42-URL sitemap", () => {
     const entries = sitemap();
-    expect(entries).toHaveLength(41);
+    expect(entries).toHaveLength(42);
 
     const urls = new Set(entries.map((entry) => entry.url));
     for (const entry of allEntries) {
@@ -81,17 +80,6 @@ describe("selective news indexing", () => {
         index: false,
         follow: true,
       },
-    });
-  });
-});
-
-describe("consolidated review route", () => {
-  it("permanently redirects the retired chapter to the merged guide", async () => {
-    const redirects = await nextConfig.redirects!();
-    expect(redirects).toContainEqual({
-      source: "/chapters/ai-code-review",
-      destination: "/chapters/diff-review-loops",
-      statusCode: 301,
     });
   });
 });

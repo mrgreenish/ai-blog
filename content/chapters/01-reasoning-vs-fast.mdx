@@ -1,8 +1,8 @@
 ---
-title: "Reasoning vs Fast AI Models for Coding"
-subtitle: "A practical way to choose model depth, latency, and cost for each step of a coding task"
+title: "Reasoning vs Fast Models"
+subtitle: "When to choose reasoning models vs fast models for different coding tasks"
 publishedAt: "2026-04-17"
-updatedAt: "2026-07-30"
+updatedAt: "2026-07-22"
 chapter: 1
 part: understanding-models
 partNumber: 1
@@ -18,18 +18,6 @@ The first time I used o3 for a coding task, I was impressed — then I checked t
 I'm Filip van Harreveld, a senior creative developer at [iO](https://www.iodigital.com/). I share work and notes at [filipvanharreveld.com](https://filipvanharreveld.com/) and on [LinkedIn](https://www.linkedin.com/in/fvanharreveld/).
 
 Everything below is an operating heuristic from my own coding sessions, not a permanent ranking. Model behavior shifts with the version, prompt, tool harness, repository context, and how success is measured. Treat the examples as patterns to test against your work.
-
-## The quick decision
-
-| Task shape | Start with | Escalate when |
-| --- | --- | --- |
-| Mechanical transformation with a clear example | Fast model | Output repeatedly violates the schema or repository convention |
-| Bounded implementation from an approved plan | Balanced or fast model | The task crosses several systems or reveals missing decisions |
-| Architecture, migration, or ambiguous debugging | Reasoning model | Keep it there until constraints and evidence are stable |
-| Repetitive pipeline step | Fast model | A sampled quality check shows systematic errors |
-| Final risk review | Reasoning model | Pair with deterministic tests and human judgment rather than escalating further |
-
-Model labels are only shorthand. The more important variables are task ambiguity, number of interacting constraints, cost of a wrong answer, and whether the surrounding [AI harness](/chapters/what-is-an-ai-harness) can run tools and verify the result.
 
 ## When reasoning models actually earn it
 
@@ -79,7 +67,3 @@ Not sure which model fits? Describe what you're building and how complex the tas
 The price gap between model tiers is real, but it's not as simple as "expensive = better." Run your own numbers below — adjust task count, model choice, and context size to see how costs shift across a realistic workload.
 
 <CostCalculator />
-
-## Continue the model-selection workflow
-
-Use [Model Personalities](/chapters/model-personalities) to understand how behavior differs even between similarly capable models. Use [Cursor Max Mode](/chapters/max-mode) when the real question is whether a longer context window or extended tool run is worth the added latency and cost.

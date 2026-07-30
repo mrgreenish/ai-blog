@@ -1,177 +1,52 @@
 ---
-title: "Cursor Jira Integration: Ticket to Pull Request"
-subtitle: "Native Jira agents, manual handoff, and MCP workflows that turn a scoped ticket into a reviewable PR"
+title: "Jira Ticket to Cursor to PR"
+subtitle: "Turning a Jira ticket into a structured Cursor task with Figma design context"
 publishedAt: "2026-04-17"
-updatedAt: "2026-07-30"
+updatedAt: "2026-07-22"
 chapter: 7
 part: shipping-workflows
 partNumber: 2
-wonderQuestion: "What has to be true before a Jira ticket is safe to hand to a coding agent?"
 interactiveTools: [workflow-recipe, model-mixer]
 illustrationPlaceholders:
-  - "Three-lane comparison: native Cursor in Jira, manual ticket handoff, and custom MCP automation."
-  - "Ticket anatomy diagram: scope, acceptance criteria, constraints, evidence, and definition of done flowing into an agent-created PR."
+  - "End-to-end flow: Jira ticket plus Figma frame to structured prompt to Cursor task to PR."
+  - "Ticket anatomy diagram: a Jira ticket annotated to show which fields feed into the AI prompt."
 ---
 
-The shortest version: **a Jira ticket becomes good Cursor input when it names the outcome, boundaries, evidence, and verification—not merely the feature request**.
+At iO, we use an internal AI tool to generate first-draft Jira tickets from a feature description. Scope, acceptance criteria, edge cases, analytics requirements. Sounds like a small thing — but a well-structured ticket is excellent context for Cursor, and that changes the entire development workflow.
 
-Cursor now has a [native Jira integration](https://cursor.com/changelog/05-19-26). An authorized user can assign a Jira work item to Cursor or mention `@Cursor` in a comment. Cursor uses the title, description, comments, and the team's repository settings to scope a cloud-agent run, then reports progress in Jira and links the resulting pull request.
+## The ticket generation step
 
-That removes the copy-and-paste step, but it does not remove the hard part: writing a ticket that an agent can execute without inventing requirements.
+A good AI-generated ticket has:
+- **Scope**: what's in, what's explicitly out
+- **Acceptance criteria**: specific, testable conditions
+- **Edge cases**: the scenarios that are easy to miss
+- **Analytics**: what events to track, what properties to include
 
-## Choose the right Jira-to-Cursor workflow
+These are generated from a brief description, not written from scratch. The model fills in the structure and forces you to think about edge cases you might have skipped.
 
-| Workflow | Best when | Main tradeoff |
-| --- | --- | --- |
-| **Native Cursor in Jira** | Your organization has Cursor admin support and Jira Commercial Cloud with Rovo enabled | Fastest handoff, but the agent receives whatever context the ticket and repository settings provide |
-| **Manual handoff to Cursor** | You want a human to select files, inspect the plan, or add context before implementation | More deliberate and broadly available, but requires a copy/paste or linked-ticket step |
-| **Jira API or MCP workflow** | Your team needs custom routing, private fields, approval gates, or multiple downstream tools | Most flexible, but you own authentication, permissions, failure handling, and maintenance |
+## Using the ticket as Cursor context
 
-The native integration currently requires **Cursor admin access** and **Jira Commercial Cloud with Rovo enabled**. Install it from Cursor's integrations settings. If those requirements do not fit your organization, the manual workflow is not a lesser version: it is often the safer choice for sensitive or underspecified work.
+Once you have a well-structured ticket, paste it into your Cursor session, add the relevant code files, and the model has everything it needs.
 
-## The ticket contract
+Acceptance criteria become test cases. Edge cases become guardrails. Scope definition prevents the model from going off on tangents.
 
-A coding agent should be able to answer these questions from the ticket:
+For UI tasks, grab the Figma link for the component you're implementing. In Figma, select the component or frame you want to build, right-click and choose **Copy/paste → Copy link to selection** (or press **⌘L**). Add it to your Cursor prompt as:
 
-1. What observable behavior must change?
-2. What is explicitly out of scope?
-3. Which repository, package, or component owns the change?
-4. What evidence demonstrates the current problem?
-5. Which acceptance checks must pass before a PR is ready?
-6. Which decisions require a human?
+> Figma design: https://www.figma.com/design/abc123/...?node-id=12-34
 
-Use a structure like this:
+Install Figma's Cursor integration from **Customize → Marketplace**, then authenticate once. You can also configure the remote MCP server manually if your team manages MCP connections outside the marketplace. Follow the current [Figma MCP setup guide](https://help.figma.com/hc/en-us/articles/32132100833559-Guide-to-the-Figma-MCP-server) because the exact installation surface can change between Cursor releases.
 
-```markdown
-## Outcome
-As a signed-in customer, I can retry a failed invoice payment without
-leaving the billing page.
+<InfoBlock title="Setting up the Figma MCP">
 
-## Current evidence
-- Reproduction URL: /settings/billing
-- Failed request: POST /api/invoices/:id/retry returns 409
-- Console/request ID: ...
+**Figma MCP** gives Cursor direct access to design tokens, component variants, and layout data. The remote server is the recommended setup; the desktop server remains available for organization-specific local workflows. See [Figma MCP Workflows](/chapters/figma-mcp) for setup.
 
-## In scope
-- Retry action and loading/error states
-- API handling for the known 409 response
-- Regression coverage for success and failure
+</InfoBlock>
 
-## Out of scope
-- Payment-provider migration
-- Billing-page redesign
+The flow: ticket context + Figma design link + Figma MCP → plan → implementation → PR. The PR description writes itself from the ticket's acceptance criteria.
 
-## Acceptance criteria
-- [ ] Retry is unavailable while a request is in flight
-- [ ] A successful retry updates the invoice without a full reload
-- [ ] A 409 shows the server message and preserves the current page state
-- [ ] Relevant unit and browser tests pass
+## Model strategy
 
-## Constraints
-- Preserve the existing API response shape
-- Reuse the current toast component
-- Do not modify unrelated billing flows
-
-## Definition of done
-- Focused diff
-- Regression test
-- PR description maps each acceptance criterion to evidence
-```
-
-For larger work, move durable implementation constraints into a committed [spec file](/chapters/spec-files). Use the ticket for the requested outcome and coordination; use the spec for repository-specific behavior that should survive after the ticket closes.
-
-## Native Cursor in Jira: setup and handoff
-
-1. **Confirm eligibility.** Verify Jira Commercial Cloud, Rovo, and Cursor admin access.
-2. **Install the integration.** Connect Jira from Cursor's integrations settings and authorize the intended site.
-3. **Configure repository routing.** Make sure the team repository settings point work to the correct repository and base branch.
-4. **Tighten the ticket.** Add the contract above before assigning it.
-5. **Start the agent.** Assign the work item to Cursor or mention `@Cursor` in a comment with a precise instruction.
-6. **Review the plan and progress.** Treat Jira updates as status, not proof that the implementation is correct.
-7. **Review the pull request.** Match the diff and tests back to every acceptance criterion.
-
-A useful starting comment is:
-
-> @Cursor implement this ticket in the configured repository. Start by posting a short plan. Keep the change within the stated scope, run the relevant checks, and map the PR description to each acceptance criterion. Stop and ask if a required product decision is missing.
-
-The explicit stop condition matters. Without it, an agent can turn an ambiguous product choice into an accidental code decision.
-
-## Manual handoff: the controlled version
-
-Manual handoff is better when you want to curate context before the agent runs:
-
-1. Open the relevant repository in Cursor.
-2. Paste or link the ticket and name the likely files or package.
-3. Ask for a plan before edits.
-4. Resolve missing decisions and remove irrelevant context.
-5. Execute the plan, run checks, and review the diff.
-6. Build the PR description from the ticket's acceptance criteria.
-
-This pairs naturally with the [spec-to-PR workflow](/chapters/spec-to-pr): stabilize the intent, let the agent implement a bounded slice, then make verification part of the handoff rather than an afterthought.
-
-## Add Figma context only when it changes implementation
-
-For UI work, link the exact Figma frame or component—not the file homepage. In Figma, select the target and use **Copy link to selection**. If Figma MCP is available, Cursor can retrieve structured layout, component, and variable context instead of inferring it from a screenshot.
-
-```markdown
-## Design context
-- Figma selection: https://www.figma.com/design/...?...node-id=12-34
-- Reuse: packages/ui/src/Button.tsx
-- Required states: default, loading, success, error
-- Responsive behavior: ...
-```
-
-See [Figma MCP Workflows](/chapters/figma-mcp) for the connection and context strategy. A Figma link should clarify the ticket; it should not silently expand a bug fix into a redesign.
-
-## Permissions and security
-
-Before enabling an automated handoff:
-
-- Give the integration access only to the Jira site and repositories it needs.
-- Keep secrets, customer data, and credentials out of ticket bodies and comments.
-- Protect production branches and require the same CI and human approvals as any other PR.
-- Put repository-specific rules near the code, not only in a Jira template.
-- Review generated code for authorization, data boundaries, destructive operations, and dependency changes.
-
-The agent is part of an [AI harness](/chapters/what-is-an-ai-harness): ticket context, repository rules, tools, permissions, tests, and review gates all shape the result. Changing the model alone does not fix a weak handoff.
-
-## Troubleshooting
-
-**Cursor does not respond in Jira.** Confirm the integration is installed for the correct Jira site, the user has permission to invoke it, the work item belongs to the supported cloud product, and repository settings are complete.
-
-**The agent chooses the wrong repository or scope.** Fix the team repository configuration and name the target package in the ticket. Do not rely on a product label alone.
-
-**The PR is plausible but misses requirements.** Rewrite acceptance criteria as observable checks. “Support retry” is vague; “a 409 preserves page state and displays the server message” is reviewable.
-
-**The agent gets stuck on product decisions.** Add a stop-and-ask rule and name the human owner for unresolved behavior.
-
-**The ticket is too large.** Split it into independently verifiable slices. A useful agent ticket should normally produce one coherent PR, not a program of work.
-
-## Definition of done
-
-The workflow is complete only when:
-
-- Every acceptance criterion maps to implementation or test evidence.
-- The diff stays within the stated scope.
-- Relevant lint, type, unit, integration, and browser checks pass.
-- Security-sensitive behavior has a human review.
-- The PR explains any deviation from the ticket.
-
-[Download the Jira-to-Cursor workflow template](/resources/jira-to-cursor-workflow.md) and adapt it to your team's ticket fields and approval rules.
-
-## Frequently asked questions
-
-### Does Cursor require a pasted Jira ticket?
-
-No. With the native integration, assigning a work item to Cursor or mentioning `@Cursor` can start a cloud agent. Manual handoff remains useful when you want to curate context first.
-
-### Does Jira replace a spec file?
-
-Usually not. Jira is good for intent, ownership, status, and acceptance criteria. A committed spec is better for durable technical constraints and repository-specific decisions.
-
-### Should an agent merge the pull request?
-
-Not by default. Keep branch protection, CI, and human approval in place. Automate the handoff before automating the final trust decision.
+Ticket generation benefits from a capable model — you want it to think carefully about edge cases. Implementation can use a faster model once the context is set. Final review? A reasoning model.
 
 <ModelMixer />
 

@@ -3,7 +3,7 @@ title: "Spec Files"
 subtitle: "AI-readable documentation that survives context window resets"
 publishedAt: "2026-04-17"
 updatedAt: "2026-07-22"
-chapter: 8
+chapter: 9
 part: shipping-workflows
 partNumber: 2
 illustrationPlaceholders:
@@ -17,7 +17,7 @@ Next session, you start over.
 
 A `.spec.md` file breaks the cycle. It's a markdown file that lives next to the component, gets committed to the repo, and becomes the durable source of truth for what that component does — and what it deliberately doesn't do. Every future session can read it with an `@` mention and pick up where you left off.
 
-The [Spec → PR workflow](/chapters/spec-to-pr) covers turning that context into a reviewed implementation. If the request begins in Jira, use the [Jira-to-Cursor workflow](/chapters/jira-to-cursor) to separate ticket-level outcomes from technical constraints that belong in the repository.
+(The [Spec → PR workflow](/chapters/spec-to-pr) covers writing a spec in chat before implementation — this chapter is about making that spec survive beyond the session.)
 
 ## Why spec files beat chat-only specs
 

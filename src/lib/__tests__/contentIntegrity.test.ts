@@ -26,7 +26,6 @@ import matter from "gray-matter";
 const ROOT = path.resolve(__dirname, "../../../");
 const CHAPTERS_DIR = path.join(ROOT, "content/chapters");
 const NEWS_DIR = path.join(ROOT, "content/news");
-const PUBLIC_DIR = path.join(ROOT, "public");
 
 const VALID_PARTS = new Set([
   "understanding-models",
@@ -182,21 +181,6 @@ describe("Dated news entry schema", () => {
       invalid.map(({ filePath }) => path.basename(filePath)),
       "news entries duplicate frontmatter in their body"
     ).toEqual([]);
-  });
-});
-
-describe("Public SEO resources", () => {
-  const resources = [
-    "resources/ai-code-review-checklist.md",
-    "resources/jira-to-cursor-workflow.md",
-    "resources/design-token-to-storybook-skill.md",
-  ];
-
-  it("ships every linked resource", () => {
-    const missing = resources.filter(
-      (resource) => !fs.existsSync(path.join(PUBLIC_DIR, resource)),
-    );
-    expect(missing).toEqual([]);
   });
 });
 
