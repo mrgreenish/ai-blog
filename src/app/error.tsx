@@ -14,17 +14,15 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-32 text-center">
-      <p className="font-mono text-sm text-fg-muted">error</p>
-      <h1 className="mt-4 text-3xl font-bold text-fg-primary">Something went wrong</h1>
+    <div className="site-shell utility-page">
+      <p className="eyebrow">error</p>
+      <h1 className="mt-4 text-3xl font-bold text-fg-primary">
+        Something went wrong
+      </h1>
       <p className="mt-4 text-fg-secondary">
         An unexpected error occurred while loading this page.
       </p>
-      <button
-        onClick={reset}
-        className="mt-8 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm transition-colors text-fg-secondary bg-bg-surface border border-border-default"
-        
-      >
+      <button onClick={reset} className="action-link action-primary mt-8">
         Try again
       </button>
     </div>

@@ -1,5 +1,9 @@
 import { notFound } from "next/navigation";
-import { MDXRemote } from "next-mdx-remote/rsc";
+import { compileMDX } from "next-mdx-remote/rsc";
+import {
+  createHeadingPlugin,
+  type ArticleHeading,
+} from "@/lib/articleHeadings";
 import {
   getAllChapters,
   getChapter,
@@ -151,26 +155,36 @@ export default async function ChapterPage({
     ],
   };
 
+  const headings: ArticleHeading[] = [];
+  const { content } = await compileMDX({
+    source: chapter.content,
+    components: MDX_COMPONENTS,
+    options: {
+      mdxOptions: {
+        rehypePlugins: [
+          createHeadingPlugin(headings),
+          [
+            rehypePrettyCode,
+            {
+              theme: { light: "github-light", dark: "github-light" },
+              keepBackground: false,
+            },
+          ],
+        ],
+      },
+    },
+  });
+
   return (
-    <ChapterLayout chapter={chapter} partMeta={partMeta} prev={prev} next={next}>
+    <ChapterLayout
+      chapter={chapter}
+      partMeta={partMeta}
+      prev={prev}
+      next={next}
+      headings={headings}
+    >
       <JsonLd data={[articleJsonLd, breadcrumbJsonLd]} />
-      <MDXRemote
-        source={chapter.content}
-        components={MDX_COMPONENTS}
-        options={{
-          mdxOptions: {
-            rehypePlugins: [
-              [
-                rehypePrettyCode,
-                {
-                  theme: { light: "github-light", dark: "github-light" },
-                  keepBackground: false,
-                },
-              ],
-            ],
-          },
-        }}
-      />
+      {content}
       {newsEntries.length > 0 ? <NewsFeedList entries={newsEntries} /> : null}
     </ChapterLayout>
   );

@@ -17,7 +17,7 @@ const accent = {
     borderLine: "border-teal-400/20",
     borderDot: "border-teal-400/30",
     textDot: "text-teal-600",
-    labelText: "text-teal-600/70",
+    labelText: "text-fg-muted",
     dotBg: "bg-teal-400/40",
     btnCopied: "border-teal-500/50 bg-teal-400/10 text-teal-600",
     btnHover: "hover:border-teal-500/50 hover:text-teal-600",
@@ -26,7 +26,7 @@ const accent = {
     borderLine: "border-emerald-400/20",
     borderDot: "border-emerald-400/30",
     textDot: "text-emerald-600",
-    labelText: "text-emerald-600/70",
+    labelText: "text-fg-muted",
     dotBg: "bg-emerald-400/40",
     btnCopied: "border-emerald-500/50 bg-emerald-400/10 text-emerald-600",
     btnHover: "hover:border-emerald-500/50 hover:text-emerald-600",
@@ -66,7 +66,7 @@ export function StepFlow({
       {steps.map((step, i) => (
         <motion.div
           key={step.label}
-          initial={{ opacity: 0, x: -8 }}
+          initial={false}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: i * 0.05, duration: 0.2 }}
           className={`relative ${i < steps.length - 1 ? "pb-3" : ""}`}

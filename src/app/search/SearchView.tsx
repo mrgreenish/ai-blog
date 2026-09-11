@@ -22,7 +22,10 @@ function toolsToSearchText(tools: string[] | undefined): string {
 
 function SearchResultRow({ chapter }: { chapter: SearchableChapter }) {
   return (
-    <Link href={chapter.href ?? `/chapters/${chapter.slug}`} className="toc-entry group">
+    <Link
+      href={chapter.href ?? `/chapters/${chapter.slug}`}
+      className="toc-entry group"
+    >
       <span className="font-mono text-sm text-fg-placeholder w-8 shrink-0">
         {chapter.chapter ? String(chapter.chapter).padStart(2, "0") : "→"}
       </span>
@@ -75,61 +78,66 @@ export function SearchView({ chapters }: { chapters: SearchableChapter[] }) {
   }, [query, router]);
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-16">
-      <div className="mb-12">
-        <h1 className="font-sans text-3xl font-semibold tracking-tight text-fg-primary mb-4">
-          Search
-        </h1>
-        <input
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          aria-label="Search guides and tools"
-          placeholder="Search guides and tools..."
-          autoFocus
-          className="w-full max-w-md border border-border-default rounded-sm px-4 py-2.5 font-sans text-sm text-fg-primary bg-bg-page focus:outline-none focus:border-border-strong"
-        />
+    <div className="site-shell discovery-page search-page">
+      <div className="page-heading">
+        <p className="eyebrow">
+          <span className="status-dot" />
+          Find your next useful thing
+        </p>
+        <h1>Search</h1>
+        <div className="search-field">
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            aria-label="Search guides and tools"
+            placeholder="Search guides and tools..."
+            autoFocus
+            className="search-input"
+          />
+          <span aria-hidden="true">↗</span>
+        </div>
       </div>
 
-      <div className="section-divider mb-8" />
-
-      {query.trim() && results.length === 0 && (
-        <p className="font-sans text-sm text-fg-muted">
-          No results for &ldquo;{query.trim()}&rdquo;. Try a different term or{" "}
-          <Link
-            href="/guides"
-            className="underline underline-offset-2 hover:text-fg-primary"
-          >
-            browse all guides
-          </Link>
-          .
-        </p>
-      )}
-
-      {results.length > 0 && (
-        <div>
-          <p className="font-mono text-xs text-fg-placeholder uppercase tracking-widest mb-6">
-            {results.length} result{results.length !== 1 ? "s" : ""} for
-            &ldquo;{query.trim()}&rdquo;
+      <div className="search-results" aria-live="polite" aria-atomic="false">
+        {query.trim() && results.length === 0 && (
+          <p className="search-empty">
+            No results for &ldquo;{query.trim()}&rdquo;. Try a different term or{" "}
+            <Link
+              href="/guides"
+              className="underline underline-offset-2 hover:text-fg-primary"
+            >
+              browse all guides
+            </Link>
+            .
           </p>
-          {results.map((chapter) => (
-            <SearchResultRow key={chapter.slug} chapter={chapter} />
-          ))}
-        </div>
-      )}
+        )}
 
-      {!query.trim() && (
-        <p className="font-sans text-sm text-fg-muted">
-          Enter a search term above, or{" "}
-          <Link
-            href="/guides"
-            className="underline underline-offset-2 hover:text-fg-primary"
-          >
-            browse all guides
-          </Link>
-          .
-        </p>
-      )}
+        {results.length > 0 && (
+          <div>
+            <p className="font-mono text-xs text-fg-placeholder uppercase tracking-widest mb-6">
+              {results.length} result{results.length !== 1 ? "s" : ""} for
+              &ldquo;{query.trim()}&rdquo;
+            </p>
+            {results.map((chapter) => (
+              <SearchResultRow key={chapter.slug} chapter={chapter} />
+            ))}
+          </div>
+        )}
+
+        {!query.trim() && (
+          <p className="search-empty">
+            Enter a search term above, or{" "}
+            <Link
+              href="/guides"
+              className="underline underline-offset-2 hover:text-fg-primary"
+            >
+              browse all guides
+            </Link>
+            .
+          </p>
+        )}
+      </div>
     </div>
   );
 }

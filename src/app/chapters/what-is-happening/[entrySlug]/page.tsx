@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ReadingProgress } from "@/components/content/ReadingNavigation";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
@@ -129,9 +130,10 @@ export default async function NewsEntryPage({
   };
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-16">
+    <article className="site-shell article-page news-page">
+      <ReadingProgress />
       <JsonLd data={[articleJsonLd, breadcrumbJsonLd]} />
-      <nav className="mb-12">
+      <nav className="article-breadcrumb" aria-label="Breadcrumb">
         <Link
           href="/chapters/what-is-happening"
           className="font-mono text-xs text-fg-muted hover:text-fg-primary transition-colors uppercase tracking-widest"
@@ -140,7 +142,7 @@ export default async function NewsEntryPage({
         </Link>
       </nav>
 
-      <header className="mb-12">
+      <header className="article-heading">
         <p className="font-mono text-xs text-fg-placeholder uppercase tracking-widest mb-4">
           <time dateTime={entry.frontmatter.publishedAt}>
             {formatDate(entry.frontmatter.publishedAt)}
@@ -174,7 +176,7 @@ export default async function NewsEntryPage({
       </header>
 
       <div className="section-divider mb-12" />
-      <div className="prose prose-stone max-w-none">
+      <div id="article-body" className="prose article-prose">
         <MDXRemote
           source={entry.content}
           components={MDX_COMPONENTS}
@@ -227,6 +229,6 @@ export default async function NewsEntryPage({
           <div />
         )}
       </nav>
-    </div>
+    </article>
   );
 }

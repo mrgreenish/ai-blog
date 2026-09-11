@@ -3,6 +3,8 @@
 // component available inside MDX articles.
 // ---------------------------------------------------------------------------
 
+import { ToolFrame } from "@/components/ui/ToolFrame";
+import type { ComponentProps } from "react";
 import { ModelPicker } from "@/components/interactive/ModelPicker";
 import { ModelTinder } from "@/components/interactive/ModelTinder";
 import { ModelMixer } from "@/components/interactive/ModelMixer";
@@ -21,18 +23,70 @@ import { IllustrationPlaceholder } from "@/components/content/IllustrationPlaceh
 
 export const MDX_COMPONENTS = {
   // Interactive tools
-  ModelPicker,
-  ModelTinder,
-  ModelMixer,
-  ModelCompare,
-  WorkflowRecipe,
-  ScenarioLab,
-  PromptLab,
-  FailureGallery,
-  DevBenchmark,
-  ConfigGenerator,
-  CostCalculator,
-  MaxModeViz,
+  ModelPicker: () => (
+    <ToolFrame id="model-picker">
+      <ModelPicker />
+    </ToolFrame>
+  ),
+  ModelTinder: () => (
+    <ToolFrame id="model-tinder">
+      <ModelTinder />
+    </ToolFrame>
+  ),
+  ModelMixer: (props: ComponentProps<typeof ModelMixer>) => (
+    <ToolFrame id="model-mixer">
+      <ModelMixer {...props} />
+    </ToolFrame>
+  ),
+  ModelCompare: () => (
+    <ToolFrame id="model-compare">
+      <ModelCompare />
+    </ToolFrame>
+  ),
+  WorkflowRecipe: (props: ComponentProps<typeof WorkflowRecipe>) => (
+    <ToolFrame
+      id={
+        props.initialMode === "choose" ? "workflow-finder" : "workflow-recipe"
+      }
+    >
+      <WorkflowRecipe {...props} />
+    </ToolFrame>
+  ),
+  ScenarioLab: () => (
+    <ToolFrame id="scenario-lab">
+      <ScenarioLab />
+    </ToolFrame>
+  ),
+  PromptLab: () => (
+    <ToolFrame id="prompt-lab">
+      <PromptLab />
+    </ToolFrame>
+  ),
+  FailureGallery: () => (
+    <ToolFrame id="failure-gallery">
+      <FailureGallery />
+    </ToolFrame>
+  ),
+  DevBenchmark: () => (
+    <ToolFrame id="dev-benchmark">
+      <DevBenchmark />
+    </ToolFrame>
+  ),
+  ConfigGenerator: () => (
+    <ToolFrame id="config-generator">
+      <ConfigGenerator />
+    </ToolFrame>
+  ),
+  CostCalculator: () => (
+    <ToolFrame id="cost-calculator">
+      <CostCalculator />
+    </ToolFrame>
+  ),
+  MaxModeViz: () => (
+    <ToolFrame id="max-mode-viz">
+      <MaxModeViz />
+    </ToolFrame>
+  ),
   // Content components
   InfoBlock,
   UpdateBlock,
@@ -43,5 +97,5 @@ export type MdxComponentName = keyof typeof MDX_COMPONENTS;
 
 /** The set of component names available in MDX — used by the integrity suite. */
 export const MDX_COMPONENT_NAMES: ReadonlySet<string> = new Set(
-  Object.keys(MDX_COMPONENTS)
+  Object.keys(MDX_COMPONENTS),
 );

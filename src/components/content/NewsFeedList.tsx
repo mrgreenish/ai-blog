@@ -4,7 +4,7 @@ import { getContentExcerpt } from "@/lib/content";
 
 export function NewsFeedList({ entries }: { entries: NewsEntry[] }) {
   return (
-    <section className="not-prose mt-12" aria-labelledby="news-feed-heading">
+    <section className="not-prose mt-12 news-feed" aria-labelledby="news-feed-heading">
       <div className="section-divider mb-8" />
       <h2
         id="news-feed-heading"
