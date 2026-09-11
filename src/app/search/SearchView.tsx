@@ -7,7 +7,8 @@ import { useSearchParams, useRouter } from "next/navigation";
 
 export interface SearchableChapter {
   slug: string;
-  chapter: number;
+  chapter?: number;
+  href?: string;
   title: string;
   subtitle: string;
   part: string;
@@ -21,9 +22,9 @@ function toolsToSearchText(tools: string[] | undefined): string {
 
 function SearchResultRow({ chapter }: { chapter: SearchableChapter }) {
   return (
-    <Link href={`/chapters/${chapter.slug}`} className="toc-entry group">
+    <Link href={chapter.href ?? `/chapters/${chapter.slug}`} className="toc-entry group">
       <span className="font-mono text-sm text-fg-placeholder w-8 shrink-0">
-        {String(chapter.chapter).padStart(2, "0")}
+        {chapter.chapter ? String(chapter.chapter).padStart(2, "0") : "→"}
       </span>
       <div className="flex-1 min-w-0">
         <span className="font-sans text-base font-medium text-fg-secondary group-hover:text-fg-primary transition-colors">
@@ -83,7 +84,8 @@ export function SearchView({ chapters }: { chapters: SearchableChapter[] }) {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search chapters..."
+          aria-label="Search guides and tools"
+          placeholder="Search guides and tools..."
           autoFocus
           className="w-full max-w-md border border-border-default rounded-sm px-4 py-2.5 font-sans text-sm text-fg-primary bg-bg-page focus:outline-none focus:border-border-strong"
         />
@@ -95,10 +97,10 @@ export function SearchView({ chapters }: { chapters: SearchableChapter[] }) {
         <p className="font-sans text-sm text-fg-muted">
           No results for &ldquo;{query.trim()}&rdquo;. Try a different term or{" "}
           <Link
-            href="/"
+            href="/guides"
             className="underline underline-offset-2 hover:text-fg-primary"
           >
-            browse all chapters
+            browse all guides
           </Link>
           .
         </p>
@@ -120,10 +122,10 @@ export function SearchView({ chapters }: { chapters: SearchableChapter[] }) {
         <p className="font-sans text-sm text-fg-muted">
           Enter a search term above, or{" "}
           <Link
-            href="/"
+            href="/guides"
             className="underline underline-offset-2 hover:text-fg-primary"
           >
-            browse all chapters
+            browse all guides
           </Link>
           .
         </p>

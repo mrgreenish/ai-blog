@@ -1,6 +1,8 @@
 import Link from "next/link";
-import type { Chapter } from "@/lib/types";
+import { getChapter } from "@/lib/content";
 import { AUTHOR_NAME, AUTHOR_URL } from "@/lib/siteConfig";
+import { RelatedGuideLink } from "./RelatedGuideLink";
+import type { Chapter } from "@/lib/types";
 
 interface ChapterLayoutProps {
   chapter: Chapter;
@@ -93,6 +95,14 @@ export function ChapterLayout({ chapter, partMeta, prev, next, children }: Chapt
       <div className="prose prose-stone max-w-none">
         {children}
       </div>
+
+      {frontmatter.relatedSlugs?.length ? <section aria-labelledby="related-guides" className="mt-12">
+        <h2 id="related-guides" className="text-2xl font-semibold mb-4">Continue with a related guide</h2>
+        <ul className="space-y-3">{frontmatter.relatedSlugs.map((slug) => {
+          const related = getChapter(slug);
+          return related ? <li key={slug}><RelatedGuideLink sourceSlug={chapter.slug} targetSlug={slug}>{related.frontmatter.title}</RelatedGuideLink></li> : null;
+        })}</ul>
+      </section> : null}
 
       {/* Chapter navigation */}
       <div className="section-divider mt-16 mb-8" />

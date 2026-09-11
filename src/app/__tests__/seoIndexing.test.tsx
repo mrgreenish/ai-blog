@@ -40,9 +40,9 @@ describe("selective news indexing", () => {
     }
   });
 
-  it("puts only indexable reports in the 42-URL sitemap", () => {
+  it("puts only indexable reports in the 45-URL sitemap", () => {
     const entries = sitemap();
-    expect(entries).toHaveLength(42);
+    expect(entries).toHaveLength(45);
 
     const urls = new Set(entries.map((entry) => entry.url));
     for (const entry of allEntries) {

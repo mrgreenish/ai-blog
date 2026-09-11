@@ -1,8 +1,9 @@
 ---
-title: "Figma MCP Workflows"
-subtitle: "Design context in the coding loop - from interpretation to direct translation"
+title: "Figma MCP to React: A Worked Design-to-Code Workflow"
+subtitle: "Map a Figma component to React with explicit token mappings, a copyable handoff prompt, and browser verification."
 publishedAt: "2026-04-17"
-updatedAt: "2026-07-22"
+updatedAt: "2026-09-11"
+relatedSlugs: [design-to-storybook, code-to-canvas, design-to-code-and-back]
 chapter: 15
 part: tools-infrastructure
 partNumber: 4
@@ -12,52 +13,117 @@ illustrationPlaceholders:
   - "MCP connection diagram: Figma to MCP server to code editor. Show what data flows in each direction."
 ---
 
-When you send a screenshot, the model looks at pixels. It guesses the button padding is around 12px, estimates the font size from surrounding context, decides the border radius looks like about 6px. Then it builds the component from those estimates.
+To implement a Figma component with AI, provide the component's node link, retrieve its design context and screenshot, map its values to existing code tokens, then verify the rendered result. Supplying context is only the beginning: the output still needs code and visual review.
 
-When you use the [Figma MCP](https://developers.figma.com/docs/figma-mcp-server/), it reads the actual values. `padding: 12px`. `font-size: 14px`. `border-radius: 6px`. Not a guess — the number that was typed into Figma.
+This guide uses an **illustrative Save button**, with invented design values listed explicitly below. It is a reproducible implementation exercise, not a claim that we ran a live Figma session or measured an accuracy improvement.
 
-That difference shows up immediately in the output. First-pass accuracy is noticeably better because the model isn't interpolating from an image — it's reading structured data.
+## Prerequisites
 
-## What the Figma MCP provides
+Use a React project you can run locally, a Figma file you can access, and an MCP client connected to Figma. Follow [Figma's current installation instructions](https://developers.figma.com/docs/figma-mcp-server/remote-server-installation/) for connection and authentication. Client availability and access limits can change; keep that setup step tied to the official instructions.
 
-The MCP gives models access to:
+Before asking for code, locate your existing button component, token definitions, and any component mappings. Figma documents [Code Connect integration](https://developers.figma.com/docs/figma-mcp-server/code-connect-integration/) for connecting design components to implementations. Prefer reuse when a suitable component already exists.
 
-- **Variables and styles**: names and values used by the selection. Mapping them to project token names depends on well-defined Figma variables, Code Connect or code syntax, and explicit project instructions
-- **Component properties**: component mappings and variant/property metadata (detail level depends on component setup)
-- **Variants**: all the variant combinations defined in the component
-- **Layout data**: auto-layout settings, constraints, padding, gap values
-- **Asset exports**: icons, images, and other exportable assets
+## Define the example and map its tokens
 
-## The design-to-code workflow
+For this exercise, the design contains a primary Save button with these requirements:
 
-With the Figma MCP connected (see the [setup guide](https://help.figma.com/hc/en-us/articles/32132100833559-Guide-to-the-Figma-MCP-server) for Cursor and other clients), the workflow becomes:
+| Design property | Example value | Code token or behaviour |
+|---|---|---|
+| Primary fill | `#1d4ed8` | `--action-primary` |
+| Text | White, 16px | `--on-action`, inherited font |
+| Horizontal padding | 16px | `--space-4` |
+| Vertical padding | 8px | `--space-2` |
+| Corner radius | 8px | `--radius-control` |
+| Label | Save | Button children |
+| Disabled variant | Cannot submit | Native `disabled` attribute |
 
-1. Share the Figma node URL or node ID in your prompt
-2. The model reads the design data directly
-3. Ask it to implement the component
-4. The output uses your actual token values, not guessed ones
+The token names are illustrative. In your project, record the mapping to the actual existing tokens. Similar hex values do not prove two tokens have the same semantic role.
 
-The model can also answer questions about the design: "What's the hover state for this button?" "What variants does this card component have?" "What's the spacing between these elements?"
+## Retrieve context before generating code
 
-## Design tokens to Tailwind config
+Give the agent the node URL and ask it to retrieve both structured design context and a screenshot. Figma's [tools documentation](https://developers.figma.com/docs/figma-mcp-server/tools-and-prompts/) describes these capabilities. Use the context to inspect values and component mappings, then the screenshot to check the intended appearance.
 
-One of the most useful applications: mapping Figma variables to your Tailwind config. Give the model access to your Figma variables and your `tailwind.config.ts`, and ask it to keep them in sync. When a designer updates a color token in Figma, the model can update the Tailwind config to match.
+A reusable prompt:
 
-## Iterating with designers
+```text
+Implement the component at [Figma node URL] in [existing React project].
+First retrieve its design context and screenshot. Inspect our existing button
+and token definitions. List the design-to-code mappings and any missing states.
+Reuse the existing component if it can express this design.
+Keep native button semantics, keyboard focus, and disabled behaviour.
+Implement only the agreed variant. Do not change global tokens to match one node.
+Run the component checks and compare the rendered result with the screenshot.
+Report mismatches and assumptions rather than claiming pixel-perfect output.
+```
 
-The Figma MCP enables a tighter design-developer loop. Instead of the designer exporting specs and the developer interpreting them, you can:
+[Download this handoff prompt](/downloads/figma-react-handoff.md).
 
-1. Developer implements from Figma data
-2. Designer reviews the implementation in the browser
-3. Designer makes adjustments in Figma
-4. Developer pulls the updated design data and makes the corresponding code changes
+## Implement the smallest component
 
-The model mediates the translation in both directions.
+If your project does not already have a suitable button, this example preserves native attributes and defaults to a non-submitting button. A form can explicitly request `type="submit"`.
 
-## The reverse direction: Code to Figma
+```tsx
+import type { ComponentPropsWithoutRef } from "react";
+import "./SaveButton.css";
 
-The loop runs both ways. Figma's [Claude Code to Figma](https://www.figma.com/blog/introducing-claude-code-to-figma/) capability lets you capture a live rendered UI and push it into Figma as editable frames for design review. See [Code to Canvas](/chapters/code-to-canvas) for the full reverse-loop workflow.
+type SaveButtonProps = ComponentPropsWithoutRef<"button">;
 
-Together, the two directions create a complete design-developer loop — no manual export, screenshot interpretation, or spec handoff required.
+export function SaveButton({
+  children = "Save",
+  type = "button",
+  className = "",
+  ...props
+}: SaveButtonProps) {
+  return <button {...props} type={type} className={`save-button ${className}`}>
+    {children}
+  </button>;
+}
+```
 
-<WorkflowRecipe />
+```css
+.save-button {
+  --action-primary: #1d4ed8;
+  --on-action: #fff;
+  --space-4: 16px;
+  --space-2: 8px;
+  --radius-control: 8px;
+  background: var(--action-primary);
+  color: var(--on-action);
+  padding: var(--space-2) var(--space-4);
+  border: 0;
+  border-radius: var(--radius-control);
+  font: inherit;
+  font-size: 16px;
+  cursor: pointer;
+}
+.save-button:focus-visible {
+  outline: 2px solid var(--action-primary);
+  outline-offset: 3px;
+}
+.save-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+```
+
+These local token declarations make the snippet self-contained. In production, use your established token values rather than introducing a second token system. The focus and disabled treatments are explicit assumptions for this exercise; confirm the actual design states before shipping.
+
+## Verify the result in the browser
+
+Render enabled, disabled, and long-label examples side by side. Confirm the computed padding, radius, typography, and colours against the mapping table. Compare with the source screenshot at the same scale.
+
+Use Tab to focus the enabled button and Space or Enter to activate it. Confirm that the disabled button cannot activate. Inside a form, verify that the default button does not submit and an explicit submit button does. Check narrow widths and text zoom for clipping.
+
+These checks demonstrate what needs verification; a live Figma comparison has not been performed for this illustrative example. For systematic variant coverage, continue with [Design Token to Storybook](/chapters/design-to-storybook).
+
+## Common failure cases
+
+- **The node cannot be read:** confirm access to the file and the exact node link before generating a substitute from memory.
+- **The agent guesses token names:** provide the code token definitions and approve the mapping before implementation.
+- **A duplicate component appears:** point to the existing component and its supported variants; adapt it only when the design requires it.
+- **The screenshot matches but behaviour fails:** check semantics, focus, disabled state, and form submission separately.
+- **A large frame produces incomplete context:** isolate the component you need and fetch its context again.
+
+For the reverse direction, read [Code to Canvas](/chapters/code-to-canvas). For the whole feedback loop, read [Design to Code and Back](/chapters/design-to-code-and-back).
+
+<WorkflowRecipe initialRecipeId="design-to-storybook" />

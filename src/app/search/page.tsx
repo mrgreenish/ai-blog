@@ -1,3 +1,4 @@
+import { DISCOVERY_PAGES } from "@/lib/discovery";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getAllChapters } from "@/lib/content";
@@ -6,15 +7,12 @@ import { SITE_NAME, SITE_LOCALE, AUTHOR_TWITTER } from "@/lib/siteConfig";
 
 const SEARCH_TITLE = "Search";
 const SEARCH_DESCRIPTION =
-  "Search every chapter of AI Field Notes — find specific models, workflows, tools, and lessons learned from shipping with AI.";
+  "Search AI Field Notes guides and tools — find practical workflows, model tradeoffs, and lessons learned from shipping with AI.";
 
 export const metadata: Metadata = {
+  robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
   title: SEARCH_TITLE,
   description: SEARCH_DESCRIPTION,
-  robots: {
-    index: false,
-    follow: true,
-  },
   alternates: {
     canonical: "/search",
   },
@@ -43,6 +41,8 @@ export default function SearchPage() {
     part: c.frontmatter.part,
     interactiveTools: c.frontmatter.interactiveTools,
   }));
+
+  chapters.push(...DISCOVERY_PAGES.map((page) => ({ slug: page.href, href: page.href, title: page.title, subtitle: page.description, part: "resources" })));
 
   return (
     <Suspense>

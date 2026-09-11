@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { START_TASKS } from "@/lib/discovery";
 import { TableOfContents } from "@/components/content/TableOfContents";
 import { Brain3D } from "@/components/interactive/Brain3D";
 
@@ -50,6 +52,13 @@ export default function Home() {
             </p>
           </div>
 
+          <section aria-labelledby="start-task" className="mb-12">
+            <h2 id="start-task" className="font-sans text-2xl font-semibold mb-4">What are you working on?</h2>
+            <ul className="grid gap-4 sm:grid-cols-2">
+              {START_TASKS.map((task) => <li key={task.slug}><Link href={`/chapters/${task.slug}`} className="block border border-border-default p-4 hover:border-border-strong"><span className="block font-semibold">{task.title} →</span><span className="block text-sm text-fg-muted mt-2">{task.description}</span></Link></li>)}
+            </ul>
+            <p className="mt-6 text-sm"><Link className="underline" href="/tools/ai-coding-workflow">Find and copy an AI coding workflow</Link><span aria-hidden="true"> · </span><Link className="underline" href="/guides">Browse guides by task</Link></p>
+          </section>
           <div className="section-divider mb-6" />
 
           <div className="mb-16 max-w-xl">
@@ -62,9 +71,9 @@ export default function Home() {
               without fighting it.
             </p>
             <p className="font-sans text-sm leading-relaxed text-fg-muted mt-4">
-              It&apos;s not theory. Every pattern here has been tested inside a real
-              codebase, on real tickets, under real deadlines. Each chapter includes
-              an interactive tool so you can apply it immediately.
+              It&apos;s not theory. The guides combine project experience with worked examples.
+              Use the workflow finder to choose a starting point, then adapt the
+              prompts and checks to your own codebase.
             </p>
           </div>
 
