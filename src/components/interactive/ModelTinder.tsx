@@ -56,6 +56,62 @@ const MODELS: Model[] = getTinderModels();
 // ---------------------------------------------------------------------------
 
 export const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
+  "gemini-3.8-flash": [
+    {
+      modelMessage: "Send the bug report, screenshots, and logs together. I can read all three, then we can check whether the patch actually passes.",
+      replies: ["Start with the likely cause", "Keep the fix narrow"],
+    },
+    {
+      modelMessage: "I’ll use the extra context, but I’ll count the tool calls and tokens too. Flash pricing only helps if the whole task stays efficient.",
+      replies: ["Show me the evidence", "Make the patch"],
+    },
+    {
+      modelMessage: "Good. Give me the unchanged acceptance test; that is a better finish line than a confident explanation.",
+      replies: [],
+    },
+  ],
+  "deepseek-v4.1-flash": [
+    {
+      modelMessage: "I can take the screenshot and the code. Are we testing the current `deepseek-flash` endpoint or preserving an old compatibility route?",
+      replies: ["Use the current endpoint", "Compare both"],
+    },
+    {
+      modelMessage: "Then keep the request fixed and compare tool choices, output length, and the passing test. The low rate does not prove the migration is equivalent.",
+      replies: ["Use peak pricing", "Run it off-peak"],
+    },
+    {
+      modelMessage: "For planning, use the peak rate. If off-peak scheduling is practical, record the saving separately.",
+      replies: [],
+    },
+  ],
+  "gpt-6-astra": [
+    {
+      modelMessage: "Define ‘done’ for the whole task: diagnosis, patch, browser check, tests, and review evidence. Which parts matter here?",
+      replies: ["All of them", "Patch and tests only"],
+    },
+    {
+      modelMessage: "I’ll keep those as acceptance checks. The long context is useful only if the task needs it, and requests above the pricing threshold cost more.",
+      replies: ["Proceed", "Estimate the cost first"],
+    },
+    {
+      modelMessage: "Understood. I’ll report the artifact and the checks that passed, rather than treating completion as a prose claim.",
+      replies: [],
+    },
+  ],
+  "claude-fable-5.1": [
+    {
+      modelMessage: "This looks like a long run. Give me the specification, the acceptance checks, and the context that should remain stable across turns.",
+      replies: ["Plan the migration", "Review the architecture"],
+    },
+    {
+      modelMessage: "I’ll separate the reusable prefix from changing tool output. That makes the cache useful and keeps the bill measurable.",
+      replies: ["Set checkpoints", "Work end to end"],
+    },
+    {
+      modelMessage: "I’ll use checkpoints. A difficult task still needs evidence at each boundary, even when the model is designed for long agent work.",
+      replies: [],
+    },
+  ],
   "gemini-flash": [
     {
       modelMessage:

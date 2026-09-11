@@ -2,7 +2,7 @@
 title: "Reasoning vs Fast Models"
 subtitle: "When to choose reasoning models vs fast models for different coding tasks"
 publishedAt: "2026-04-17"
-updatedAt: "2026-07-22"
+updatedAt: "2026-09-11"
 relatedSlugs: [model-personalities, max-mode, spec-to-pr]
 chapter: 1
 part: understanding-models
@@ -11,7 +11,7 @@ wonderQuestion: "Have you ever wondered why the same task costs 15x more on one 
 interactiveTools: [scenario-lab, model-picker, model-mixer, cost-calculator]
 illustrationPlaceholders:
   - "Side-by-side diagram: a reasoning model building a chain of thought for a multi-constraint refactoring problem vs a fast model instantly returning a boilerplate snippet. Show thinking tokens accumulating on the left, instant output on the right."
-  - "Cost comparison infographic: 10 common developer tasks mapped against cost per task on GPT-5.6 Luna, Terra, Sol, Claude Fable 5, Claude Opus 5, Kimi K3, Sonnet, and Gemini 3 Flash."
+  - "Cost comparison infographic: common developer tasks mapped against cost per task on GPT-5.6 Luna, Terra, and Sol; GPT-6 Astra; Claude Fable 5.1, Opus 5, and Sonnet 5; Kimi K3; Gemini 3.8 Flash; and DeepSeek-V4.1-Flash."
 ---
 
 The first time I used o3 for a coding task, I was impressed — then I checked the latency and the bill. 40 seconds and 15× the cost of Sonnet, for a task Sonnet would have nailed. That moment is what started me keeping notes on *when* the expensive reasoning models actually earn their cost — and when they're just burning money.
@@ -19,6 +19,14 @@ The first time I used o3 for a coding task, I was impressed — then I checked t
 I'm Filip van Harreveld, a senior creative developer at [iO](https://www.iodigital.com/). I share work and notes at [filipvanharreveld.com](https://filipvanharreveld.com/) and on [LinkedIn](https://www.linkedin.com/in/fvanharreveld/).
 
 Everything below is an operating heuristic from my own coding sessions, not a permanent ranking. Model behavior shifts with the version, prompt, tool harness, repository context, and how success is measured. Treat the examples as patterns to test against your work.
+
+## The September model shortlist
+
+The tools below now include **GPT-6 Astra, Claude Fable 5.1, Gemini 3.8 Flash, DeepSeek-V4.1-Flash, and Kimi K3**. Their specs come from provider documentation; the new releases do not yet have local scenario results. The earlier sessions described here keep the model versions used at the time.
+
+Start with a task you can check. Compare Luna, Gemini 3.8 Flash, or DeepSeek for a narrow step; evaluate Astra or Fable 5.1 when the problem needs more sustained reasoning. Kimi K3 adds an open-weight option for long-context work. The [September release notes](/chapters/what-is-happening) explain what changed and link to the sources.
+
+Token prices alone miss two costs: how much the model generates and how many attempts it needs. The calculators use explicit token assumptions and documented long-context surcharges. They cannot predict the number of retries your task will take.
 
 ## When reasoning models actually earn it
 
@@ -53,7 +61,7 @@ Total cost: a fraction of running Fable end-to-end. Each model played to its str
 
 ## See it in practice
 
-Pick a coding scenario below and watch how different models handle it. Pay attention to where reasoning models spend their token budget — and whether that extra thinking actually improves the output.
+Pick a coding scenario below to inspect the existing examples and compare current model costs. Pay attention to where reasoning models spend their token budget — and whether that extra thinking actually improves the output.
 
 <ScenarioLab />
 

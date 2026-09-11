@@ -6,14 +6,13 @@ import { FlaskConical, ChevronDown, ChevronUp, CheckCircle2, XCircle, AlertCircl
 import {
   SCENARIOS,
   VERDICT_META,
-  calcScenarioCost,
   formatCost,
   type Scenario,
   type ModelResult,
   type Verdict,
   type PlanModeData,
 } from "@/lib/scenarioLabData";
-import { getScenarioLabModels, PRICING_META } from "@/lib/modelSpecs";
+import { getScenarioLabModels, estimateModelCost, MODEL_BY_ID as REGISTRY, CURRENT_MODEL_IDS, PRICING_META } from "@/lib/modelSpecs";
 
 const LAB_MODELS = getScenarioLabModels();
 const MODEL_BY_ID = Object.fromEntries(LAB_MODELS.map((m) => [m.id, m]));
@@ -46,7 +45,7 @@ function ModelResultCard({
   const meta = VERDICT_META[result.verdict];
   const modelSpec = MODEL_BY_ID[result.modelId];
   const cost = modelSpec
-    ? calcScenarioCost(modelSpec.inputPer1M, modelSpec.outputPer1M, scenario)
+    ? estimateModelCost(modelSpec.id, scenario.inputTokens, scenario.outputTokens)
     : null;
 
   // Derived cost context — all numbers come from modelSpecs.ts, never hardcoded
@@ -54,7 +53,7 @@ function ModelResultCard({
     ? MODEL_BY_ID[result.costContext.compareToModelId]
     : null;
   const compareCost = compareSpec
-    ? calcScenarioCost(compareSpec.inputPer1M, compareSpec.outputPer1M, scenario)
+    ? estimateModelCost(compareSpec.id, scenario.inputTokens, scenario.outputTokens)
     : null;
   const ratio =
     cost !== null && compareCost !== null && compareCost > 0
@@ -81,7 +80,7 @@ function ModelResultCard({
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="font-display text-sm font-semibold text-stone-900">
-              {modelSpec?.name ?? result.modelId}
+              {modelSpec?.name ?? result.modelId}{REGISTRY[result.modelId]?.retired ? " (retired; historical example)" : ""}
             </span>
             <span
               className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[10px] font-medium ${meta.textClass} ${meta.bgClass} ${meta.borderClass}`}
@@ -287,6 +286,20 @@ function ScenarioView({ scenario }: { scenario: Scenario }) {
         </div>
       </div>
 
+      <div className="rounded-xl border border-border-default p-4">
+        <h4 className="font-mono text-xs font-semibold text-fg-primary">Current models: estimated cost for this task</h4>
+        <p className="mt-1 text-xs text-fg-secondary">These models have not been run against the local scenario checks. Costs use the same token assumptions; they do not predict quality or actual token use.</p>
+        <ul className="mt-3 space-y-2 text-xs text-fg-primary">
+          {CURRENT_MODEL_IDS.map((id) => (
+            <li key={id} className="flex flex-wrap justify-between gap-2">
+              <span>{REGISTRY[id].name} · Not tested</span>
+              <span className="font-mono">{formatCost(estimateModelCost(id, scenario.inputTokens, scenario.outputTokens))}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-2 text-xs text-fg-muted">DeepSeek uses peak rates. Gemini uses its current introductory rate. Older excerpts below keep their original model versions.</p>
+      </div>
+
       {/* Mode toggle — only shown when planMode data exists */}
       {hasPlanMode && (
         <div className="flex items-center gap-2">
@@ -335,7 +348,7 @@ function ScenarioView({ scenario }: { scenario: Scenario }) {
       {/* Recommendation callout */}
       <div className="rounded-xl border border-emerald-500/20 bg-emerald-400/5 px-4 py-3">
         <p className="mb-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-emerald-500">
-          Bottom line
+          Scenario takeaway
         </p>
         <p className="text-xs leading-relaxed text-fg-primary">
           {activeReason}
@@ -368,7 +381,7 @@ export function ScenarioLab() {
         <div className="min-w-0">
           <h3 className="font-mono text-sm font-semibold text-amber-600">Scenario Lab</h3>
           <p className="mt-0.5 text-xs text-fg-secondary">
-            Real tasks, real model outputs — see which model wins and why
+            Curated task examples and current model cost comparisons
           </p>
         </div>
       </div>
@@ -403,7 +416,7 @@ export function ScenarioLab() {
       {/* Footer */}
       <div className="px-3 py-3 sm:px-5 bg-bg-surface border-t border-border-default">
         <p className="text-[11px] text-stone-400">
-          Outputs are curated from real usage. Prices from official API docs, verified{" "}
+          Existing excerpts are retained as qualitative examples; original run logs are not included. New models have no local results yet. Prices checked{" "}
           {PRICING_META.verifiedDate}.{" "}
           {(Object.entries(PRICING_META.urls) as [string, string][]).map(([provider, url], i, arr) => (
             <span key={provider}>

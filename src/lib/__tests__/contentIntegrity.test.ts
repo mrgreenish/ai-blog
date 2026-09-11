@@ -162,11 +162,11 @@ describe("Dated news entry schema", () => {
     ).toEqual([]);
   });
 
-  it("keeps the focused news index at 22 entries", () => {
+  it("keeps the focused news index at 26 entries", () => {
     const indexable = entries.filter(
       ({ frontmatter }) => frontmatter.indexable === true,
     );
-    expect(indexable).toHaveLength(22);
+    expect(indexable).toHaveLength(26);
   });
 
   it("keeps visible metadata out of entry bodies", () => {
@@ -341,6 +341,9 @@ describe("Model ID integrity", () => {
       /export function getTinderModels\(\)\s*\{[\s\S]*?const ids\s*=\s*\[([\s\S]*?)\]/
     )?.[1] ?? "";
     const tinderIds = [...tinderSelector.matchAll(/"([^"]+)"/g)].map((match) => match[1]);
+    const currentIdsBlock =
+      modelSpecsSource.match(/CURRENT_MODEL_IDS\s*=\s*\[([\s\S]*?)\]\s*as const/)?.[1] ?? "";
+    tinderIds.push(...[...currentIdsBlock.matchAll(/"([^"]+)"/g)].map((match) => match[1]));
 
     const tinderPath = path.join(ROOT, "src/components/interactive/ModelTinder.tsx");
     const tinderSource = fs.readFileSync(tinderPath, "utf-8");
@@ -499,7 +502,12 @@ describe("Guide discovery", () => {
       const prose = chapter.raw.replace(/```[\s\S]*?```/g, "");
       for (const match of prose.matchAll(/\]\((\/(?:chapters|downloads|examples)\/[^)#?]+)(?:#[^)]*)?\)/g)) {
         const href = match[1];
-        if (href.startsWith("/chapters/")) expect(slugs.has(href.slice(10)), `${chapter.slug}: ${href}`).toBe(true);
+        if (href.startsWith("/chapters/what-is-happening/")) {
+          expect(
+            fs.existsSync(path.join(NEWS_DIR, `${href.slice("/chapters/what-is-happening/".length)}.mdx`)),
+            `${chapter.slug}: ${href}`,
+          ).toBe(true);
+        } else if (href.startsWith("/chapters/")) expect(slugs.has(href.slice(10)), `${chapter.slug}: ${href}`).toBe(true);
         else expect(fs.existsSync(path.join(ROOT, "public", href)), `${chapter.slug}: ${href}`).toBe(true);
       }
     }

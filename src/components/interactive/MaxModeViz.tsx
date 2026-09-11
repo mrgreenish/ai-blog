@@ -1,390 +1,79 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Maximize2, CheckCircle2, AlertTriangle, Zap, Info } from "lucide-react";
-import { MODEL_BY_ID, getEffectiveModelPricing } from "@/lib/modelSpecs";
+import { useId, useState } from "react";
+import { Maximize2 } from "lucide-react";
+import { MODEL_REGISTRY, MODEL_BY_ID, estimateModelCost, getEffectiveModelPricing, PRICING_META } from "@/lib/modelSpecs";
 
-// ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
-
-// ~13 tokens per line of code (average across mixed languages)
-const TOKENS_PER_LINE = 13;
-// Default Cursor context limit
-const DEFAULT_LIMIT_TOKENS = 200_000;
-// Max Mode context limit (largest supported model)
-const MAX_MODE_LIMIT_TOKENS = 1_000_000;
-// Average lines per file (typical source file)
-const LINES_PER_FILE = 200;
-
-// API usage included with Cursor Pro
-const PRO_MONTHLY_CREDITS = 20; // USD
-
-// Cost models (USD per 1M tokens, input/output)
-// Auto mode (cursor-small / balanced model)
-const AUTO_INPUT_PER_M = 1.25;
-const AUTO_OUTPUT_PER_M = 6.0;
-// Cursor Max Mode: active Claude Sonnet 5 API rate.
-// On current individual plans Max Mode is billed at the model's API rate (no
-// surcharge). The 20% surcharge only applies on legacy request-based plans.
-// Source: https://cursor.com/docs/models-and-pricing — verify when running validate-model-specs
-const SONNET_PRICING = getEffectiveModelPricing(MODEL_BY_ID["sonnet-5"]);
-const MAX_INPUT_PER_M = SONNET_PRICING.inputPer1M;
-const MAX_OUTPUT_PER_M = SONNET_PRICING.outputPer1M;
-
-// Output tokens ≈ 15% of input for refactor/analysis tasks
-const OUTPUT_RATIO = 0.15;
-
-// ---------------------------------------------------------------------------
-// Scenario presets
-// ---------------------------------------------------------------------------
-
-interface Scenario {
-  id: string;
-  label: string;
-  files: number;
-  note: string;
-}
-
-const SCENARIOS: Scenario[] = [
-  { id: "single", label: "Single file fix", files: 3, note: "A focused bug fix or component edit — well within default limits." },
-  { id: "feature", label: "Feature across 10 files", files: 10, note: "A medium feature touching shared types, routes, and UI components." },
-  { id: "refactor", label: "Large refactor (30 files)", files: 30, note: "A cross-cutting change like renaming an abstraction or migrating an API." },
-  { id: "codebase", label: "Codebase audit (80+ files)", files: 80, note: "Initial exploration of a large unfamiliar codebase or a full-module migration." },
-];
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-function calcCost(inputTokens: number, inputPerM: number, outputPerM: number): number {
-  const outputTokens = inputTokens * OUTPUT_RATIO;
-  return (inputTokens / 1_000_000) * inputPerM + (outputTokens / 1_000_000) * outputPerM;
-}
-
-function formatCost(n: number): string {
-  if (n < 0.01) return "<$0.01";
-  if (n < 1) return `$${n.toFixed(2)}`;
-  return `$${n.toFixed(2)}`;
-}
-
-function fmtTokens(n: number): string {
-  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
-  if (n >= 1_000) return `${Math.round(n / 1_000)}K`;
-  return `${n}`;
-}
-
-// ---------------------------------------------------------------------------
-// Sub-components
-// ---------------------------------------------------------------------------
-
-function ContextBar({
-  tokens,
-  limit,
-  limitLabel,
-  barColor,
-  limitColor,
-}: {
-  tokens: number;
-  limit: number;
-  limitLabel: string;
-  barColor: string;
-  limitColor: string;
-}) {
-  const pct = Math.min((tokens / limit) * 100, 100);
-  const over = tokens > limit;
-
-  return (
-    <div className="space-y-1.5">
-      <div className="flex items-center justify-between font-mono text-[10px]">
-        <span className={limitColor}>{limitLabel}</span>
-        <span className={over ? "text-red-600" : ""} style={!over ? { color: "var(--color-fg-secondary)" } : undefined}>
-          {fmtTokens(tokens)} / {fmtTokens(limit)} tokens
-          {over && " — exceeds limit"}
-        </span>
-      </div>
-      <div className="relative h-3 w-full overflow-hidden rounded-full bg-bg-elevated">
-        <motion.div
-          className={`absolute inset-y-0 left-0 rounded-full ${over ? "bg-red-500" : barColor}`}
-          initial={{ width: 0 }}
-          animate={{ width: `${pct}%` }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
-        />
-        {/* Limit marker */}
-        <div className="absolute inset-y-0 right-0 w-px bg-border-strong"  />
-      </div>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Main component
-// ---------------------------------------------------------------------------
+const MODELS = MODEL_REGISTRY.filter((model) => !model.retired);
 
 export function MaxModeViz() {
-  const [files, setFiles] = useState(10);
-  const [activeScenario, setActiveScenario] = useState<string | null>("feature");
-
-  const totalLines = files * LINES_PER_FILE;
-  const totalTokens = totalLines * TOKENS_PER_LINE;
-  const needsMaxMode = totalTokens > DEFAULT_LIMIT_TOKENS;
-
-  const autoCost = calcCost(Math.min(totalTokens, DEFAULT_LIMIT_TOKENS), AUTO_INPUT_PER_M, AUTO_OUTPUT_PER_M);
-  const maxCost = calcCost(totalTokens, MAX_INPUT_PER_M, MAX_OUTPUT_PER_M);
-
-  const sessionsBeforeBudgetExhausted = useMemo(
-    () => Math.floor(PRO_MONTHLY_CREDITS / maxCost),
-    [maxCost]
-  );
-
-  // Status
-  type Status = "safe" | "warning" | "overflow";
-  const status: Status =
-    totalTokens <= DEFAULT_LIMIT_TOKENS * 0.7
-      ? "safe"
-      : totalTokens <= DEFAULT_LIMIT_TOKENS
-      ? "warning"
-      : "overflow";
-
-  const STATUS_META = {
-    safe: { label: "Within default limits", icon: CheckCircle2, color: "text-emerald-600" },
-    warning: { label: "Approaching 200K limit", icon: AlertTriangle, color: "text-amber-600" },
-    overflow: { label: "Exceeds default — needs Max Mode", icon: Maximize2, color: "text-violet-600" },
-  };
-  const sm = STATUS_META[status];
-  const StatusIcon = sm.icon;
+  const prefix = useId();
+  const [modelId, setModelId] = useState("sonnet-5");
+  const [inputTokens, setInputTokens] = useState(200_000);
+  const [outputTokens, setOutputTokens] = useState(20_000);
+  const [budget, setBudget] = useState(20);
+  const [legacyMax, setLegacyMax] = useState(false);
+  const model = MODEL_BY_ID[modelId];
+  const pricing = getEffectiveModelPricing(model);
+  const totalTokens = inputTokens + outputTokens;
+  const exceedsContext = totalTokens > model.contextWindowTokens;
+  const rawCost = estimateModelCost(modelId, inputTokens, outputTokens);
+  const cost = rawCost * (legacyMax ? 1.2 : 1);
+  const sessions = cost > 0 ? Math.floor(budget / cost) : 0;
+  const long = model.longContextPricing;
+  const hasSurcharge = long && inputTokens > long.thresholdTokens;
 
   return (
-    <div
-      className="not-prose my-8 overflow-hidden rounded-xl border border-violet-500/25 bg-bg-surface"
-    >
-      {/* Header */}
-      <div
-        className="flex items-center gap-3 px-4 py-4 sm:px-6 border-b border-border-default"
-        
-      >
-        <div className="rounded-lg p-2 text-violet-600 bg-bg-elevated">
-          <Maximize2 className="h-4 w-4" />
+    <div className="not-prose my-8 overflow-hidden rounded-xl border border-violet-500/25 bg-bg-surface">
+      <div className="flex items-center gap-3 border-b border-border-default px-4 py-4 sm:px-6">
+        <Maximize2 className="h-5 w-5 text-violet-600" />
+        <div>
+          <h3 className="font-mono text-sm font-semibold text-violet-600">Context and token cost calculator</h3>
+          <p className="mt-1 text-xs text-fg-secondary">Compare provider API capacity and the cost of a large request.</p>
+        </div>
+      </div>
+      <div className="space-y-5 px-4 py-5 sm:px-6">
+        <div>
+          <label htmlFor={`${prefix}-model`} className="block text-sm text-fg-primary">Model</label>
+          <select id={`${prefix}-model`} value={modelId} onChange={(event) => setModelId(event.target.value)} className="mt-2 w-full rounded-md border border-border-default bg-bg-elevated p-2 text-sm text-fg-primary">
+            {MODELS.map((entry) => <option key={entry.id} value={entry.id}>{entry.name}</option>)}
+          </select>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-3">
+          <label className="text-xs text-fg-secondary">
+            Input tokens
+            <input aria-label="Input tokens" type="number" min={0} max={2_000_000} step={1000} value={inputTokens} onChange={(event) => setInputTokens(Math.max(0, Number(event.target.value) || 0))} className="mt-2 w-full rounded-md border border-border-default bg-bg-elevated p-2 text-sm text-fg-primary" />
+          </label>
+          <label className="text-xs text-fg-secondary">
+            Output tokens, including reasoning
+            <input aria-label="Output tokens" type="number" min={0} max={384_000} step={1000} value={outputTokens} onChange={(event) => setOutputTokens(Math.max(0, Number(event.target.value) || 0))} className="mt-2 w-full rounded-md border border-border-default bg-bg-elevated p-2 text-sm text-fg-primary" />
+          </label>
+          <label className="text-xs text-fg-secondary">
+            Your token budget (USD)
+            <input aria-label="Token budget in USD" type="number" min={0} step={5} value={budget} onChange={(event) => setBudget(Math.max(0, Number(event.target.value) || 0))} className="mt-2 w-full rounded-md border border-border-default bg-bg-elevated p-2 text-sm text-fg-primary" />
+          </label>
         </div>
         <div>
-          <h3 className="font-mono text-sm font-semibold text-violet-600">Cursor Max Mode Calculator</h3>
-          <p className="mt-0.5 text-xs text-fg-secondary">
-            See when your task needs the 1M-token window — and what it costs
-          </p>
-        </div>
-      </div>
-
-      {/* Scenario presets */}
-      <div className="px-4 py-4 sm:px-6 border-b border-border-default">
-        <p className="mb-2.5 font-mono text-[11px] font-medium text-fg-secondary">Quick presets</p>
-        <div className="flex flex-wrap gap-1.5">
-          {SCENARIOS.map((s) => (
-            <button
-              key={s.id}
-              onClick={() => {
-                setActiveScenario(s.id);
-                setFiles(s.files);
-              }}
-              className={`rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors ${
-                activeScenario === s.id
-                  ? "border-violet-500/50 bg-violet-400/10 text-violet-600"
-                  : ""
-              }`}
-              style={activeScenario !== s.id ? { borderColor: "var(--color-border-strong)", color: "var(--color-fg-secondary)" } : undefined}
-            >
-              {s.label}
-            </button>
-          ))}
-        </div>
-        <AnimatePresence mode="wait">
-          {activeScenario && (
-            <motion.p
-              key={activeScenario}
-              initial={{ opacity: 0, y: 4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
-              className="mt-2.5 text-[11px] text-fg-secondary"
-            >
-              {SCENARIOS.find((s) => s.id === activeScenario)?.note}
-            </motion.p>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* Slider */}
-      <div className="px-4 py-4 sm:px-6 border-b border-border-default">
-        <div className="mb-3 flex items-baseline justify-between">
-          <p className="font-mono text-[11px] font-medium text-fg-secondary">Files in context</p>
-          <div className="text-right">
-            <span className="font-mono text-lg font-bold text-violet-600">{files}</span>
-            <span className="ml-1 font-mono text-xs text-fg-muted">files</span>
-            <span className="ml-2 font-mono text-xs text-fg-muted">
-              ≈ {fmtTokens(totalTokens)} tokens
-            </span>
+          <p className="text-xs text-fg-secondary">{totalTokens.toLocaleString()} requested tokens / {model.contextWindowTokens.toLocaleString()} provider context</p>
+          <div className="mt-2 h-3 overflow-hidden rounded-full bg-bg-elevated">
+            <div className={`h-full ${exceedsContext ? "bg-red-500" : model.contextBarColor}`} style={{ width: `${Math.min(totalTokens / model.contextWindowTokens * 100, 100)}%` }} />
           </div>
+          <p className="mt-2 text-xs text-fg-secondary">Budget includes input and requested output. Tool history also uses context. Provider output limits and your editor&apos;s limits may be lower.</p>
+          {exceedsContext && <p role="alert" className="mt-2 text-xs text-red-600">This request exceeds the listed context window. Reduce it before sending; the cost below is hypothetical.</p>}
         </div>
-        <input
-          type="range"
-          min={1}
-          max={150}
-          step={1}
-          value={files}
-          onChange={(e) => {
-            setActiveScenario(null);
-            setFiles(Number(e.target.value));
-          }}
-          className="w-full cursor-pointer accent-violet-500"
-          style={{ height: "4px" }}
-        />
-        <div className="mt-1.5 flex justify-between font-mono text-[10px] text-fg-muted">
-          <span>1</span>
-          <span>~77 files = 200K limit</span>
-          <span>150</span>
+        <label className="flex items-start gap-2 text-xs text-fg-secondary">
+          <input type="checkbox" checked={legacyMax} onChange={(event) => setLegacyMax(event.target.checked)} className="mt-0.5" />
+          Apply Cursor&apos;s 20% Max Mode surcharge for a supported model on a legacy request-based plan.
+        </label>
+        <div aria-live="polite" className="rounded-lg border border-border-default bg-bg-elevated p-4">
+          <p className="font-mono text-2xl font-bold text-violet-600">${cost.toFixed(3)} <span className="text-xs font-normal text-fg-secondary">per request</span></p>
+          <p className="mt-2 text-xs text-fg-secondary">{sessions} such requests fit in your ${budget} token budget at these assumptions.</p>
+          {hasSurcharge && <p className="mt-2 text-xs text-fg-secondary">Long-context pricing applies to the full request above {long.thresholdTokens.toLocaleString()} input tokens: {long.inputMultiplier}× input and {long.outputMultiplier}× output.</p>}
+          {pricing.label && <p className="mt-2 text-xs text-fg-secondary">{pricing.label}</p>}
+          {model.pricingNote && <p className="mt-2 text-xs text-fg-secondary">{model.pricingNote}</p>}
         </div>
+        <p className="text-xs text-fg-muted">{PRICING_META.notes[0]} Checked {PRICING_META.verifiedDate}. A token budget is your own assumption, not a subscription allowance. Max Mode applies only to legacy request-based Cursor plans; model availability and context vary by plan. <a href="https://cursor.com/docs/models-and-pricing" className="underline">Check Cursor pricing</a>.</p>
       </div>
-
-      {/* Context window visualization */}
-      <div className="px-4 py-5 sm:px-6 space-y-4 border-b border-border-default">
-        <p className="font-mono text-[11px] font-medium text-fg-secondary">Context window usage</p>
-
-        <ContextBar
-          tokens={totalTokens}
-          limit={DEFAULT_LIMIT_TOKENS}
-          limitLabel="Default mode (200K tokens)"
-          barColor="bg-stone-400"
-          limitColor="text-stone-500"
-        />
-
-        <ContextBar
-          tokens={totalTokens}
-          limit={MAX_MODE_LIMIT_TOKENS}
-          limitLabel="Max Mode (1M tokens)"
-          barColor="bg-violet-500"
-          limitColor="text-violet-600"
-        />
-
-        {/* Status badge */}
-        <div className={`flex items-center gap-2 ${sm.color}`}>
-          <StatusIcon className="h-3.5 w-3.5 shrink-0" />
-          <span className="font-mono text-[11px] font-semibold">{sm.label}</span>
-        </div>
-      </div>
-
-      {/* Cost comparison */}
-      <div className="px-4 py-5 sm:px-6 border-b border-border-default">
-        <p className="font-mono text-[11px] font-medium mb-4 text-fg-secondary">Cost per session</p>
-
-        <div className="grid grid-cols-2 gap-3">
-          {/* Auto mode */}
-          <div
-            className={`rounded-lg border px-4 py-3 ${needsMaxMode ? "opacity-50" : ""}`}
-            style={needsMaxMode
-              ? { borderColor: "var(--color-border-default)", background: "var(--color-bg-surface)" }
-              : { borderColor: "var(--color-border-strong)", background: "var(--color-bg-elevated)" }}
-          >
-            <div className="flex items-center gap-1.5 mb-2">
-              <Zap className="h-3 w-3 text-fg-secondary" />
-              <span className="font-mono text-[11px] font-semibold text-fg-primary">Auto mode</span>
-            </div>
-            <p className="font-mono text-2xl font-bold text-fg-primary">{formatCost(autoCost)}</p>
-            <p className="mt-1 font-mono text-[10px] text-fg-placeholder">per session</p>
-            {needsMaxMode && (
-              <p className="mt-1.5 font-mono text-[10px] text-amber-500/80">Context truncated at 200K</p>
-            )}
-          </div>
-
-          {/* Max mode */}
-          <div
-            className="rounded-lg border px-4 py-3"
-            style={needsMaxMode
-              ? { borderColor: "rgba(139, 92, 246, 0.4)", background: "rgba(139, 92, 246, 0.05)" }
-              : { borderColor: "var(--color-border-default)", background: "var(--color-bg-surface)" }}
-          >
-            <div className="flex items-center gap-1.5 mb-2">
-              <Maximize2 className="h-3 w-3 text-violet-600" />
-              <span className="font-mono text-[11px] font-semibold text-violet-600">Max Mode</span>
-            </div>
-            <p className="font-mono text-2xl font-bold text-violet-200">{formatCost(maxCost)}</p>
-            <p className="mt-1 font-mono text-[10px] text-fg-placeholder">
-              per session (Sonnet 5 {SONNET_PRICING.isPromotional ? "introductory" : "standard"} API rate)
-            </p>
-            {needsMaxMode && (
-              <p className="mt-1.5 font-mono text-[10px] text-violet-600/80">Full context fits ✓</p>
-            )}
-          </div>
-        </div>
-
-        {/* Monthly budget impact */}
-        <div className="mt-3 rounded-lg px-4 py-3 bg-bg-elevated border border-border-default">
-          <div className="flex items-start gap-2">
-            <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-fg-muted" />
-            <div className="space-y-0.5">
-              <p className="font-mono text-[11px] text-fg-secondary">
-                Cursor Pro includes{" "}
-                <span className="font-semibold text-fg-primary">$20/month of API usage</span>
-                {" "}on the API pool.
-              </p>
-              <p className="font-mono text-[11px] text-fg-muted">
-                At Max Mode rates, that pool covers{" "}
-                <span className={sessionsBeforeBudgetExhausted < 10 ? "text-amber-600 font-semibold" : "font-semibold"}
-                  style={sessionsBeforeBudgetExhausted >= 10 ? { color: "var(--color-fg-primary)" } : undefined}>
-                  ~{sessionsBeforeBudgetExhausted} sessions
-                </span>
-                {sessionsBeforeBudgetExhausted < 10 && " before you run out"}.
-                {sessionsBeforeBudgetExhausted >= 10 && " — reasonable for selective use."}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Recommendation */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={status}
-          initial={{ opacity: 0, y: 4 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -4 }}
-          transition={{ duration: 0.2 }}
-          className="px-4 py-4 sm:px-6 bg-bg-surface"
-        >
-          {status === "safe" && (
-            <>
-              <p className="font-mono text-xs font-semibold text-emerald-600 mb-1">
-                Leave Max Mode off
-              </p>
-              <p className="text-[11px] leading-relaxed text-fg-muted">
-                Your context fits comfortably in the default 200K window. Auto mode handles this at a
-                fraction of the cost — no reason to flip the Max Mode switch.
-              </p>
-            </>
-          )}
-          {status === "warning" && (
-            <>
-              <p className="font-mono text-xs font-semibold text-amber-600 mb-1">
-                You&apos;re close — consider trimming first
-              </p>
-              <p className="text-[11px] leading-relaxed text-fg-muted">
-                You&apos;re near the default limit. Try removing files that aren&apos;t directly relevant before
-                enabling Max Mode. Often you can stay under 200K with a tighter selection.
-              </p>
-            </>
-          )}
-          {status === "overflow" && (
-            <>
-              <p className="font-mono text-xs font-semibold text-violet-600 mb-1">
-                Max Mode is the right call here
-              </p>
-              <p className="text-[11px] leading-relaxed text-fg-muted">
-                Your task genuinely needs more than 200K tokens of context. Enable Max Mode for this
-                session — just remember to turn it off when you&apos;re back to focused, single-file work.
-              </p>
-            </>
-          )}
-        </motion.div>
-      </AnimatePresence>
     </div>
   );
 }

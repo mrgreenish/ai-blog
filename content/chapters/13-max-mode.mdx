@@ -2,7 +2,7 @@
 title: "Cursor Max Mode"
 subtitle: "When the 1M token context window earns its cost"
 publishedAt: "2026-04-17"
-updatedAt: "2026-07-29"
+updatedAt: "2026-09-11"
 relatedSlugs: [reasoning-vs-fast, spec-files, model-personalities]
 chapter: 13
 part: tools-infrastructure
@@ -20,7 +20,7 @@ That's the problem Max Mode solves.
 
 ## What Max Mode actually does
 
-Max Mode is a feature of Cursor's legacy request-based plans. It extends supported models beyond their standard context limits, which vary by model rather than sharing one universal default. Cursor currently documents million-token Max context for models including GPT-5.6 Sol, Claude Fable 5, Claude Sonnet 5, and Gemini 3.1 Pro. Check the [legacy-plan documentation](https://cursor.com/docs/account/pricing/request-based-legacy) for the current model matrix.
+Max Mode is a feature of Cursor's legacy request-based plans. It extends supported models beyond their standard context limits, which vary by model rather than sharing one universal default. Cursor currently documents million-token Max context for models including Claude Fable 5.1, Claude Sonnet 5, and Gemini 3.1 Pro. Check the [legacy-plan documentation](https://cursor.com/docs/account/pricing/request-based-legacy) for the current model matrix.
 
 The catch is billing, and the exact behavior depends on your Cursor plan, model, and current pricing policy. Large-context requests process more tokens and can consume included usage or metered spend quickly. Check Cursor's live [models and pricing documentation](https://cursor.com/docs/models-and-pricing) before treating any fixed allowance or surcharge as universal.
 
@@ -38,7 +38,7 @@ For a selected model, the main technical effect is broader context, not differen
 
 **Single-file tasks.** Renaming a function, adding a prop, writing a test for one module — none of this needs 1M tokens. Like renting a truck to carry a laptop.
 
-**When Auto handles it.** Cursor now offers Auto Cost, Auto Balance, and Auto Intelligence. Composer 2.5 draws from the Cursor Models pool with Grok 4.5; Auto routing follows its own current pricing rules. If an Auto mode gives you a correct result, there is no reason to pay for broader context.
+**When Auto handles it.** Cursor now offers Auto Cost, Auto Balance, and Auto Intelligence. Composer 2.5 draws from the Cursor Models pool with Grok 4.6 and Grok 4.5; Auto routing follows its own current pricing rules. If an Auto mode gives you a correct result, there is no reason to pay for broader context.
 
 **Rapid iteration.** "Tweak this", "make it shorter", "add a case" — each exchange can resend accumulated context. Cached input may be billed at a lower model-specific cache-read rate, but large sessions still compound. Keep Max Mode off during iteration; use it when you need the full picture.
 
@@ -46,15 +46,15 @@ For a selected model, the main technical effect is broader context, not differen
 
 ## The cost reality
 
-Cursor's allowances, usage pools, and overage rules vary by plan and can change. The stable part is the token math: a larger context means more input tokens billed at the selected model's applicable rate. As an illustrative calculation using the model rates verified for this site on July 29, 2026:
+Cursor's allowances, usage pools, and overage rules vary by plan and can change. The stable part is the token math: a larger context means more input tokens billed at the selected model's applicable rate. Using the provider API rates checked on September 11, 2026:
 
-- At raw API rates, a 400K-input / 60K-output session is about $1.34 on Luna, $3.35 on Terra, $6.70 on Sol, and $7.00 on Fable 5 before caching or plan-specific usage pools. OpenAI applies 2× input and 1.5× output pricing to the full request above 272K input tokens.
+- At raw API rates, a 400K-input / 60K-output session is about $0.268 on Luna, $2.68 on Terra, $5.00 on Sol, $12.50 on Astra, $7.00 on Fable 5.1, $2.10 on Kimi K3, $0.525 on Gemini 3.8 Flash, and $0.192 on DeepSeek-V4.1-Flash at peak rates before caching, tool fees, or platform charges. Gemini uses its introductory rate through December 31. OpenAI applies 2× input and 1.5× output pricing to the full request above 272K input tokens.
 - Run that three or four times a day and the spend compounds quickly
 - Whether that usage comes from an included pool or metered overage depends on your current plan settings
 
 Before relying on a monthly budget, check [Cursor's current pricing](https://cursor.com/docs/models-and-pricing) and your dashboard's usage controls. The examples above explain scale; they are not a promise about what a specific subscription includes.
 
-The calculator below shows how context size and frequency affect when Max Mode makes sense.
+The calculator below lets you select these models and enter token counts directly. It includes the documented long-context rates; its optional 20% surcharge applies only to supported Max Mode requests on legacy Cursor plans. A model appearing in the API comparison does not guarantee that Cursor offers it.
 
 <MaxModeViz />
 
