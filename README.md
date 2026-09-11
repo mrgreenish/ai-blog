@@ -57,3 +57,11 @@ Do not bump `updatedAt` for copy edits, formatting changes, or when a validation
 4. Add the component to `MDX_COMPONENTS` in `src/lib/mdxComponents.tsx`
 5. Run `pnpm test:integrity` to confirm everything is wired correctly
 6. Reference the slug in your article's `interactiveTools` frontmatter
+
+## Guide discovery and growth
+
+`src/lib/discovery.ts` defines task groups, homepage entry points, and discovery-page metadata. All evergreen chapters appear once in the guide directory. Each chapter can specify `relatedSlugs`; the integrity suite checks targets, uniqueness, and self-links.
+
+The first promotion cycle, ready-to-edit posts, UTM links, and measurement definitions are in [the growth playbook](content/GROWTH_PLAYBOOK.md). The September 2026 account review confirmed Hobby: keep custom events disabled and use page/referrer reporting; UTM reporting is also unavailable on this plan. Custom-event instrumentation can be enabled via `NEXT_PUBLIC_GROWTH_EVENTS_ENABLED=true` at build time if account support changes. Pageview analytics remain in place regardless of this flag.
+
+The debugging guide's downloadable example can be checked with `node --test public/examples/ai-debugging/pagination.test.mjs`. Its broken counterpart is intentionally faulty and used by the content example test to establish a failing baseline.

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Copy, Check } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -144,6 +144,7 @@ export function ModeToggle<T extends string>({
         {options.map(({ id, label, icon: Icon }) => (
           <button
             key={id}
+            aria-pressed={mode === id}
             onClick={() => onChange(id)}
             className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-mono text-[11px] transition-all sm:text-xs ${
               mode === id
@@ -164,18 +165,32 @@ export function ModeToggle<T extends string>({
 
 export function CopyButton({
   getText,
+  onCopied,
   label,
   accentColor,
 }: {
   getText: () => string;
+  onCopied?: () => void;
   label: string;
   accentColor: AccentColor;
 }) {
   const [copied, setCopied] = useState(false);
+  const [copyFailed, setCopyFailed] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  useEffect(() => () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+  }, []);
+
   async function handleCopy() {
-    await navigator.clipboard.writeText(getText());
+    setCopyFailed(false);
+    try {
+      await navigator.clipboard.writeText(getText());
+    } catch {
+      setCopyFailed(true);
+      return;
+    }
+    onCopied?.();
     setCopied(true);
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
@@ -186,8 +201,10 @@ export function CopyButton({
 
   const c = accent[accentColor];
   return (
+    <span className="inline-flex flex-col items-start gap-2">
     <button
       onClick={handleCopy}
+      aria-live="polite"
       className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 font-mono text-xs transition-colors ${
         copied ? c.btnCopied : `${c.btnHover} border-border-strong bg-bg-elevated text-fg-secondary`
       }`}
@@ -204,5 +221,7 @@ export function CopyButton({
         </>
       )}
     </button>
+    {copyFailed && <span role="alert" className="text-xs text-fg-muted">Could not copy. Allow clipboard access and try again, or select the text manually.</span>}
+    </span>
   );
 }

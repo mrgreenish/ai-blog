@@ -4,6 +4,10 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        source: "/downloads/:path*",
+        headers: [{ key: "Content-Disposition", value: "attachment" }],
+      },
+      {
         // Static page HTML — cache in browser for 10 min, CDN for 1 year,
         // serve stale for up to 1 day while revalidating in the background.
         // Reduces bandwidth from repeat visitors between deploys.

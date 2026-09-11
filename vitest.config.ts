@@ -12,6 +12,7 @@ export default defineConfig({
     exclude: [
       "**/node_modules/**",
       "**/dist/**",
+      "public/examples/**",
       "**/.git/**",
       "**/.cache/**",
       "**/.claude/worktrees/**",

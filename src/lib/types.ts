@@ -50,6 +50,7 @@ export interface ChapterFrontmatter {
   part: Part;
   partNumber: number;
   wonderQuestion?: string;
+  relatedSlugs?: string[];
   interactiveTools?: InteractiveTool[];
   publishedAt?: string;
   updatedAt?: string;

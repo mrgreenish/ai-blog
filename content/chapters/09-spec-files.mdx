@@ -1,8 +1,9 @@
 ---
-title: "Spec Files"
-subtitle: "AI-readable documentation that survives context window resets"
+title: "How to Write Spec Files for AI Coding: Template and Worked Example"
+subtitle: "Keep requirements beside your code, reuse a Markdown template, and verify changes against a concrete component spec."
 publishedAt: "2026-04-17"
-updatedAt: "2026-07-22"
+updatedAt: "2026-09-11"
+relatedSlugs: [spec-to-pr, agents-and-skills, agent-guardrails]
 chapter: 9
 part: shipping-workflows
 partNumber: 2
@@ -11,231 +12,147 @@ illustrationPlaceholders:
   - "Anatomy of a spec file: annotated .spec.md showing each section with callouts."
 ---
 
-You spend the first twenty minutes of a session explaining your component to the model. The constraints. The edge cases. The things you explicitly decided not to build. By the end you have something that works — and a chat transcript that is not a durable, repo-visible source of truth for the next task.
+A spec file is a Markdown document that records what a feature should do, its boundaries, and how you will verify it. Keep it beside the implementation, explicitly include it in your AI coding task, and update it with the code. That gives future sessions a durable starting point.
 
-Next session, you start over.
+[Download the AI coding spec template](/downloads/ai-coding-spec-template.md), fill in the sections below, then use the prompt at the end of this guide. No account required.
 
-A `.spec.md` file breaks the cycle. It's a markdown file that lives next to the component, gets committed to the repo, and becomes the durable source of truth for what that component does — and what it deliberately doesn't do. Every future session can read it with an `@` mention and pick up where you left off.
+## When a spec file helps
 
-(The [Spec → PR workflow](/chapters/spec-to-pr) covers writing a spec in chat before implementation — this chapter is about making that spec survive beyond the session.)
+Use one when a component has meaningful rules, a feature will span several sessions, or another developer needs to understand why a decision was made. A small typo fix rarely needs its own spec.
 
-## Why spec files beat chat-only specs
+A file does not enforce itself. An agent can overlook instructions, and a spec can become stale. Explicitly reference the file and turn its acceptance criteria into tests and review checks.
 
-Write a spec only in chat and it remains conversation context, not shared project documentation. A later conversation may be retrievable, but the next task, teammate, or tool will not reliably receive those decisions unless you attach them again. You either re-explain everything or the model makes assumptions.
+The [Spec to PR workflow](/chapters/spec-to-pr) covers the full delivery loop. This guide focuses on keeping requirements useful between sessions.
 
-A spec file persists:
-
-- **Survives session end** — every future chat can read it with an `@` mention
-- **Version-controlled** — git history shows when requirements changed and why
-- **Team-shareable** — a teammate opening the file gets the same context you have
-- **Prevents scope creep** — a "Not in scope" section is explicit and durable, not buried in a chat transcript
-- **Onboarding aid** — new developers read the spec to understand the component without digging through the code
-
-The most underrated benefit: the "Not in scope" section. Tell the model in chat "don't add a mobile menu" — that constraint lives for one message. Put it in the spec file, and it's enforced every time you reference the spec.
-
-## Anatomy of a spec file
-
-Here's a real example — a compact spec for the current `Header` component in this codebase:
+## Start with the template
 
 ```markdown
-# Spec: `Header` component
+# Spec: [feature or component]
+
+## Overview
+What should this do, and for whom?
+
+## Inputs
+List props, user actions, and data dependencies.
+
+## Outputs
+Describe rendered UI, return values, or side effects.
+
+## Behaviour / Logic
+Describe the rules in terms a reviewer can verify.
+
+## Constraints
+Record compatibility, accessibility, performance, and project conventions.
+
+## Edge Cases
+List empty, invalid, loading, and failure states that apply.
+
+## Acceptance Criteria
+- Given [starting condition], when [action], then [observable result].
+
+## Not in scope
+Explicitly exclude adjacent changes.
+
+## Verification
+Commands and manual checks that demonstrate the behaviour.
+```
+
+Describe observable behaviour. “Support empty results” is less useful than “When the result list is empty, show an explanation and a clear-filter action.” Name the constraints that would otherwise tempt an agent to expand the task.
+
+## Worked example: this site's header
+
+This is the specification for the header in this repository at the time of this update. It describes the current navigation, including its limitations. It is a component example, not a claim that this exact header suits every project.
+
+```markdown
+# Spec: Header
 
 **File:** `src/components/layout/Header.tsx`
 
----
-
 ## Overview
-
-A fixed navigation bar rendered at the top of every page.
-
----
+A fixed navigation bar for AI Field Notes, shared across every page.
 
 ## Inputs
-
-The component accepts no props. Its three navigation links are defined directly in the rendered JSX.
-
----
+No props. Navigation labels and destinations are defined in the component.
 
 ## Outputs
-
-Renders a `<header>` element containing:
-
-1. **Site link** — navigates to `/` and displays `AI Field Notes`
-2. **Contents link** — navigates to `/#contents`
-3. **What's Happening link** — navigates to `/chapters/what-is-happening`
-4. **Search link** — navigates to `/search`
-
----
+- Home link labelled AI Field Notes, pointing to `/`.
+- Main navigation: Guides (`/guides`), Tools (`/tools`),
+  Updates (`/chapters/what-is-happening`), Search (`/search`).
 
 ## Behaviour / Logic
-
-All links use Next.js `Link`. Navigation styling is static, with hover color transitions and no active-route state.
-
----
+Links use Next.js Link. The header is fixed at the top with a 3.5rem height.
+Navigation links wrap within the available width on narrow screens.
+No active-route indicator or route-dependent state is implemented.
 
 ## Constraints
-
-- Remains fixed at `top-0` with `z-50`
-- Max content width is `max-w-4xl` to match the page layout
-- Uses existing foreground, background, and border tokens
-- Adding or removing navigation items requires a code change
-
----
+Use existing typography, colour, and border tokens. Render as a Server Component.
+The root layout offsets the main content by the header height.
+Every link must remain reachable by keyboard and have a visible label.
 
 ## Edge Cases
+Verify the navigation at 320px width and with long page titles below it.
+Long titles must not change the header width or cover its links.
 
-| Scenario | Behaviour |
-|---|---|
-| Narrow viewport | Links remain on one row; labels must stay concise |
-| Long page content | Fixed header remains visible and content needs top spacing |
-| JavaScript disabled | Next.js links still render as standard anchors |
-
----
-
-## Not in scope
-
-- Mobile/hamburger menu
-- Authentication state
-- Active-route highlighting
-- Theme toggle
-```
-
-Each section does specific work for the AI:
-
-**Overview** gives the model a one-sentence mental model before it reads anything else.
-
-**Inputs** tells the model what data the component consumes and where it comes from.
-
-**Outputs** describes the rendered structure.
-
-**Behaviour / Logic** captures the non-obvious logic — the kind that looks arbitrary in code but has a specific reason.
-
-**Constraints** is where you encode architectural decisions.
-
-**Edge Cases** is the section that most specs skip and most bugs come from.
-
-**Not in scope** tells the model what you've deliberately chosen not to build.
-
-## Two workflows for making changes
-
-### Spec-first: when you know what you want
-
-Use this when you have a clear requirement.
-
-1. Open the spec file and edit it — add the new behaviour, update constraints, move items out of "Not in scope"
-2. In chat: `@Header.spec.md @Header.tsx` → "Update the component to match the spec"
-
-The spec becomes the instruction. The model implements exactly what's written, nothing more. You're making the design decision before any code is touched.
-
-### Chat-first: when you're exploring
-
-Use this when you're not sure what you want yet.
-
-1. Chat: "I'm thinking about adding a mobile hamburger menu to the Header — what's the simplest approach given `@Header.tsx`?"
-2. Discuss, decide on the approach
-3. "Great. Now update `@Header.spec.md` to reflect what we decided, then implement it in `@Header.tsx`"
-
-Chat is the design scratchpad. The spec is where the decision gets crystallised before code is written.
-
-**The rule of thumb: spec leads code, chat leads spec.**
-
-Never let the code drift ahead of the spec. After any change — whether you drove it or the AI did — the spec should be updated to match.
-
-## Worked example: adding a mobile menu
-
-Say you want to add a hamburger menu to the Header. Here's what changes in the spec:
-
-**Before** (in "Not in scope"):
-```markdown
-## Not in scope
-
-- Mobile/hamburger menu — no responsive collapse behaviour
-- Authentication state — header has no user/session awareness
-- Dark/light mode toggle — theme is hardcoded dark
-```
-
-**After** (mobile menu moved into Behaviour, Not in scope updated):
-```markdown
-## Behaviour / Logic
-
-**Active state detection:**
-(unchanged)
-
-**Mobile menu:**
-- Visible below `md` breakpoint; desktop nav hidden below `md`
-- Toggle button renders a `Menu` icon (closed) or `X` icon (open)
-- Menu state is local — `useState(false)`, resets on route change via `useEffect`
-- Open menu renders nav links stacked vertically in a full-width dropdown below the header bar
-
----
-
-## Edge Cases
-
-| Scenario | Behaviour |
-|---|---|
-| (existing rows unchanged) |  |
-| Mobile menu open, user navigates | Menu closes — `useEffect` watches `pathname` |
-| Mobile menu open, user resizes to desktop | Desktop nav becomes visible; mobile menu state is irrelevant |
-
----
+## Acceptance Criteria
+- Home navigates to `/`.
+- Each labelled navigation link resolves to its stated destination.
+- All links remain visible without horizontal page overflow at 320px.
 
 ## Not in scope
+A mobile menu, active-route highlighting, authentication, or theme controls.
 
-- Authentication state — header has no user/session awareness
-- Dark/light mode toggle — theme is hardcoded dark
+## Verification
+Open the homepage and a chapter at desktop and mobile widths.
+Tab through the navigation and follow all four destinations.
 ```
 
-Then the prompt:
+Notice what it makes explicit: the link destinations, fixed positioning, and absence of route-dependent state. These details prevent a routine navigation edit from turning into an unrequested menu or theme redesign.
 
+## Change the spec before changing the behaviour
+
+Suppose you want to add a Resources link later. First decide its destination and record it in the outputs and acceptance criteria. Then ask:
+
+```text
+Read Header.spec.md and Header.tsx. The spec now includes a Resources link.
+Explain the smallest implementation change and how you will verify it.
+Implement that change using the existing styles.
+Do not add an active-route indicator or mobile menu.
+Check all links at desktop and 320px widths, and report what you verified.
 ```
-@Header.spec.md @Header.tsx
 
-The spec has been updated to include a mobile hamburger menu.
-Update the component to match the spec. Do not touch anything
-outside the Header component.
-```
+This is an illustrative future change; the current header does not include a Resources link. If the extra item no longer fits, revise the layout requirement with that evidence instead of silently clipping navigation.
 
-The model has everything it needs: what to build (the updated Behaviour section), what to preserve (the unchanged sections), what not to touch (the remaining Not in scope items), and the edge cases to handle.
+## Two ways to work
 
-## Where to put spec files
+**Spec first:** when the requirement is clear, update the document, request a plan, implement, and verify against the acceptance criteria.
 
-Co-locate them with the file they describe:
+**Explore first:** when the requirement is unclear, discuss the tradeoffs in chat. Once you decide, record the agreed behaviour in the spec before implementation. Do not preserve every abandoned idea as a requirement.
 
-```
+## Keep the document close to the code
+
+```text
 src/components/layout/
-├── Header.tsx
-├── Header.spec.md   ← lives next to the component
+  Header.tsx
+  Header.spec.md
 ```
 
-For a page or route:
+Use the same naming approach for a route or utility with non-obvious behaviour. Follow your repository's test-file conventions: this Markdown file documents requirements; executable tests still belong in the test suite.
 
-```
-src/app/workflows/
-├── page.tsx
-├── page.spec.md
-```
+For recurring project-wide rules, use [agent instructions and skills](/chapters/agents-and-skills) instead of copying the same conventions into every feature spec.
 
-For a utility module:
+## Review code and spec together
 
-```
-src/lib/
-├── content.ts
-├── content.spec.md
-```
+Before merging, check that every acceptance criterion has a test or a recorded manual check. Compare the written inputs and outputs with the actual code. Remove claims about behaviour that no longer exists.
 
-The naming convention `{filename}.spec.md` makes the relationship obvious — not a test file, not a config file, just documentation that travels with the code.
+Do not ask an agent to rewrite the spec simply to match any code it produced: compare both with the approved requirement first. A disagreement can indicate an implementation bug.
 
-## Keeping specs in sync
+A useful closing prompt:
 
-A spec is only useful if it's accurate. One that describes what the component *used* to do is worse than no spec — it actively misleads the model.
-
-If you're using AI to make the change, have it update the spec as part of the same task:
-
-```
-@Header.spec.md @Header.tsx
-
-Add a "Workflows" link to NAV_LINKS. Update the spec to reflect
-the new nav link, then update the component.
+```text
+Compare the diff with the spec's acceptance criteria.
+List any mismatch, untested edge case, or change outside the stated scope.
+Fix implementation errors. Update the spec only for agreed behaviour changes.
+Report the verification commands and their outcomes.
 ```
 
-Both files update in one pass. Spec stays accurate without extra effort.
+Next, [take the spec through a complete PR workflow](/chapters/spec-to-pr), or [copy a workflow recipe](/tools/ai-coding-workflow).

@@ -1,3 +1,4 @@
+import { DISCOVERY_PAGES } from "@/lib/discovery";
 import type { MetadataRoute } from "next";
 import { getAllChapters, getIndexableNewsEntries } from "@/lib/content";
 import { SITE_URL as BASE_URL } from "@/lib/siteConfig";
@@ -31,6 +32,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: BASE_URL,
       lastModified: latestContentDate,
     },
+    ...DISCOVERY_PAGES.map((page) => ({ url: `${BASE_URL}${page.href}` })),
     ...chapterEntries,
     ...newsSitemapEntries,
   ];

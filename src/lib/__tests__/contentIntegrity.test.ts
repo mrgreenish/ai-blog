@@ -452,3 +452,56 @@ describe("No merge conflict markers", () => {
     expect(conflicted, "files with unresolved merge conflict markers").toEqual([]);
   });
 });
+
+describe("Guide discovery", () => {
+  it("validates curated related guides without duplicates or self-links", () => {
+    const chapters = loadAllChapters();
+    const slugs = new Set(chapters.map((chapter) => chapter.slug));
+    for (const chapter of chapters) {
+      const related = chapter.frontmatter.relatedSlugs;
+      if (related === undefined) continue;
+      expect(Array.isArray(related), chapter.slug).toBe(true);
+      const links = related as string[];
+      expect(new Set(links).size, chapter.slug).toBe(links.length);
+      for (const slug of links) {
+        expect(slug, chapter.slug).not.toBe(chapter.slug);
+        expect(slugs.has(slug), `${chapter.slug} -> ${slug}`).toBe(true);
+      }
+    }
+  });
+
+  it("groups every evergreen guide once and keeps news under Updates", async () => {
+    const { GUIDE_GROUPS, START_TASKS } = await import("../discovery");
+    const expected = loadAllChapters().map((c) => c.slug).filter((s) => s !== "what-is-happening").sort();
+    const grouped = GUIDE_GROUPS.flatMap((g) => g.slugs);
+    expect([...grouped].sort()).toEqual(expected);
+    for (const task of START_TASKS) expect(grouped).toContain(task.slug);
+  });
+
+  it("includes discovery pages but not internal search in the sitemap", async () => {
+    const { default: sitemap } = await import("../../app/sitemap");
+    const { SITE_URL } = await import("../siteConfig");
+    const urls = sitemap().map((page) => page.url);
+    for (const route of ["/guides", "/tools", "/tools/ai-coding-workflow"]) expect(urls).toContain(SITE_URL + route);
+    expect(urls).not.toContain(SITE_URL + "/search");
+    expect(new Set(urls).size).toBe(urls.length);
+  });
+
+  it("keeps the header worked example synchronized with the real spec", () => {
+    const article = fs.readFileSync(path.join(CHAPTERS_DIR, "09-spec-files.mdx"), "utf8");
+    const spec = fs.readFileSync(path.join(ROOT, "src/components/layout/Header.spec.md"), "utf8");
+    expect(article).toContain(spec.trim());
+  });
+
+  it("resolves chapter and download links in article prose", () => {
+    const slugs = new Set(loadAllChapters().map((c) => c.slug));
+    for (const chapter of loadAllChapters()) {
+      const prose = chapter.raw.replace(/```[\s\S]*?```/g, "");
+      for (const match of prose.matchAll(/\]\((\/(?:chapters|downloads|examples)\/[^)#?]+)(?:#[^)]*)?\)/g)) {
+        const href = match[1];
+        if (href.startsWith("/chapters/")) expect(slugs.has(href.slice(10)), `${chapter.slug}: ${href}`).toBe(true);
+        else expect(fs.existsSync(path.join(ROOT, "public", href)), `${chapter.slug}: ${href}`).toBe(true);
+      }
+    }
+  });
+});

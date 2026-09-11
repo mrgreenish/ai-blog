@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { trackGrowthEvent } from "@/lib/growthAnalytics";
 import { ChefHat, TreeDeciduous, RotateCcw, ArrowLeft, ArrowRight, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
@@ -300,8 +301,8 @@ function formatRecipeAsMarkdown(recipe: Recipe): string {
   return lines.join("\n");
 }
 
-function BrowseRecipes() {
-  const [recipeId, setRecipeId] = useState(RECIPES[0].id);
+function BrowseRecipes({ initialRecipeId }: { initialRecipeId?: string }) {
+  const [recipeId, setRecipeId] = useState(initialRecipeId ?? RECIPES[0].id);
   const recipe = RECIPES.find((r) => r.id === recipeId) ?? RECIPES[0];
 
   return (
@@ -315,6 +316,7 @@ function BrowseRecipes() {
           {RECIPES.map((r) => (
             <button
               key={r.id}
+              aria-pressed={r.id === recipeId}
               onClick={() => setRecipeId(r.id)}
               className={`rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors sm:px-3 sm:py-1.5 sm:text-xs ${
                 r.id === recipeId
@@ -399,6 +401,7 @@ function BrowseRecipes() {
         <CopyButton
           getText={() => formatRecipeAsMarkdown(recipe)}
           label="Copy recipe"
+          onCopied={() => trackGrowthEvent("recipe_copied", { recipe: recipe.id })}
           accentColor="emerald"
         />
       </div>
@@ -485,9 +488,11 @@ function QuestionStep({
 
 function ResultCard({
   result,
+  resultId,
   onRestart,
 }: {
   result: TreeResult;
+  resultId: string;
   onRestart: () => void;
 }) {
   return (
@@ -600,6 +605,7 @@ function ResultCard({
         <CopyButton
           getText={() => formatResultAsMarkdown(result)}
           label="Copy workflow"
+          onCopied={() => trackGrowthEvent("recipe_copied", { recipe: resultId })}
           accentColor="teal"
         />
       </div>
@@ -613,7 +619,11 @@ function HelpMeChoose() {
   const { node, result, breadcrumbs } = resolveTreePath(path);
 
   const handleAnswer = (optionId: string) => {
-    setPath((prev) => [...prev, optionId]);
+    const nextPath = [...path, optionId];
+    if (resolveTreePath(nextPath).result) {
+      trackGrowthEvent("workflow_completed", { result: nextPath.join("/") });
+    }
+    setPath(nextPath);
   };
 
   const handleBack = () => {
@@ -649,6 +659,7 @@ function HelpMeChoose() {
             <ResultCard
               key="result"
               result={result}
+              resultId={path.join("/")}
               onRestart={handleRestart}
             />
           ) : node ? (
@@ -681,7 +692,7 @@ function HelpMeChoose() {
 // Main component
 // =============================================================================
 
-export function WorkflowRecipe({ initialMode = "browse" }: { initialMode?: RecipeMode }) {
+export function WorkflowRecipe({ initialMode = "browse", initialRecipeId }: { initialMode?: RecipeMode; initialRecipeId?: string }) {
   const [mode, setMode] = useState<RecipeMode>(initialMode);
 
   return (
@@ -718,7 +729,7 @@ export function WorkflowRecipe({ initialMode = "browse" }: { initialMode?: Recip
           exit={{ opacity: 0, y: -6 }}
           transition={{ duration: 0.2, ease: "easeOut" }}
         >
-          {mode === "browse" ? <BrowseRecipes /> : <HelpMeChoose />}
+          {mode === "browse" ? <BrowseRecipes initialRecipeId={initialRecipeId} /> : <HelpMeChoose />}
         </motion.div>
       </AnimatePresence>
     </div>
