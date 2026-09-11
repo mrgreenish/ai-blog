@@ -1,7 +1,7 @@
 "use client";
 
 import { Calculator } from "lucide-react";
-import { QuickEstimate } from "./ModelMixer";
+import { QuickEstimate } from "./QuickEstimate";
 
 export function CostCalculator() {
   return (

@@ -1,55 +1,9 @@
 import Link from "next/link";
 import { discoveryMetadata } from "@/lib/discovery";
 import { Arrow } from "@/components/ui/Arrow";
+import { TOOL_CATALOG, TOOL_CATEGORIES } from "@/lib/toolCatalog";
 
 export const metadata = discoveryMetadata("/tools");
-const tools = [
-  {
-    title: "Model Picker",
-    description: "Match a model to your task, constraints, and working style.",
-    slug: "reasoning-vs-fast",
-    id: "model-picker",
-    category: "Model selection",
-  },
-  {
-    title: "Cost Calculator",
-    description: "Explore token costs and compare estimates across models.",
-    slug: "reasoning-vs-fast",
-    id: "cost-calculator",
-    category: "Planning & costs",
-  },
-  {
-    title: "Model Personalities",
-    description:
-      "Explore how different models approach a task and where they fit.",
-    slug: "model-personalities",
-    id: "model-tinder",
-    category: "Model selection",
-  },
-  {
-    title: "Scenario Lab",
-    description:
-      "Explore coding scenarios, model examples, and cost assumptions.",
-    slug: "reasoning-vs-fast",
-    id: "scenario-lab",
-    category: "Practice & exploration",
-  },
-  {
-    title: "Context & Cost Explorer",
-    description:
-      "Explore context windows, token budgets, and long-context pricing.",
-    slug: "max-mode",
-    id: "max-mode-viz",
-    category: "Context strategy",
-  },
-  {
-    title: "Model Mixer",
-    description: "Map model choices to workflow steps and compare their cost.",
-    slug: "reasoning-vs-fast",
-    id: "model-mixer",
-    category: "Planning & costs",
-  },
-];
 export default function ToolsPage() {
   return (
     <div className="site-shell discovery-page">
@@ -95,28 +49,51 @@ export default function ToolsPage() {
         <p className="eyebrow">Explore the instruments</p>
         <h2>A little less trial and error.</h2>
       </div>
-      <div className="tool-grid">
-        {tools.map((tool, index) => (
-          <article className="tool-directory-card" key={tool.id}>
-            <p className="eyebrow">
-              {tool.category}
-              <span>0{index + 1}</span>
-            </p>
-            <h2>
-              <Link href={`/chapters/${tool.slug}#tool-${tool.id}`}>
-                {tool.title}
-              </Link>
-            </h2>
-            <p>{tool.description}</p>
-            <Link
-              className="text-link"
-              href={`/chapters/${tool.slug}#tool-${tool.id}`}
-            >
-              Open tool in guide <Arrow diagonal />
-            </Link>
-          </article>
+      <nav className="tool-category-nav" aria-label="Tool categories">
+        {TOOL_CATEGORIES.map((category, index) => (
+          <a key={category} href={`#category-${index}`}>
+            {category} <Arrow diagonal />
+          </a>
         ))}
-      </div>
+      </nav>
+      {TOOL_CATEGORIES.map((category, categoryIndex) => (
+        <section
+          key={category}
+          id={`category-${categoryIndex}`}
+          className="tool-category"
+        >
+          <h2 className="tool-category-title">{category}</h2>
+          <div className="tool-grid">
+            {TOOL_CATALOG.filter((tool) => tool.category === category).map(
+              (tool, index) => (
+                <article className="tool-directory-card" key={tool.id}>
+                  <p className="eyebrow">
+                    {tool.category}
+                    <span>
+                      {String(categoryIndex * 3 + index + 1).padStart(2, "0")}
+                    </span>
+                  </p>
+                  <h3>
+                    <Link href={`/tools/${tool.id}`}>{tool.title}</Link>
+                  </h3>
+                  <p>{tool.description}</p>
+                  <p className="tool-outcome">
+                    <span>You get</span>
+                    {tool.outcome}
+                  </p>
+                  <Link
+                    className="text-link"
+                    href={`/tools/${tool.id}`}
+                    aria-label={`Open ${tool.title}`}
+                  >
+                    Open tool <Arrow diagonal />
+                  </Link>
+                </article>
+              ),
+            )}
+          </div>
+        </section>
+      ))}
       <p className="mt-10">
         <Link className="text-link" href="/guides">
           Explore the guides behind the workflows <Arrow />

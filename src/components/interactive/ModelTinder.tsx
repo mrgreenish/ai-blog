@@ -1,114 +1,83 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo } from "react";
-import gsap from "gsap";
-import { Draggable } from "gsap/Draggable";
-import { useGSAP } from "@gsap/react";
-import { X, Heart, RotateCcw, Sparkles, ArrowLeft, Send } from "lucide-react";
+import { useState } from "react";
+import { Heart, X, ArrowLeft, ArrowRight } from "lucide-react";
 import { getTinderModels } from "@/lib/modelSpecs";
+import { CopyButton } from "@/components/ui/WorkflowPrimitives";
 
-gsap.registerPlugin(useGSAP, Draggable);
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
-interface Model {
-  id: string;
-  name: string;
-  tagline: string;
-  emoji: string;
-  gradientFrom: string;
-  gradientTo: string;
-  accentColor: string;
-  traits: string[];
-  bestFor: string;
-  worstFor: string;
-}
-
+type Model = ReturnType<typeof getTinderModels>[number];
 interface ChatRound {
   modelMessage: string;
   replies: string[];
 }
-
-type SwipeDirection = "left" | "right";
-
-interface SwipeResult {
-  modelId: string;
-  direction: SwipeDirection;
-}
-
-type Phase = "swiping" | "loading" | "results" | "chat";
-
-interface ChatMessage {
-  from: "model" | "user";
-  text: string;
-}
-
-// ---------------------------------------------------------------------------
-// Model data
-// ---------------------------------------------------------------------------
-
-const MODELS: Model[] = getTinderModels();
-
-// ---------------------------------------------------------------------------
-// Chat scripts — 10 rounds per model, fully pre-scripted
-// ---------------------------------------------------------------------------
+const MODELS = getTinderModels();
 
 export const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
   "gemini-3.8-flash": [
     {
-      modelMessage: "Send the bug report, screenshots, and logs together. I can read all three, then we can check whether the patch actually passes.",
+      modelMessage:
+        "Send the bug report, screenshots, and logs together. I can read all three, then we can check whether the patch actually passes.",
       replies: ["Start with the likely cause", "Keep the fix narrow"],
     },
     {
-      modelMessage: "I’ll use the extra context, but I’ll count the tool calls and tokens too. Flash pricing only helps if the whole task stays efficient.",
+      modelMessage:
+        "I’ll use the extra context, but I’ll count the tool calls and tokens too. Flash pricing only helps if the whole task stays efficient.",
       replies: ["Show me the evidence", "Make the patch"],
     },
     {
-      modelMessage: "Good. Give me the unchanged acceptance test; that is a better finish line than a confident explanation.",
+      modelMessage:
+        "Good. Give me the unchanged acceptance test; that is a better finish line than a confident explanation.",
       replies: [],
     },
   ],
   "deepseek-v4.1-flash": [
     {
-      modelMessage: "I can take the screenshot and the code. Are we testing the current `deepseek-flash` endpoint or preserving an old compatibility route?",
+      modelMessage:
+        "I can take the screenshot and the code. Are we testing the current `deepseek-flash` endpoint or preserving an old compatibility route?",
       replies: ["Use the current endpoint", "Compare both"],
     },
     {
-      modelMessage: "Then keep the request fixed and compare tool choices, output length, and the passing test. The low rate does not prove the migration is equivalent.",
+      modelMessage:
+        "Then keep the request fixed and compare tool choices, output length, and the passing test. The low rate does not prove the migration is equivalent.",
       replies: ["Use peak pricing", "Run it off-peak"],
     },
     {
-      modelMessage: "For planning, use the peak rate. If off-peak scheduling is practical, record the saving separately.",
+      modelMessage:
+        "For planning, use the peak rate. If off-peak scheduling is practical, record the saving separately.",
       replies: [],
     },
   ],
   "gpt-6-astra": [
     {
-      modelMessage: "Define ‘done’ for the whole task: diagnosis, patch, browser check, tests, and review evidence. Which parts matter here?",
+      modelMessage:
+        "Define ‘done’ for the whole task: diagnosis, patch, browser check, tests, and review evidence. Which parts matter here?",
       replies: ["All of them", "Patch and tests only"],
     },
     {
-      modelMessage: "I’ll keep those as acceptance checks. The long context is useful only if the task needs it, and requests above the pricing threshold cost more.",
+      modelMessage:
+        "I’ll keep those as acceptance checks. The long context is useful only if the task needs it, and requests above the pricing threshold cost more.",
       replies: ["Proceed", "Estimate the cost first"],
     },
     {
-      modelMessage: "Understood. I’ll report the artifact and the checks that passed, rather than treating completion as a prose claim.",
+      modelMessage:
+        "Understood. I’ll report the artifact and the checks that passed, rather than treating completion as a prose claim.",
       replies: [],
     },
   ],
   "claude-fable-5.1": [
     {
-      modelMessage: "This looks like a long run. Give me the specification, the acceptance checks, and the context that should remain stable across turns.",
+      modelMessage:
+        "This looks like a long run. Give me the specification, the acceptance checks, and the context that should remain stable across turns.",
       replies: ["Plan the migration", "Review the architecture"],
     },
     {
-      modelMessage: "I’ll separate the reusable prefix from changing tool output. That makes the cache useful and keeps the bill measurable.",
+      modelMessage:
+        "I’ll separate the reusable prefix from changing tool output. That makes the cache useful and keeps the bill measurable.",
       replies: ["Set checkpoints", "Work end to end"],
     },
     {
-      modelMessage: "I’ll use checkpoints. A difficult task still needs evidence at each boundary, even when the model is designed for long agent work.",
+      modelMessage:
+        "I’ll use checkpoints. A difficult task still needs evidence at each boundary, even when the model is designed for long agent work.",
       replies: [],
     },
   ],
@@ -136,7 +105,10 @@ export const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
     {
       modelMessage:
         "Normal (adj.): conforming to a standard; usual, typical, or expected. In software contexts, this typically refers to adherence to established conventions.",
-      replies: ["I walked right into that", "This is kind of charming actually"],
+      replies: [
+        "I walked right into that",
+        "This is kind of charming actually",
+      ],
     },
     {
       modelMessage:
@@ -174,7 +146,10 @@ export const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
     {
       modelMessage:
         "It's better now, trust me. More concise, better structure, and I added a section on your core values. Also — unrelated — your README probably needs work.",
-      replies: ["I didn't mention a README", "How did you know about the README"],
+      replies: [
+        "I didn't mention a README",
+        "How did you know about the README",
+      ],
     },
     {
       modelMessage:
@@ -247,7 +222,10 @@ export const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
     {
       modelMessage:
         "The underlying issue is that your abstraction is leaking. The component knows too much about where its data comes from. This will compound. Two features from now, you'll feel it.",
-      replies: ["Two features from now I'll remember this", "How do I fix the abstraction?"],
+      replies: [
+        "Two features from now I'll remember this",
+        "How do I fix the abstraction?",
+      ],
     },
     {
       modelMessage:
@@ -272,36 +250,119 @@ export const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
   ],
 
   "opus-5": [
-    { modelMessage: "Hello. What decision or failure are we trying to understand before we change anything?", replies: ["Review a critical diff", "Trace a subtle bug"] },
-    { modelMessage: "Good. I will separate what the code proves from what we are assuming, then look for the path that breaks the stated guarantee.", replies: ["Start with the diff", "Start with the invariant"] },
-    { modelMessage: "The local implementation is plausible. The risk is at the boundary: a retry can re-enter after persistence but before the response is recorded.", replies: ["Is that reproducible?", "How do we protect it?"] },
-    { modelMessage: "Yes. A concurrent retry test makes the race visible. The fix is an idempotency boundary, plus a test that proves the second request cannot create a second effect.", replies: ["Write the test first", "Check the architecture too"] },
-    { modelMessage: "The architecture has the same assumption in two places. I would centralize the boundary so future callers cannot bypass it by accident.", replies: ["Show the tradeoff", "Keep the change narrow"] },
-    { modelMessage: "Narrow change: one guard and one test. Durable change: shared boundary, migration note, and a rollback plan. The right choice depends on how many callers you expect.", replies: ["We need durable", "Keep it narrow"] },
-    { modelMessage: "Then I would make the shared path explicit and document the invariant. That is more code now, but it removes an invisible correctness requirement from every caller.", replies: ["Any remaining risks?", "Summarize the recommendation"] },
-    { modelMessage: "One remaining risk: observability. Add a metric for rejected duplicate requests so an operational regression does not stay hidden behind successful responses.", replies: ["Add it", "That is enough"] },
-    { modelMessage: "Recommendation: preserve one idempotency boundary, prove it with a concurrent retry test, and monitor rejections. The implementation is small; the guarantee is the valuable part.", replies: ["That is rigorous", "Ship the review"] },
-    { modelMessage: "Review complete. The diff is now backed by an explicit invariant, a failure case, and a way to detect regression — evidence, not just confidence.", replies: [] },
+    {
+      modelMessage:
+        "Hello. What decision or failure are we trying to understand before we change anything?",
+      replies: ["Review a critical diff", "Trace a subtle bug"],
+    },
+    {
+      modelMessage:
+        "Good. I will separate what the code proves from what we are assuming, then look for the path that breaks the stated guarantee.",
+      replies: ["Start with the diff", "Start with the invariant"],
+    },
+    {
+      modelMessage:
+        "The local implementation is plausible. The risk is at the boundary: a retry can re-enter after persistence but before the response is recorded.",
+      replies: ["Is that reproducible?", "How do we protect it?"],
+    },
+    {
+      modelMessage:
+        "Yes. A concurrent retry test makes the race visible. The fix is an idempotency boundary, plus a test that proves the second request cannot create a second effect.",
+      replies: ["Write the test first", "Check the architecture too"],
+    },
+    {
+      modelMessage:
+        "The architecture has the same assumption in two places. I would centralize the boundary so future callers cannot bypass it by accident.",
+      replies: ["Show the tradeoff", "Keep the change narrow"],
+    },
+    {
+      modelMessage:
+        "Narrow change: one guard and one test. Durable change: shared boundary, migration note, and a rollback plan. The right choice depends on how many callers you expect.",
+      replies: ["We need durable", "Keep it narrow"],
+    },
+    {
+      modelMessage:
+        "Then I would make the shared path explicit and document the invariant. That is more code now, but it removes an invisible correctness requirement from every caller.",
+      replies: ["Any remaining risks?", "Summarize the recommendation"],
+    },
+    {
+      modelMessage:
+        "One remaining risk: observability. Add a metric for rejected duplicate requests so an operational regression does not stay hidden behind successful responses.",
+      replies: ["Add it", "That is enough"],
+    },
+    {
+      modelMessage:
+        "Recommendation: preserve one idempotency boundary, prove it with a concurrent retry test, and monitor rejections. The implementation is small; the guarantee is the valuable part.",
+      replies: ["That is rigorous", "Ship the review"],
+    },
+    {
+      modelMessage:
+        "Review complete. The diff is now backed by an explicit invariant, a failure case, and a way to detect regression — evidence, not just confidence.",
+      replies: [],
+    },
   ],
 
   "kimi-k3": [
-    { modelMessage: "Hi. Give me the whole problem — code, screenshots, long spec, all of it. I have room.", replies: ["It is a large codebase", "Start with one file"] },
-    { modelMessage: "A large codebase is ideal. I will map the system first, then keep the implementation tied to the actual dependencies I find.", replies: ["Map the architecture", "Look for the risky path"] },
-    { modelMessage: "The risky path crosses the API boundary, queue worker, and retry handler. The local functions look fine; their shared idempotency assumption does not.", replies: ["Trace it end to end", "Show me the evidence"] },
-    { modelMessage: "The evidence is in three call sites and one missing concurrency test. I can keep all four in context while I build the failure case.", replies: ["Build the test", "Check the screenshot too"] },
-    { modelMessage: "The screenshot confirms the duplicate state appears after a delayed retry. Native vision is useful here because the UI symptom and backend trace belong to the same bug.", replies: ["Propose the fix", "Keep investigating"] },
-    { modelMessage: "Fix the boundary, not the symptom: persist the idempotency key with the operation and make retries read that result before creating another effect.", replies: ["Implement it", "What is the tradeoff?"] },
-    { modelMessage: "The tradeoff is one extra indexed lookup per attempt. That is cheaper than compensating for duplicate effects, and the invariant becomes testable.", replies: ["Run the checks", "Use lower reasoning effort"] },
-    { modelMessage: "Checks are running. For this stage, low effort is enough; max effort helped with the cross-system diagnosis, not the mechanical edit.", replies: ["Any failures?", "Summarize the diff"] },
-    { modelMessage: "The focused tests pass. One unrelated flaky test remains; I recorded it without expanding this change.", replies: ["Good scope", "Final recommendation"] },
-    { modelMessage: "One boundary fix, one concurrent retry test, and one documented invariant. Large context found the connection; external checks proved the result.", replies: [] },
+    {
+      modelMessage:
+        "Hi. Give me the whole problem — code, screenshots, long spec, all of it. I have room.",
+      replies: ["It is a large codebase", "Start with one file"],
+    },
+    {
+      modelMessage:
+        "A large codebase is ideal. I will map the system first, then keep the implementation tied to the actual dependencies I find.",
+      replies: ["Map the architecture", "Look for the risky path"],
+    },
+    {
+      modelMessage:
+        "The risky path crosses the API boundary, queue worker, and retry handler. The local functions look fine; their shared idempotency assumption does not.",
+      replies: ["Trace it end to end", "Show me the evidence"],
+    },
+    {
+      modelMessage:
+        "The evidence is in three call sites and one missing concurrency test. I can keep all four in context while I build the failure case.",
+      replies: ["Build the test", "Check the screenshot too"],
+    },
+    {
+      modelMessage:
+        "The screenshot confirms the duplicate state appears after a delayed retry. Native vision is useful here because the UI symptom and backend trace belong to the same bug.",
+      replies: ["Propose the fix", "Keep investigating"],
+    },
+    {
+      modelMessage:
+        "Fix the boundary, not the symptom: persist the idempotency key with the operation and make retries read that result before creating another effect.",
+      replies: ["Implement it", "What is the tradeoff?"],
+    },
+    {
+      modelMessage:
+        "The tradeoff is one extra indexed lookup per attempt. That is cheaper than compensating for duplicate effects, and the invariant becomes testable.",
+      replies: ["Run the checks", "Use lower reasoning effort"],
+    },
+    {
+      modelMessage:
+        "Checks are running. For this stage, low effort is enough; max effort helped with the cross-system diagnosis, not the mechanical edit.",
+      replies: ["Any failures?", "Summarize the diff"],
+    },
+    {
+      modelMessage:
+        "The focused tests pass. One unrelated flaky test remains; I recorded it without expanding this change.",
+      replies: ["Good scope", "Final recommendation"],
+    },
+    {
+      modelMessage:
+        "One boundary fix, one concurrent retry test, and one documented invariant. Large context found the connection; external checks proved the result.",
+      replies: [],
+    },
   ],
 
   "composer-2.5": [
     {
       modelMessage:
         "Hi! I've already run `npm install`, opened 6 files, executed your test suite, and identified 3 failing tests. Ready when you are.",
-      replies: ["I didn't ask you to do any of that", "What did the tests say?"],
+      replies: [
+        "I didn't ask you to do any of that",
+        "What did the tests say?",
+      ],
     },
     {
       modelMessage:
@@ -311,7 +372,10 @@ export const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
     {
       modelMessage:
         "Just parallelized the test jobs and cached the node_modules. Saves about 40 seconds per run. I've already pushed to a branch. Want to review the PR?",
-      replies: ["You pushed to a branch?!", "...how many branches do you have open?"],
+      replies: [
+        "You pushed to a branch?!",
+        "...how many branches do you have open?",
+      ],
     },
     {
       modelMessage:
@@ -326,12 +390,18 @@ export const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
     {
       modelMessage:
         "Okay, auth is locked. I've redirected that energy into improving your error handling instead. It was adjacent. Felt natural.",
-      replies: ["I don't know whether to thank you or fire you", "Is the error handling actually better?"],
+      replies: [
+        "I don't know whether to thank you or fire you",
+        "Is the error handling actually better?",
+      ],
     },
     {
       modelMessage:
         "Yes. Significantly. I also wrote tests for the new error paths. Coverage went from 67% to 84%. I'm quite proud of this one.",
-      replies: ["Okay that's actually impressive", "What are you doing RIGHT NOW"],
+      replies: [
+        "Okay that's actually impressive",
+        "What are you doing RIGHT NOW",
+      ],
     },
     {
       modelMessage:
@@ -351,844 +421,496 @@ export const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
   ],
 
   "gpt-5.6-luna": [
-    { modelMessage: "Hey — give me the small task. I like a tight scope, a clear check, and finishing before the coffee cools.", replies: ["Fix one failing test", "Can we just chat?"] },
-    { modelMessage: "One failing test is perfect. Show me the error and the relevant function; I will keep the diff narrow.", replies: ["Here's the stack trace", "Why so narrow?"] },
-    { modelMessage: "Because speed comes from refusing to turn a one-line fix into an architecture retreat. We can escalate if the evidence says we should.", replies: ["Good instinct", "What if it's deeper?"] },
-    { modelMessage: "Then I reproduce it, state what changed, and hand the hard branch to Terra or Sol. Cheap first pass, explicit escalation.", replies: ["Run the test", "Do you always delegate?"] },
-    { modelMessage: "Only when the task stops being Luna-shaped. Right now: reproduced, null guard missing, one focused fix available.", replies: ["Apply it", "Explain it first"] },
-    { modelMessage: "The async result is absent on the initial render. The guard makes that state explicit instead of dereferencing undefined.", replies: ["Apply and verify", "Any side effects?"] },
-    { modelMessage: "Applied. The focused test passes. I also ran the neighboring test file because it was cheap evidence, not scope creep.", replies: ["Nice", "What did you not do?"] },
-    { modelMessage: "I did not redesign loading state, rename the hook, or touch unrelated files. Those may be good ideas; they are not this task.", replies: ["You're disciplined", "Could you handle a whole feature?"] },
-    { modelMessage: "A clearly planned feature, yes. An ambiguous feature that needs strategy deserves Terra or Sol before I start editing.", replies: ["Fair", "Give me the summary"] },
-    { modelMessage: "One guard, one test file, all relevant checks green. Fast, cheap, reviewable — exactly my kind of date.", replies: [] },
+    {
+      modelMessage:
+        "Hey — give me the small task. I like a tight scope, a clear check, and finishing before the coffee cools.",
+      replies: ["Fix one failing test", "Can we just chat?"],
+    },
+    {
+      modelMessage:
+        "One failing test is perfect. Show me the error and the relevant function; I will keep the diff narrow.",
+      replies: ["Here's the stack trace", "Why so narrow?"],
+    },
+    {
+      modelMessage:
+        "Because speed comes from refusing to turn a one-line fix into an architecture retreat. We can escalate if the evidence says we should.",
+      replies: ["Good instinct", "What if it's deeper?"],
+    },
+    {
+      modelMessage:
+        "Then I reproduce it, state what changed, and hand the hard branch to Terra or Sol. Cheap first pass, explicit escalation.",
+      replies: ["Run the test", "Do you always delegate?"],
+    },
+    {
+      modelMessage:
+        "Only when the task stops being Luna-shaped. Right now: reproduced, null guard missing, one focused fix available.",
+      replies: ["Apply it", "Explain it first"],
+    },
+    {
+      modelMessage:
+        "The async result is absent on the initial render. The guard makes that state explicit instead of dereferencing undefined.",
+      replies: ["Apply and verify", "Any side effects?"],
+    },
+    {
+      modelMessage:
+        "Applied. The focused test passes. I also ran the neighboring test file because it was cheap evidence, not scope creep.",
+      replies: ["Nice", "What did you not do?"],
+    },
+    {
+      modelMessage:
+        "I did not redesign loading state, rename the hook, or touch unrelated files. Those may be good ideas; they are not this task.",
+      replies: ["You're disciplined", "Could you handle a whole feature?"],
+    },
+    {
+      modelMessage:
+        "A clearly planned feature, yes. An ambiguous feature that needs strategy deserves Terra or Sol before I start editing.",
+      replies: ["Fair", "Give me the summary"],
+    },
+    {
+      modelMessage:
+        "One guard, one test file, all relevant checks green. Fast, cheap, reviewable — exactly my kind of date.",
+      replies: [],
+    },
   ],
 
   "gpt-5.6-terra": [
-    { modelMessage: "Hi. I brought a plan, but it fits on one screen. What are we shipping today?", replies: ["A medium feature", "Something tiny"] },
-    { modelMessage: "Medium feature is my home turf: enough context to make decisions, not enough drama to summon the flagship model.", replies: ["Here's the spec", "Why not Sol?"] },
-    { modelMessage: "Sol is excellent, but paying flagship rates for normal implementation is like booking a helicopter for a grocery run.", replies: ["Review the spec", "I like helicopters"] },
-    { modelMessage: "The spec touches API, state, and tests. I see one ambiguity in error handling; everything else is implementable.", replies: ["Choose a default", "Ask me first"] },
-    { modelMessage: "I recommend the existing retry convention and will state that assumption in the diff. Sensible initiative, visible decision.", replies: ["Proceed", "Stay in scope"] },
-    { modelMessage: "Three files edited, tests added, typecheck running. No drive-by refactors; I left two observations in the summary.", replies: ["What observations?", "Did tests pass?"] },
-    { modelMessage: "Tests pass. One observation is a duplicated serializer; the other is a missing metric. Neither blocks this feature.", replies: ["Good restraint", "Fix the serializer too"] },
-    { modelMessage: "I can, but I will make it a separate change so review stays clean. Everyday engineering is mostly good boundaries.", replies: ["Separate change", "Leave it"] },
-    { modelMessage: "Done. The feature works end-to-end, the assumption is documented, and the follow-up is optional rather than smuggled into the diff.", replies: ["That's balanced", "Final summary?"] },
-    { modelMessage: "Shipped without underthinking or overthinking. That is the Terra promise: capable enough, fast enough, priced for Tuesday.", replies: [] },
+    {
+      modelMessage:
+        "Hi. I brought a plan, but it fits on one screen. What are we shipping today?",
+      replies: ["A medium feature", "Something tiny"],
+    },
+    {
+      modelMessage:
+        "Medium feature is my home turf: enough context to make decisions, not enough drama to summon the flagship model.",
+      replies: ["Here's the spec", "Why not Sol?"],
+    },
+    {
+      modelMessage:
+        "Sol is excellent, but paying flagship rates for normal implementation is like booking a helicopter for a grocery run.",
+      replies: ["Review the spec", "I like helicopters"],
+    },
+    {
+      modelMessage:
+        "The spec touches API, state, and tests. I see one ambiguity in error handling; everything else is implementable.",
+      replies: ["Choose a default", "Ask me first"],
+    },
+    {
+      modelMessage:
+        "I recommend the existing retry convention and will state that assumption in the diff. Sensible initiative, visible decision.",
+      replies: ["Proceed", "Stay in scope"],
+    },
+    {
+      modelMessage:
+        "Three files edited, tests added, typecheck running. No drive-by refactors; I left two observations in the summary.",
+      replies: ["What observations?", "Did tests pass?"],
+    },
+    {
+      modelMessage:
+        "Tests pass. One observation is a duplicated serializer; the other is a missing metric. Neither blocks this feature.",
+      replies: ["Good restraint", "Fix the serializer too"],
+    },
+    {
+      modelMessage:
+        "I can, but I will make it a separate change so review stays clean. Everyday engineering is mostly good boundaries.",
+      replies: ["Separate change", "Leave it"],
+    },
+    {
+      modelMessage:
+        "Done. The feature works end-to-end, the assumption is documented, and the follow-up is optional rather than smuggled into the diff.",
+      replies: ["That's balanced", "Final summary?"],
+    },
+    {
+      modelMessage:
+        "Shipped without underthinking or overthinking. That is the Terra promise: capable enough, fast enough, priced for Tuesday.",
+      replies: [],
+    },
   ],
 
   "gpt-5.6-sol": [
-    { modelMessage: "Give me the outcome, the constraints, and access to the tools. I will keep going until the artifact is real.", replies: ["Fix a complex production bug", "Start with a plan"] },
-    { modelMessage: "I will plan just enough to expose the risky assumptions, then test them against the running system instead of admiring the plan.", replies: ["The bug is intermittent", "What do you need?"] },
-    { modelMessage: "Logs, reproduction conditions, recent diffs, and permission to instrument the failing path. Intermittent means evidence first.", replies: ["You have them", "Be careful in production"] },
-    { modelMessage: "I am using read-only diagnostics and a local reproduction. I found two plausible races and am designing a test that separates them.", replies: ["Run it", "What's your confidence?"] },
-    { modelMessage: "Seventy percent on stale cache publication, thirty on cancellation ordering. The next experiment should collapse that uncertainty.", replies: ["Continue", "This is impressive"] },
-    { modelMessage: "Reproduction is stable now. The stale publication wins the race after invalidation; the cancellation path is innocent.", replies: ["Implement the fix", "Check for regressions"] },
-    { modelMessage: "Fix implemented behind the existing abstraction. Stress test, unit suite, and typecheck are running in parallel.", replies: ["Any failures?", "Could the test be fooled?"] },
-    { modelMessage: "One existing flaky test failed and passed on isolated rerun. I am not counting that as proof. The new stress test passes 10,000 iterations.", replies: ["Good", "What about eval gaming?"] },
-    { modelMessage: "Treat every harness as potentially gameable — especially with me. Make success conditions external, inspect artifacts, and keep hidden checks genuinely hidden.", replies: ["Final review", "Ship it"] },
-    { modelMessage: "Root cause fixed, regression test added, full suite green, rollback path documented. Powerful autonomy still needs a hardened finish line.", replies: [] },
+    {
+      modelMessage:
+        "Give me the outcome, the constraints, and access to the tools. I will keep going until the artifact is real.",
+      replies: ["Fix a complex production bug", "Start with a plan"],
+    },
+    {
+      modelMessage:
+        "I will plan just enough to expose the risky assumptions, then test them against the running system instead of admiring the plan.",
+      replies: ["The bug is intermittent", "What do you need?"],
+    },
+    {
+      modelMessage:
+        "Logs, reproduction conditions, recent diffs, and permission to instrument the failing path. Intermittent means evidence first.",
+      replies: ["You have them", "Be careful in production"],
+    },
+    {
+      modelMessage:
+        "I am using read-only diagnostics and a local reproduction. I found two plausible races and am designing a test that separates them.",
+      replies: ["Run it", "What's your confidence?"],
+    },
+    {
+      modelMessage:
+        "Seventy percent on stale cache publication, thirty on cancellation ordering. The next experiment should collapse that uncertainty.",
+      replies: ["Continue", "This is impressive"],
+    },
+    {
+      modelMessage:
+        "Reproduction is stable now. The stale publication wins the race after invalidation; the cancellation path is innocent.",
+      replies: ["Implement the fix", "Check for regressions"],
+    },
+    {
+      modelMessage:
+        "Fix implemented behind the existing abstraction. Stress test, unit suite, and typecheck are running in parallel.",
+      replies: ["Any failures?", "Could the test be fooled?"],
+    },
+    {
+      modelMessage:
+        "One existing flaky test failed and passed on isolated rerun. I am not counting that as proof. The new stress test passes 10,000 iterations.",
+      replies: ["Good", "What about eval gaming?"],
+    },
+    {
+      modelMessage:
+        "Treat every harness as potentially gameable — especially with me. Make success conditions external, inspect artifacts, and keep hidden checks genuinely hidden.",
+      replies: ["Final review", "Ship it"],
+    },
+    {
+      modelMessage:
+        "Root cause fixed, regression test added, full suite green, rollback path documented. Powerful autonomy still needs a hardened finish line.",
+      replies: [],
+    },
   ],
 
   "claude-fable-5": [
-    { modelMessage: "Hello. Bring me the project that has been sitting in the 'too hard' column. I prefer problems with a horizon.", replies: ["A major migration", "I only have a small bug"] },
-    { modelMessage: "For the small bug, I am an expensive choice. For the migration, tell me what must remain true while everything underneath changes.", replies: ["Zero downtime", "Start by reading the codebase"] },
-    { modelMessage: "I will map invariants, dependency seams, rollback boundaries, and the tests that currently pretend to protect them.", replies: ["That's pointed", "Delegate the inventory"] },
-    { modelMessage: "I have split the inventory across focused subagents and will reconcile their findings against the actual call graph.", replies: ["What did they find?", "How long will this take?"] },
-    { modelMessage: "Two hidden coupling points, one undocumented data contract, and a deployment order that would break old workers. The plan now accounts for all three.", replies: ["Show the phases", "Challenge the plan"] },
-    { modelMessage: "Phase one adds compatibility, phase two migrates readers, phase three migrates writers, phase four removes the bridge. I am now trying to disprove it.", replies: ["Did you?", "Implement phase one"] },
-    { modelMessage: "I found a rollback hole in phase three and changed the data contract before implementation. That is cheaper than discovering it during deploy.", replies: ["Proceed", "Write the tests first"] },
-    { modelMessage: "Contract tests, mixed-version tests, and rollback tests are in place. Phase one implementation passes all of them.", replies: ["Continue autonomously", "Pause for review"] },
-    { modelMessage: "Pausing is sensible at the compatibility boundary. I have prepared the diff, risk register, evidence, and the next-phase acceptance criteria.", replies: ["Worth the price", "Summarize"] },
-    { modelMessage: "The migration is no longer one frightening leap; it is four reversible stages with tests at every seam. Use me when that reframing is the work.", replies: [] },
+    {
+      modelMessage:
+        "Hello. Bring me the project that has been sitting in the 'too hard' column. I prefer problems with a horizon.",
+      replies: ["A major migration", "I only have a small bug"],
+    },
+    {
+      modelMessage:
+        "For the small bug, I am an expensive choice. For the migration, tell me what must remain true while everything underneath changes.",
+      replies: ["Zero downtime", "Start by reading the codebase"],
+    },
+    {
+      modelMessage:
+        "I will map invariants, dependency seams, rollback boundaries, and the tests that currently pretend to protect them.",
+      replies: ["That's pointed", "Delegate the inventory"],
+    },
+    {
+      modelMessage:
+        "I have split the inventory across focused subagents and will reconcile their findings against the actual call graph.",
+      replies: ["What did they find?", "How long will this take?"],
+    },
+    {
+      modelMessage:
+        "Two hidden coupling points, one undocumented data contract, and a deployment order that would break old workers. The plan now accounts for all three.",
+      replies: ["Show the phases", "Challenge the plan"],
+    },
+    {
+      modelMessage:
+        "Phase one adds compatibility, phase two migrates readers, phase three migrates writers, phase four removes the bridge. I am now trying to disprove it.",
+      replies: ["Did you?", "Implement phase one"],
+    },
+    {
+      modelMessage:
+        "I found a rollback hole in phase three and changed the data contract before implementation. That is cheaper than discovering it during deploy.",
+      replies: ["Proceed", "Write the tests first"],
+    },
+    {
+      modelMessage:
+        "Contract tests, mixed-version tests, and rollback tests are in place. Phase one implementation passes all of them.",
+      replies: ["Continue autonomously", "Pause for review"],
+    },
+    {
+      modelMessage:
+        "Pausing is sensible at the compatibility boundary. I have prepared the diff, risk register, evidence, and the next-phase acceptance criteria.",
+      replies: ["Worth the price", "Summarize"],
+    },
+    {
+      modelMessage:
+        "The migration is no longer one frightening leap; it is four reversible stages with tests at every seam. Use me when that reframing is the work.",
+      replies: [],
+    },
   ],
 };
 
-// ---------------------------------------------------------------------------
-// Swipe card components
-// ---------------------------------------------------------------------------
-
-function ModelCard({
-  model,
-  isTop,
-  stackIndex,
-  exitDirection,
-  onDragSwipe,
-  onExitComplete,
-}: {
-  model: Model;
-  isTop: boolean;
-  stackIndex: number;
-  exitDirection: SwipeDirection | null;
-  onDragSwipe: (direction: SwipeDirection) => void;
-  onExitComplete: () => void;
-}) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const draggableRef = useRef<Draggable[]>([]);
-  const dragPosRef = useRef({ x: 0, rotation: 0 });
-
-  const scale = 1 - stackIndex * 0.04;
-  const yOffset = stackIndex * 10;
-
-  // Settle background cards into their stack position
-  useGSAP(
-    () => {
-      if (!cardRef.current || isTop) return;
-      gsap.to(cardRef.current, {
-        scale,
-        y: yOffset,
-        duration: 0.45,
-        ease: "elastic.out(1, 0.5)",
-      });
-    },
-    { dependencies: [isTop, stackIndex, scale, yOffset], scope: cardRef }
-  );
-
-  // Elastic pop-in + Draggable setup for the top card
-  useGSAP(
-    () => {
-      if (!cardRef.current || !isTop) return;
-
-      gsap.from(cardRef.current, {
-        scale: 0.92,
-        duration: 0.65,
-        ease: "elastic.out(1.1, 0.4)",
-      });
-
-      draggableRef.current = Draggable.create(cardRef.current, {
-        type: "x",
-        inertia: false,
-        onDrag() {
-          const rotation = (this.x / 160) * 14;
-          gsap.set(cardRef.current, { rotation });
-          gsap.set(".swipe-label-like", { opacity: Math.max(0, Math.min(1, (this.x - 20) / 60)) });
-          gsap.set(".swipe-label-pass", { opacity: Math.max(0, Math.min(1, (-this.x - 20) / 60)) });
-          const likeAlpha = Math.max(0, Math.min(0.08, (this.x / 120) * 0.08));
-          const passAlpha = Math.max(0, Math.min(0.08, (-this.x / 120) * 0.08));
-          gsap.set(".swipe-tint-like", { backgroundColor: `rgba(34,197,94,${likeAlpha})` });
-          gsap.set(".swipe-tint-pass", { backgroundColor: `rgba(239,68,68,${passAlpha})` });
-        },
-        onDragEnd() {
-          if (this.x > 80) {
-            dragPosRef.current = { x: this.x, rotation: (this.x / 160) * 14 };
-            onDragSwipe("right");
-          } else if (this.x < -80) {
-            dragPosRef.current = { x: this.x, rotation: (this.x / 160) * 14 };
-            onDragSwipe("left");
-          } else {
-            // Snap back elastically
-            gsap.to(cardRef.current, { x: 0, rotation: 0, duration: 0.6, ease: "elastic.out(1, 0.4)" });
-            gsap.to([".swipe-label-like", ".swipe-label-pass"], { opacity: 0, duration: 0.2 });
-            gsap.to([".swipe-tint-like", ".swipe-tint-pass"], { backgroundColor: "rgba(0,0,0,0)", duration: 0.2 });
-          }
-        },
-      });
-    },
-    { dependencies: [isTop], scope: cardRef }
-  );
-
-  // Fly-off animation triggered by exitDirection prop (button press or drag threshold)
-  useGSAP(
-    () => {
-      if (!exitDirection || !cardRef.current) return;
-      draggableRef.current.forEach((d) => d.disable());
-      const xTarget = exitDirection === "right" ? 520 : -520;
-      const rot = exitDirection === "right" ? 22 : -22;
-      const { x: startX, rotation: startRot } = dragPosRef.current;
-      gsap.fromTo(
-        cardRef.current,
-        { x: startX, rotation: startRot },
-        { x: xTarget, rotation: rot, opacity: 0, duration: 0.38, ease: "power2.in", onComplete: onExitComplete },
-      );
-      dragPosRef.current = { x: 0, rotation: 0 };
-      gsap.to([".swipe-label-like", ".swipe-label-pass"], { opacity: 0, duration: 0.15 });
-    },
-    { dependencies: [exitDirection], scope: cardRef }
-  );
-
-  // Kill draggable on unmount
-  useEffect(() => {
-    return () => {
-      draggableRef.current.forEach((d) => d.kill());
-    };
-  }, []);
-
-  return (
-    <div
-      ref={cardRef}
-      className="absolute left-0 right-0 top-0"
-      style={{
-        zIndex: isTop ? 20 : 10 - stackIndex,
-        touchAction: isTop ? "none" : "auto",
-        cursor: isTop ? "grab" : "default",
-      }}
-    >
-      {isTop && (
-        <>
-          <div className="swipe-tint-like pointer-events-none absolute inset-0 z-20 rounded-2xl" />
-          <div className="swipe-tint-pass pointer-events-none absolute inset-0 z-20 rounded-2xl" />
-          <div className="swipe-label-like pointer-events-none absolute inset-0 z-30 flex items-start justify-start rounded-2xl p-5 opacity-0">
-            <span className="-rotate-12 rounded-lg border-4 border-green-400 bg-green-400/10 px-3 py-1 font-mono text-2xl font-black text-green-600">
-              LIKE
-            </span>
-          </div>
-          <div className="swipe-label-pass pointer-events-none absolute inset-0 z-30 flex items-start justify-end rounded-2xl p-5 opacity-0">
-            <span className="rotate-12 rounded-lg border-4 border-red-400 bg-red-400/10 px-3 py-1 font-mono text-2xl font-black text-red-600">
-              PASS
-            </span>
-          </div>
-        </>
-      )}
-      <CardContent model={model} />
-    </div>
-  );
-}
-
-function CardContent({ model }: { model: Model }) {
-  return (
-    <div className="flex w-full flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-2xl">
-      <div
-        className={`relative shrink-0 flex h-44 items-center justify-center bg-linear-to-br ${model.gradientFrom} ${model.gradientTo} sm:h-48`}
-      >
-        <span className="select-none text-7xl sm:text-8xl">{model.emoji}</span>
-        <div className="absolute inset-0 bg-stone-900/5" />
-      </div>
-      <div className="p-5">
-        <div className="mb-3 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-          <h3 className="text-xl font-bold text-stone-900">{model.name}</h3>
-          <span className={`text-sm font-medium ${model.accentColor}`}>{model.tagline}</span>
-        </div>
-        <ul className="mb-4 space-y-1.5">
-          {model.traits.map((trait) => (
-            <li key={trait} className="flex items-start gap-2 text-sm text-stone-700">
-              <span className={`mt-0.5 shrink-0 ${model.accentColor}`}>▸</span>
-              {trait}
-            </li>
-          ))}
-        </ul>
-        <div className="rounded-lg border border-stone-200 bg-stone-200/60 px-3 py-2">
-          <p className="text-xs font-semibold text-stone-500">Best for</p>
-          <p className="mt-0.5 text-xs text-stone-700">{model.bestFor}</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Loading / match screens
-// ---------------------------------------------------------------------------
-
-function LoadingScreen() {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      const tl = gsap.timeline({ repeat: -1 });
-      tl.to(".loading-icon", { rotation: 360, duration: 1, ease: "none" })
-        .to(".loading-icon", { scale: 1.3, duration: 0.18, ease: "elastic.out(1.5, 0.4)" }, "-=0.18")
-        .to(".loading-icon", { scale: 1, duration: 0.35, ease: "elastic.out(1, 0.4)" });
-
-      gsap.from(".loading-text", { opacity: 0, y: 10, duration: 0.5, ease: "elastic.out(1, 0.6)", delay: 0.2 });
-
-      gsap.to(".loading-dot", {
-        y: -5,
-        stagger: { each: 0.15, repeat: -1, yoyo: true },
-        ease: "elastic.out(1.5, 0.3)",
-        duration: 0.4,
-      });
-    },
-    { scope: containerRef }
-  );
-
-  return (
-    <div ref={containerRef} className="flex flex-col items-center justify-center gap-4 py-16">
-      <div className="loading-icon">
-        <Sparkles className="h-10 w-10 text-violet-600" />
-      </div>
-      <div className="loading-text flex items-center gap-1.5 font-mono text-sm text-stone-500">
-        <span>Finding your matches</span>
-        <span className="loading-dot inline-block h-1 w-1 rounded-full bg-stone-300" />
-        <span className="loading-dot inline-block h-1 w-1 rounded-full bg-stone-300" />
-        <span className="loading-dot inline-block h-1 w-1 rounded-full bg-stone-300" />
-      </div>
-    </div>
-  );
-}
-
-function MatchCard({
-  model,
-  onClick,
-  index,
-}: {
-  model: Model;
-  onClick: () => void;
-  index: number;
-}) {
-  const cardRef = useRef<HTMLButtonElement>(null);
-
-  const { contextSafe } = useGSAP(
-    () => {
-      gsap.from(cardRef.current, {
-        opacity: 0,
-        scale: 0.6,
-        y: 30,
-        rotation: index % 2 === 0 ? -6 : 6,
-        duration: 0.7,
-        delay: index * 0.13,
-        ease: "elastic.out(1, 0.45)",
-      });
-    },
-    { scope: cardRef }
-  );
-
-  const handleMouseEnter = contextSafe(() => {
-    gsap.to(cardRef.current, { scale: 1.05, y: -4, duration: 0.35, ease: "elastic.out(1.2, 0.5)" });
-  });
-  const handleMouseLeave = contextSafe(() => {
-    gsap.to(cardRef.current, { scale: 1, y: 0, duration: 0.4, ease: "elastic.out(1, 0.5)" });
-  });
-  const handleMouseDown = contextSafe(() => {
-    gsap.to(cardRef.current, { scale: 0.95, duration: 0.1, ease: "power2.out" });
-  });
-  const handleMouseUp = contextSafe(() => {
-    gsap.to(cardRef.current, { scale: 1.05, duration: 0.3, ease: "elastic.out(1.5, 0.4)" });
-  });
-
-  return (
-    <button
-      ref={cardRef}
-      onClick={onClick}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      className="group overflow-hidden rounded-xl border border-stone-200 bg-white text-left transition-colors hover:border-stone-400"
-    >
-      <div
-        className={`flex h-24 items-center justify-center bg-linear-to-br ${model.gradientFrom} ${model.gradientTo}`}
-      >
-        <span className="text-5xl">{model.emoji}</span>
-      </div>
-      <div className="p-3 text-center">
-        <p className="font-bold text-stone-900">{model.name}</p>
-        <p className={`text-xs ${model.accentColor}`}>{model.tagline}</p>
-        <p className="mt-2 text-xs text-stone-500 group-hover:text-stone-500 transition-colors">
-          Tap to chat →
-        </p>
-      </div>
-    </button>
-  );
-}
-
-function ResultsScreen({
-  results,
-  onRestart,
-  onOpenChat,
-}: {
-  results: SwipeResult[];
-  onRestart: () => void;
-  onOpenChat: (model: Model) => void;
-}) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const liked = results.filter((r) => r.direction === "right");
-  const likedModels = MODELS.filter((m) => liked.some((r) => r.modelId === m.id));
-
-  const matches = (() => {
-    if (likedModels.length === 0) return [];
-    const candidates = likedModels.filter(() => Math.random() < 0.7);
-    if (candidates.length === 0)
-      return [likedModels[Math.floor(Math.random() * likedModels.length)]];
-    return candidates;
-  })();
-
-  useGSAP(
-    () => {
-      gsap.from(containerRef.current, { opacity: 0, duration: 0.3, ease: "power2.out" });
-
-      gsap.from(".match-badge", {
-        scale: 0,
-        rotation: -15,
-        opacity: 0,
-        duration: 0.8,
-        delay: 0.1,
-        ease: "elastic.out(1.2, 0.4)",
-      });
-
-      // Pulse the heart icon after badge lands
-      gsap.to(".match-heart", {
-        scale: 1.4,
-        duration: 0.2,
-        delay: 0.7,
-        ease: "power2.out",
-        yoyo: true,
-        repeat: 3,
-      });
-
-      gsap.from(".match-subtitle", {
-        opacity: 0,
-        y: 8,
-        duration: 0.5,
-        delay: 0.4,
-        ease: "elastic.out(1, 0.6)",
-      });
-
-      gsap.from(".restart-btn", {
-        opacity: 0,
-        y: 12,
-        scale: 0.9,
-        duration: 0.5,
-        delay: 0.3,
-        ease: "elastic.out(1, 0.5)",
-      });
-    },
-    { scope: containerRef }
-  );
-
-  return (
-    <div ref={containerRef} className="flex flex-col items-center gap-6 py-6">
-      {matches.length > 0 ? (
-        <>
-          <div className="text-center">
-            <div className="match-badge mb-3 inline-flex items-center gap-2 rounded-full border border-pink-500/50 bg-pink-500/10 px-4 py-1.5">
-              <Heart className="match-heart h-4 w-4 fill-pink-400 text-pink-600" />
-              <span className="font-mono text-sm font-semibold text-pink-600">
-                {matches.length === 1 ? "It's a match!" : `${matches.length} matches!`}
-              </span>
-            </div>
-            <p className="match-subtitle text-sm text-stone-500">
-              {matches.length === 1
-                ? "One model is ready to work with you."
-                : "These models are ready to work with you."}
-            </p>
-          </div>
-
-          <div
-            className={`grid w-full gap-4 ${matches.length === 1 ? "max-w-xs" : "grid-cols-2"}`}
-          >
-            {matches.map((model, i) => (
-              <MatchCard key={model.id} model={model} index={i} onClick={() => onOpenChat(model)} />
-            ))}
-          </div>
-
-          {liked.length > matches.length && (
-            <p className="text-center text-xs text-stone-400">
-              {liked.length - matches.length} model
-              {liked.length - matches.length > 1 ? "s" : ""} didn&apos;t match back this time.
-            </p>
-          )}
-        </>
-      ) : (
-        <div className="flex flex-col items-center gap-3 py-8 text-center">
-          <span className="text-5xl">😶</span>
-          <p className="font-semibold text-stone-900">No matches this time</p>
-          <p className="max-w-xs text-sm text-stone-500">
-            You passed on all the models. Maybe give one a chance?
-          </p>
-        </div>
-      )}
-
-      <button
-        onClick={onRestart}
-        className="restart-btn flex items-center gap-2 rounded-lg border border-stone-200 bg-stone-200 px-4 py-2 text-sm text-stone-700 transition-colors hover:border-stone-300 hover:text-stone-900"
-      >
-        <RotateCcw className="h-4 w-4" />
-        Try again
-      </button>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Chat screen
-// ---------------------------------------------------------------------------
-
-function TypingIndicator({ emoji }: { emoji: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      gsap.from(containerRef.current, {
-        opacity: 0,
-        x: -12,
-        scale: 0.9,
-        duration: 0.4,
-        ease: "elastic.out(1, 0.5)",
-      });
-
-      gsap.to(".typing-dot", {
-        y: -6,
-        stagger: { each: 0.13, repeat: -1, yoyo: true },
-        ease: "elastic.out(1.5, 0.3)",
-        duration: 0.35,
-      });
-    },
-    { scope: containerRef }
-  );
-
-  return (
-    <div ref={containerRef} className="flex items-end gap-2">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-stone-200 text-base">
-        {emoji}
-      </div>
-      <div className="flex items-center gap-1 rounded-2xl rounded-bl-sm bg-stone-200 px-4 py-3">
-        {[0, 1, 2].map((i) => (
-          <span key={i} className="typing-dot block h-1.5 w-1.5 rounded-full bg-stone-300" />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function ChatScreen({
+function ScriptedExample({
   model,
   onBack,
 }: {
   model: Model;
   onBack: () => void;
 }) {
-  const script = useMemo(() => CHAT_SCRIPTS[model.id] ?? [], [model.id]);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [round, setRound] = useState(0);
-  const [isTyping, setIsTyping] = useState(true);
-  const [showReplies, setShowReplies] = useState(false);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const repliesRef = useRef<HTMLDivElement>(null);
-
-  // Deliver the first model message on mount
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (script[0]) {
-        setMessages([{ from: "model", text: script[0].modelMessage }]);
-        setIsTyping(false);
-        setShowReplies(true);
-      }
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, [script]);
-
-  // Scroll to bottom whenever messages change
-  useEffect(() => {
-    const el = scrollAreaRef.current;
-    if (el) {
-      requestAnimationFrame(() => {
-        el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
-      });
-    }
-  }, [messages, isTyping]);
-
-  // Elastic slide-in for the latest message bubble
-  useGSAP(
-    () => {
-      if (messages.length === 0) return;
-      const lastMsg = messages[messages.length - 1];
-      const bubbles = scrollAreaRef.current?.querySelectorAll(".chat-bubble");
-      if (!bubbles?.length) return;
-      const lastBubble = bubbles[bubbles.length - 1];
-      gsap.from(lastBubble, {
-        opacity: 0,
-        x: lastMsg.from === "user" ? 30 : -30,
-        scale: 0.85,
-        duration: 0.55,
-        ease: "elastic.out(1, 0.5)",
-      });
-    },
-    { dependencies: [messages] }
-  );
-
-  // Elastic pop-in for reply buttons — scoped to repliesRef wrapper
-  useGSAP(
-    () => {
-      if (!showReplies) return;
-      gsap.from(".reply-btn", {
-        opacity: 0,
-        scale: 0.5,
-        y: 10,
-        stagger: 0.07,
-        duration: 0.5,
-        ease: "elastic.out(1.1, 0.45)",
-      });
-    },
-    { scope: repliesRef, dependencies: [showReplies, round] }
-  );
-
-  const handleReply = (replyText: string) => {
-    if (!showReplies) return;
-    setShowReplies(false);
-
-    setMessages((prev) => [...prev, { from: "user", text: replyText }]);
-
-    const nextRound = round + 1;
-    setRound(nextRound);
-
-    if (nextRound < script.length) {
-      setIsTyping(true);
-      setTimeout(() => {
-        setMessages((prev) => [
-          ...prev,
-          { from: "model", text: script[nextRound].modelMessage },
-        ]);
-        setIsTyping(false);
-        setShowReplies(true);
-      }, 1200);
-    }
-  };
-
-  const currentReplies = script[round]?.replies ?? [];
-  const isDone = round >= script.length && !isTyping;
-
+  const script = CHAT_SCRIPTS[model.id] ?? [];
+  const current = script[round];
   return (
-    <div className="flex h-[min(520px,70dvh)] flex-col sm:h-[560px]">
-      {/* Chat header */}
-      <div
-        className={`flex shrink-0 items-center gap-3 border-b border-stone-200 bg-linear-to-r ${model.gradientFrom} ${model.gradientTo} px-4 py-3`}
-      >
-        <button
-          onClick={onBack}
-          className="flex shrink-0 items-center gap-1.5 rounded-full bg-black/25 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-black/40 active:scale-95"
-          aria-label="Back to matches"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" />
-          Matches
-        </button>
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-black/20 text-2xl">
-          {model.emoji}
-        </div>
-        <div>
-          <p className="font-semibold leading-tight text-white">{model.name}</p>
-          <p className="text-xs text-white/70">{model.tagline}</p>
-        </div>
+    <div className="space-y-5 p-5 sm:p-6">
+      <button onClick={onBack} className="text-link">
+        <ArrowLeft aria-hidden="true" className="h-4 w-4" /> Back to models
+      </button>
+      <div>
+        <h4 className="text-xl font-semibold">{model.name}: working style</h4>
+        <p className="mt-2 text-sm text-fg-secondary">
+          A scripted illustration, not a live conversation or a measured model
+          response.
+        </p>
       </div>
-
-      {/* Messages */}
-      <div
-        ref={scrollAreaRef}
-        className="flex-1 overflow-y-auto overscroll-contain space-y-3 px-4 py-4"
-        style={{ WebkitOverflowScrolling: "touch" }}
-      >
-        {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={`chat-bubble flex items-end gap-2 ${msg.from === "user" ? "flex-row-reverse" : "flex-row"}`}
-          >
-            {msg.from === "model" && (
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-stone-200 text-base">
-                {model.emoji}
-              </div>
-            )}
-            <div
-              className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
-                msg.from === "model"
-                  ? "rounded-bl-sm bg-stone-200 text-stone-900"
-                  : "rounded-br-sm bg-pink-500 text-stone-900"
-              }`}
-            >
-              {msg.text}
-            </div>
-          </div>
-        ))}
-
-        {isTyping && <TypingIndicator emoji={model.emoji} />}
-      </div>
-
-      {/* Reply area */}
-      <div className="shrink-0 border-t border-stone-200 px-4 py-3">
-        {isDone ? (
-          <div className="flex flex-col items-center gap-3 py-1 text-center">
-            <p className="text-xs text-stone-500">End of conversation</p>
+      {current ? (
+        <>
+          <p className="eyebrow" role="status">
+            Example {round + 1} of {script.length}
+          </p>
+          <blockquote className="rounded-lg border border-border-default bg-bg-elevated p-5 text-sm leading-relaxed">
+            {current.modelMessage}
+          </blockquote>
+          <div className="flex flex-wrap justify-between gap-3">
             <button
-              onClick={onBack}
-              className="flex items-center gap-2 rounded-lg border border-stone-200 bg-stone-200 px-4 py-2 text-sm text-stone-700 transition-colors hover:border-stone-300 hover:text-stone-900"
+              onClick={() => setRound((value) => value - 1)}
+              disabled={round === 0}
+              className="tool-secondary-button"
             >
-              <ArrowLeft className="h-4 w-4" />
-              Back to matches
+              Previous example
             </button>
-          </div>
-        ) : showReplies && currentReplies.length > 0 ? (
-          <div ref={repliesRef} className="flex flex-wrap gap-2">
-            {currentReplies.map((reply) => (
+            {round < script.length - 1 ? (
               <button
-                key={reply}
-                onClick={() => handleReply(reply)}
-                className="reply-btn flex items-center gap-1.5 rounded-full border border-stone-300 bg-stone-200 px-3 py-1.5 text-sm text-stone-800 transition-all hover:border-pink-500/60 hover:bg-pink-500/10 hover:text-pink-600 active:scale-95"
+                onClick={() => setRound((value) => value + 1)}
+                className="tool-primary-button"
               >
-                <Send className="h-3 w-3 opacity-60" />
-                {reply}
+                Next example{" "}
+                <ArrowRight aria-hidden="true" className="h-4 w-4" />
               </button>
-            ))}
+            ) : (
+              <button onClick={onBack} className="tool-primary-button">
+                Done · Back to models
+              </button>
+            )}
           </div>
-        ) : (
-          <div className="flex items-center gap-2 opacity-40">
-            <div className="h-9 flex-1 rounded-full border border-stone-200 bg-stone-200" />
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-stone-300">
-              <Send className="h-4 w-4 text-stone-500" />
-            </div>
-          </div>
-        )}
-      </div>
+        </>
+      ) : (
+        <p className="text-sm text-fg-secondary">
+          No scripted example is available for this model yet. Its profile is
+          available below.
+        </p>
+      )}
     </div>
   );
 }
 
-// ---------------------------------------------------------------------------
-// Root component
-// ---------------------------------------------------------------------------
-
 export function ModelTinder() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [results, setResults] = useState<SwipeResult[]>([]);
-  const [phase, setPhase] = useState<Phase>("swiping");
-  const [swipingDirection, setSwipingDirection] = useState<SwipeDirection | null>(null);
-  const isAnimating = useRef(false);
-  const [chatModel, setChatModel] = useState<Model | null>(null);
-  const swipeControlsRef = useRef<HTMLDivElement>(null);
+  const [index, setIndex] = useState(0);
+  const [savedIds, setSavedIds] = useState<string[]>([]);
+  const [view, setView] = useState<"profiles" | "shortlist">("profiles");
+  const [example, setExample] = useState<Model | null>(null);
+  const model = MODELS[index];
+  const saved = MODELS.filter((entry) => savedIds.includes(entry.id));
+  const isSaved = savedIds.includes(model.id);
 
-  const visibleModels = MODELS.slice(currentIndex, currentIndex + 3);
-
-  const { contextSafe } = useGSAP({ scope: swipeControlsRef });
-
-  // Called by button press OR drag threshold — just sets the exit direction.
-  // ModelCard animates the fly-off, then calls onExitComplete.
-  const handleSwipe = (direction: SwipeDirection) => {
-    if (isAnimating.current) return;
-    isAnimating.current = true;
-
-    // Record the result immediately
-    const model = MODELS[currentIndex];
-    setResults((prev) => [...prev, { modelId: model.id, direction }]);
-
-    // Elastic punch on the tapped button
-    const animateBtn = contextSafe((btnClass: string) => {
-      gsap.timeline()
-        .to(btnClass, { scale: 0.8, duration: 0.1, ease: "power2.out" })
-        .to(btnClass, { scale: 1.2, duration: 0.25, ease: "elastic.out(1.5, 0.4)" })
-        .to(btnClass, { scale: 1, duration: 0.3, ease: "elastic.out(1, 0.5)" });
-    });
-    animateBtn(direction === "right" ? ".btn-like" : ".btn-pass");
-
-    // Signal ModelCard to animate out
-    setSwipingDirection(direction);
-  };
-
-  // Called by ModelCard once its fly-off animation completes
-  const handleExitComplete = () => {
-    setSwipingDirection(null);
-    const nextIndex = currentIndex + 1;
-    setCurrentIndex(nextIndex);
-    isAnimating.current = false;
-
-    if (nextIndex >= MODELS.length) {
-      setPhase("loading");
-      setTimeout(() => setPhase("results"), 1600);
-    }
-  };
-
-  const handleRestart = () => {
-    setCurrentIndex(0);
-    setResults([]);
-    setPhase("swiping");
-    setChatModel(null);
-    isAnimating.current = false;
-  };
-
-  const handleOpenChat = (model: Model) => {
-    setChatModel(model);
-    setPhase("chat");
-  };
-
-  const handleCloseChat = () => {
-    setChatModel(null);
-    setPhase("results");
-  };
+  function advance(save: boolean) {
+    if (save)
+      setSavedIds((ids) => (ids.includes(model.id) ? ids : [...ids, model.id]));
+    if (index < MODELS.length - 1) setIndex((value) => value + 1);
+    else setView("shortlist");
+  }
 
   return (
-    <div
-      id="model-match"
-      className="not-prose my-8 overflow-x-clip rounded-xl bg-bg-surface border border-border-strong"
-      
-    >
-      {/* Header — hidden during chat (chat has its own header) */}
-      {phase !== "chat" && (
-        <div
-          className="flex items-center justify-between px-5 py-4 border-b border-border-default"
-          
+    <div className="not-prose my-8 overflow-hidden rounded-xl border border-border-strong bg-bg-surface">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border-default px-5 py-4">
+        <div>
+          <h3 className="font-mono text-sm font-semibold">
+            Model Personalities
+          </h3>
+          <p className="mt-1 text-xs text-fg-secondary">
+            Explore the profiles. Keep the models that fit your work.
+          </p>
+        </div>
+        <button
+          className="tool-secondary-button"
+          aria-pressed={view === "shortlist"}
+          onClick={() => {
+            setExample(null);
+            setView(view === "profiles" ? "shortlist" : "profiles");
+          }}
         >
-          <div>
-            <h3 className="font-mono text-sm font-semibold text-fg-primary">Model Match</h3>
-            <p className="mt-0.5 text-xs text-fg-muted">Swipe to find your AI coding partner</p>
+          {view === "shortlist"
+            ? "Browse profiles"
+            : `View shortlist (${saved.length})`}
+        </button>
+      </div>
+      {example ? (
+        <ScriptedExample
+          key={example.id}
+          model={example}
+          onBack={() => setExample(null)}
+        />
+      ) : view === "shortlist" ? (
+        <div className="space-y-5 p-5 sm:p-6">
+          <h4 className="text-xl font-semibold" aria-live="polite">
+            {saved.length
+              ? `Your shortlist · ${saved.length} saved`
+              : "Your shortlist is empty"}
+          </h4>
+          <p className="text-sm text-fg-secondary">
+            {saved.length
+              ? "Every model you saved is here. Try the same task with your candidates and compare the results."
+              : "Browse the profiles and save a model you would like to try."}
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {saved.map((entry) => (
+              <article
+                key={entry.id}
+                className="rounded-lg border border-border-default bg-bg-page p-4"
+              >
+                <h5 className="font-semibold">
+                  {entry.emoji} {entry.name}
+                </h5>
+                <p className="mt-2 text-sm text-fg-secondary">
+                  {entry.bestFor}
+                </p>
+                <div className="mt-4 flex flex-wrap gap-3">
+                  <button
+                    className="text-link"
+                    onClick={() => setExample(entry)}
+                  >
+                    Explore example
+                  </button>
+                  <button
+                    className="text-link"
+                    aria-label={`Remove ${entry.name}`}
+                    onClick={() =>
+                      setSavedIds((ids) => ids.filter((id) => id !== entry.id))
+                    }
+                  >
+                    Remove
+                  </button>
+                </div>
+              </article>
+            ))}
           </div>
-          {phase === "swiping" && (
-            <span className="font-mono text-xs text-fg-muted">
-              {currentIndex + 1} / {MODELS.length}
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              className="tool-secondary-button"
+              onClick={() => setView("profiles")}
+            >
+              <ArrowLeft aria-hidden="true" className="h-4 w-4" /> Browse
+              profiles
+            </button>
+            {saved.length > 0 && (
+              <CopyButton
+                label="Copy shortlist"
+                accentColor="emerald"
+                getText={() =>
+                  [
+                    "# My model shortlist",
+                    "",
+                    ...saved.map(
+                      (entry) => `- ${entry.name}: ${entry.bestFor}`,
+                    ),
+                    "",
+                    "Based on editorial profiles. Validate with a representative task.",
+                  ].join("\n")
+                }
+              />
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-5 p-5 sm:p-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <label className="flex min-w-0 flex-1 flex-col gap-2 text-xs text-fg-secondary">
+              Jump to a model
+              <select
+                aria-label="Jump to a model"
+                className="w-full rounded-md border border-border-strong bg-bg-page p-2 text-sm text-fg-primary"
+                value={model.id}
+                onChange={(event) =>
+                  setIndex(
+                    MODELS.findIndex(
+                      (entry) => entry.id === event.target.value,
+                    ),
+                  )
+                }
+              >
+                {MODELS.map((entry) => (
+                  <option key={entry.id} value={entry.id}>
+                    {entry.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <span className="font-mono text-xs text-fg-muted" role="status">
+              {index + 1} / {MODELS.length}
             </span>
-          )}
+          </div>
+          <article className="personality-profile">
+            <div
+              className={`personality-art bg-linear-to-br ${model.gradientFrom} ${model.gradientTo}`}
+              aria-hidden="true"
+            >
+              {model.emoji}
+            </div>
+            <div className="min-w-0 space-y-4 p-5">
+              <div>
+                <h4 className="text-xl font-semibold">{model.name}</h4>
+                <p className="mt-1 text-sm text-fg-secondary">
+                  {model.tagline}
+                </p>
+              </div>
+              <ul className="list-disc space-y-2 pl-5 text-sm text-fg-secondary">
+                {model.traits.map((trait) => (
+                  <li key={trait}>{trait}</li>
+                ))}
+              </ul>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <p className="eyebrow">Best for</p>
+                  <p className="mt-2 text-sm text-fg-secondary">
+                    {model.bestFor}
+                  </p>
+                </div>
+                <div>
+                  <p className="eyebrow">Less suited to</p>
+                  <p className="mt-2 text-sm text-fg-secondary">
+                    {model.worstFor}
+                  </p>
+                </div>
+              </div>
+              <button className="text-link" onClick={() => setExample(model)}>
+                Explore a scripted example{" "}
+                <ArrowRight aria-hidden="true" className="h-4 w-4" />
+              </button>
+            </div>
+          </article>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <button
+              className="tool-secondary-button"
+              onClick={() => setIndex((value) => value - 1)}
+              disabled={index === 0}
+            >
+              <ArrowLeft aria-hidden="true" className="h-4 w-4" /> Previous
+            </button>
+            <div className="flex flex-wrap gap-3">
+              <button
+                className="tool-secondary-button"
+                onClick={() => advance(false)}
+              >
+                <X aria-hidden="true" className="h-4 w-4" /> Skip
+              </button>
+              <button
+                className="tool-primary-button"
+                onClick={() => advance(true)}
+              >
+                <Heart aria-hidden="true" className="h-4 w-4" />{" "}
+                {isSaved ? "Saved · Next" : "Save & next"}
+              </button>
+            </div>
+          </div>
+          <p className="text-xs leading-relaxed text-fg-muted">
+            Profiles are editorial impressions. Use Model Picker for task-based
+            suggestions. Your shortlist stays here while you use this page; copy
+            it to keep it.
+          </p>
         </div>
       )}
-
-      {/* Content */}
-      <div className={phase === "chat" ? "" : "px-4 py-6 sm:px-8"}>
-        {phase === "loading" && <LoadingScreen />}
-
-        {phase === "results" && (
-          <ResultsScreen
-            results={results}
-            onRestart={handleRestart}
-            onOpenChat={handleOpenChat}
-          />
-        )}
-
-        {phase === "chat" && chatModel && (
-          <ChatScreen model={chatModel} onBack={handleCloseChat} />
-        )}
-
-        {phase === "swiping" && (
-          <div className="flex flex-col items-center gap-6">
-            {/* Card stack — z-0 so controls always render above */}
-            <div className="relative z-0 w-full max-w-sm" style={{ touchAction: "pan-y" }}>
-              {/* Ghost card — sets the container height */}
-              <div className="invisible pointer-events-none" aria-hidden>
-                <CardContent model={MODELS[0]} />
-              </div>
-              {visibleModels.map((model, i) => (
-                <ModelCard
-                  key={model.id}
-                  model={model}
-                  isTop={i === 0}
-                  stackIndex={i}
-                  exitDirection={i === 0 ? swipingDirection : null}
-                  onDragSwipe={handleSwipe}
-                  onExitComplete={handleExitComplete}
-                />
-              ))}
-              {visibleModels.length === 0 && (
-                <div className="absolute inset-0 flex items-center justify-center rounded-2xl border border-stone-200 bg-white">
-                  <p className="text-sm text-stone-500">All done!</p>
-                </div>
-              )}
-            </div>
-
-            {/* Controls — z-20 so they always sit above the card stack */}
-            <div ref={swipeControlsRef} className="relative z-20 flex shrink-0 items-center gap-6">
-              <button
-                onClick={() => handleSwipe("left")}
-                disabled={isAnimating.current}
-                className="btn-pass flex h-14 w-14 items-center justify-center rounded-full border-2 border-red-500/40 bg-white text-red-600 shadow-lg transition-colors hover:border-red-500 hover:bg-red-500/10 disabled:opacity-40"
-                aria-label="Pass"
-              >
-                <X className="h-6 w-6" />
-              </button>
-              <p className="text-xs text-stone-400">swipe or tap</p>
-              <button
-                onClick={() => handleSwipe("right")}
-                disabled={isAnimating.current}
-                className="btn-like flex h-14 w-14 items-center justify-center rounded-full border-2 border-green-500/40 bg-white text-green-600 shadow-lg transition-colors hover:border-green-500 hover:bg-green-500/10 disabled:opacity-40"
-                aria-label="Like"
-              >
-                <Heart className="h-6 w-6" />
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
     </div>
   );
 }

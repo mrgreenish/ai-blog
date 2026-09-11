@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { trackGrowthEvent } from "@/lib/growthAnalytics";
 import { ChefHat, TreeDeciduous, RotateCcw, ArrowLeft, ArrowRight, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -471,7 +471,7 @@ function QuestionStep({
           <button
             key={opt.id}
             onClick={() => onAnswer(opt.id)}
-            className="group flex flex-col items-start rounded-lg border border-border-strong bg-bg-surface px-4 py-3 text-left transition-all hover:border-teal-500/50 hover:bg-teal-500/5 active:scale-[0.98]"
+            className="group flex flex-col items-start rounded-lg border border-border-strong bg-bg-surface px-4 py-3 text-left transition-[background-color,border-color,color,opacity,transform] hover:border-teal-500/50 hover:bg-teal-500/5 active:scale-[0.98]"
           >
             <span className="text-sm font-medium text-fg-primary">
               {opt.label}
@@ -614,11 +614,13 @@ function ResultCard({
 }
 
 function HelpMeChoose() {
+  const contentRef = useRef<HTMLDivElement>(null);
   const [path, setPath] = useState<string[]>([]);
 
   const { node, result, breadcrumbs } = resolveTreePath(path);
 
   const handleAnswer = (optionId: string) => {
+    contentRef.current?.focus({ preventScroll: true });
     const nextPath = [...path, optionId];
     if (resolveTreePath(nextPath).result) {
       trackGrowthEvent("workflow_completed", { result: nextPath.join("/") });
@@ -627,15 +629,18 @@ function HelpMeChoose() {
   };
 
   const handleBack = () => {
+    contentRef.current?.focus({ preventScroll: true });
     if (path.length === 0) return;
     setPath((prev) => prev.slice(0, -1));
   };
 
   const handleRestart = () => {
+    contentRef.current?.focus({ preventScroll: true });
     setPath([]);
   };
 
   const handleNavigate = (index: number) => {
+    contentRef.current?.focus({ preventScroll: true });
     if (index < 0) {
       setPath([]);
     } else {
@@ -653,8 +658,9 @@ function HelpMeChoose() {
       )}
 
       {/* Content */}
-      <div className="px-3 py-5 sm:px-5">
-        <AnimatePresence initial={false} mode="wait">
+      <div className="px-3 py-5 sm:px-5" ref={contentRef} tabIndex={-1} role="group" aria-label={result ? result.title : node?.question}>
+        <p role="status" className="sr-only">{result ? `Workflow ready: ${result.title}` : node?.question}</p>
+        <div>
           {result ? (
             <ResultCard
               key="result"
@@ -669,7 +675,7 @@ function HelpMeChoose() {
               onAnswer={handleAnswer}
             />
           ) : null}
-        </AnimatePresence>
+        </div>
       </div>
 
       {/* Back / footer */}
@@ -720,18 +726,9 @@ export function WorkflowRecipe({ initialMode = "browse", initialRecipeId }: { in
       {/* Mode toggle */}
       <ModeToggle mode={mode} onChange={setMode} options={RECIPE_MODE_OPTIONS} accent="emerald" />
 
-      {/* Content */}
-      <AnimatePresence initial={false} mode="wait">
-        <motion.div
-          key={mode}
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -6 }}
-          transition={{ duration: 0.2, ease: "easeOut" }}
-        >
-          {mode === "browse" ? <BrowseRecipes initialRecipeId={initialRecipeId} /> : <HelpMeChoose />}
-        </motion.div>
-      </AnimatePresence>
+      {/* Keep each mode mounted so switching back preserves the user's progress. */}
+      <div hidden={mode !== "browse"}><BrowseRecipes initialRecipeId={initialRecipeId} /></div>
+      <div hidden={mode !== "choose"}><HelpMeChoose /></div>
     </div>
   );
 }

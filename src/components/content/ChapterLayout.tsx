@@ -71,7 +71,9 @@ export function ChapterLayout({
           <p className="article-question">{frontmatter.wonderQuestion}</p>
         ) : null}
       </header>
-      <div className="article-grid">
+      <div
+        className={`article-grid ${headings.length ? "" : "article-grid-full"}`}
+      >
         <ReadingNavigation headings={headings} />
         <div className="article-column">
           <ReadingNavigation headings={headings} mobile />

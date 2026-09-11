@@ -135,24 +135,26 @@ export function ModeToggle<T extends string>({
 }: {
   mode: T;
   onChange: (m: T) => void;
-  options: readonly { readonly id: T; readonly label: string; readonly icon: LucideIcon }[];
+  options: readonly {
+    readonly id: T;
+    readonly label: string;
+    readonly icon: LucideIcon;
+  }[];
   accent?: ToggleAccent;
 }) {
   return (
     <div className="px-3 py-2.5 sm:px-5 sm:py-3 border-b border-border-default">
-      <div className="inline-flex rounded-lg p-0.5 bg-bg-elevated border border-border-default">
+      <div className="inline-flex flex-wrap rounded-lg p-0.5 bg-bg-elevated border border-border-default">
         {options.map(({ id, label, icon: Icon }) => (
           <button
             key={id}
             aria-pressed={mode === id}
             onClick={() => onChange(id)}
-            className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-mono text-[11px] transition-all sm:text-xs ${
-              mode === id
-                ? toggleAccent[color].active
-                : "text-fg-muted"
+            className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 font-mono text-[11px] transition-colors sm:text-xs ${
+              mode === id ? toggleAccent[color].active : "text-fg-muted"
             }`}
           >
-            <Icon className="h-3 w-3" />
+            <Icon aria-hidden="true" className="h-3 w-3" />
             {label}
           </button>
         ))}
@@ -178,12 +180,17 @@ export function CopyButton({
   const [copyFailed, setCopyFailed] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => () => {
-    if (timerRef.current) clearTimeout(timerRef.current);
-  }, []);
+  useEffect(
+    () => () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    },
+    [],
+  );
 
   async function handleCopy() {
     setCopyFailed(false);
+    setCopied(false);
+    if (timerRef.current) clearTimeout(timerRef.current);
     try {
       await navigator.clipboard.writeText(getText());
     } catch {
@@ -202,26 +209,33 @@ export function CopyButton({
   const c = accent[accentColor];
   return (
     <span className="inline-flex flex-col items-start gap-2">
-    <button
-      onClick={handleCopy}
-      aria-live="polite"
-      className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 font-mono text-xs transition-colors ${
-        copied ? c.btnCopied : `${c.btnHover} border-border-strong bg-bg-elevated text-fg-secondary`
-      }`}
-    >
-      {copied ? (
-        <>
-          <Check className="h-3.5 w-3.5" />
-          Copied!
-        </>
-      ) : (
-        <>
-          <Copy className="h-3.5 w-3.5" />
-          {label}
-        </>
+      <button
+        onClick={handleCopy}
+        aria-live="polite"
+        className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 font-mono text-xs transition-colors ${
+          copied
+            ? c.btnCopied
+            : `${c.btnHover} border-border-strong bg-bg-elevated text-fg-secondary`
+        }`}
+      >
+        {copied ? (
+          <>
+            <Check className="h-3.5 w-3.5" />
+            Copied!
+          </>
+        ) : (
+          <>
+            <Copy className="h-3.5 w-3.5" />
+            {label}
+          </>
+        )}
+      </button>
+      {copyFailed && (
+        <span role="alert" className="text-xs text-fg-muted">
+          Could not copy. Allow clipboard access and try again, or select the
+          text manually.
+        </span>
       )}
-    </button>
-    {copyFailed && <span role="alert" className="text-xs text-fg-muted">Could not copy. Allow clipboard access and try again, or select the text manually.</span>}
     </span>
   );
 }

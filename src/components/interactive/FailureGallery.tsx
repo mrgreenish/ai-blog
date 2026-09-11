@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useId } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlertTriangle, Eye, EyeOff, ChevronDown, ChevronUp, Skull } from "lucide-react";
 import {
@@ -127,8 +127,11 @@ function SusceptibilityRow({
 // Failure card
 // ---------------------------------------------------------------------------
 
+import { CopyButton } from "@/components/ui/WorkflowPrimitives";
+
 function FailureCard({ failure }: { failure: FailureCase }) {
   const [revealed, setRevealed] = useState(false);
+  const detailsId = useId();
   const [fixExpanded, setFixExpanded] = useState(false);
 
   const severityMeta = SEVERITY_META[failure.severity];
@@ -174,10 +177,10 @@ function FailureCard({ failure }: { failure: FailureCase }) {
           </pre>
           {/* Reveal overlay — shown before reveal */}
           {!revealed && (
-            <div className="absolute inset-x-0 bottom-0 flex items-end justify-center pb-3 pt-8" style={{ background: "linear-gradient(to top, var(--color-bg-surface) 0%, color-mix(in srgb, var(--color-bg-surface) 80%, transparent) 60%, transparent 100%)" }}>
+            <div className="flex justify-start border-t border-border-default p-3">
               <button
                 onClick={() => setRevealed(true)}
-                className="flex items-center gap-1.5 rounded-lg border border-red-400/30 bg-red-500/10 px-3 py-1.5 font-mono text-xs font-medium text-red-600 transition-all hover:border-red-400/50 hover:bg-red-500/15 active:scale-95"
+                className="flex items-center gap-1.5 rounded-lg border border-red-400/30 bg-red-500/10 px-3 py-1.5 font-mono text-xs font-medium text-red-600 transition-[background-color,border-color,color,opacity,transform] hover:border-red-400/50 hover:bg-red-500/15 active:scale-95"
               >
                 <Eye className="h-3.5 w-3.5" />
                 Show what&apos;s wrong
@@ -214,6 +217,8 @@ function FailureCard({ failure }: { failure: FailureCase }) {
       {/* Fix section */}
       <div  className="border-t border-border-default">
         <button
+          aria-expanded={fixExpanded}
+          aria-controls={detailsId}
           onClick={() => setFixExpanded((e) => !e)}
           className="flex w-full items-center justify-between px-4 py-2.5 text-left transition-colors hover:opacity-80"
         >
@@ -229,14 +234,16 @@ function FailureCard({ failure }: { failure: FailureCase }) {
         <AnimatePresence initial={false}>
           {fixExpanded && (
             <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
+              id={detailsId}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
               className="overflow-hidden"
             >
               <div className="px-4 pb-3 space-y-2">
                 <p className="text-xs leading-relaxed text-fg-secondary">{failure.fix}</p>
+                <CopyButton label="Copy prevention" accentColor="emerald" getText={() => [`# Prevent: ${failure.title}`, failure.fix, ...(failure.fixExample ? ["", failure.fixExample] : [])].join("\n")} />
                 {failure.fixExample && (
                   <pre className="overflow-x-auto rounded-lg border border-emerald-500/15 bg-emerald-400/5 px-3 py-2.5 font-mono text-[11px] leading-relaxed text-emerald-700 whitespace-pre-wrap">
                     {failure.fixExample}
@@ -317,6 +324,7 @@ export function FailureGallery() {
           {CATEGORY_ORDER.map((cat) => (
             <button
               key={cat}
+              aria-pressed={cat === activeCategory}
               onClick={() => setActiveCategory(cat)}
               className={`rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors sm:px-3 sm:py-1.5 sm:text-xs ${
                 cat === activeCategory
@@ -357,8 +365,7 @@ export function FailureGallery() {
       {/* Footer */}
       <div className="px-3 py-3 sm:px-5 bg-bg-surface border-t border-border-default">
         <p className="text-[11px] text-stone-400">
-          Failures are curated from real usage. Susceptibility indicators are derived from model traits in{" "}
-          <span className="font-mono text-stone-500">modelSpecs.ts</span> — not hardcoded.
+          Failures are curated examples. Susceptibility indicators are editorial estimates based on model traits, not measured failure rates.
         </p>
       </div>
     </div>

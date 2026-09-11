@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useId } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Compass, RotateCcw, ArrowLeft, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
 import { getPickerModelsV2 } from "@/lib/modelSpecs";
@@ -14,6 +14,8 @@ import {
   type RankedModel,
   type DimensionScore,
 } from "@/lib/modelPickerScoring";
+
+import { CopyButton } from "@/components/ui/WorkflowPrimitives";
 
 type PickerModel = ReturnType<typeof getPickerModelsV2>[number];
 
@@ -29,7 +31,7 @@ function ProgressDots({ total, current }: { total: number; current: number }) {
       {Array.from({ length: total }).map((_, i) => (
         <div
           key={i}
-          className={`h-1.5 rounded-full transition-all duration-300 ${
+          className={`h-1.5 rounded-full transition-[background-color,border-color,color,opacity,transform] duration-300 ${
             i < current
               ? "w-4 bg-blue-400"
               : i === current
@@ -65,7 +67,7 @@ function QuestionStep({
           <button
             key={opt.id}
             onClick={() => onAnswer(opt.id)}
-            className="group flex flex-col items-start rounded-lg border border-border-strong bg-bg-surface px-4 py-3 text-left transition-all hover:border-blue-500/50 hover:bg-blue-500/5 active:scale-[0.98]"
+            className="group flex flex-col items-start rounded-lg border border-border-strong bg-bg-surface px-4 py-3 text-left transition-[background-color,border-color,color,opacity,transform] hover:border-blue-500/50 hover:bg-blue-500/5 active:scale-[0.98]"
           >
             <span className="text-sm font-medium text-stone-800 group-hover:text-stone-900">
               {opt.label}
@@ -114,9 +116,7 @@ function ScoreBar({ dims }: { dims: DimensionScore[] }) {
           <div className="relative h-3 flex-1 overflow-hidden rounded-full bg-bg-elevated">
             <motion.div
               className="absolute inset-y-0 left-0 rounded-full bg-emerald-400/40"
-              initial={{ width: 0 }}
-              animate={{ width: `${(d.points / maxAbs) * 100}%` }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
+              style={{ width: `${(d.points / maxAbs) * 100}%` }}
             />
           </div>
           <span className="w-4 shrink-0 font-mono text-[10px] text-emerald-600">
@@ -132,9 +132,7 @@ function ScoreBar({ dims }: { dims: DimensionScore[] }) {
           <div className="relative h-3 flex-1 overflow-hidden rounded-full bg-bg-elevated">
             <motion.div
               className="absolute inset-y-0 left-0 rounded-full bg-red-400/30"
-              initial={{ width: 0 }}
-              animate={{ width: `${(Math.abs(d.points) / maxAbs) * 100}%` }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
+              style={{ width: `${(Math.abs(d.points) / maxAbs) * 100}%` }}
             />
           </div>
           <span className="w-4 shrink-0 font-mono text-[10px] text-red-600">
@@ -156,6 +154,7 @@ function RankedCard({
   defaultExpanded: boolean;
 }) {
   const [expanded, setExpanded] = useState(defaultExpanded);
+  const detailsId = useId();
   const { model, reason, topReasons, cautions, dimensions } = ranked;
 
   return (
@@ -191,7 +190,9 @@ function RankedCard({
         <button
           onClick={() => setExpanded((e) => !e)}
           className="shrink-0 rounded-md p-1 text-stone-400 transition-colors hover:text-stone-500"
-          aria-label={expanded ? "Collapse" : "Expand"}
+          aria-label={`${expanded ? "Collapse" : "Expand"} ${model.name}`}
+          aria-expanded={expanded}
+          aria-controls={detailsId}
         >
           {expanded ? (
             <ChevronUp className="h-4 w-4" />
@@ -205,9 +206,10 @@ function RankedCard({
       <AnimatePresence initial={false}>
         {expanded && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
+            id={detailsId}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
             className="overflow-hidden"
           >
@@ -333,6 +335,7 @@ function ResultScreen({
         ))}
       </div>
 
+      <CopyButton label="Copy recommendations" accentColor="emerald" getText={() => ["# Model recommendations", "Editorial suggestions based on your answers, not measured rankings.", "", ...top3.map((entry, index) => `${index + 1}. ${entry.model.name}: ${entry.reason}\n   Cautions: ${entry.cautions.map(caution => caution.reason).join("; ") || "Validate with your task."}`)].join("\n")} />
       {/* Restart */}
       <button
         onClick={onRestart}
@@ -352,18 +355,21 @@ function ResultScreen({
 
 export function ModelPicker() {
   const [step, setStep] = useState(0);
+  const contentRef = useRef<HTMLDivElement>(null);
   const [answers, setAnswers] = useState<Answers>({});
 
   const isDone = step >= QUESTIONS.length;
   const ranking = isDone ? getRanking(MODELS, answers) : null;
 
   const handleAnswer = (optionId: string) => {
+    contentRef.current?.focus({ preventScroll: true });
     const question = QUESTIONS[step];
     setAnswers((prev) => ({ ...prev, [question.id]: optionId }));
     setStep((s) => s + 1);
   };
 
   const handleBack = () => {
+    contentRef.current?.focus({ preventScroll: true });
     if (step === 0) return;
     const prevQuestion = QUESTIONS[step - 1];
     setAnswers((prev) => {
@@ -375,6 +381,7 @@ export function ModelPicker() {
   };
 
   const handleRestart = () => {
+    contentRef.current?.focus({ preventScroll: true });
     setStep(0);
     setAnswers({});
   };
@@ -398,18 +405,19 @@ export function ModelPicker() {
               Model Picker
             </h3>
             <p className="mt-0.5 text-xs text-fg-muted">
-              Top-3 recommendations with score breakdowns
+              Five questions · editorial recommendations with tradeoffs
             </p>
           </div>
         </div>
         {!isDone && (
-          <ProgressDots total={QUESTIONS.length} current={step} />
+          <div className="flex flex-col items-end gap-2"><span className="text-xs text-fg-secondary">{step + 1} of {QUESTIONS.length}</span><ProgressDots total={QUESTIONS.length} current={step} /></div>
         )}
       </div>
 
       {/* Content */}
-      <div className="px-5 py-5">
-        <AnimatePresence initial={false} mode="wait">
+      <div className="px-5 py-5" ref={contentRef} tabIndex={-1} role="group" aria-label={isDone ? "Your model recommendations" : QUESTIONS[step].text}>
+        <p className="sr-only" role="status">{isDone ? "Recommendations ready" : `Question ${step + 1} of ${QUESTIONS.length}: ${QUESTIONS[step].text}`}</p>
+        <div>
           {isDone && ranking ? (
             <ResultScreen
               key="result"
@@ -423,18 +431,18 @@ export function ModelPicker() {
               onAnswer={handleAnswer}
             />
           )}
-        </AnimatePresence>
+        </div>
       </div>
 
       {/* Back / footer */}
-      {!isDone && step > 0 && (
+      {step > 0 && (
         <div className="px-5 py-3 border-t border-border-default">
           <button
             onClick={handleBack}
             className="flex items-center gap-1.5 text-xs transition-colors hover:opacity-70 text-fg-muted"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
-            Back
+            {isDone ? "Change last answer" : "Back"}
           </button>
         </div>
       )}

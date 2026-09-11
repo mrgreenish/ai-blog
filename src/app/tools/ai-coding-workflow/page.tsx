@@ -7,7 +7,7 @@ export const metadata = discoveryMetadata("/tools/ai-coding-workflow");
 
 export default function WorkflowPage() {
   return (
-    <div className="site-shell discovery-page tool-page">
+    <div className="site-shell discovery-page tool-page standalone-tool">
       <Link href="/tools" className="text-sm underline">
         ← All tools
       </Link>
@@ -28,6 +28,7 @@ export default function WorkflowPage() {
           points, not measured model rankings.
         </p>
       </header>
+      <h2 className="sr-only">Choose a workflow</h2>
       <ToolFrame id="workflow-recipe">
         <WorkflowRecipe />
       </ToolFrame>

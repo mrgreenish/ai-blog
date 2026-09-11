@@ -8,6 +8,7 @@ import {
   getNewsEntries,
 } from "@/lib/content";
 import { SITE_URL } from "@/lib/siteConfig";
+import { TOOL_CATALOG } from "@/lib/toolCatalog";
 import sitemap from "../sitemap";
 import { GET as getFeed } from "../feed.xml/route";
 import { generateMetadata as generateNewsMetadata } from "../chapters/what-is-happening/[entrySlug]/page";
@@ -40,9 +41,12 @@ describe("selective news indexing", () => {
     }
   });
 
-  it("puts only indexable reports in the 49-URL sitemap", () => {
+  it("puts only indexable reports and public tools in the sitemap", () => {
     const entries = sitemap();
-    expect(entries).toHaveLength(49);
+    expect(entries).toHaveLength(49 + TOOL_CATALOG.length);
+    for (const tool of TOOL_CATALOG) {
+      expect(entries.some(entry => entry.url === `${SITE_URL}/tools/${tool.id}`)).toBe(true);
+    }
 
     const urls = new Set(entries.map((entry) => entry.url));
     for (const entry of allEntries) {

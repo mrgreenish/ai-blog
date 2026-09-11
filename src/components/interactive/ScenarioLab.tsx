@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useId } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FlaskConical, ChevronDown, ChevronUp, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
 import {
@@ -13,6 +13,8 @@ import {
   type PlanModeData,
 } from "@/lib/scenarioLabData";
 import { getScenarioLabModels, estimateModelCost, MODEL_BY_ID as REGISTRY, CURRENT_MODEL_IDS, PRICING_META } from "@/lib/modelSpecs";
+
+import { CopyButton } from "@/components/ui/WorkflowPrimitives";
 
 const LAB_MODELS = getScenarioLabModels();
 const MODEL_BY_ID = Object.fromEntries(LAB_MODELS.map((m) => [m.id, m]));
@@ -42,6 +44,7 @@ function ModelResultCard({
   isRecommended: boolean;
 }) {
   const [expanded, setExpanded] = useState(isRecommended);
+  const detailsId = useId();
   const meta = VERDICT_META[result.verdict];
   const modelSpec = MODEL_BY_ID[result.modelId];
   const cost = modelSpec
@@ -99,7 +102,9 @@ function ModelResultCard({
         <button
           onClick={() => setExpanded((e) => !e)}
           className="shrink-0 rounded-md p-1 transition-colors hover:opacity-70 text-fg-muted"
-          aria-label={expanded ? "Collapse" : "Expand"}
+          aria-label={`${expanded ? "Collapse" : "Expand"} ${modelSpec?.name ?? result.modelId}`}
+          aria-expanded={expanded}
+          aria-controls={detailsId}
         >
           {expanded ? (
             <ChevronUp className="h-4 w-4" />
@@ -113,9 +118,10 @@ function ModelResultCard({
       <AnimatePresence initial={false}>
         {expanded && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
+            id={detailsId}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
             className="overflow-hidden"
           >
@@ -192,12 +198,12 @@ function ModelResultCard({
                       <p className="font-mono text-[10px] text-stone-500">
                         <span className={ratio > 1 ? "text-amber-600" : "text-emerald-600"}>
                           {ratio >= 2
-                            ? `${ratio.toFixed(1)}× `
+                            ? `${ratio.toFixed(1)}× the cost `
                             : ratio > 1
                             ? `${Math.round((ratio - 1) * 100)}% more `
                             : `${Math.round((1 - ratio) * 100)}% cheaper `}
                         </span>
-                        than {compareSpec.name}
+                        {ratio >= 2 ? "of" : "than"} {compareSpec.name}
                       </p>
                     )}
                     {effectiveRuns > 1 && effectiveCost !== null && (
@@ -228,7 +234,7 @@ function WorkflowIndicator({ planMode }: { planMode: PlanModeData }) {
   const planSpec = MODEL_BY_ID[planMode.planModelId];
   const execSpec = MODEL_BY_ID[planMode.executeModelId];
   return (
-    <div className="flex items-center gap-2 rounded-lg border border-violet-500/20 bg-violet-400/5 px-3 py-2">
+    <div className="flex flex-wrap items-center gap-2 rounded-lg border border-violet-500/20 bg-violet-400/5 px-3 py-2">
       <span className="font-mono text-[10px] font-semibold text-violet-600">workflow</span>
       <span className="font-mono text-[11px] text-fg-primary">
         {planSpec?.name ?? planMode.planModelId}
@@ -305,6 +311,7 @@ function ScenarioView({ scenario }: { scenario: Scenario }) {
         <div className="flex items-center gap-2">
           <div className="inline-flex rounded-lg p-0.5 bg-bg-elevated border border-border-default">
             <button
+              aria-pressed={mode === "direct"}
               onClick={() => setMode("direct")}
               className={`rounded-md px-3 py-1 font-mono text-[11px] transition-colors ${
                 mode === "direct"
@@ -316,6 +323,7 @@ function ScenarioView({ scenario }: { scenario: Scenario }) {
               Direct
             </button>
             <button
+              aria-pressed={mode === "planMode"}
               onClick={() => setMode("planMode")}
               className={`rounded-md px-3 py-1 font-mono text-[11px] transition-colors ${
                 mode === "planMode"
@@ -333,11 +341,12 @@ function ScenarioView({ scenario }: { scenario: Scenario }) {
       {/* Workflow indicator for plan mode */}
       {isPlan && <WorkflowIndicator planMode={scenario.planMode!} />}
 
+      <p className="text-xs leading-relaxed text-fg-muted">The excerpts below are curated examples, not a measured ranking. Original run logs are not included; validate the approach against your own task.</p>
       {/* Model result cards */}
       <div className="space-y-2">
         {sorted.map((result) => (
           <ModelResultCard
-            key={result.modelId}
+            key={`${mode}-${result.modelId}`}
             result={result}
             scenario={scenario}
             isRecommended={result.modelId === recommendedId}
@@ -353,6 +362,7 @@ function ScenarioView({ scenario }: { scenario: Scenario }) {
         <p className="text-xs leading-relaxed text-fg-primary">
           {activeReason}
         </p>
+        <div className="mt-4"><CopyButton label="Copy takeaway" accentColor="emerald" getText={() => [`# ${scenario.label}`, scenario.description, "", isPlan ? "Approach: with planning" : "Approach: direct", activeInsight, "", activeReason, "", "Curated examples, not a current measured model ranking."].join("\n")} /></div>
       </div>
     </motion.div>
   );
@@ -392,6 +402,7 @@ export function ScenarioLab() {
           {SCENARIOS.map((s) => (
             <button
               key={s.id}
+              aria-pressed={s.id === activeId}
               onClick={() => setActiveId(s.id)}
               className={`rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors sm:px-3 sm:py-1.5 sm:text-xs ${
                 s.id === activeId

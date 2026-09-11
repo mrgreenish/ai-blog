@@ -1,56 +1,228 @@
-import { InteractivePlaceholder } from "./InteractivePlaceholder";
+"use client";
+
+import { useId, useState } from "react";
 import { Settings2 } from "lucide-react";
+import { CopyButton } from "@/components/ui/WorkflowPrimitives";
 
-const MOCK_OUTPUT = `# CLAUDE.md
-You are working in a Next.js 15 App Router project.
-
-## Conventions
-- Use server components by default
-- Client components only when needed (interactivity, hooks)
-- Co-locate tests with components
-- Use Tailwind for all styling
-
-## Guardrails
-- Never delete files without confirmation
-- Stay in scope — don't refactor adjacent code
-- Ask before changing shared utilities`;
-
-function Preview() {
-  return (
-    <div>
-      <div className="mb-3 space-y-2">
-        {[
-          { label: "Framework", value: "Next.js 15 (App Router)" },
-          { label: "AI tools", value: "Cursor + Claude Code" },
-          { label: "Output", value: "CLAUDE.md" },
-        ].map((q) => (
-          <div key={q.label} className="flex items-center gap-3 text-xs">
-            <span className="w-20 shrink-0 text-stone-500">{q.label}</span>
-            <span className="rounded border border-stone-200 bg-stone-200 px-2 py-0.5 font-mono text-stone-700">
-              {q.value}
-            </span>
-          </div>
-        ))}
-      </div>
-      <div className="rounded-lg border border-stone-200 bg-stone-50 p-3">
-        <pre className="overflow-x-auto font-mono text-xs leading-relaxed text-stone-500 whitespace-pre-wrap">
-          {MOCK_OUTPUT}
-        </pre>
-      </div>
-    </div>
-  );
-}
+const STACKS = {
+  next: {
+    label: "Next.js (App Router)",
+    test: "pnpm test:ci",
+    build: "pnpm build",
+    rules:
+      "Use Server Components by default. Add client boundaries only for interactive UI.\nFollow the installed Next.js version and existing routing conventions.",
+  },
+  react: {
+    label: "React",
+    test: "npm test",
+    build: "npm run build",
+    rules:
+      "Follow existing component and state patterns.\nUse semantic HTML and accessible labels for interactive controls.",
+  },
+  node: {
+    label: "Node.js / TypeScript",
+    test: "npm test",
+    build: "npm run build",
+    rules:
+      "Validate input at application boundaries.\nFollow existing error handling and TypeScript conventions.",
+  },
+  python: {
+    label: "Python",
+    test: "pytest",
+    build: "",
+    rules:
+      "Follow the project's Python version, dependency manager, and formatting conventions.\nKeep types and public interfaces consistent with the surrounding code.",
+  },
+} as const;
+const FORMATS = {
+  agents: "AGENTS.md",
+  claude: "CLAUDE.md",
+  cursor: ".cursor/rules/project.mdc",
+} as const;
 
 export function ConfigGenerator() {
+  const id = useId();
+  const [format, setFormat] = useState<keyof typeof FORMATS>("agents");
+  const [stack, setStack] = useState<keyof typeof STACKS>("next");
+  const [test, setTest] = useState<string>(STACKS.next.test);
+  const [build, setBuild] = useState<string>(STACKS.next.build);
+  const [conventions, setConventions] = useState("");
+  const output = [
+    ...(format === "cursor"
+      ? [
+          "---",
+          "description: Project conventions and verification",
+          "alwaysApply: true",
+          "---",
+          "",
+        ]
+      : []),
+    "# Project instructions",
+    "",
+    `Stack: ${STACKS[stack].label}`,
+    "",
+    "## Working conventions",
+    ...STACKS[stack].rules.split("\n").map((rule) => `- ${rule}`),
+    ...conventions
+      .split("\n")
+      .map((line) => line.trim().replace(/^[-*]\s+/, ""))
+      .filter(Boolean)
+      .map((rule) => `- ${rule}`),
+    "",
+    "## Scope and safety",
+    "- Read the relevant code and project instructions before making changes.",
+    "- Keep changes focused on the requested task and preserve unrelated work.",
+    "- Ask before destructive operations or changes to public interfaces.",
+    "- Keep secrets out of code, logs, and generated files.",
+    "",
+    "## Verification",
+    ...(test.trim()
+      ? [`- Test command: ${test.trim()}`]
+      : ["- Identify and run the relevant test command for the change."]),
+    ...(build.trim() ? [`- Build command: ${build.trim()}`] : []),
+    "- Verify changed behavior and report what was checked, including any failures or skipped checks.",
+    "- Summarize the changes and any remaining limitations.",
+  ].join("\n");
+  const control =
+    "mt-2 w-full rounded-md border border-border-strong bg-bg-page p-3 text-sm text-fg-primary";
+
   return (
-    <InteractivePlaceholder
-      icon={Settings2}
-      title="Config Generator"
-      tagline="Generate Cursor project rules, CLAUDE.md, or AGENTS.md for your project"
-      description="Answer a few questions about your project (framework, team size, AI tools, coding conventions) and get a generated config file ready to copy into your repo. Encodes your conventions so agents follow them automatically — no more repeating yourself in every prompt."
-      preview={<Preview />}
-      accentColor="text-orange-400"
-      borderColor="border-orange-400/30"
-    />
+    <div className="not-prose my-8 overflow-hidden rounded-xl border border-border-strong bg-bg-surface">
+      <div className="flex items-center gap-3 border-b border-border-default px-5 py-4">
+        <Settings2 aria-hidden="true" className="h-5 w-5 text-orange-700" />
+        <div>
+          <h3 className="font-mono text-sm font-semibold">Config Generator</h3>
+          <p className="mt-1 text-xs text-fg-secondary">
+            Project instructions from your choices. Review and copy when ready.
+          </p>
+        </div>
+      </div>
+      <div className="config-layout">
+        <div className="space-y-5">
+          <div>
+            <label htmlFor={`${id}-format`} className="text-sm font-medium">
+              Instruction file
+            </label>
+            <select
+              id={`${id}-format`}
+              name="format"
+              className={control}
+              value={format}
+              onChange={(event) =>
+                setFormat(event.target.value as keyof typeof FORMATS)
+              }
+            >
+              {Object.entries(FORMATS).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor={`${id}-stack`} className="text-sm font-medium">
+              Project stack
+            </label>
+            <select
+              id={`${id}-stack`}
+              name="stack"
+              className={control}
+              value={stack}
+              onChange={(event) => {
+                const next = event.target.value as keyof typeof STACKS;
+                setStack(next);
+                setTest(STACKS[next].test);
+                setBuild(STACKS[next].build);
+              }}
+            >
+              {Object.entries(STACKS).map(([value, preset]) => (
+                <option key={value} value={value}>
+                  {preset.label}
+                </option>
+              ))}
+            </select>
+            <p className="mt-2 text-xs text-fg-muted">
+              Changing stack resets the suggested test and build commands. Edit
+              them to match your project.
+            </p>
+          </div>
+          <div>
+            <label htmlFor={`${id}-test`} className="text-sm font-medium">
+              Test command
+            </label>
+            <input
+              id={`${id}-test`}
+              name="test-command"
+              className={control}
+              value={test}
+              onChange={(event) => setTest(event.target.value)}
+              autoComplete="off"
+              spellCheck={false}
+            />
+          </div>
+          <div>
+            <label htmlFor={`${id}-build`} className="text-sm font-medium">
+              Build command <span className="text-fg-muted">(optional)</span>
+            </label>
+            <input
+              id={`${id}-build`}
+              name="build-command"
+              className={control}
+              value={build}
+              onChange={(event) => setBuild(event.target.value)}
+              autoComplete="off"
+              spellCheck={false}
+            />
+          </div>
+          <div>
+            <label
+              htmlFor={`${id}-conventions`}
+              className="text-sm font-medium"
+            >
+              Your conventions{" "}
+              <span className="text-fg-muted">(one per line)</span>
+            </label>
+            <textarea
+              id={`${id}-conventions`}
+              name="conventions"
+              className={control}
+              rows={4}
+              value={conventions}
+              onChange={(event) => setConventions(event.target.value)}
+              placeholder="Use the existing design tokens…"
+              autoComplete="off"
+            />
+          </div>
+        </div>
+        <div className="min-w-0">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+            <label
+              htmlFor={`${id}-output`}
+              className="font-mono text-sm font-semibold break-all"
+            >
+              {FORMATS[format]}
+            </label>
+            <CopyButton
+              getText={() => output}
+              label="Copy instructions"
+              accentColor="emerald"
+            />
+          </div>
+          <textarea
+            id={`${id}-output`}
+            aria-label="Generated instructions"
+            className="config-output"
+            value={output}
+            readOnly
+            spellCheck={false}
+          />
+          <p className="mt-3 text-xs leading-relaxed text-fg-secondary">
+            Save as <code>{FORMATS[format]}</code> in your project root. Merge
+            with existing instructions if the file already exists. These
+            instructions guide an agent; they do not enforce permissions.
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
