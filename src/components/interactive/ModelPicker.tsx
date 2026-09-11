@@ -409,7 +409,7 @@ export function ModelPicker() {
 
       {/* Content */}
       <div className="px-5 py-5">
-        <AnimatePresence mode="wait">
+        <AnimatePresence initial={false} mode="wait">
           {isDone && ranking ? (
             <ResultScreen
               key="result"

@@ -333,7 +333,7 @@ function BrowseRecipes({ initialRecipeId }: { initialRecipeId?: string }) {
 
       {/* Recipe content */}
       <div className="px-3 py-4 sm:px-5 sm:py-5">
-        <AnimatePresence mode="wait">
+        <AnimatePresence initial={false} mode="wait">
           <motion.div
             key={recipe.id}
             initial={{ opacity: 0, y: 8 }}
@@ -654,7 +654,7 @@ function HelpMeChoose() {
 
       {/* Content */}
       <div className="px-3 py-5 sm:px-5">
-        <AnimatePresence mode="wait">
+        <AnimatePresence initial={false} mode="wait">
           {result ? (
             <ResultCard
               key="result"
@@ -721,7 +721,7 @@ export function WorkflowRecipe({ initialMode = "browse", initialRecipeId }: { in
       <ModeToggle mode={mode} onChange={setMode} options={RECIPE_MODE_OPTIONS} accent="emerald" />
 
       {/* Content */}
-      <AnimatePresence mode="wait">
+      <AnimatePresence initial={false} mode="wait">
         <motion.div
           key={mode}
           initial={{ opacity: 0, y: 6 }}

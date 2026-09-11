@@ -265,7 +265,7 @@ describe("MDX component registration", () => {
   const registryPath = path.join(ROOT, "src/lib/mdxComponents.tsx");
   const registrySource = fs.readFileSync(registryPath, "utf-8");
   const registeredComponents = new Set(
-    [...registrySource.matchAll(/^\s{2}(\w+),?\s*$/gm)].map((m) => m[1])
+    [...registrySource.matchAll(/^\s{2}(\w+)(?:,?\s*$|\s*:)/gm)].map((m) => m[1])
   );
 
   it("every JSX component used in MDX body is registered in MDX_COMPONENTS", () => {

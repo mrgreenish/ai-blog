@@ -69,7 +69,7 @@ function SusceptibilityRow({
   if (susceptible.length === 0) return null;
 
   return (
-    <AnimatePresence>
+    <AnimatePresence initial={false}>
       {revealed && (
         <motion.div
           initial={{ opacity: 0, height: 0 }}
@@ -187,7 +187,7 @@ function FailureCard({ failure }: { failure: FailureCase }) {
         </div>
 
         {/* Explanation — revealed after click */}
-        <AnimatePresence>
+        <AnimatePresence initial={false}>
           {revealed && (
             <motion.div
               initial={{ opacity: 0, y: 6 }}
@@ -338,7 +338,7 @@ export function FailureGallery() {
 
       {/* Failure cards */}
       <div className="px-3 py-4 sm:px-5 sm:py-5">
-        <AnimatePresence mode="wait">
+        <AnimatePresence initial={false} mode="wait">
           <motion.div
             key={activeCategory}
             initial={{ opacity: 0, y: 8 }}

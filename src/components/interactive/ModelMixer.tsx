@@ -137,6 +137,7 @@ export function QuickEstimate() {
           {SCENARIOS.map((s) => (
             <button
               key={s.id}
+              aria-pressed={s.id === scenarioId}
               onClick={() => setScenarioId(s.id)}
               className={`rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors sm:px-3 sm:py-1.5 sm:text-xs ${
                 s.id === scenarioId
@@ -165,6 +166,7 @@ export function QuickEstimate() {
             {FREQUENCIES.map((f) => (
               <button
                 key={f.id}
+                aria-pressed={f.id === frequencyId}
                 onClick={() => setFrequencyId(f.id)}
                 className={`rounded-md border px-2.5 py-1 font-mono text-[11px] transition-colors ${
                   f.id === frequencyId
@@ -188,7 +190,7 @@ export function QuickEstimate() {
             return (
               <motion.div
                 key={m.id}
-                initial={{ opacity: 0, y: 6 }}
+                initial={false}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.03, duration: 0.2 }}
                 className="flex items-center gap-2 sm:gap-3"
@@ -723,10 +725,10 @@ export function ModelMixer({ initialMode = "estimate" }: { initialMode?: MixerMo
       <ModeToggle mode={mode} onChange={setMode} options={MIXER_MODE_OPTIONS} accent="violet" />
 
       {/* Content */}
-      <AnimatePresence mode="wait">
+      <AnimatePresence initial={false} mode="wait">
         <motion.div
           key={mode}
-          initial={{ opacity: 0, y: 6 }}
+          initial={false}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -6 }}
           transition={{ duration: 0.2, ease: "easeOut" }}

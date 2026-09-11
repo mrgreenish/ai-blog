@@ -19,7 +19,7 @@ import "./globals.css";
 
 const sourceSerif = localFont({
   src: "../../node_modules/@fontsource-variable/source-serif-4/files/source-serif-4-latin-wght-normal.woff2",
-  variable: "--font-sans",
+  variable: "--font-editorial",
   weight: "200 900",
   display: "swap",
 });
@@ -29,11 +29,17 @@ const jetbrainsMono = localFont({
   weight: "100 800",
   display: "swap",
 });
+const geist = localFont({
+  src: "../../node_modules/@fontsource-variable/geist/files/geist-latin-wght-normal.woff2",
+  variable: "--font-geist",
+  weight: "100 900",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   verification: {
-    google: 'DSxzN72M1D6zBRCYXu4IzX0qj7Tj5zBeU5fxOi4qD9w'
+    google: "DSxzN72M1D6zBRCYXu4IzX0qj7Tj5zBeU5fxOi4qD9w",
   },
   title: {
     default: SITE_NAME,
@@ -110,7 +116,10 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className={`${sourceSerif.variable} ${jetbrainsMono.variable}`}>
+    <html
+      lang="en"
+      className={`${geist.variable} ${sourceSerif.variable} ${jetbrainsMono.variable}`}
+    >
       <body className="min-h-screen antialiased text-fg-primary bg-bg-page">
         <JsonLd data={websiteJsonLd} />
         <a
@@ -120,7 +129,9 @@ export default function RootLayout({
           Skip to content
         </a>
         <Header />
-        <main id="main" className="relative pt-14">{children}</main>
+        <main id="main" tabIndex={-1} className="site-main">
+          {children}
+        </main>
         <Footer />
         <Analytics />
       </body>

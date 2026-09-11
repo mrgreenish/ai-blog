@@ -408,7 +408,7 @@ export function ScenarioLab() {
 
       {/* Active scenario */}
       <div className="px-3 py-4 sm:px-5 sm:py-5">
-        <AnimatePresence mode="wait">
+        <AnimatePresence initial={false} mode="wait">
           <ScenarioView key={activeId} scenario={activeScenario} />
         </AnimatePresence>
       </div>
