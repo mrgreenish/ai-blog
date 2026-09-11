@@ -1,0 +1,18 @@
+---
+title: "Astra raises the bar for a finished task"
+publishedAt: '2026-09-03'
+lastVerifiedAt: '2026-09-11'
+primarySourceUrl: 'https://developers.openai.com/api/docs/models/gpt-6-astra'
+indexable: true
+---
+“Fix the bug” can mean a patch. It can also mean finding the cause, checking the patch in the browser, running the tests, and leaving enough evidence for someone else to review it. **GPT-6 Astra** is OpenAI's new model for that longer job.
+
+The [API changelog](https://developers.openai.com/api/docs/changelog) records the release and describes a model that combines reasoning, coding, computer use, research, and document creation. That is a useful direction, but a finished task still needs an agreed finish line. A confident report is not evidence that the browser flow works.
+
+The API model is `gpt-6-astra`. It supports text and image input, text output, a **1,050,000-token context**, and up to 128,000 output tokens. Reasoning effort runs from `low` through `max`; `none` is not supported. Audio and video are not native input modalities for this endpoint. [Astra specifications](https://developers.openai.com/api/docs/models/gpt-6-astra).
+
+At **$10 input / $50 output per million tokens**, Astra costs more per token than Sol. Prompts above 272K input tokens also trigger higher rates for the full request. Our [context calculator](/chapters/max-mode) includes those thresholds. OpenAI's guide reports examples where fewer output tokens reduce the cost of a completed task, but that is something to test on your workload. [Pricing](https://developers.openai.com/api/docs/pricing), [model guide](https://developers.openai.com/api/docs/guides/latest-model).
+
+There is another change worth keeping in view: the GPT-5.6 tiers are cheaper now. Luna is $0.20 / $1.20, Terra $2 / $12, and Sol $4 / $20 per million input/output tokens at standard short-context rates. Astra's arrival does not remove those choices.
+
+Try the migration that your normal model keeps getting stuck on. Keep the acceptance tests intact, record the total spend, and review the actual artifact. Astra is now in the site's tools, with its local benchmark results marked “not tested.” A new release deserves a fair trial before it earns a default.

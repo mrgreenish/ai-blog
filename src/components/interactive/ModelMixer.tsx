@@ -7,7 +7,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(useGSAP);
-import { getMixerModels, getCostCalculatorModels, PRICING_META } from "@/lib/modelSpecs";
+import { getMixerModels, getCostCalculatorModels, estimateModelCost, PRICING_META } from "@/lib/modelSpecs";
 import type { Tier } from "@/lib/modelSpecs";
 import { ModeToggle } from "@/components/ui/WorkflowPrimitives";
 
@@ -94,9 +94,6 @@ const FREQUENCIES: Frequency[] = [
   { id: "50x", label: "50×/day", runsPerDay: 50 },
 ];
 
-function calcPerRun(perM_in: number, perM_out: number, inputTokens: number, outputTokens: number): number {
-  return (inputTokens / 1_000_000) * perM_in + (outputTokens / 1_000_000) * perM_out;
-}
 
 function formatEstimateCost(n: number): string {
   if (n === 0) return "$0.00";
@@ -118,7 +115,7 @@ export function QuickEstimate() {
   const frequency = FREQUENCIES.find((f) => f.id === frequencyId) ?? FREQUENCIES[2];
 
   const rows = COST_MODELS.map((m) => {
-    const perRun = calcPerRun(m.perM_in, m.perM_out, scenario.inputTokens, scenario.outputTokens);
+    const perRun = estimateModelCost(m.id, scenario.inputTokens, scenario.outputTokens);
     const monthly = perRun * frequency.runsPerDay * 30;
     return { ...m, perRun, monthly };
   }).sort((a, b) => a.monthly - b.monthly);
@@ -256,7 +253,7 @@ export function QuickEstimate() {
             </span>
           ))}
         </p>
-        <p className="mt-1 text-[11px] text-fg-muted">{PRICING_META.notes[0]}</p>
+        <p className="mt-1 text-[11px] text-fg-muted">{PRICING_META.notes.join(" ")}</p>
       </div>
     </>
   );
@@ -324,7 +321,7 @@ const TEMPLATES: Template[] = [
     id: "spec-to-pr",
     label: "Spec to PR",
     steps: [
-      { id: "plan", label: "Plan", description: "Break spec into files, decisions, approach", defaultTier: "reasoning", defaultModelId: "claude-fable-5", recommendedModelId: "claude-fable-5", inputTokens: 1500, outputTokens: 2000 },
+      { id: "plan", label: "Plan", description: "Break spec into files, decisions, approach", defaultTier: "reasoning", defaultModelId: "claude-fable-5.1", recommendedModelId: "claude-fable-5.1", inputTokens: 1500, outputTokens: 2000 },
       { id: "implement", label: "Implement", description: "Write the code against the plan", defaultTier: "balanced", defaultModelId: "gpt-5.6-terra", recommendedModelId: "gpt-5.6-terra", inputTokens: 2000, outputTokens: 4000 },
       { id: "review-arch", label: "Review", description: "Architecture review, catch mistakes", defaultTier: "reasoning", defaultModelId: "gpt-5.6-sol", recommendedModelId: "gpt-5.6-sol", inputTokens: 4000, outputTokens: 1500 },
       { id: "pr-desc", label: "PR description", description: "Write PR description from spec + diff", defaultTier: "fast", defaultModelId: "gpt-5.6-luna", recommendedModelId: "gpt-5.6-luna", inputTokens: 2000, outputTokens: 1000 },
@@ -341,7 +338,7 @@ const TIER_COLORS: Record<Tier, { text: string; bg: string; border: string; labe
 };
 
 function calcStepCost(model: Model, step: PipelineStep): number {
-  return (step.inputTokens / 1_000_000) * model.inputPer1M + (step.outputTokens / 1_000_000) * model.outputPer1M;
+  return estimateModelCost(model.id, step.inputTokens, step.outputTokens);
 }
 
 function calcTotalCost(assignments: Record<string, string>, steps: PipelineStep[]): number {
@@ -525,7 +522,7 @@ function PipelineBuilder() {
     template.steps
   ), [template]);
   const fableCostBase = useMemo(() => calcTotalCost(
-    Object.fromEntries(template.steps.map((s) => [s.id, "claude-fable-5"])),
+    Object.fromEntries(template.steps.map((s) => [s.id, "claude-fable-5.1"])),
     template.steps
   ), [template]);
 
@@ -634,7 +631,7 @@ function PipelineBuilder() {
             colorClass="bg-blue-400"
           />
           <PipelineCostBar
-            label={retries === 1 ? "All Fable 5" : `All Fable (${retries} attempts)`}
+            label={retries === 1 ? "All Fable 5.1" : `All Fable (${retries} attempts)`}
             cost={fableCost}
             maxCost={maxCost}
             colorClass="bg-stone-300"

@@ -1,0 +1,18 @@
+---
+title: "Gemini 3.8 Flash spends more effort on the job"
+publishedAt: '2026-09-02'
+lastVerifiedAt: '2026-09-11'
+primarySourceUrl: 'https://blog.google/innovation-and-ai/models-and-research/gemini-models/3-8-flash-and-3-8-flash-cyber/'
+indexable: true
+---
+A cheap model calls a tool six more times before answering. Is it still cheap? **Gemini 3.8 Flash**, released September 2, makes that question worth measuring.
+
+Google says the new Flash puts more effort into difficult tasks: extra reasoning, more tool calls, and potentially more tokens. It follows 3.7 Flash, which remains supported for workloads where efficiency matters more. The launch benchmarks are Google's evidence for trying it, not proof that it will finish your particular feature with less rework. [Google's announcement](https://blog.google/innovation-and-ai/models-and-research/gemini-models/3-8-flash-and-3-8-flash-cyber/).
+
+The API accepts text, images, video, audio, and PDFs, and returns text. Its input limit is 1,048,576 tokens, with up to 65,536 output tokens. Function calling and structured outputs are supported; computer use is in preview. Thinking levels are `low`, `medium`, and `high`. If an older integration sends `minimal`, it will get an error. [Model documentation](https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash).
+
+That makes a concrete comparison possible: give it the same bug report, screenshots, and logs as your existing model. Check whether it identifies the cause and produces a patch that passes the unchanged test. Then compare elapsed time and total tokens, including thinking.
+
+Introductory API pricing is **$0.75 input / $3.75 output per million tokens through December 31, 2026**. Google lists $1.50 / $7.50 from January 1, 2027. The site's calculators apply that date boundary rather than treating the launch discount as permanent. [Google API pricing](https://ai.google.dev/gemini-api/docs/pricing).
+
+Google also released **3.8 Flash Cyber**, available to trusted defenders through Fairwind. That access restriction matters: the public Flash endpoint and the Cyber variant are separate options. The tools here cover the public model. See the [updated model profiles](/chapters/model-personalities) for the working shortlist.

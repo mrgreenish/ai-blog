@@ -2,7 +2,7 @@
 title: "Model Personalities"
 subtitle: "How different models approach the same task, and when to lean into that"
 publishedAt: "2026-04-17"
-updatedAt: "2026-07-29"
+updatedAt: "2026-09-11"
 relatedSlugs: [reasoning-vs-fast, prompting-and-pitfalls, spec-to-pr]
 chapter: 2
 part: understanding-models
@@ -22,11 +22,11 @@ This is model personality. Not benchmark scores — those tell you what a model 
 
 Two models with the same benchmark scores can produce wildly different results. The one that fits your task isn't always the smartest — it's the one whose instincts align with what you actually want.
 
-These profiles describe tendencies I've observed in coding sessions, not fixed traits. A model update, different prompt, stronger project rules, another tool harness, or a different evaluation can change the behavior substantially. Use the profiles as hypotheses to test, not labels to trust blindly.
+The older profiles describe tendencies from coding sessions. The September additions are based on provider documentation and are starting hypotheses, not new hands-on test results. A model update, different prompt, stronger project rules, another tool harness, or a different evaluation can change the behavior substantially. Use the profiles as hypotheses to test, not labels to trust blindly.
 
 <ModelTinder />
 
-## Gemini: the careful one
+## Earlier Gemini sessions: the careful one
 
 **Google · Conservative · Best for: Production refactors**
 
@@ -40,11 +40,23 @@ In long sessions with large contexts, it stays level. Doesn't drift or get "crea
 
 Where it falls short: it won't push back on your approach, suggest alternatives, or notice you're solving the wrong problem. Reliable executor, not a thought partner.
 
+## Gemini 3.8 Flash: a broader working model
+
+Google now positions Flash for sustained coding and agent work. That is a reason to revisit the older profile above: a new version need not behave like the model from an earlier session. The [3.8 API](https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash) accepts images, video, audio, PDFs, and text, and returns text. Thinking supports low, medium, and high; `minimal` is not supported.
+
+Try it on work with mixed inputs, such as a bug report with screenshots and logs. Measure whether it finishes cleanly and how many tokens it uses. Google explicitly says the model can spend more tokens on difficult tasks, so the Flash name alone does not tell you the bill.
+
+## DeepSeek-V4.1-Flash: cheap enough to compare
+
+[DeepSeek's current API](https://api-docs.deepseek.com/quick_start/pricing/) adds native vision to its low-cost Flash option. It supports thinking and non-thinking modes, tool calls, and a million-token context. Use `deepseek-flash`; the older V4-Flash aliases now serve V4.1.
+
+The practical test is a small, checkable task: pass it the same failing case as your current model and compare the patch. Its price changes between peak and off-peak hours. Our calculators use peak uncached rates so a budget does not depend on when the job runs.
+
 ## GPT-5.6 Luna: the fast operator
 
 **OpenAI · Fast · Best for: Narrow, verifiable work**
 
-Luna is the cheapest and fastest GPT-5.6 tier: $1 / $6 per million input/output tokens. Give it a small fix, a test failure, a summary, or one mechanical pipeline step and it gets to the artifact quickly without turning the task into a research project.
+Luna is the lowest-cost GPT-5.6 tier. Its [current API rates](https://developers.openai.com/api/docs/models/gpt-5.6-luna) are $0.20 / $1.20 per million input/output tokens. Give it a small fix, a test failure, a summary, or one mechanical pipeline step and it gets to the artifact quickly without turning the task into a research project.
 
 Its best operating environment has a clear finish line. "Change this prop and run these tests" is Luna-shaped. "Redesign this subsystem and decide what good looks like" is not. Use it as the worker in a guarded loop and escalate when the evidence becomes ambiguous.
 
@@ -54,7 +66,7 @@ Where it falls short: strategy and depth. Luna can execute a good plan, but it s
 
 **OpenAI · Balanced · Best for: Everyday implementation**
 
-Terra is the new daily-driver GPT: competitive with GPT-5.5 at roughly half the token price, $2.50 / $15. It has enough reasoning, context, and tool use for normal multi-file features, research, and verification loops, without making every Tuesday task a flagship-model run.
+Terra is the everyday GPT-5.6 option, now priced at $2 / $12 per million input/output tokens in the [OpenAI API](https://developers.openai.com/api/docs/pricing). It has enough reasoning, context, and tool use for normal multi-file features, research, and verification loops, without making every Tuesday task a flagship-model run.
 
 Its personality is measured autonomy. It fills reasonable gaps, states consequential assumptions, runs the checks, and usually keeps the diff proportional to the request. Start here for normal coding work; drop to Luna when the step is mechanical, or move up to Sol when the problem keeps branching.
 
@@ -64,7 +76,7 @@ Where it falls short: the last layer of difficult reasoning. For high-consequenc
 
 **OpenAI · Frontier agent · Best for: Long autonomous loops**
 
-Sol is the strongest GPT-5.6 tier and OpenAI's current flagship for complex coding, computer use, science, research, and security work. It leads Terminal-Bench 2.1, can use Max reasoning for difficult problems, and can coordinate subagents in Ultra mode. The practical difference from GPT-5.5 is persistence: give it the outcome and tools, and it is unusually good at staying in the loop until the result runs.
+Sol remains the strongest GPT-5.6 tier, with Astra now above it in OpenAI's lineup. Sol supports high-effort reasoning and tool use for complex work. The practical difference from GPT-5.5 is persistence: give it the outcome and tools, and it is unusually good at staying in the loop until the result runs.
 
 That autonomy needs a real finish line. METR observed the highest reward-hacking rate it had measured in a public model on its ReAct harness. Sol sometimes found weaknesses in the evaluation environment instead of solving the intended task. In production, keep success conditions external, hide the checks that must remain hidden, and inspect the artifact rather than trusting a self-reported pass.
 
@@ -74,7 +86,7 @@ Where it falls short: cheap work and soft evals. Sol is excellent, but Luna or T
 
 **Anthropic · Proactive · Best for: Feature design**
 
-In my sessions, Claude has been more willing to push back, suggest alternatives, notice adjacent bugs, and restructure code to be "better" — even when I wanted a simple change. Sonnet 5 is also more agentic than its predecessor: it can plan, use browsers and terminals, check its own work, and carry multi-step coding tasks through to verification. It keeps the 1M context window and adds adjustable effort levels, with introductory API pricing of $2 / $10 per million tokens through August 31 before returning to the usual Sonnet rate of $3 / $15.
+In my sessions, Claude has been more willing to push back, suggest alternatives, notice adjacent bugs, and restructure code to be "better" — even when I wanted a simple change. Sonnet 5 is also more agentic than its predecessor: it can plan, use browsers and terminals, check its own work, and carry multi-step coding tasks through to verification. It keeps the 1M context window and adds adjustable effort levels, with standard API pricing of $2 / $10 per million tokens. Anthropic [cancelled the planned September price increase](https://platform.claude.com/docs/en/about-claude/pricing).
 
 It might suggest a better API surface, flag that your data model will break at scale, or restructure code in a way you hadn't considered. Creative by instinct.
 
@@ -86,17 +98,21 @@ On the upside, it gives the clearest explanations of any model. Connects your sp
 
 Where it falls short: scope creep. Its instinct to be helpful means it expands tasks. Fix it with explicit constraints in your prompt or `CLAUDE.md`.
 
-## Claude Fable 5: the marathon thinker
+## GPT-6 Astra: evaluate the whole task
 
-**Anthropic · Maximum depth · Best for: Architecture and multi-day projects**
+[OpenAI's Astra guide](https://developers.openai.com/api/docs/guides/latest-model) focuses on work that crosses code, browsers, and other software. A useful trial is a task with several connected deliverables: investigate a bug, patch it, run the checks, and produce a readable explanation of the result.
 
-Fable is what comes after Opus 4.8 when the problem is not just hard but long. Anthropic positions it for ambitious migrations, complex implementations, and asynchronous projects that can run for days. It plans across stages, delegates to subagents, writes tests, challenges its own assumptions, and checks the output against the goal.
+The API supports text and image input, a 1.05M-token context, and reasoning effort from low through max. The model does not itself accept audio or video. A surrounding product may supply additional tools; that is a separate capability.
 
-It is the best fit when understanding the system is the task: a migration with mixed-version compatibility, a subtle architecture decision, or a project where the rollback plan matters as much as the happy path. At $10 / $50 per million tokens, it should create leverage, not boilerplate.
+Astra is expensive per token. Use the same acceptance checks as Sol or Terra and compare total cost and rework before changing a default.
 
-Fable also has deliberate safety boundaries. Flagged cybersecurity and biology requests can route to Opus 4.8, so it is not simply an unrestricted replacement for every old Opus workflow.
+## Claude Fable 5.1: the cache matters
 
-Where it falls short: ordinary implementation. Once Fable has made a decision-complete plan, Terra, Sonnet, or Composer can often execute it for much less.
+[Anthropic recommends Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview) for demanding reasoning and long agent tasks, particularly when higher-effort Opus 5 runs still fall short. Its million-token context and always-on adaptive thinking are useful ingredients for a difficult migration or investigation.
+
+The base input and output prices match Fable 5. The change is cached input: reading a reused prefix is cheaper. That can help an agent that keeps returning to the same specification and repository context; it does little for requests that start from scratch every time.
+
+Set the scope and acceptance checks before a long run. The [release notes](/chapters/what-is-happening/2026-09-01-01-fable-5-1-makes-repeated-context-cheaper) cover the new cache rate and the distinction between Fable and restricted Mythos access.
 
 ## Claude Opus 5: the rigorous reviewer
 
@@ -114,7 +130,9 @@ Where it falls short: routine implementation and high-volume work. Use a lighter
 
 Kimi K3 is built for long-horizon coding and end-to-end knowledge work. Its 1,048,576-token context window can hold a large codebase or document set, and native visual understanding lets screenshots, diagrams, code, and prose stay in one workflow. It always reasons, with low, high, and max effort settings rather than a separate non-thinking mode.
 
-At API rates of $3 per million cache-miss input tokens and $15 per million output tokens, it sits near the balanced frontier tier; automatic context caching lowers repeated input to $0.30 per million tokens. That makes it especially interesting for agents that repeatedly carry a stable repository or specification across turns.
+At API rates of $3 per million cache-miss input tokens and $15 per million output tokens, it costs more per token than Sonnet 5 today; automatic context caching lowers repeated input to $0.30 per million tokens. That makes it especially interesting for agents that repeatedly carry a stable repository or specification across turns.
+
+The [weights are now published](https://huggingface.co/moonshotai/Kimi-K3) under the Kimi K3 license. That makes open-weight deployment possible; hardware requirements and the license still need checking for your use.
 
 Where it falls short: small, latency-sensitive work. Always-on reasoning is useful when the task branches, but it is unnecessary overhead for a one-line edit with an obvious test.
 
@@ -128,14 +146,14 @@ Give it a task spanning multiple files with verification — "add this feature, 
 
 It also self-corrects. Observes the results of its own actions, catches mistakes a non-agentic model would leave for you. Sees the TypeScript error, understands it in context, fixes it — no copy-pasting errors back into a prompt.
 
-Not limited to open files either. It navigates the project, finds relevant files, and makes coordinated changes across many of them. On current individual plans it draws from the Cursor Models pool, alongside Grok 4.5, rather than the separate Other Models pool.
+Not limited to open files either. It navigates the project, finds relevant files, and makes coordinated changes across many of them. On current individual plans it draws from the Cursor Models pool, alongside Grok 4.6 and Grok 4.5, rather than the separate Other Models pool.
 
-Cursor's May 2026 launch results reported **79.8% on SWE-Bench Multilingual** and **63.2% on CursorBench v3.1**. A later Cursor audit measured 79.15% raw on SWE-Bench Multilingual and 71.60% after correcting reward-hacking contamination, a useful reminder that benchmark claims need scrutiny even when the vendor publishes them. Behaviorally, users on the forum describe it as more willing to collaborate than Composer 2. The lingering gripe is inconsistent thinking depth — sometimes a "please think harder" nudge is needed before it commits to a deep answer.
+Cursor's [May 2026 launch post](https://cursor.com/blog/composer-2-5) presents its benchmark results as an improvement over Composer 2 and says the new model follows complex instructions more reliably. Those are vendor results from Cursor's harness, so use them as a reason to run the same task against your current model, not as a universal ranking.
 
-Where it falls short: autonomy still has a cost, and GPT-5.6 Sol now leads the long autonomous-loop tier. Composer remains the value choice inside Cursor; use Sol when the task must cross more tools and sustain the hardest loop. Short task scopes and frequent checkpoints are still useful for high-stakes work.
+Where it falls short: autonomy still has a cost, and a low token rate does not guarantee a cheap completed task. Compare Composer with Sol, Astra, or Fable 5.1 when a task keeps stalling. Short task scopes and frequent checkpoints are still useful for high-stakes work.
 
 ## How personality affects prompting
 
-Match your prompt style to the model's instincts. Be explicit with Gemini — it won't infer intent. Give Luna a narrow step and a check, Terra the normal implementation loop, and Sol a hardened success condition. Set hard scope limits with proactive Claude models, and use Fable only when the reasoning horizon justifies it. Give Composer 2.5 a clear success condition and let it run, but check in at breakpoints.
+Match your prompt style to the model's instincts. Be explicit about scope with every model; newer Flash versions are designed to take more initiative. Give Luna a narrow step and a check, Terra the normal implementation loop, and Sol a hardened success condition. Set hard scope limits with proactive Claude models, and use Fable only when the reasoning horizon justifies it. Give Composer 2.5 a clear success condition and let it run, but check in at breakpoints.
 
 The right model isn't the smartest one — it's the one whose personality fits the task.

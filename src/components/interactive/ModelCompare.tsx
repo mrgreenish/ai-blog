@@ -31,13 +31,13 @@ function formatK(n: number) {
 
 const COLUMNS = getDevBenchmarkColumns();
 
-function Pass({ val }: { val: boolean | null }) {
+function Pass({ val, positive }: { val: boolean | null; positive: boolean }) {
   if (val === null) {
     return <span className="font-mono text-xs text-stone-400">— not tested</span>;
   }
   return (
-    <span className={`font-mono text-xs ${val ? "text-red-600" : "text-emerald-600"}`}>
-      {val ? "✗ fail" : "✓ pass"}
+    <span className={`font-mono text-xs ${val === positive ? "text-emerald-600" : "text-red-600"}`}>
+      {val === positive ? "✓ pass" : "✗ fail"}
     </span>
   );
 }
@@ -105,7 +105,7 @@ function CombinedPreview() {
             })}
           </div>
           <p className="mt-2 text-xs text-stone-400">
-            Answers &quot;will this fit?&quot; before you hit the limit mid-task.
+            Provider API limits. Leave room for the response and tool history; editor limits can differ.
           </p>
         </div>
       ) : (
@@ -128,7 +128,7 @@ function CombinedPreview() {
                     <td className="py-2 pr-4 text-stone-500 leading-tight">{c.check}</td>
                     {COLUMNS.map((col) => (
                       <td key={col.id} className="py-2 text-center px-3">
-                        <Pass val={col.benchmark[c.key]} />
+                        <Pass val={col.benchmark[c.key]} positive={c.key === "correctServerAction" || c.key === "followedConstraints"} />
                       </td>
                     ))}
                   </tr>
@@ -137,7 +137,7 @@ function CombinedPreview() {
             </table>
           </div>
           <p className="mt-2 text-xs text-stone-400">
-            Project checks, not leaderboard scores. “Not tested” means no local result has been recorded yet.
+            Older project checks are retained without original run logs. “Not tested” means no local result is recorded for that version.
           </p>
         </div>
       )}

@@ -1,0 +1,18 @@
+---
+title: "DeepSeek V4.1 Flash changes the endpoint and the bill"
+publishedAt: '2026-09-10'
+lastVerifiedAt: '2026-09-11'
+primarySourceUrl: 'https://www.deepseek.com/en/news/deepseek-v4-1-flash/'
+indexable: true
+---
+If your app still sends `deepseek-v4-flash`, the name no longer tells you which model answers. DeepSeek has retired V4-Flash and routes its compatibility aliases to **DeepSeek-V4.1-Flash**. The current API name is `deepseek-flash`.
+
+The September 10 release adds native visual understanding. DeepSeek describes a 552B-parameter mixture-of-experts model with an asymmetric encoder–decoder: 8B active parameters on the input side and 16B on the output side. Those are the provider's architecture figures, not a claim that the full checkpoint fits on a small machine. [Release announcement](https://www.deepseek.com/en/news/deepseek-v4-1-flash/).
+
+For an application, the more immediate details are vision, tool calls, JSON output, and both thinking and non-thinking modes. The API lists a million-token context and up to 384K output tokens. [Current API documentation](https://api-docs.deepseek.com/quick_start/pricing/).
+
+Pricing depends on when the request runs. Peak uncached input/output rates are **$0.30 / $1.20 per million tokens**; off-peak rates are half. Peak hours are 01:00–04:00 and 06:00–10:00 UTC on weekdays. The site uses peak rates for its estimates, so a budget does not quietly assume overnight execution.
+
+One detail has already changed since the announcement. The original post said V4 Pro requests would be rerouted after September 14. The live API docs now say **V4 Pro service will continue, with billing unchanged**. Use that current statement when planning a migration rather than assuming the original retirement plan still applies.
+
+The practical next step is a replay of representative requests. A compatible endpoint can still produce different tool choices, reasoning lengths, or patches. Compare those against the old behavior before directing a production workload to the new model. The [model tools](/chapters/reasoning-vs-fast) include V4.1 Flash; the older V4 examples keep their version labels.

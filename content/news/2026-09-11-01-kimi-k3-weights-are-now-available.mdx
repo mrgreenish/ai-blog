@@ -1,0 +1,16 @@
+---
+title: "Kimi K3's weights are now available"
+publishedAt: '2026-09-11'
+lastVerifiedAt: '2026-09-11'
+primarySourceUrl: 'https://huggingface.co/moonshotai/Kimi-K3'
+indexable: false
+---
+The [July Kimi K3 note](/chapters/what-is-happening/2026-07-16-01-kimi-k3-brings-a-2-8t-open-weight-model-into-the-frontier-conversation) ended with a question: would the promised weights arrive? They are now in [Moonshot's official repository](https://huggingface.co/moonshotai/Kimi-K3), alongside the model card and deployment guidance.
+
+K3 has 2.8 trillion total parameters, 104 billion active parameters, native vision, and a 1,048,576-token context. The weights use the **Kimi K3 license**. “Open-weight” is the useful description here; inspect the license and hardware requirements before treating this as a deployment option for your team.
+
+The hosted API remains **$3 input / $15 output per million tokens**, with cached input at $0.30. Those are [Moonshot's listed rates](https://platform.kimi.ai/), not a prediction of self-hosting costs.
+
+For coding agents, the integration details matter as much as the download. Moonshot says to preserve the full assistant message across turns and avoid switching to K3 midway through a conversation with another model. It supports `low`, `high`, and `max` reasoning effort. [Official integration notes](https://forum.moonshot.ai/t/kimi-k3-is-here-our-most-capable-model/480).
+
+K3 was already in the site's model tools. This update corrects the earlier “weights coming soon” status and keeps it in the current comparisons. The new choice is whether running the weights gives you enough control to justify the deployment work; the API is still the simpler way to evaluate the model itself.

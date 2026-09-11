@@ -162,6 +162,35 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
     if (points !== 0) dims.push({ dimension, points, reason });
   }
 
+  // Editorial suitability scores, not measured benchmark results.
+  if (modelId === "gpt-6-astra" || modelId === "claude-fable-5.1") {
+    const astra = modelId === "gpt-6-astra";
+    dim("task", task === "reasoning" ? 7 : task === "coding" ? 6 : task === "analysis" ? 6 : task === "vision" && astra ? 4 : 2,
+      "Provider positions this model for difficult reasoning and sustained work; verify on your own task");
+    dim("scope", scope === "autonomous" ? (astra ? 8 : 7) : scope === "architecture" ? (astra ? 6 : 8) : scope === "multifile" ? 6 : -5,
+      "Large context and tool support suit work spanning several stages");
+    dim("stakes", stakes === "critical" ? 7 : stakes === "production" ? 4 : -4,
+      "Use explicit acceptance checks before trusting a consequential result");
+    dim("priority", priority === "accuracy" ? 7 : priority === "speed" ? -6 : -3,
+      "Premium rates only make sense when a lighter model falls short");
+    dim("autonomy", autonomy === "drive" ? 7 : autonomy === "gaps" ? 4 : -4,
+      "A candidate for sustained execution with review checkpoints");
+  }
+
+  if (modelId === "gemini-3.8-flash" || modelId === "deepseek-v4.1-flash") {
+    const gemini = modelId === "gemini-3.8-flash";
+    dim("task", task === "vision" ? (gemini ? 7 : 5) : task === "coding" ? 4 : task === "analysis" ? 4 : 2,
+      gemini ? "Supports images, audio, video, PDFs, and text as input" : "Native vision with tool calls and JSON output");
+    dim("scope", scope === "targeted" ? 4 : scope === "multifile" ? 4 : scope === "autonomous" ? 3 : 1,
+      "Million-token capacity for broad input; keep the working context relevant");
+    dim("stakes", stakes === "internal" ? 4 : stakes === "prototype" ? 3 : stakes === "production" ? 2 : -2,
+      "Start with tasks whose output you can check cheaply");
+    dim("priority", priority === "balance" ? 5 : priority === "speed" ? (gemini ? 4 : 3) : 1,
+      "Lower token rates than flagship reasoning models; task latency still needs testing");
+    dim("autonomy", autonomy === "targeted" ? 3 : autonomy === "gaps" ? 3 : 2,
+      "Tool support enables an agent loop when the surrounding harness provides it");
+  }
+
   if (modelId === "gemini-flash") {
     dim("task", task === "coding" ? 2 : task === "reasoning" ? 1 : task === "vision" ? 3 : 0,
       task === "vision" ? "Literal-minded — describes what's there, not what it thinks should be there"
@@ -273,7 +302,7 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
     dim("stakes", stakes === "production" ? 3 : stakes === "critical" ? 3 : stakes === "prototype" ? -3 : 0,
       stakes === "production" ? "Strong context and tool support fit production workflows with external verification" : "");
     dim("priority", priority === "accuracy" ? 4 : priority === "balance" ? 3 : priority === "speed" ? -4 : 0,
-      priority === "balance" ? "$3/$15 pricing puts flagship long-context reasoning near the balanced tier"
+      priority === "balance" ? "Flat rates across the full context window avoid a long-context surcharge"
       : priority === "speed" ? "Always-on reasoning is a poor fit when raw latency is the priority" : "");
     dim("autonomy", autonomy === "drive" ? 6 : autonomy === "gaps" ? 4 : autonomy === "targeted" ? -2 : 0,
       autonomy === "drive" ? "Designed for long-horizon coding and end-to-end knowledge work" : "");
@@ -285,7 +314,7 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
       : task === "coding" ? "Token-efficient reasoning — uses fewer tokens than earlier models to reach the same answer on hard problems"
       : "");
     dim("scope", scope === "autonomous" ? 4 : scope === "multifile" ? 3 : scope === "architecture" ? 3 : 0,
-      scope === "autonomous" ? "Native computer-use and tool search built in — strongest OpenAI model for agentic workflows"
+      scope === "autonomous" ? "Native computer-use and tool search built in — supports agentic workflows"
       : scope === "architecture" ? "1M token context window holds an entire large codebase while reasoning about architectural decisions"
       : scope === "multifile" ? "1M context + strong tool use — can coordinate changes across a large codebase in a single pass" : "");
     dim("stakes", stakes === "production" ? 2 : stakes === "critical" ? 3 : stakes === "prototype" ? -1 : 0,
@@ -293,12 +322,12 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
     dim("priority", priority === "accuracy" ? 3 : priority === "balance" ? 2 : priority === "speed" ? -1 : 0,
       priority === "accuracy" ? "Set reasoning effort to high or xhigh for maximum accuracy on hard problems" : "");
     dim("autonomy", autonomy === "drive" ? 3 : autonomy === "gaps" ? 2 : 0,
-      autonomy === "drive" ? "Built-in computer-use and tool search make it the strongest OpenAI model for end-to-end agentic tasks" : "");
+      autonomy === "drive" ? "Built-in computer-use and tool search make it useful for end-to-end agentic tasks" : "");
   }
 
   if (modelId === "gpt-5.5") {
     dim("task", task === "coding" ? 4 : task === "reasoning" ? 3 : task === "analysis" ? 2 : task === "vision" ? 2 : 0,
-      task === "coding" ? "Strongest OpenAI model for coding loops — better persistence and less hand-holding than earlier GPT-5.x models"
+      task === "coding" ? "Supports sustained coding loops — better persistence and less hand-holding than earlier GPT-5.x models"
       : task === "reasoning" ? "Highest reasoning effort plus stronger agentic follow-through for multi-step problems"
       : "");
     dim("scope", scope === "autonomous" ? 5 : scope === "multifile" ? 4 : scope === "architecture" ? 3 : 0,
@@ -337,14 +366,14 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
     dim("stakes", stakes === "internal" ? 3 : stakes === "production" ? 4 : stakes === "critical" ? 1 : 0,
       "The daily-driver choice for production work with normal review");
     dim("priority", priority === "balance" ? 6 : priority === "speed" ? 2 : priority === "accuracy" ? 2 : 0,
-      priority === "balance" ? "Roughly GPT-5.5-class capability at half the price" : "");
+      priority === "balance" ? "Lower input and output rates than GPT-5.5" : "");
     dim("autonomy", autonomy === "gaps" ? 4 : autonomy === "drive" ? 4 : autonomy === "targeted" ? 2 : 0,
       "Proactive enough to finish the loop without defaulting to flagship cost");
   }
 
   if (modelId === "gpt-5.6-sol") {
     dim("task", task === "coding" ? 5 : task === "reasoning" ? 5 : task === "analysis" ? 4 : task === "vision" ? 3 : 0,
-      task === "coding" ? "OpenAI's strongest agentic coding model"
+      task === "coding" ? "A capable OpenAI coding model below Astra pricing"
       : task === "reasoning" ? "Max reasoning for difficult multi-step problems" : "");
     dim("scope", scope === "autonomous" ? 7 : scope === "multifile" ? 5 : scope === "architecture" ? 5 : scope === "targeted" ? -2 : 0,
       scope === "autonomous" ? "State-of-the-art on long command-line workflows and tool coordination"
@@ -359,7 +388,7 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
 
   if (modelId === "claude-fable-5") {
     dim("task", task === "reasoning" ? 7 : task === "coding" ? 5 : task === "analysis" ? 6 : task === "writing" ? 3 : 0,
-      task === "reasoning" ? "Anthropic's maximum-depth generally available reasoning model"
+      task === "reasoning" ? "The previous Fable release for demanding reasoning"
       : task === "coding" ? "Designed for ambitious implementations and large migrations" : "");
     dim("scope", scope === "architecture" ? 7 : scope === "multifile" ? 5 : scope === "autonomous" ? 6 : scope === "targeted" ? -4 : 0,
       scope === "architecture" ? "Plans across stages, challenges assumptions, and validates system-level decisions"

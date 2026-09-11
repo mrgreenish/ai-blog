@@ -49,7 +49,7 @@ Atomic structure alone isn't enough. The AI benefits from explicit rules about h
 
 **Typed props, always.** TypeScript interfaces for every component's props. Gives the model — and your future self — a contract to work against.
 
-**Variants over conditionals.** Instead of `if (type === 'primary') ... else if (type === 'secondary')` scattered through a render function, define explicit variants. Tailwind's `cva` or similar patterns. The model can see all variants at a glance.
+**Variants over conditionals.** Instead of `if (type === 'primary') ... else if (type === 'secondary')` scattered through a render function, define explicit variants. A helper such as `class-variance-authority` (`cva`) makes the available combinations visible at a glance and works well with Tailwind classes.
 
 **Shared tokens.** Colors, spacing, font sizes — all from a single source. Tailwind config, CSS custom properties, whatever fits. When the model reaches for a color value, there's only one right answer.
 

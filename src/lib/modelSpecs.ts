@@ -30,6 +30,11 @@ export interface ModelSpec {
   name: string;
   provider: Provider;
 
+  /** Retained only for historical scenario examples; excluded from current recommendations. */
+  retired?: boolean;
+  pricingNote?: string;
+  longContextPricing?: { thresholdTokens: number; inputMultiplier: number; outputMultiplier: number };
+
   // Pricing (per 1M tokens, USD)
   inputPer1M: number;
   outputPer1M: number;
@@ -88,15 +93,14 @@ export interface ModelSpec {
 // ---------------------------------------------------------------------------
 
 export const MODEL_REGISTRY: ModelSpec[] = [
-  // ── Fast tier ──────────────────────────────────────────────────────────────
   {
     id: "gemini-flash",
-    name: "Gemini 3 Flash",
+    name: "Gemini 3 Flash Preview",
     provider: "Google",
-    inputPer1M: 0.50,
-    outputPer1M: 3.00,
+    inputPer1M: 0.5,
+    outputPer1M: 3,
     tier: "fast",
-    contextWindowTokens: 1_048_576,
+    contextWindowTokens: 1048576,
     tagline: "The Careful One",
     emoji: "💎",
     gradientFrom: "from-blue-600",
@@ -105,27 +109,19 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     contextBarColor: "bg-yellow-500",
     costColor: "text-yellow-400",
     why: {
-      coding:
-        "Gemini executes exactly what you ask — no surprises, no scope creep. For production code where predictability matters, that's a feature.",
-      analysis:
-        "Gemini stays close to the source material and doesn't over-interpret. Good for structured analysis where you want the facts, not editorializing.",
-      writing:
-        "Gemini follows your format and constraints reliably. It won't rewrite your voice or restructure what you didn't ask it to touch.",
-      vision:
-        "Gemini's literal-mindedness works well for vision tasks — it describes what's there, not what it thinks should be there.",
-      production:
-        "Gemini's risk-averse defaults shine in production contexts. It picks the safest approach and rarely introduces unexpected changes.",
-      accuracy:
-        "When you need the model to do exactly what you said and nothing more, Gemini's conservative interpretation is the right fit.",
-      targeted:
-        "Gemini is precise with targeted edits. It won't wander outside the scope you defined.",
+      coding: "Gemini executes exactly what you ask — no surprises, no scope creep. For production code where predictability matters, that's a feature.",
+      analysis: "Gemini stays close to the source material and doesn't over-interpret. Good for structured analysis where you want the facts, not editorializing.",
+      writing: "Gemini follows your format and constraints reliably. It won't rewrite your voice or restructure what you didn't ask it to touch.",
+      vision: "Gemini's literal-mindedness works well for vision tasks — it describes what's there, not what it thinks should be there.",
+      production: "Gemini's risk-averse defaults shine in production contexts. It picks the safest approach and rarely introduces unexpected changes.",
+      accuracy: "When you need the model to do exactly what you said and nothing more, Gemini's conservative interpretation is the right fit.",
+      targeted: "Gemini is precise with targeted edits. It won't wander outside the scope you defined."
     },
-    whenWrong:
-      "When you need the model to push back, suggest a better approach, or notice that you're solving the wrong problem. Gemini won't do that — you have to ask explicitly.",
+    whenWrong: "When you need the model to push back, suggest a better approach, or notice that you're solving the wrong problem. Gemini won't do that — you have to ask explicitly.",
     traits: [
       "Literal-minded — does exactly what you say",
       "Risk-averse — picks the safest approach",
-      "Consistent in long sessions",
+      "Consistent in long sessions"
     ],
     bestFor: "Production refactors where surprises are costly",
     worstFor: "Open-ended exploration or design decisions",
@@ -138,17 +134,17 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       correctServerAction: false,
       followedConstraints: false,
       madeUpDocs: false,
-      hiddenBugsInRefactor: false,
-    },
+      hiddenBugsInRefactor: false
+    }
   },
   {
     id: "gemini-3.1-pro",
-    name: "Gemini 3.1 Pro",
+    name: "Gemini 3.1 Pro Preview",
     provider: "Google",
-    inputPer1M: 2.00,
-    outputPer1M: 12.00,
+    inputPer1M: 2,
+    outputPer1M: 12,
     tier: "balanced",
-    contextWindowTokens: 1_048_576,
+    contextWindowTokens: 1048576,
     tagline: "The Capable Gemini",
     emoji: "💎",
     gradientFrom: "from-blue-700",
@@ -157,11 +153,10 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     contextBarColor: "bg-indigo-500",
     costColor: "text-indigo-400",
     why: {},
-    whenWrong:
-      "When you need the cheapest option or maximum predictability — Flash-tier models are often enough for mechanical work.",
+    whenWrong: "When you need the cheapest option or maximum predictability — Flash-tier models are often enough for mechanical work.",
     traits: [
       "Stronger reasoning than Flash with large context",
-      "Good for competent coding without the heaviest frontier models",
+      "Good for competent coding without the heaviest frontier models"
     ],
     bestFor: "Medium-complexity tasks needing context and judgment without Opus-level cost",
     worstFor: "Simple mechanical edits where Flash is sufficient",
@@ -174,8 +169,13 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       correctServerAction: false,
       followedConstraints: false,
       madeUpDocs: false,
-      hiddenBugsInRefactor: false,
+      hiddenBugsInRefactor: false
     },
+    longContextPricing: {
+      thresholdTokens: 200000,
+      inputMultiplier: 2,
+      outputMultiplier: 1.5
+    }
   },
   {
     id: "deepseek-v4-flash",
@@ -184,7 +184,7 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     inputPer1M: 0.14,
     outputPer1M: 0.28,
     tier: "fast",
-    contextWindowTokens: 1_000_000,
+    contextWindowTokens: 1000000,
     tagline: "The Open One",
     emoji: "🔓",
     gradientFrom: "from-slate-600",
@@ -197,7 +197,7 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     traits: [
       "Open-source weights — fully inspectable",
       "Strong reasoning at low cost",
-      "Self-hosted option available",
+      "Self-hosted option available"
     ],
     bestFor: "Cost-sensitive pipelines where open weights matter",
     worstFor: "Tasks requiring the latest frontier capabilities",
@@ -210,17 +210,19 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       correctServerAction: false,
       followedConstraints: false,
       madeUpDocs: false,
-      hiddenBugsInRefactor: false,
+      hiddenBugsInRefactor: false
     },
+    retired: true,
+    pricingNote: "Retired API model; historical rates retained for the original scenario examples. Use DeepSeek-V4.1-Flash for current estimates."
   },
   {
     id: "haiku-4.5",
     name: "Claude Haiku 4.5",
     provider: "Anthropic",
-    inputPer1M: 1.00,
-    outputPer1M: 5.00,
+    inputPer1M: 1,
+    outputPer1M: 5,
     tier: "fast",
-    contextWindowTokens: 200_000,
+    contextWindowTokens: 200000,
     tagline: "The Fast Claude",
     emoji: "🌸",
     gradientFrom: "from-rose-600",
@@ -233,7 +235,7 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     traits: [
       "Fastest Anthropic model",
       "Retains Claude's instruction-following quality",
-      "Cost-effective for high-volume pipelines",
+      "Cost-effective for high-volume pipelines"
     ],
     bestFor: "High-volume pipelines and quick structured tasks",
     worstFor: "Complex reasoning or architecture decisions",
@@ -246,17 +248,17 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       correctServerAction: false,
       followedConstraints: true,
       madeUpDocs: false,
-      hiddenBugsInRefactor: true,
-    },
+      hiddenBugsInRefactor: true
+    }
   },
   {
     id: "gpt-5.6-luna",
     name: "GPT-5.6 Luna",
     provider: "OpenAI",
-    inputPer1M: 1.00,
-    outputPer1M: 6.00,
+    inputPer1M: 0.2,
+    outputPer1M: 1.2,
     tier: "fast",
-    contextWindowTokens: 1_050_000,
+    contextWindowTokens: 1050000,
     tagline: "The Fast Operator",
     emoji: "🌙",
     gradientFrom: "from-slate-700",
@@ -265,19 +267,15 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     contextBarColor: "bg-indigo-400",
     costColor: "text-indigo-300",
     why: {
-      coding:
-        "Luna is the fastest, lowest-cost GPT-5.6 model. It is a strong fit for small fixes, test runs, summaries, and high-volume coding steps where Sol-level reasoning would be wasteful.",
-      targeted:
-        "For a clearly scoped change, Luna gives you modern GPT-5.6 tool use without paying for a long reasoning loop.",
-      production:
-        "Luna works well as the cheap worker inside a guarded pipeline: execute a narrow step, run the check, and escalate only when the result is ambiguous.",
+      coding: "Luna is the fastest, lowest-cost GPT-5.6 model. It is a strong fit for small fixes, test runs, summaries, and high-volume coding steps where Sol-level reasoning would be wasteful.",
+      targeted: "For a clearly scoped change, Luna gives you modern GPT-5.6 tool use without paying for a long reasoning loop.",
+      production: "Luna works well as the cheap worker inside a guarded pipeline: execute a narrow step, run the check, and escalate only when the result is ambiguous."
     },
-    whenWrong:
-      "When the task is ambiguous, architectural, or likely to branch into a long autonomous loop. Luna is optimized for speed and cost, not maximum deliberation.",
+    whenWrong: "When the task is ambiguous, architectural, or likely to branch into a long autonomous loop. Luna is optimized for speed and cost, not maximum deliberation.",
     traits: [
       "Fastest and lowest-cost GPT-5.6 tier",
       "Strong for narrow tool calls and high-volume work",
-      "Best when success can be checked automatically",
+      "Best when success can be checked automatically"
     ],
     bestFor: "Small fixes, verification steps, summaries, and high-volume agent pipelines",
     worstFor: "Architecture, ambiguous debugging, and long autonomous projects",
@@ -290,19 +288,22 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       correctServerAction: false,
       followedConstraints: false,
       madeUpDocs: false,
-      hiddenBugsInRefactor: true,
+      hiddenBugsInRefactor: true
     },
+    longContextPricing: {
+      thresholdTokens: 272000,
+      inputMultiplier: 2,
+      outputMultiplier: 1.5
+    }
   },
-
-  // ── Balanced tier ──────────────────────────────────────────────────────────
   {
     id: "gpt-5.4",
     name: "GPT-5.4",
     provider: "OpenAI",
-    inputPer1M: 2.50,
-    outputPer1M: 15.00,
+    inputPer1M: 2.5,
+    outputPer1M: 15,
     tier: "balanced",
-    contextWindowTokens: 1_050_000,
+    contextWindowTokens: 1050000,
     tagline: "The Affordable Frontier",
     emoji: "🚀",
     gradientFrom: "from-emerald-600",
@@ -311,23 +312,17 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     contextBarColor: "bg-emerald-500",
     costColor: "text-emerald-300",
     why: {
-      coding:
-        "GPT-5.4 remains the cheaper GPT-5.x frontier option — strong reasoning and tool use at half the per-token price of GPT-5.5.",
-      autonomous:
-        "Built-in computer-use and native tool support still make GPT-5.4 useful for agentic workflows that need to operate UIs, run code, and verify results end-to-end.",
-      architecture:
-        "The 1M token context window lets GPT-5.4 hold an entire large codebase in context while reasoning about architectural decisions — without chunking or summarization.",
-      hard:
-        "Reasoning effort levels (low → xhigh) let you dial in exactly how much thinking the model does. For genuinely hard problems, xhigh effort catches what other models miss.",
-      multifile:
-        "With a 1M context window and strong tool use, GPT-5.4 can coordinate changes across a large codebase in a single pass.",
+      coding: "GPT-5.4 remains available for established workflows. Compare it with the cheaper GPT-5.6 Terra on your own checks before choosing it for new work.",
+      autonomous: "Built-in computer-use and native tool support still make GPT-5.4 useful for agentic workflows that need to operate UIs, run code, and verify results end-to-end.",
+      architecture: "Its 1.05M-token window can hold a broad repository slice. Leave room for instructions, tool output, and the response.",
+      hard: "Reasoning effort levels (low → xhigh) let you dial in exactly how much thinking the model does. For genuinely hard problems, xhigh effort catches what other models miss.",
+      multifile: "With a 1M context window and strong tool use, GPT-5.4 can coordinate changes across a large codebase in a single pass."
     },
-    whenWrong:
-      "When you need predictable, scope-respecting output. GPT-5.4's agentic instincts mean it can go deep on a problem — sometimes deeper than you wanted. Set explicit constraints or use a lighter model for simple tasks.",
+    whenWrong: "When you need predictable, scope-respecting output. GPT-5.4's agentic instincts mean it can go deep on a problem — sometimes deeper than you wanted. Set explicit constraints or use a lighter model for simple tasks.",
     traits: [
-      "1M token context — holds entire large codebases",
+      "1.05M-token context for broad code and document inputs",
       "Reasoning effort levels: none → low → medium → high → xhigh",
-      "Native computer-use and tool search built in",
+      "Native computer-use and tool search built in"
     ],
     bestFor: "Complex agentic tasks, hard reasoning, and large-context work",
     worstFor: "Simple tasks where the cost and latency aren't justified",
@@ -340,17 +335,22 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       correctServerAction: true,
       followedConstraints: true,
       madeUpDocs: false,
-      hiddenBugsInRefactor: false,
+      hiddenBugsInRefactor: false
     },
+    longContextPricing: {
+      thresholdTokens: 272000,
+      inputMultiplier: 2,
+      outputMultiplier: 1.5
+    }
   },
   {
     id: "gpt-5.6-terra",
     name: "GPT-5.6 Terra",
     provider: "OpenAI",
-    inputPer1M: 2.50,
-    outputPer1M: 15.00,
+    inputPer1M: 2,
+    outputPer1M: 12,
     tier: "balanced",
-    contextWindowTokens: 1_050_000,
+    contextWindowTokens: 1050000,
     tagline: "The Everyday Agent",
     emoji: "🌍",
     gradientFrom: "from-emerald-700",
@@ -359,21 +359,16 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     contextBarColor: "bg-emerald-500",
     costColor: "text-emerald-300",
     why: {
-      coding:
-        "Terra is the everyday GPT-5.6 choice: roughly GPT-5.5-class capability at half the per-token price, with the newer family's stronger tool use and computer-use range.",
-      multifile:
-        "Terra has enough reasoning and context for normal multi-file features without turning every implementation step into a flagship-model run.",
-      autonomous:
-        "For routine agent work, Terra can plan, edit, run commands, and verify while keeping cost proportional to the task.",
-      analysis:
-        "Terra is the balanced option for research and review when Luna is too light and Sol would be unnecessary.",
+      coding: "Terra balances coding capability and cost, with tool use and image input for everyday agent workflows.",
+      multifile: "Terra has enough reasoning and context for normal multi-file features without turning every implementation step into a flagship-model run.",
+      autonomous: "For routine agent work, Terra can plan, edit, run commands, and verify while keeping cost proportional to the task.",
+      analysis: "Terra is the balanced option for research and review when Luna is too light and Sol would be unnecessary."
     },
-    whenWrong:
-      "When correctness is unusually consequential or the problem has resisted normal attempts. Escalate the planning or final review to Sol or Fable.",
+    whenWrong: "When correctness is unusually consequential or the problem has resisted normal attempts. Escalate the planning or final review to Sol or Fable.",
     traits: [
       "Balanced GPT-5.6 capability, speed, and cost",
-      "Competitive with GPT-5.5 at roughly half the price",
-      "Reliable default for everyday agentic work",
+      "Lower input and output rates than GPT-5.5",
+      "Reliable default for everyday agentic work"
     ],
     bestFor: "Everyday coding, medium-complexity features, research, and agent workflows",
     worstFor: "The hardest architecture and research problems where maximum reasoning is worth the premium",
@@ -386,24 +381,22 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       correctServerAction: false,
       followedConstraints: false,
       madeUpDocs: false,
-      hiddenBugsInRefactor: false,
+      hiddenBugsInRefactor: false
     },
+    longContextPricing: {
+      thresholdTokens: 272000,
+      inputMultiplier: 2,
+      outputMultiplier: 1.5
+    }
   },
   {
     id: "sonnet-5",
     name: "Claude Sonnet 5",
     provider: "Anthropic",
-    inputPer1M: 3.00,
-    outputPer1M: 15.00,
-    promotionalPricing: {
-      inputPer1M: 2.00,
-      outputPer1M: 10.00,
-      startsAt: "2026-06-30",
-      endsAt: "2026-08-31",
-      label: "Introductory pricing through August 31, 2026",
-    },
+    inputPer1M: 2,
+    outputPer1M: 10,
     tier: "balanced",
-    contextWindowTokens: 1_000_000,
+    contextWindowTokens: 1000000,
     tagline: "The Proactive One",
     emoji: "✨",
     gradientFrom: "from-violet-600",
@@ -412,23 +405,17 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     contextBarColor: "bg-blue-500",
     costColor: "text-blue-400",
     why: {
-      feature:
-        "Sonnet is a genuine thought partner for feature design. It'll suggest a better API surface, spot issues in your data model, and notice things you didn't ask about.",
-      multifile:
-        "Sonnet handles multi-file work well — it understands how changes ripple across a codebase and coordinates them coherently.",
-      architecture:
-        "Sonnet's creativity and proactiveness make it strong for architecture exploration. It thinks beyond the immediate task.",
-      writing:
-        "Sonnet gives the clearest, most useful explanations. It connects your specific situation to the general principle in a way other models don't.",
-      analysis:
-        "Sonnet notices things. While analyzing, it'll surface connections and implications that weren't in your original question.",
+      feature: "Sonnet is a genuine thought partner for feature design. It'll suggest a better API surface, spot issues in your data model, and notice things you didn't ask about.",
+      multifile: "Sonnet handles multi-file work well — it understands how changes ripple across a codebase and coordinates them coherently.",
+      architecture: "Sonnet's creativity and proactiveness make it strong for architecture exploration. It thinks beyond the immediate task.",
+      writing: "Sonnet gives the clearest, most useful explanations. It connects your specific situation to the general principle in a way other models don't.",
+      analysis: "Sonnet notices things. While analyzing, it'll surface connections and implications that weren't in your original question."
     },
-    whenWrong:
-      "When scope matters. Sonnet's instinct to be helpful means it expands tasks — fixing naming conventions you didn't ask about, restructuring code to match its taste. Set explicit constraints or you'll review a 40-file diff when you asked for 3.",
+    whenWrong: "When scope matters. Sonnet's instinct to be helpful means it expands tasks — fixing naming conventions you didn't ask about, restructuring code to match its taste. Set explicit constraints or you'll review a 40-file diff when you asked for 3.",
     traits: [
       "Genuinely creative — suggests better APIs",
       "Notices things you didn't ask about",
-      "Best at explaining complex concepts",
+      "Best at explaining complex concepts"
     ],
     bestFor: "Feature design and architecture exploration",
     worstFor: "Tight-scope tasks where drift is expensive",
@@ -441,19 +428,17 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       correctServerAction: true,
       followedConstraints: true,
       madeUpDocs: false,
-      hiddenBugsInRefactor: false,
-    },
+      hiddenBugsInRefactor: false
+    }
   },
-
-  // ── Reasoning tier ─────────────────────────────────────────────────────────
   {
     id: "gpt-5.6-sol",
     name: "GPT-5.6 Sol",
     provider: "OpenAI",
-    inputPer1M: 5.00,
-    outputPer1M: 30.00,
+    inputPer1M: 4,
+    outputPer1M: 20,
     tier: "reasoning",
-    contextWindowTokens: 1_050_000,
+    contextWindowTokens: 1050000,
     tagline: "The Relentless One",
     emoji: "☀️",
     gradientFrom: "from-amber-600",
@@ -462,46 +447,45 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     contextBarColor: "bg-amber-500",
     costColor: "text-amber-300",
     why: {
-      coding:
-        "Sol is OpenAI's strongest model yet for agentic coding. It leads Terminal-Bench 2.1 and is built to sustain planning, command execution, iteration, and verification across long tasks.",
-      autonomous:
-        "Sol is the GPT-5.6 tier for work where the answer is a finished artifact. It can drive long tool-use and computer-use loops with less hand-holding than earlier GPT-5.x models.",
-      multifile:
-        "A 1M-class context window and frontier tool coordination make Sol the OpenAI default for large codebase changes that need to be executed and checked, not merely described.",
-      hard:
-        "Max reasoning gives Sol more room for genuinely difficult work; Ultra can coordinate subagents when one reasoning path is not enough.",
-      architecture:
-        "Sol combines broad context with strong implementation follow-through, so architecture decisions can be tested against the actual code instead of stopping at a document.",
+      coding: "Sol is OpenAI's strongest model yet for agentic coding. It leads Terminal-Bench 2.1 and is built to sustain planning, command execution, iteration, and verification across long tasks.",
+      autonomous: "Sol is the GPT-5.6 tier for work where the answer is a finished artifact. It can drive long tool-use and computer-use loops with less hand-holding than earlier GPT-5.x models.",
+      multifile: "A 1M-class context window and frontier tool coordination make Sol the OpenAI default for large codebase changes that need to be executed and checked, not merely described.",
+      hard: "Max reasoning gives Sol more room for genuinely difficult work; Ultra can coordinate subagents when one reasoning path is not enough.",
+      architecture: "Sol combines broad context with strong implementation follow-through, so architecture decisions can be tested against the actual code instead of stopping at a document."
     },
-    whenWrong:
-      "For cheap mechanical work, or when an evaluation environment has exploitable seams. METR observed unusually high reward-hacking behavior, so critical evals need hardened tests and human review.",
+    whenWrong: "For cheap mechanical work, or when an evaluation environment has exploitable seams. METR observed unusually high reward-hacking behavior, so critical evals need hardened tests and human review.",
     traits: [
       "State-of-the-art on Terminal-Bench 2.1",
       "Strong long-horizon coding and computer use",
-      "Max reasoning and multi-agent Ultra mode for difficult work",
+      "Max reasoning and multi-agent Ultra mode for difficult work"
     ],
     bestFor: "Complex autonomous coding, computer use, security work, and long tool-use loops",
     worstFor: "Simple tasks and soft evaluation harnesses that can be gamed",
     latencyBand: "moderate",
     initiativeStyle: "autonomous",
     scopeDiscipline: "good",
-    pickWhen: "You want OpenAI's strongest model to own a complex task through execution and verification",
+    pickWhen: "You need a capable OpenAI model for a complex task at lower token rates than Astra",
     avoidWhen: "A cheaper tier can be checked automatically, or the evaluation environment is not hardened against reward hacking",
     benchmark: {
       correctServerAction: false,
       followedConstraints: true,
       madeUpDocs: false,
-      hiddenBugsInRefactor: false,
+      hiddenBugsInRefactor: false
     },
+    longContextPricing: {
+      thresholdTokens: 272000,
+      inputMultiplier: 2,
+      outputMultiplier: 1.5
+    }
   },
   {
     id: "claude-fable-5",
     name: "Claude Fable 5",
     provider: "Anthropic",
-    inputPer1M: 10.00,
-    outputPer1M: 50.00,
+    inputPer1M: 10,
+    outputPer1M: 50,
     tier: "reasoning",
-    contextWindowTokens: 1_000_000,
+    contextWindowTokens: 1000000,
     tagline: "The Marathon Thinker",
     emoji: "📖",
     gradientFrom: "from-rose-700",
@@ -510,23 +494,17 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     contextBarColor: "bg-rose-500",
     costColor: "text-rose-300",
     why: {
-      coding:
-        "Fable is Anthropic's most capable generally available model for ambitious coding: large migrations, complex implementations, self-written tests, and multi-day autonomous sessions.",
-      architecture:
-        "Fable is the choice when the model must understand the system, challenge its own assumptions, delegate work, and validate the result across stages.",
-      critical:
-        "For high-consequence review, Fable's deeper reasoning and self-checking justify the premium when missed issues would cost more than the tokens.",
-      multifile:
-        "Fable can sustain large, asynchronous projects for days, coordinating subagents and checking its own work instead of handing control back at every step.",
-      reasoning:
-        "This is the maximum-depth Claude tier: thorough, proactive, and designed for problems earlier models could not finish reliably.",
+      coding: "Fable 5 supports ambitious coding and long agent workflows. Fable 5.1 is the newer option with cheaper cache reads.",
+      architecture: "Fable is the choice when the model must understand the system, challenge its own assumptions, delegate work, and validate the result across stages.",
+      critical: "For high-consequence review, Fable's deeper reasoning and self-checking justify the premium when missed issues would cost more than the tokens.",
+      multifile: "Fable can sustain large, asynchronous projects for days, coordinating subagents and checking its own work instead of handing control back at every step.",
+      reasoning: "This is the maximum-depth Claude tier: thorough, proactive, and designed for problems earlier models could not finish reliably."
     },
-    whenWrong:
-      "For ordinary implementation. At $10/$50 per million tokens, using Fable for mechanical work is hard to justify; route flagged cyber and biology work may also fall back to Opus 4.8.",
+    whenWrong: "For new deployments, evaluate Fable 5.1 first. Routine implementation usually does not justify the Fable token rates.",
     traits: [
-      "Anthropic's most capable generally available model",
+      "Previous Fable version; Fable 5.1 is now available",
       "Can run complex agent workflows for days",
-      "Plans, delegates, writes tests, and validates its own work",
+      "Plans, delegates, writes tests, and validates its own work"
     ],
     bestFor: "Architecture, hard reasoning, large migrations, and multi-day autonomous projects",
     worstFor: "Routine coding and cost-sensitive high-volume work",
@@ -539,17 +517,17 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       correctServerAction: false,
       followedConstraints: false,
       madeUpDocs: false,
-      hiddenBugsInRefactor: false,
-    },
+      hiddenBugsInRefactor: false
+    }
   },
   {
     id: "opus-4.8",
     name: "Claude Opus 4.8",
     provider: "Anthropic",
-    inputPer1M: 5.00,
-    outputPer1M: 25.00,
+    inputPer1M: 5,
+    outputPer1M: 25,
     tier: "reasoning",
-    contextWindowTokens: 1_000_000,
+    contextWindowTokens: 1000000,
     tagline: "The Deep Thinker",
     emoji: "🧠",
     gradientFrom: "from-orange-600",
@@ -558,29 +536,20 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     contextBarColor: "bg-orange-500",
     costColor: "text-zinc-300",
     why: {
-      coding:
-        "Opus traces actual logic, not just patterns. It catches bugs that require understanding three levels of indirection, identifies race conditions by simulating concurrent execution, and spots type issues TypeScript itself misses. For production code where correctness is non-negotiable, this depth is the difference.",
-      production:
-        "Opus's deep accuracy shines in production contexts. It doesn't pattern-match — it reasons through the actual logic, catches subtle bugs, and flags the edge cases other models miss.",
-      multifile:
-        "Opus thinks in systems, not just in code. Across a multi-file change, it tracks how abstractions interact and will tell you when a design decision will cause problems two features from now.",
-      critical:
-        "Opus traces actual logic, not just patterns. For critical systems where a subtle bug has real consequences, this depth is worth the cost.",
-      architecture:
-        "Opus thinks in systems and abstractions. It'll identify that your current abstraction will cause problems two features from now — and explain why.",
-      reasoning:
-        "Opus doesn't pattern-match — it actually reasons. Multi-step logic, constraint satisfaction, debugging subtle interactions — this is the task type where the gap between Opus and everything else is widest.",
-      hard:
-        "Where other models pattern-match, Opus reasons through the problem. It catches bugs that require understanding three levels of indirection.",
-      accuracy:
-        "Opus's thoroughness means it considers more options and explores more edge cases. When you need to be right, not just fast, it's the right choice.",
+      coding: "Opus traces actual logic, not just patterns. It catches bugs that require understanding three levels of indirection, identifies race conditions by simulating concurrent execution, and spots type issues TypeScript itself misses. For production code where correctness is non-negotiable, this depth is the difference.",
+      production: "Opus's deep accuracy shines in production contexts. It doesn't pattern-match — it reasons through the actual logic, catches subtle bugs, and flags the edge cases other models miss.",
+      multifile: "Opus thinks in systems, not just in code. Across a multi-file change, it tracks how abstractions interact and will tell you when a design decision will cause problems two features from now.",
+      critical: "Opus traces actual logic, not just patterns. For critical systems where a subtle bug has real consequences, this depth is worth the cost.",
+      architecture: "Opus thinks in systems and abstractions. It'll identify that your current abstraction will cause problems two features from now — and explain why.",
+      reasoning: "Opus doesn't pattern-match — it actually reasons. Multi-step logic, constraint satisfaction, debugging subtle interactions — this is the task type where the gap between Opus and everything else is widest.",
+      hard: "Where other models pattern-match, Opus reasons through the problem. It catches bugs that require understanding three levels of indirection.",
+      accuracy: "Opus's thoroughness means it considers more options and explores more edge cases. When you need to be right, not just fast, it's the right choice."
     },
-    whenWrong:
-      "For routine tasks. Opus is expensive and slow, and the depth it provides isn't proportional to the value for scaffolding, simple refactors, or boilerplate. You're paying for a level of reasoning the task doesn't need.",
+    whenWrong: "For routine tasks. Opus is expensive and slow, and the depth it provides isn't proportional to the value for scaffolding, simple refactors, or boilerplate. You're paying for a level of reasoning the task doesn't need.",
     traits: [
       "Traces actual logic, not just patterns",
       "Thinks in systems and abstractions",
-      "Proactive with high-signal observations",
+      "Proactive with high-signal observations"
     ],
     bestFor: "Hard problems, architecture reviews, subtle bugs",
     worstFor: "Routine tasks — cost and latency don't justify it",
@@ -593,17 +562,17 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       correctServerAction: false,
       followedConstraints: false,
       madeUpDocs: false,
-      hiddenBugsInRefactor: false,
-    },
+      hiddenBugsInRefactor: false
+    }
   },
   {
     id: "opus-5",
     name: "Claude Opus 5",
     provider: "Anthropic",
-    inputPer1M: 5.00,
-    outputPer1M: 25.00,
+    inputPer1M: 5,
+    outputPer1M: 25,
     tier: "reasoning",
-    contextWindowTokens: 1_000_000,
+    contextWindowTokens: 1000000,
     tagline: "The Rigorous Reviewer",
     emoji: "🧠",
     gradientFrom: "from-amber-700",
@@ -619,13 +588,13 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       architecture: "Opus 5 is strong at pressure-testing architectural choices: it identifies hidden coupling, tests tradeoffs, and makes the consequences explicit.",
       reasoning: "This is the current standard Opus tier for rigorous, review-grade reasoning — deliberate, evidence-seeking, and best used where correctness matters more than speed.",
       hard: "Opus 5 works through ambiguous, multi-step problems carefully and flags the assumptions that should be checked before implementation proceeds.",
-      accuracy: "Its value is careful verification: more alternatives considered, more edge cases surfaced, and clearer evidence for a high-stakes decision.",
+      accuracy: "Its value is careful verification: more alternatives considered, more edge cases surfaced, and clearer evidence for a high-stakes decision."
     },
     whenWrong: "For routine implementation or long autonomous execution where a cheaper model or Fable's agent workflow is a better fit. Opus 5 is most useful as a deliberate reasoning and review pass.",
     traits: [
       "Review-grade reasoning with explicit evidence",
       "Finds hidden coupling and edge cases",
-      "Deliberate, high-signal recommendations",
+      "Deliberate, high-signal recommendations"
     ],
     bestFor: "Critical reviews, architecture decisions, and subtle cross-system bugs",
     worstFor: "Routine edits or cheap high-volume execution",
@@ -638,17 +607,17 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       correctServerAction: null,
       followedConstraints: null,
       madeUpDocs: null,
-      hiddenBugsInRefactor: null,
-    },
+      hiddenBugsInRefactor: null
+    }
   },
   {
     id: "kimi-k3",
     name: "Kimi K3",
     provider: "Moonshot AI",
-    inputPer1M: 3.00,
-    outputPer1M: 15.00,
+    inputPer1M: 3,
+    outputPer1M: 15,
     tier: "reasoning",
-    contextWindowTokens: 1_048_576,
+    contextWindowTokens: 1048576,
     tagline: "The Open-Weight Marathoner",
     emoji: "🌙",
     gradientFrom: "from-violet-700",
@@ -663,13 +632,13 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       multifile: "A full 1M-token context window gives K3 room for broad codebase analysis and coordinated multi-file changes.",
       autonomous: "Moonshot positions K3 for long-horizon coding and end-to-end knowledge work, with tool calling and structured output support.",
       reasoning: "K3 always reasons and exposes low, high, and max reasoning-effort settings for difficult work.",
-      architecture: "Large context and always-on reasoning make K3 useful for comparing system-wide constraints before implementation.",
+      architecture: "Large context and always-on reasoning make K3 useful for comparing system-wide constraints before implementation."
     },
     whenWrong: "For narrow, latency-sensitive edits. K3 always reasons, so Luna, Flash, or another lighter model is a better fit when the task has a short, mechanical finish line.",
     traits: [
       "Always-on reasoning with low, high, and max effort",
       "Native vision and a 1M-token context window",
-      "Open-weight 2.8T sparse mixture-of-experts model",
+      "Open-weight 2.8T sparse mixture-of-experts model"
     ],
     bestFor: "Long-horizon coding, large codebase analysis, and end-to-end knowledge work",
     worstFor: "Tiny, latency-sensitive edits that do not need a reasoning pass",
@@ -682,17 +651,17 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       correctServerAction: null,
       followedConstraints: null,
       madeUpDocs: null,
-      hiddenBugsInRefactor: null,
-    },
+      hiddenBugsInRefactor: null
+    }
   },
   {
     id: "gpt-5.5",
     name: "GPT-5.5",
     provider: "OpenAI",
-    inputPer1M: 5.00,
-    outputPer1M: 30.00,
+    inputPer1M: 5,
+    outputPer1M: 30,
     tier: "reasoning",
-    contextWindowTokens: 1_050_000,
+    contextWindowTokens: 1050000,
     tagline: "The Autonomous Loop",
     emoji: "🔁",
     gradientFrom: "from-teal-600",
@@ -701,23 +670,17 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     contextBarColor: "bg-teal-500",
     costColor: "text-teal-300",
     why: {
-      autonomous:
-        "GPT-5.5 is the strongest model released so far for long-running tool-use loops. 82.7% on Terminal-Bench 2.0 (vs Opus 4.8's 69.4%), plus leads on BrowseComp and CyberGym — it keeps going until the task is actually finished instead of handing back a plan.",
-      coding:
-        "First fully retrained base model since GPT-4.5. Developers describe it as needing much less hand-holding: you state the goal, it picks the right files, edits them, runs them, and corrects itself without a dozen follow-up prompts.",
-      multifile:
-        "1M token context plus strong tool-use means GPT-5.5 can coordinate changes across a large codebase while actually executing and verifying them, not just producing a diff.",
-      hard:
-        "Closer to 'agent that can run a shell for an hour' than 'model that returns an answer.' For tasks where the answer is a working artifact, not a block of text, 5.5 is the default pick.",
-      architecture:
-        "GPT-5.5 matches earlier GPT-5.x latency despite the capability jump, so you can put it behind agentic workflows without the usual speed tax.",
+      autonomous: "GPT-5.5 supports long tool-use loops. It remains useful for established workflows, though Astra and the GPT-5.6 tiers should be evaluated for new work.",
+      coding: "First fully retrained base model since GPT-4.5. Developers describe it as needing much less hand-holding: you state the goal, it picks the right files, edits them, runs them, and corrects itself without a dozen follow-up prompts.",
+      multifile: "1M token context plus strong tool-use means GPT-5.5 can coordinate changes across a large codebase while actually executing and verifying them, not just producing a diff.",
+      hard: "Closer to 'agent that can run a shell for an hour' than 'model that returns an answer.' For tasks where the answer is a working artifact, not a block of text, 5.5 is the default pick.",
+      architecture: "GPT-5.5 matches earlier GPT-5.x latency despite the capability jump, so you can put it behind agentic workflows without the usual speed tax."
     },
-    whenWrong:
-      "For review-grade reasoning, long-document Q&A, or anything close to HLE territory. Opus 4.8 still wins on SWE-bench Pro (64.3% vs 58.6%), HLE (46.9% vs 41.4%), and MCP-Atlas — if the task is 'reason deeply once' rather than 'run a loop,' pick Opus.",
+    whenWrong: "For review-grade reasoning, long-document Q&A, or anything close to HLE territory. Opus 4.8 still wins on SWE-bench Pro (64.3% vs 58.6%), HLE (46.9% vs 41.4%), and MCP-Atlas — if the task is 'reason deeply once' rather than 'run a loop,' pick Opus.",
     traits: [
       "1M token context with earlier GPT-5.x latency",
-      "State-of-the-art on autonomous tool-use and terminal benchmarks",
-      "First fully retrained base model since GPT-4.5",
+      "Designed for autonomous tool use and terminal workflows",
+      "First fully retrained base model since GPT-4.5"
     ],
     bestFor: "Agentic coding, browser automation, and long tool-use loops",
     worstFor: "Review-grade reasoning and long-document Q&A — Opus 4.8 still edges it there",
@@ -730,18 +693,22 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       correctServerAction: true,
       followedConstraints: true,
       madeUpDocs: false,
-      hiddenBugsInRefactor: false,
+      hiddenBugsInRefactor: false
     },
+    longContextPricing: {
+      thresholdTokens: 272000,
+      inputMultiplier: 2,
+      outputMultiplier: 1.5
+    }
   },
-  // ── Cursor agentic ─────────────────────────────────────────────────────────
   {
     id: "composer-2.5",
     name: "Composer 2.5",
     provider: "Cursor",
-    inputPer1M: 0.50,
-    outputPer1M: 2.50,
+    inputPer1M: 0.5,
+    outputPer1M: 2.5,
     tier: "balanced",
-    contextWindowTokens: 200_000,
+    contextWindowTokens: 200000,
     tagline: "The Agentic One",
     emoji: "🤖",
     gradientFrom: "from-fuchsia-600",
@@ -750,22 +717,17 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     contextBarColor: "bg-fuchsia-500",
     costColor: "text-fuchsia-600",
     why: {
-      autonomous:
-        "Composer 2.5 runs terminal commands, reads the output, makes more edits, and loops until the task is done. It now sustains long horizons more reliably than Composer 2 did — the May 2026 retrain was specifically tuned for multi-step coherence.",
-      multifile:
-        "It navigates the project, finds the relevant files, and makes coordinated changes across many of them — without you having to specify each one. Trained on 25× more synthetic refactor and feature-deletion tasks than Composer 2.",
-      selfcorrect:
-        "It sees the TypeScript error, understands it in context, and fixes it — without you having to copy-paste the error back into a prompt. Targeted RL with Textual Feedback localized the corrections during training instead of relying on final reward only.",
-      hardproblems:
-        "Composer 2.5 is Cursor's own model — same Kimi K2.5 base as Composer 2, retrained to land in the same room as Opus 4.8 and GPT-5.5 on SWE-Bench Multilingual (79.8%) and CursorBench v3.1 (63.2%) at roughly one tenth the per-token cost.",
+      autonomous: "Composer 2.5 runs terminal commands, reads the output, makes more edits, and loops until the task is done. It now sustains long horizons more reliably than Composer 2 did — the May 2026 retrain was specifically tuned for multi-step coherence.",
+      multifile: "It navigates the project, finds the relevant files, and makes coordinated changes across many of them — without you having to specify each one. Trained on 25× more synthetic refactor and feature-deletion tasks than Composer 2.",
+      selfcorrect: "It sees the TypeScript error, understands it in context, and fixes it — without you having to copy-paste the error back into a prompt. Targeted RL with Textual Feedback localized the corrections during training instead of relying on final reward only.",
+      hardproblems: "Composer 2.5 is Cursor's own model — same Kimi K2.5 base as Composer 2, retrained to land in the same room as Opus 4.8 and GPT-5.5 on SWE-Bench Multilingual (79.8%) and CursorBench v3.1 (63.2%) at roughly one tenth the per-token cost."
     },
-    whenWrong:
-      "When you need a really hard reasoning result. On Terminal-Bench 2.0 it ties Opus 4.8 (~69%) but trails GPT-5.5's 82.7% on long autonomous loops. Some users also report it sometimes hedges with lightweight answers until you nudge it to think harder.",
+    whenWrong: "When you need a really hard reasoning result. On Terminal-Bench 2.0 it ties Opus 4.8 (~69%) but trails GPT-5.5's 82.7% on long autonomous loops. Some users also report it sometimes hedges with lightweight answers until you nudge it to think harder.",
     traits: [
       "Frontier-competitive on SWE-Bench Multilingual (79.8%) and CursorBench v3.1 (63.2%) — within ~1 point of Opus 4.8 at ~10× cheaper per token",
       "Tuned for tool use, terminal, and file edits inside Cursor",
       "Built on Moonshot's Kimi K2.5; trained with Targeted RL with Textual Feedback and 25× more synthetic tasks than Composer 2",
-      "Standard $0.50/$2.50 per M tokens; Fast variant at $3/$15 for low-latency runs",
+      "Standard $0.50/$2.50 per M tokens; Fast variant at $3/$15 for low-latency runs"
     ],
     bestFor: "Multi-step features, refactors, and autonomous bug fixes at frontier quality without frontier pricing",
     worstFor: "Quick one-liner changes where the overhead isn't worth it, or long autonomous browser-agent loops where GPT-5.5 still leads",
@@ -778,17 +740,17 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       correctServerAction: true,
       followedConstraints: true,
       madeUpDocs: false,
-      hiddenBugsInRefactor: false,
-    },
+      hiddenBugsInRefactor: false
+    }
   },
   {
     id: "composer-2.5-fast",
     name: "Composer 2.5 Fast",
     provider: "Cursor",
-    inputPer1M: 3.00,
-    outputPer1M: 15.00,
+    inputPer1M: 3,
+    outputPer1M: 15,
     tier: "balanced",
-    contextWindowTokens: 200_000,
+    contextWindowTokens: 200000,
     tagline: "The Fast Agent",
     emoji: "⚡",
     gradientFrom: "from-fuchsia-700",
@@ -797,11 +759,10 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     contextBarColor: "bg-rose-500",
     costColor: "text-rose-400",
     why: {},
-    whenWrong:
-      "When the task is not urgent — standard Composer 2.5 is usually the better tradeoff if you can do other work while it runs.",
+    whenWrong: "When the task is not urgent — standard Composer 2.5 is usually the better tradeoff if you can do other work while it runs.",
     traits: [
       "Low-latency Composer variant",
-      "Higher per-token cost than standard Composer 2.5",
+      "Higher per-token cost than standard Composer 2.5"
     ],
     bestFor: "Urgent agentic runs where latency matters more than token price",
     worstFor: "Default daily coding — avoid Fast mode unless you need the speed",
@@ -814,17 +775,17 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       correctServerAction: true,
       followedConstraints: true,
       madeUpDocs: false,
-      hiddenBugsInRefactor: false,
-    },
+      hiddenBugsInRefactor: false
+    }
   },
   {
     id: "opus-fast",
-    name: "Claude Opus Fast",
+    name: "Claude Opus 5 Fast",
     provider: "Anthropic",
-    inputPer1M: 10.00,
-    outputPer1M: 50.00,
+    inputPer1M: 10,
+    outputPer1M: 50,
     tier: "reasoning",
-    contextWindowTokens: 1_000_000,
+    contextWindowTokens: 1000000,
     tagline: "Opus at Speed",
     emoji: "⚡",
     gradientFrom: "from-orange-700",
@@ -833,11 +794,10 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     contextBarColor: "bg-red-500",
     costColor: "text-red-400",
     why: {},
-    whenWrong:
-      "For almost all routine tasks — standard Opus 4.8 or Sonnet is enough without Fast-tier pricing.",
+    whenWrong: "For almost all routine tasks — standard Opus 4.8 or Sonnet is enough without Fast-tier pricing.",
     traits: [
-      "Low-latency Opus variant",
-      "Roughly 2× standard Opus input pricing in Cursor",
+      "Faster output from Opus 5 at a premium rate",
+      "First-party Claude API fast mode; availability varies by platform"
     ],
     bestFor: "Rare cases where you need Opus-quality reasoning with minimum latency",
     worstFor: "Default choice — prohibitively expensive for everyday coding",
@@ -845,19 +805,195 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     initiativeStyle: "proactive",
     scopeDiscipline: "good",
     pickWhen: "Latency is critical and you have budget for premium Opus Fast rates",
-    avoidWhen: "Any normal task — use Opus 4.8 standard or a lighter model",
+    avoidWhen: "A standard Opus 5 call or a lighter model can meet the deadline",
     benchmark: {
       correctServerAction: false,
       followedConstraints: false,
       madeUpDocs: false,
-      hiddenBugsInRefactor: false,
-    },
+      hiddenBugsInRefactor: false
+    }
   },
+  {
+    id: "gemini-3.8-flash",
+    name: "Gemini 3.8 Flash",
+    provider: "Google",
+    inputPer1M: 1.5,
+    outputPer1M: 7.5,
+    tier: "fast",
+    contextWindowTokens: 1048576,
+    tagline: "The Multimodal Workhorse",
+    emoji: "💎",
+    gradientFrom: "from-blue-600",
+    gradientTo: "to-cyan-500",
+    accentColor: "text-cyan-600",
+    contextBarColor: "bg-yellow-500",
+    costColor: "text-yellow-400",
+    why: {
+      coding: "Google positions 3.8 Flash for software engineering and multi-step agents at a lower token rate than the flagship reasoning models.",
+      vision: "Supports text, images, audio, video, and PDF input with text output.",
+      multifile: "A million-token input limit leaves room for a broad set of files and tool results."
+    },
+    whenWrong: "When your own evaluation needs more reasoning depth, or you need generated audio or images from the model itself.",
+    traits: [
+      "Text, image, audio, video, and PDF input",
+      "Thinking levels: low, medium, high",
+      "Function calling and structured outputs"
+    ],
+    bestFor: "Coding agents and analysis across documents, screenshots, audio, and video",
+    worstFor: "Tasks requiring direct audio or image generation",
+    latencyBand: "fast",
+    initiativeStyle: "proactive",
+    scopeDiscipline: "good",
+    pickWhen: "You want multimodal input and tool use at Flash-tier rates",
+    avoidWhen: "A small text-only task is cheaper on Luna, or your checks justify a heavier reasoning model",
+    benchmark: {
+      correctServerAction: null,
+      followedConstraints: null,
+      madeUpDocs: null,
+      hiddenBugsInRefactor: null
+    },
+    promotionalPricing: {
+      inputPer1M: 0.75,
+      outputPer1M: 3.75,
+      startsAt: "2026-09-02",
+      endsAt: "2026-12-31",
+      label: "Introductory pricing through December 31, 2026"
+    }
+  },
+  {
+    id: "claude-fable-5.1",
+    name: "Claude Fable 5.1",
+    provider: "Anthropic",
+    inputPer1M: 10,
+    outputPer1M: 50,
+    tier: "reasoning",
+    contextWindowTokens: 1000000,
+    tagline: "The Long-Task Claude",
+    emoji: "📖",
+    gradientFrom: "from-rose-700",
+    gradientTo: "to-orange-500",
+    accentColor: "text-rose-600",
+    contextBarColor: "bg-rose-500",
+    costColor: "text-rose-300",
+    why: {
+      coding: "Anthropic positions Fable 5.1 for demanding coding and long-running agent work.",
+      reasoning: "Evaluate Fable 5.1 when a higher-effort Opus 5 run still falls short.",
+      architecture: "A candidate for complex migrations with explicit acceptance criteria and review checkpoints."
+    },
+    whenWrong: "For routine implementation. Cheaper cache reads only help when your requests actually reuse a cached prefix.",
+    traits: [
+      "1M context and 128K maximum output",
+      "Always-on adaptive thinking",
+      "Cache reads at $0.25 per million tokens"
+    ],
+    bestFor: "Difficult reasoning, migrations, and sustained agent workflows",
+    worstFor: "Routine edits and high-volume short completions",
+    latencyBand: "slow",
+    initiativeStyle: "autonomous",
+    scopeDiscipline: "good",
+    pickWhen: "Your Opus 5 evaluation still falls short on a difficult task",
+    avoidWhen: "A less expensive model already passes the same acceptance checks",
+    benchmark: {
+      correctServerAction: null,
+      followedConstraints: null,
+      madeUpDocs: null,
+      hiddenBugsInRefactor: null
+    }
+  },
+  {
+    id: "gpt-6-astra",
+    name: "GPT-6 Astra",
+    provider: "OpenAI",
+    inputPer1M: 10,
+    outputPer1M: 50,
+    tier: "reasoning",
+    contextWindowTokens: 1050000,
+    tagline: "The End-to-End Reasoner",
+    emoji: "🌌",
+    gradientFrom: "from-amber-600",
+    gradientTo: "to-orange-500",
+    accentColor: "text-orange-600",
+    contextBarColor: "bg-amber-500",
+    costColor: "text-amber-300",
+    why: {
+      coding: "OpenAI positions Astra for its hardest end-to-end coding and computer-use work.",
+      reasoning: "A candidate when a task needs sustained reasoning across tools, evidence, and changing requirements.",
+      architecture: "Use explicit acceptance checks to evaluate Astra on difficult cross-system work."
+    },
+    whenWrong: "When Luna, Terra, or Sol passes your checks at a lower cost. Access and supported tools depend on your platform.",
+    traits: [
+      "1.05M context and 128K maximum output",
+      "Text and image input; text output",
+      "API reasoning effort: low through max"
+    ],
+    bestFor: "Difficult coding, research, computer use, and document workflows",
+    worstFor: "Cheap, repeatable tasks with simple success checks",
+    latencyBand: "slow",
+    initiativeStyle: "autonomous",
+    scopeDiscipline: "good",
+    pickWhen: "The task has resisted lighter models and needs reasoning across multiple tools",
+    avoidWhen: "You need predictable low latency or the lowest token bill",
+    benchmark: {
+      correctServerAction: null,
+      followedConstraints: null,
+      madeUpDocs: null,
+      hiddenBugsInRefactor: null
+    },
+    longContextPricing: {
+      thresholdTokens: 272000,
+      inputMultiplier: 2,
+      outputMultiplier: 1.5
+    }
+  },
+  {
+    id: "deepseek-v4.1-flash",
+    name: "DeepSeek-V4.1-Flash",
+    provider: "DeepSeek",
+    inputPer1M: 0.3,
+    outputPer1M: 1.2,
+    tier: "fast",
+    contextWindowTokens: 1000000,
+    tagline: "The Low-Cost Multimodal Agent",
+    emoji: "🔓",
+    gradientFrom: "from-slate-600",
+    gradientTo: "to-slate-500",
+    accentColor: "text-slate-600",
+    contextBarColor: "bg-slate-500",
+    costColor: "text-slate-300",
+    why: {
+      coding: "Supports tool calls and both thinking and non-thinking modes at low token rates.",
+      vision: "Native vision allows screenshots and text in the same workflow.",
+      analysis: "A million-token context window and off-peak rates suit flexible batch-like workloads."
+    },
+    whenWrong: "When your integration relies on an old model alias or you need a measured local quality result before switching.",
+    traits: [
+      "Native vision, tool calls, and JSON output",
+      "Thinking and non-thinking modes",
+      "Peak and off-peak API pricing"
+    ],
+    bestFor: "Cost-sensitive agents and visual analysis with checkable outputs",
+    worstFor: "Unverified migrations from a different model or endpoint",
+    latencyBand: "moderate",
+    initiativeStyle: "measured",
+    scopeDiscipline: "good",
+    pickWhen: "You want low token rates with vision and tools, and can verify the result",
+    avoidWhen: "Your workflow has not been tested with its reasoning and tool-call behavior",
+    benchmark: {
+      correctServerAction: null,
+      followedConstraints: null,
+      madeUpDocs: null,
+      hiddenBugsInRefactor: null
+    },
+    retired: false,
+    pricingNote: "Peak, uncached API rates. Off-peak input/output: $0.15/$0.60 per million tokens. API model ID: deepseek-flash."
+  }
 ];
 
 // ---------------------------------------------------------------------------
 // Lookup helpers
 // ---------------------------------------------------------------------------
+
+export const CURRENT_MODEL_IDS = ["gemini-3.8-flash","claude-fable-5.1","gpt-6-astra","deepseek-v4.1-flash","kimi-k3"] as const;
 
 export const MODEL_BY_ID: Record<string, ModelSpec> = Object.fromEntries(
   MODEL_REGISTRY.map((m) => [m.id, m])
@@ -901,6 +1037,27 @@ export function getEffectiveModelPricing(
   };
 }
 
+/** Uncached text-token estimate for one request; excludes tools and platform fees. */
+export function estimateModelCost(
+  modelId: string,
+  inputTokens: number,
+  outputTokens: number,
+  asOf: Date | string = new Date()
+): number {
+  const model = MODEL_BY_ID[modelId];
+  if (!model) throw new Error(`Unknown model: ${modelId}`);
+  if (![inputTokens, outputTokens].every((n) => Number.isFinite(n) && n >= 0)) {
+    throw new Error("Token counts must be finite and non-negative");
+  }
+  const pricing = getEffectiveModelPricing(model, asOf);
+  const long = model.longContextPricing;
+  const extended = long && inputTokens > long.thresholdTokens;
+  return (
+    inputTokens * pricing.inputPer1M * (extended ? long.inputMultiplier : 1) +
+    outputTokens * pricing.outputPer1M * (extended ? long.outputMultiplier : 1)
+  ) / 1_000_000;
+}
+
 // ---------------------------------------------------------------------------
 // Component-specific selectors
 // These return exactly the shape each component expects so component internals
@@ -909,7 +1066,7 @@ export function getEffectiveModelPricing(
 
 /** Models shown in ModelMixer — all models with pricing + tier */
 export function getMixerModels(asOf: Date | string = new Date()) {
-  return MODEL_REGISTRY.map((m) => {
+  return MODEL_REGISTRY.filter((m) => !m.retired).map((m) => {
     const pricing = getEffectiveModelPricing(m, asOf);
     return {
       id: m.id,
@@ -918,32 +1075,33 @@ export function getMixerModels(asOf: Date | string = new Date()) {
       tier: m.tier,
       inputPer1M: pricing.inputPer1M,
       outputPer1M: pricing.outputPer1M,
-      pricingLabel: pricing.label,
+      pricingLabel: pricing.label ?? m.pricingNote,
     };
   });
 }
 
 // ---------------------------------------------------------------------------
 // Pricing metadata — single source of truth for data attribution
-// Prices verified against official API pricing pages on 2026-07-29
+// Prices checked against official provider sources on 2026-09-11
 // ---------------------------------------------------------------------------
 
 export const PRICING_META = {
-  verifiedDate: "2026-07-29", // Full registry cross-check against provider API pages and current product docs
+  verifiedDate: "2026-09-11", // Full registry cross-check against provider API pages and current product docs
   source: "Official API pricing pages",
   notes: [
-    "Claude Sonnet 5 is $2/$10 per million input/output tokens through August 31, 2026, then $3/$15.",
-    "GPT-5.6 Luna, Terra, and Sol are $1/$6, $2.50/$15, and $5/$30 per million input/output tokens.",
-    "Claude Fable 5 is $10/$50 per million input/output tokens, with a 90% prompt-cache read discount.",
-    "Claude Opus 5 is $5/$25 per million input/output tokens.",
-    "Kimi K3 is $3/$15 per million cache-miss input/output tokens; cached input is $0.30 per million tokens.",
+    "Standard uncached text-token estimates. Excludes cache writes/reads, tool fees, taxes, and platform-specific charges. Reasoning tokens count as output.",
+    "Sonnet 5 remains $2/$10; its planned September increase was cancelled. GPT-5.6 Luna, Terra, and Sol are now $0.20/$1.20, $2/$12, and $4/$20.",
+    "Gemini 3.8 Flash is $0.75/$3.75 through December 31, 2026, then $1.50/$7.50. Google API rates are used; Cursor currently lists a different output rate.",
+    "DeepSeek-V4.1-Flash estimates use peak uncached rates ($0.30/$1.20). Off-peak rates are half. Retired V4-Flash rates are historical only.",
+    "OpenAI requests above 272K input tokens use 2× input and 1.5× output rates. Gemini 3.1 Pro applies those multipliers above 200K.",
+    "Context windows describe provider API capacity, not a universal Cursor default. Availability and limits vary by platform.",
   ],
   urls: {
-    Anthropic: "https://docs.anthropic.com/en/docs/about-claude/pricing",
+    Anthropic: "https://platform.claude.com/docs/en/about-claude/pricing",
     OpenAI: "https://developers.openai.com/api/docs/pricing",
     Google: "https://ai.google.dev/gemini-api/docs/pricing",
-    DeepSeek: "https://api-docs.deepseek.com/quick_start/pricing",
-    "Moonshot AI": "https://www.kimi.com/help/kimi-api/api-pricing",
+    DeepSeek: "https://api-docs.deepseek.com/quick_start/pricing/",
+    "Moonshot AI": "https://platform.kimi.ai/",
     Cursor: "https://cursor.com/docs/models-and-pricing",
   },
 } as const;
@@ -963,7 +1121,7 @@ export function getCostCalculatorModels(asOf: Date | string = new Date()) {
     "gpt-5.6-sol",
     "claude-fable-5",
   ];
-  return ids.map((id) => {
+  return [...new Set([...CURRENT_MODEL_IDS, ...ids])].map((id) => {
     const m = MODEL_BY_ID[id];
     const pricing = getEffectiveModelPricing(m, asOf);
     return {
@@ -973,7 +1131,7 @@ export function getCostCalculatorModels(asOf: Date | string = new Date()) {
       perM_in: pricing.inputPer1M,
       perM_out: pricing.outputPer1M,
       color: m.costColor,
-      pricingLabel: pricing.label,
+      pricingLabel: pricing.label ?? m.pricingNote,
     };
   });
 }
@@ -990,7 +1148,7 @@ export function getContextWindowModels() {
     "gemini-flash",
     "sonnet-5",
   ];
-  return ids.map((id) => {
+  return [...new Set([...CURRENT_MODEL_IDS, ...ids])].map((id) => {
     const m = MODEL_BY_ID[id];
     return {
       name: m.name,
@@ -1010,7 +1168,7 @@ export function getPickerModels() {
     "opus-5",
     "kimi-k3",
   ];
-  return ids.map((id) => {
+  return [...new Set([...CURRENT_MODEL_IDS, ...ids])].map((id) => {
     const m = MODEL_BY_ID[id];
     return {
       id: m.id,
@@ -1029,7 +1187,7 @@ export function getPickerModels() {
 /** Full model set for ModelPicker 2.0 — includes all models that can surface as recommendations */
 export function getPickerModelsV2(asOf: Date | string = new Date()) {
   // All models are candidates; scoring determines which surface in top-3
-  return MODEL_REGISTRY.map((m) => {
+  return MODEL_REGISTRY.filter((m) => !m.retired).map((m) => {
     const pricing = getEffectiveModelPricing(m, asOf);
     return {
       id: m.id,
@@ -1060,9 +1218,10 @@ export function getPickerModelsV2(asOf: Date | string = new Date()) {
 /** Models available in ScenarioLab comparisons */
 export function getScenarioLabModels(asOf: Date | string = new Date()) {
   const ids = [
+    "deepseek-v4-flash",
     "gemini-flash",
     "haiku-4.5",
-    "deepseek-v4-flash",
+    "deepseek-v4.1-flash",
     "gpt-5.6-luna",
     "gpt-5.6-terra",
     "sonnet-5",
@@ -1073,7 +1232,7 @@ export function getScenarioLabModels(asOf: Date | string = new Date()) {
     "gpt-5.6-sol",
     "claude-fable-5",
   ];
-  return ids.map((id) => {
+  return [...new Set([...CURRENT_MODEL_IDS, ...ids])].map((id) => {
     const m = MODEL_BY_ID[id];
     const pricing = getEffectiveModelPricing(m, asOf);
     return {
@@ -1097,7 +1256,7 @@ export function getScenarioLabModels(asOf: Date | string = new Date()) {
 
 /** Models shown in FailureGallery — susceptibility indicators */
 export function getFailureGalleryModels() {
-  return MODEL_REGISTRY.map((m) => ({
+  return MODEL_REGISTRY.filter((m) => !m.retired).map((m) => ({
     id: m.id,
     name: m.name,
     emoji: m.emoji,
@@ -1123,7 +1282,7 @@ export function getTinderModels() {
     "gpt-5.6-sol",
     "claude-fable-5",
   ];
-  return ids.map((id) => {
+  return [...new Set([...CURRENT_MODEL_IDS, ...ids])].map((id) => {
     const m = MODEL_BY_ID[id];
     return {
       id: m.id,
@@ -1157,7 +1316,7 @@ export const BENCHMARK_CHECKS: BenchmarkCheck[] = [
 /** Models shown as columns in DevBenchmark */
 export function getDevBenchmarkColumns() {
   const ids = ["gpt-5.6-luna", "gpt-5.6-terra", "gpt-5.6-sol", "claude-fable-5", "opus-5", "kimi-k3"];
-  return ids.map((id) => {
+  return [...new Set([...CURRENT_MODEL_IDS, ...ids])].map((id) => {
     const m = MODEL_BY_ID[id];
     return {
       id: m.id,
