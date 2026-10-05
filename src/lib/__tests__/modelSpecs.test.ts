@@ -13,6 +13,7 @@ import {
   getScenarioLabModels,
   getTinderModels,
 } from "../modelSpecs";
+import { getRanking, score, type Answers } from "../modelPickerScoring";
 
 describe("time-dependent model pricing", () => {
   const sonnet = MODEL_BY_ID["sonnet-5"];
@@ -147,5 +148,40 @@ describe("current frontier model registry", () => {
     for (const id of ["gemini-3.8-flash", "deepseek-v4.1-flash", "gpt-6-astra", "claude-fable-5.1", "opus-5.5", "sonnet-5.5", "gpt-6.1-sol", "gpt-6-luna", "glm-5.3", "kimi-k3"]) {
       expect(Object.values(MODEL_BY_ID[id].benchmark)).toEqual([null, null, null, null]);
     }
+  });
+});
+
+describe("picker ties between a model and its successor", () => {
+  const cases: { label: string; answers: Answers; older: string; current: string }[] = [
+    {
+      label: "speed-focused architecture work",
+      answers: { task: "coding", scope: "architecture", stakes: "production", priority: "speed", autonomy: "drive" },
+      older: "gpt-5.6-sol",
+      current: "gpt-6.1-sol",
+    },
+    {
+      label: "a targeted prototype optimized for speed",
+      answers: { task: "coding", scope: "targeted", stakes: "prototype", priority: "speed", autonomy: "targeted" },
+      older: "gpt-5.6-luna",
+      current: "gpt-6-luna",
+    },
+  ];
+
+  it.each(cases)("ranks the current version first for $label", ({ answers, older, current }) => {
+    expect(score(current, answers)).toBe(score(older, answers));
+
+    const ranked = getRanking(getPickerModelsV2(), answers).top3.map((entry) => entry.model.id);
+    expect(ranked).toContain(current);
+    if (ranked.includes(older)) {
+      expect(ranked.indexOf(current)).toBeLessThan(ranked.indexOf(older));
+    }
+  });
+
+  it("lists current models ahead of older ones", () => {
+    const ids = getPickerModelsV2().map((model) => model.id);
+    expect(ids.indexOf("gpt-6.1-sol")).toBeLessThan(ids.indexOf("gpt-5.6-sol"));
+    expect(ids.indexOf("gpt-6-luna")).toBeLessThan(ids.indexOf("gpt-5.6-luna"));
+    expect(ids.indexOf("sonnet-5.5")).toBeLessThan(ids.indexOf("sonnet-5"));
+    expect(ids.indexOf("claude-fable-5.1")).toBeLessThan(ids.indexOf("claude-fable-5"));
   });
 });

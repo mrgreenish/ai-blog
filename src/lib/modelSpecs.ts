@@ -1420,8 +1420,15 @@ export function getPickerModels() {
 
 /** Full model set for ModelPicker 2.0 — includes all models that can surface as recommendations */
 export function getPickerModelsV2(asOf: Date | string = new Date()) {
-  // All models are candidates; scoring determines which surface in top-3
-  return MODEL_REGISTRY.filter((m) => !m.retired).map((m) => {
+  // All models are candidates; scoring determines which surface in top-3.
+  // Current models come first: the ranking sort is stable, so on an equal
+  // score the current version outranks the one it follows.
+  const current = new Set<string>(CURRENT_MODEL_IDS);
+  const candidates = MODEL_REGISTRY.filter((m) => !m.retired);
+  return [
+    ...candidates.filter((m) => current.has(m.id)),
+    ...candidates.filter((m) => !current.has(m.id)),
+  ].map((m) => {
     const pricing = getEffectiveModelPricing(m, asOf);
     return {
       id: m.id,
