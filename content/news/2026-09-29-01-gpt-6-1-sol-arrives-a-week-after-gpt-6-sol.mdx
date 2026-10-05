@@ -1,0 +1,24 @@
+---
+title: "GPT-6.1 Sol arrives a week after GPT-6 Sol"
+publishedAt: '2026-09-29'
+lastVerifiedAt: '2026-10-05'
+primarySourceUrl: 'https://developers.openai.com/api/docs/models/gpt-6.1-sol'
+indexable: true
+---
+On September 22, OpenAI released GPT-6 Sol. On September 29, it released **GPT-6.1 Sol**, and the GPT-6 Sol page now points readers to the newer model. That is one week as the current Sol. [API changelog](https://developers.openai.com/api/docs/changelog).
+
+Both list at **$2 input / $10 output per million tokens**. The pricing difference is cached input, which falls from $0.20 to $0.10 on GPT-6.1 Sol. OpenAI positions the model as near-Astra performance for complex coding, computer use, and professional work. Astra costs $10 / $50, so Sol's standard rates are one-fifth of Astra's. [Pricing](https://developers.openai.com/api/docs/pricing).
+
+The API model is `gpt-6.1-sol`. It takes text and images, returns text, and has a **1,050,000-token context** with up to 128,000 output tokens. Documented reasoning effort runs from `low` through `max`, with `medium` as the default. Tool calling requires the Responses API, where multi-agent runs are available in beta. [Model page](https://developers.openai.com/api/docs/models/gpt-6.1-sol).
+
+The long-context rule still applies. Above 272K input tokens, the request is billed at 2× input and 1.5× output. Our [context calculator](/chapters/max-mode) includes that threshold.
+
+**GPT-6 Luna** shipped in the September 22 release and remains current. It costs **$0.10 / $0.50 per million tokens**, half of GPT-5.6 Luna, and supports effort from `none` through `max`. One catch from its [model page](https://developers.openai.com/api/docs/models/gpt-6-luna): in Chat Completions, function calling works only with reasoning effort set to `none`.
+
+OpenAI's model guide now recommends three models: Astra for the hardest work, GPT-6.1 Sol to balance capability and cost, and GPT-6 Luna for high-volume tasks. There is no GPT-6 Terra. The GPT-5.6 tiers are still on the pricing page, and the comparison is awkward for them. GPT-5.6 Sol is $4 / $20, a rate OpenAI calls promotional through at least November 21. GPT-5.6 Terra is $2 / $12. The newer Sol lists below both.
+
+A lower list price does not settle the cost of a finished task. Effort level, output length, and retries decide that.
+
+The same day, OpenAI added an Ultrafast processing tier for Astra, selected with `service_tier: "ultrafast"`. Check the pricing page for the premium before enabling it on a long run.
+
+GPT-6.1 Sol and GPT-6 Luna are now in the [model tools](/chapters/reasoning-vs-fast), both marked “not tested.” GPT-6 Sol is not, since it was superseded within a week. The GPT-5.6 results stay under their own names. If GPT-5.6 Sol is your default today, replay one long task on 6.1 Sol through the Responses API with the same acceptance tests, and compare total spend.

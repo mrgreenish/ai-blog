@@ -83,7 +83,7 @@ function ModelResultCard({
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="font-display text-sm font-semibold text-stone-900">
-              {modelSpec?.name ?? result.modelId}{REGISTRY[result.modelId]?.retired ? " (retired; historical example)" : ""}
+              {modelSpec?.name ?? result.modelId}{REGISTRY[result.modelId]?.retired ? " (superseded; historical example)" : ""}
             </span>
             <span
               className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[10px] font-medium ${meta.textClass} ${meta.bgClass} ${meta.borderClass}`}

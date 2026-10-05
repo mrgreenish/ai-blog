@@ -1,0 +1,26 @@
+---
+title: "Kolibri brings a German-first model to open weights"
+publishedAt: '2026-10-03'
+lastVerifiedAt: '2026-10-05'
+primarySourceUrl: 'https://aleph-alpha.com/en/blog/kolibri-has-landed-a-sovereign-open-weight-model/'
+indexable: true
+---
+Ask a model about a clause that is not in the contract you gave it. Most will produce an answer anyway. Aleph Alpha says **Kolibri** is trained to decline instead.
+
+The Heidelberg company released Kolibri on October 3, the Day of German Unity, and published the weights as [Kolibri-1 on Hugging Face](https://huggingface.co/Aleph-Alpha/Kolibri-1) under Apache 2.0. That license is the notable part. You can download the model, run it on your own hardware, and build on it commercially without a separate agreement. [Release post](https://aleph-alpha.com/en/blog/kolibri-has-landed-a-sovereign-open-weight-model/).
+
+Kolibri is a mixture-of-experts model with **78.1B total parameters and about 3.46B active per token**. The small active count is what keeps serving costs down. The weights ship in FP8 at roughly 78 GB, and the model card lists two 80 GB A100s or a single H200 as the minimum. That is a server, not a laptop, but it is within reach of a team that already runs its own inference.
+
+It is bilingual by design. German makes up 21.3% of a 20-trillion-token pre-training mix, alongside English and code, and Aleph Alpha built a new tokenizer that it says compresses German text better than the alternatives it tested. The model takes text only. If your work involves scanned forms or screenshots, something else has to read them first.
+
+The context window needs a careful reading. Kolibri handles **262,144 tokens** as trained. The model card documents a vLLM override that raises the limit to 1,048,576 tokens, which relies on the model extrapolating beyond the lengths it was trained on. Test the longer setting on your own documents before depending on it.
+
+Reasoning has four effort levels, from none to high, and tool calling is supported. Both run through Aleph Alpha's `aleph-alpha-inference` plugin for vLLM, so a plain vLLM install is not enough.
+
+The abstention claim comes with a number. Aleph Alpha reports that Kolibri abstains, rather than answering wrongly, on 44% of the items in the AA-Omniscience benchmark, against 15% for an earlier checkpoint. Its own table also puts Kolibri at 96.0 on AIME 2026, ahead of NVIDIA's Nemotron 3 Super 120B (90.4) and Qwen3.6 35B (91.0), and slightly behind Nemotron on HumanEval+ (92.7 to 94.7). These are vendor results against other open-weight models, not against the frontier APIs.
+
+Aleph Alpha says the model was trained on infrastructure in Germany and Finland and aims it at public administration, aerospace, automotive, and other regulated work. The model card is more modest than the launch framing: it describes assistants and agent workflows with human review, and says the model is not meant for unsupervised autonomous systems.
+
+Kolibri is not in this site's cost calculators. There is no published per-token price to put there; hosted deployment goes through Aleph Alpha's sales team, and self-hosting cost depends on your hardware. It joins [GLM-5.3](/chapters/what-is-happening/2026-08-18-01-glm-5-3-is-a-text-only-flagship-with-open-weights) and [Kimi K3](/chapters/what-is-happening/2026-09-11-01-kimi-k3-weights-are-now-available) as an open-weight option, and it is by far the smallest of the three to run.
+
+A fair trial is a retrieval task in German. Give it a set of real documents and a list of questions, including some the documents cannot answer. Count the correct answers, the wrong ones, and the refusals. For a model sold on grounded answers, that third number matters as much as the first.

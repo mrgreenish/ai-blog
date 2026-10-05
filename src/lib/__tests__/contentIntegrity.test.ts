@@ -162,11 +162,11 @@ describe("Dated news entry schema", () => {
     ).toEqual([]);
   });
 
-  it("keeps the focused news index at 26 entries", () => {
+  it("keeps the focused news index at 31 entries", () => {
     const indexable = entries.filter(
       ({ frontmatter }) => frontmatter.indexable === true,
     );
-    expect(indexable).toHaveLength(26);
+    expect(indexable).toHaveLength(31);
   });
 
   it("keeps visible metadata out of entry bodies", () => {
