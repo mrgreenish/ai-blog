@@ -2,7 +2,7 @@
 title: "Cursor Max Mode"
 subtitle: "When the 1M token context window earns its cost"
 publishedAt: "2026-04-17"
-updatedAt: "2026-09-11"
+updatedAt: "2026-10-05"
 relatedSlugs: [reasoning-vs-fast, spec-files, model-personalities]
 chapter: 13
 part: tools-infrastructure
@@ -46,9 +46,9 @@ For a selected model, the main technical effect is broader context, not differen
 
 ## The cost reality
 
-Cursor's allowances, usage pools, and overage rules vary by plan and can change. The stable part is the token math: a larger context means more input tokens billed at the selected model's applicable rate. Using the provider API rates checked on September 11, 2026:
+Cursor's allowances, usage pools, and overage rules vary by plan and can change. The stable part is the token math: a larger context means more input tokens billed at the selected model's applicable rate. Using the provider API rates checked on October 5, 2026:
 
-- At raw API rates, a 400K-input / 60K-output session is about $0.268 on Luna, $2.68 on Terra, $5.00 on Sol, $12.50 on Astra, $7.00 on Fable 5.1, $2.10 on Kimi K3, $0.525 on Gemini 3.8 Flash, and $0.192 on DeepSeek-V4.1-Flash at peak rates before caching, tool fees, or platform charges. Gemini uses its introductory rate through December 31. OpenAI applies 2× input and 1.5× output pricing to the full request above 272K input tokens.
+- At raw API rates, a 400K-input / 60K-output session is about $0.125 on GPT-6 Luna, $2.50 on GPT-6.1 Sol, $2.68 on GPT-5.6 Terra, $12.50 on Astra, $1.40 on Sonnet 5.5, $2.80 on Opus 5.5, $7.00 on Fable 5.1, $0.82 on GLM-5.3, $2.10 on Kimi K3, $0.525 on Gemini 3.8 Flash, and $0.192 on DeepSeek-V4.1-Flash at peak rates before caching, tool fees, or platform charges. Gemini uses its introductory rate through December 31. OpenAI applies 2× input and 1.5× output pricing to the full request above 272K input tokens.
 - Run that three or four times a day and the spend compounds quickly
 - Whether that usage comes from an included pool or metered overage depends on your current plan settings
 

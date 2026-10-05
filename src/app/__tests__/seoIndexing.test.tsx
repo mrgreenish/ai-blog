@@ -17,14 +17,14 @@ describe("selective news indexing", () => {
   const allEntries = getNewsEntries();
   const indexableEntries = getIndexableNewsEntries();
 
-  it("keeps all 51 reports public while selecting 26 for search", () => {
-    expect(allEntries).toHaveLength(51);
-    expect(indexableEntries).toHaveLength(26);
+  it("keeps all 56 reports public while selecting 31 for search", () => {
+    expect(allEntries).toHaveLength(56);
+    expect(indexableEntries).toHaveLength(31);
   });
 
   it("renders all reports in the visible news feed", () => {
     render(<NewsFeedList entries={allEntries} />);
-    expect(screen.getAllByRole("article")).toHaveLength(51);
+    expect(screen.getAllByRole("article")).toHaveLength(56);
   });
 
   it("keeps all reports in RSS", async () => {
@@ -32,7 +32,7 @@ describe("selective news indexing", () => {
     const newsCategories = xml.match(
       /<category>What Is Happening<\/category>/g,
     );
-    expect(newsCategories).toHaveLength(51);
+    expect(newsCategories).toHaveLength(56);
 
     for (const entry of allEntries) {
       expect(xml).toContain(
@@ -43,7 +43,7 @@ describe("selective news indexing", () => {
 
   it("puts only indexable reports and public tools in the sitemap", () => {
     const entries = sitemap();
-    expect(entries).toHaveLength(49 + TOOL_CATALOG.length);
+    expect(entries).toHaveLength(54 + TOOL_CATALOG.length);
     for (const tool of TOOL_CATALOG) {
       expect(entries.some(entry => entry.url === `${SITE_URL}/tools/${tool.id}`)).toBe(true);
     }

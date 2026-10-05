@@ -6,7 +6,7 @@
 // ---------------------------------------------------------------------------
 
 export type Tier = "fast" | "balanced" | "reasoning";
-export type Provider = "Anthropic" | "OpenAI" | "Google" | "DeepSeek" | "Moonshot AI" | "Cursor";
+export type Provider = "Anthropic" | "OpenAI" | "Google" | "DeepSeek" | "Moonshot AI" | "Z.ai" | "Cursor";
 /** Rough latency band for a typical developer task */
 export type LatencyBand = "instant" | "fast" | "moderate" | "slow";
 /** How aggressively the model expands scope beyond what was asked */
@@ -30,7 +30,7 @@ export interface ModelSpec {
   name: string;
   provider: Provider;
 
-  /** Retained only for historical scenario examples; excluded from current recommendations. */
+  /** Superseded or retired by the provider. Retained only for historical scenario examples; excluded from current recommendations. */
   retired?: boolean;
   pricingNote?: string;
   longContextPricing?: { thresholdTokens: number; inputMultiplier: number; outputMultiplier: number };
@@ -563,7 +563,9 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       followedConstraints: false,
       madeUpDocs: false,
       hiddenBugsInRefactor: false
-    }
+    },
+    retired: true,
+    pricingNote: "Superseded by Claude Opus 5.5 ($4/$20). Anthropic still serves Opus 4.8 at these rates; kept here for the original scenario examples."
   },
   {
     id: "opus-5",
@@ -608,7 +610,9 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       followedConstraints: null,
       madeUpDocs: null,
       hiddenBugsInRefactor: null
-    }
+    },
+    retired: true,
+    pricingNote: "Superseded by Claude Opus 5.5 ($4/$20). Anthropic still serves Opus 5 at these rates; kept here for the original scenario examples."
   },
   {
     id: "kimi-k3",
@@ -780,10 +784,10 @@ export const MODEL_REGISTRY: ModelSpec[] = [
   },
   {
     id: "opus-fast",
-    name: "Claude Opus 5 Fast",
+    name: "Claude Opus 5.5 Fast",
     provider: "Anthropic",
-    inputPer1M: 10,
-    outputPer1M: 50,
+    inputPer1M: 8,
+    outputPer1M: 40,
     tier: "reasoning",
     contextWindowTokens: 1000000,
     tagline: "Opus at Speed",
@@ -794,10 +798,10 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     contextBarColor: "bg-red-500",
     costColor: "text-red-400",
     why: {},
-    whenWrong: "For almost all routine tasks — standard Opus 4.8 or Sonnet is enough without Fast-tier pricing.",
+    whenWrong: "For almost all routine tasks — standard Opus 5.5 or Sonnet 5.5 is enough without Fast-tier pricing.",
     traits: [
-      "Faster output from Opus 5 at a premium rate",
-      "First-party Claude API fast mode; availability varies by platform"
+      "Faster Opus 5.5 output at twice the standard token rate",
+      "Research-preview fast mode on the first-party Claude API only"
     ],
     bestFor: "Rare cases where you need Opus-quality reasoning with minimum latency",
     worstFor: "Default choice — prohibitively expensive for everyday coding",
@@ -805,13 +809,14 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     initiativeStyle: "proactive",
     scopeDiscipline: "good",
     pickWhen: "Latency is critical and you have budget for premium Opus Fast rates",
-    avoidWhen: "A standard Opus 5 call or a lighter model can meet the deadline",
+    avoidWhen: "A standard Opus 5.5 call or a lighter model can meet the deadline",
     benchmark: {
       correctServerAction: false,
       followedConstraints: false,
       madeUpDocs: false,
       hiddenBugsInRefactor: false
-    }
+    },
+    pricingNote: "Fast mode for Opus 5.5 ($8/$40). Fast mode on Opus 5 and Opus 4.8 remains $10/$50."
   },
   {
     id: "gemini-3.8-flash",
@@ -877,7 +882,7 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     costColor: "text-rose-300",
     why: {
       coding: "Anthropic positions Fable 5.1 for demanding coding and long-running agent work.",
-      reasoning: "Evaluate Fable 5.1 when a higher-effort Opus 5 run still falls short.",
+      reasoning: "Evaluate Fable 5.1 when a higher-effort Opus 5.5 run still falls short.",
       architecture: "A candidate for complex migrations with explicit acceptance criteria and review checkpoints."
     },
     whenWrong: "For routine implementation. Cheaper cache reads only help when your requests actually reuse a cached prefix.",
@@ -891,7 +896,7 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     latencyBand: "slow",
     initiativeStyle: "autonomous",
     scopeDiscipline: "good",
-    pickWhen: "Your Opus 5 evaluation still falls short on a difficult task",
+    pickWhen: "Your Opus 5.5 evaluation still falls short on a difficult task",
     avoidWhen: "A less expensive model already passes the same acceptance checks",
     benchmark: {
       correctServerAction: null,
@@ -986,6 +991,225 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     },
     retired: false,
     pricingNote: "Peak, uncached API rates. Off-peak input/output: $0.15/$0.60 per million tokens. API model ID: deepseek-flash."
+  },
+  {
+    id: "opus-5.5",
+    name: "Claude Opus 5.5",
+    provider: "Anthropic",
+    inputPer1M: 4,
+    outputPer1M: 20,
+    tier: "reasoning",
+    contextWindowTokens: 1000000,
+    tagline: "The Default Flagship",
+    emoji: "🧠",
+    gradientFrom: "from-amber-700",
+    gradientTo: "to-yellow-500",
+    accentColor: "text-amber-700",
+    contextBarColor: "bg-amber-500",
+    costColor: "text-amber-300",
+    why: {
+      coding: "Anthropic positions Opus 5.5 for long-running agentic coding and now recommends it as the starting point for most workloads.",
+      reasoning: "Thinking is always on and effort defaults to medium; raise the effort before reaching for Fable 5.1.",
+      architecture: "A candidate for design review and cross-system changes, with explicit acceptance checks.",
+      multifile: "A million-token context and 128K output leave room for broad repository work.",
+      critical: "Use it for a consequential review when the evidence matters more than the response time.",
+      autonomous: "Built for sustained tool use; keep checkpoints in the loop until you have local results."
+    },
+    whenWrong: "When a cheaper model already passes your checks, or when you need thinking switched off. It cannot be disabled on this model.",
+    traits: [
+      "1M context and 128K maximum output",
+      "Always-on adaptive thinking; default effort medium",
+      "Cache reads at $0.20 per million tokens"
+    ],
+    bestFor: "Agentic coding, code review, and demanding knowledge work",
+    worstFor: "Routine edits and high-volume short completions",
+    latencyBand: "moderate",
+    initiativeStyle: "autonomous",
+    scopeDiscipline: "good",
+    pickWhen: "You want the current Opus for difficult coding or review at lower rates than Opus 5",
+    avoidWhen: "Sonnet 5.5 or a lighter model already passes the same acceptance checks",
+    benchmark: {
+      correctServerAction: null,
+      followedConstraints: null,
+      madeUpDocs: null,
+      hiddenBugsInRefactor: null
+    }
+  },
+  {
+    id: "sonnet-5.5",
+    name: "Claude Sonnet 5.5",
+    provider: "Anthropic",
+    inputPer1M: 2,
+    outputPer1M: 10,
+    tier: "balanced",
+    contextWindowTokens: 1000000,
+    tagline: "The Faster Complement",
+    emoji: "✨",
+    gradientFrom: "from-violet-600",
+    gradientTo: "to-purple-500",
+    accentColor: "text-violet-600",
+    contextBarColor: "bg-blue-500",
+    costColor: "text-blue-400",
+    why: {
+      coding: "Anthropic describes Sonnet 5.5 as a faster, lower-cost complement to Opus 5.5 for everyday coding and bug fixes.",
+      multifile: "A million-token context at Sonnet 5's list price suits normal cross-file implementation.",
+      writing: "Positioned for documents and everyday knowledge work as well as code.",
+      analysis: "A balanced option for research and review before escalating to Opus 5.5.",
+      autonomous: "Anthropic reports large gains over Sonnet 5 on agentic benchmarks; verify on your own harness."
+    },
+    whenWrong: "When your integration forces a tool choice or streams text between tool calls. Both behave differently from Sonnet 5, so test before switching.",
+    traits: [
+      "1M context and 128K maximum output",
+      "Adaptive thinking; default API effort high",
+      "Same $2 / $10 list price as Sonnet 5"
+    ],
+    bestFor: "Everyday implementation, bug fixes, and document work",
+    worstFor: "Unverified drop-in upgrades from Sonnet 5",
+    latencyBand: "fast",
+    initiativeStyle: "proactive",
+    scopeDiscipline: "good",
+    pickWhen: "You want the current Sonnet for daily work and have checked the migration notes",
+    avoidWhen: "The step is mechanical enough for a Flash or Luna tier, or hard enough to justify Opus 5.5",
+    benchmark: {
+      correctServerAction: null,
+      followedConstraints: null,
+      madeUpDocs: null,
+      hiddenBugsInRefactor: null
+    }
+  },
+  {
+    id: "gpt-6.1-sol",
+    name: "GPT-6.1 Sol",
+    provider: "OpenAI",
+    inputPer1M: 2,
+    outputPer1M: 10,
+    tier: "reasoning",
+    contextWindowTokens: 1050000,
+    tagline: "The Near-Astra Middle",
+    emoji: "☀️",
+    gradientFrom: "from-amber-600",
+    gradientTo: "to-orange-500",
+    accentColor: "text-orange-600",
+    contextBarColor: "bg-amber-500",
+    costColor: "text-amber-300",
+    why: {
+      coding: "OpenAI positions GPT-6.1 Sol for complex coding at one-fifth of Astra's standard token rates.",
+      autonomous: "Supports computer use, hosted shell, and beta multi-agent runs through the Responses API.",
+      multifile: "A 1.05M-token context covers a broad repository slice; requests above 272K input cost more.",
+      reasoning: "Reasoning effort runs from low through max, with medium as the default.",
+      architecture: "A lower-cost candidate for planning before you decide a task needs Astra."
+    },
+    whenWrong: "When your harness depends on Chat Completions tool calls or a no-reasoning mode. Tool calling requires the Responses API, and effort cannot be set to none.",
+    traits: [
+      "1.05M context and 128K maximum output",
+      "Text and image input; reasoning effort low through max",
+      "Cached input at $0.10 per million tokens"
+    ],
+    bestFor: "Complex coding, computer use, and professional work below Astra pricing",
+    worstFor: "Cheap, high-volume steps that GPT-6 Luna can finish",
+    latencyBand: "moderate",
+    initiativeStyle: "autonomous",
+    scopeDiscipline: "good",
+    pickWhen: "You want OpenAI's current middle tier for a complex task and can verify the result",
+    avoidWhen: "A narrow step passes on Luna, or the task has already defeated Sol and needs Astra",
+    benchmark: {
+      correctServerAction: null,
+      followedConstraints: null,
+      madeUpDocs: null,
+      hiddenBugsInRefactor: null
+    },
+    longContextPricing: {
+      thresholdTokens: 272000,
+      inputMultiplier: 2,
+      outputMultiplier: 1.5
+    }
+  },
+  {
+    id: "gpt-6-luna",
+    name: "GPT-6 Luna",
+    provider: "OpenAI",
+    inputPer1M: 0.1,
+    outputPer1M: 0.5,
+    tier: "fast",
+    contextWindowTokens: 1050000,
+    tagline: "The High-Volume Worker",
+    emoji: "🌙",
+    gradientFrom: "from-slate-700",
+    gradientTo: "to-indigo-500",
+    accentColor: "text-indigo-600",
+    contextBarColor: "bg-indigo-400",
+    costColor: "text-indigo-300",
+    why: {
+      coding: "OpenAI's most efficient current model, aimed at focused, high-volume steps.",
+      targeted: "Half the token rate of GPT-5.6 Luna for a clearly scoped change with a cheap check.",
+      vision: "Accepts images alongside text, so a screenshot can travel with the task."
+    },
+    whenWrong: "When the task needs strategy or a long autonomous loop. Escalate to GPT-6.1 Sol once the evidence becomes ambiguous.",
+    traits: [
+      "1.05M context and 128K maximum output",
+      "Reasoning effort from none through max",
+      "$0.10 / $0.50 per million input/output tokens"
+    ],
+    bestFor: "Small fixes, summaries, classification, and repeatable pipeline steps",
+    worstFor: "Architecture, ambiguous debugging, and long autonomous projects",
+    latencyBand: "fast",
+    initiativeStyle: "measured",
+    scopeDiscipline: "good",
+    pickWhen: "The step is explicit, repeatable, and cheap to verify",
+    avoidWhen: "The model has to choose the strategy or sustain a difficult investigation",
+    benchmark: {
+      correctServerAction: null,
+      followedConstraints: null,
+      madeUpDocs: null,
+      hiddenBugsInRefactor: null
+    },
+    longContextPricing: {
+      thresholdTokens: 272000,
+      inputMultiplier: 2,
+      outputMultiplier: 1.5
+    }
+  },
+  {
+    id: "glm-5.3",
+    name: "GLM-5.3",
+    provider: "Z.ai",
+    inputPer1M: 1.4,
+    outputPer1M: 4.4,
+    tier: "reasoning",
+    contextWindowTokens: 1000000,
+    tagline: "The Open-Weight Coder",
+    emoji: "🧩",
+    gradientFrom: "from-sky-700",
+    gradientTo: "to-teal-500",
+    accentColor: "text-sky-700",
+    contextBarColor: "bg-sky-500",
+    costColor: "text-sky-300",
+    why: {
+      coding: "Z.ai positions GLM-5.3 as its flagship for complex software engineering and agent work.",
+      reasoning: "It always reasons, with low, high, and max effort settings.",
+      multifile: "A million-token context and 128K output give it room for repository-scale tasks.",
+      autonomous: "Available through the Z.ai API and coding plan for agent harnesses; verify tool behavior on your own tasks."
+    },
+    whenWrong: "When the task includes screenshots or other images. GLM-5.3 takes text only; GLM-5.3-Flash is the multimodal model.",
+    traits: [
+      "Always-on reasoning: low, high, or max effort",
+      "Text-only input; 1M context and 128K output",
+      "Open weights published on Hugging Face"
+    ],
+    bestFor: "Cost-sensitive coding agents and teams that want inspectable weights",
+    worstFor: "Visual tasks and tiny edits that do not need a reasoning pass",
+    latencyBand: "moderate",
+    initiativeStyle: "measured",
+    scopeDiscipline: "good",
+    pickWhen: "You want an open-weight coding model at well under Sonnet-class output rates",
+    avoidWhen: "The input includes images, or your workflow has not been tested with always-on reasoning",
+    benchmark: {
+      correctServerAction: null,
+      followedConstraints: null,
+      madeUpDocs: null,
+      hiddenBugsInRefactor: null
+    },
+    pricingNote: "Z.ai API list rates; cached input is $0.26 per million tokens. GLM-5.3-Flash is a separate multimodal model at $0.15/$0.50."
   }
 ];
 
@@ -993,7 +1217,18 @@ export const MODEL_REGISTRY: ModelSpec[] = [
 // Lookup helpers
 // ---------------------------------------------------------------------------
 
-export const CURRENT_MODEL_IDS = ["gemini-3.8-flash","claude-fable-5.1","gpt-6-astra","deepseek-v4.1-flash","kimi-k3"] as const;
+export const CURRENT_MODEL_IDS = [
+  "gemini-3.8-flash",
+  "claude-fable-5.1",
+  "opus-5.5",
+  "sonnet-5.5",
+  "gpt-6-astra",
+  "gpt-6.1-sol",
+  "gpt-6-luna",
+  "deepseek-v4.1-flash",
+  "glm-5.3",
+  "kimi-k3",
+] as const;
 
 export const MODEL_BY_ID: Record<string, ModelSpec> = Object.fromEntries(
   MODEL_REGISTRY.map((m) => [m.id, m])
@@ -1082,15 +1317,17 @@ export function getMixerModels(asOf: Date | string = new Date()) {
 
 // ---------------------------------------------------------------------------
 // Pricing metadata — single source of truth for data attribution
-// Prices checked against official provider sources on 2026-09-11
+// Prices checked against official provider sources on 2026-10-05
 // ---------------------------------------------------------------------------
 
 export const PRICING_META = {
-  verifiedDate: "2026-09-11", // Full registry cross-check against provider API pages and current product docs
+  verifiedDate: "2026-10-05", // Full registry cross-check against provider API pages and current product docs
   source: "Official API pricing pages",
   notes: [
     "Standard uncached text-token estimates. Excludes cache writes/reads, tool fees, taxes, and platform-specific charges. Reasoning tokens count as output.",
-    "Sonnet 5 remains $2/$10; its planned September increase was cancelled. GPT-5.6 Luna, Terra, and Sol are now $0.20/$1.20, $2/$12, and $4/$20.",
+    "Claude Opus 5.5 is $4/$20 and Sonnet 5.5 is $2/$10. Opus 5 and Opus 4.8 remain available at $5/$25 and appear only in historical examples. Opus 5.5 fast mode is $8/$40.",
+    "GPT-6.1 Sol is $2/$10 and GPT-6 Luna is $0.10/$0.50. GPT-5.6 Luna, Terra, and Sol remain $0.20/$1.20, $2/$12, and $4/$20; OpenAI calls the Sol rate promotional through at least November 21, 2026.",
+    "GLM-5.3 uses Z.ai API list rates ($1.40/$4.40). GLM-5.3-Flash ($0.15/$0.50) is not in the calculators.",
     "Gemini 3.8 Flash is $0.75/$3.75 through December 31, 2026, then $1.50/$7.50. Google API rates are used; Cursor currently lists a different output rate.",
     "DeepSeek-V4.1-Flash estimates use peak uncached rates ($0.30/$1.20). Off-peak rates are half. Retired V4-Flash rates are historical only.",
     "OpenAI requests above 272K input tokens use 2× input and 1.5× output rates. Gemini 3.1 Pro applies those multipliers above 200K.",
@@ -1102,6 +1339,7 @@ export const PRICING_META = {
     Google: "https://ai.google.dev/gemini-api/docs/pricing",
     DeepSeek: "https://api-docs.deepseek.com/quick_start/pricing/",
     "Moonshot AI": "https://platform.kimi.ai/",
+    "Z.ai": "https://docs.z.ai/guides/overview/pricing",
     Cursor: "https://cursor.com/docs/models-and-pricing",
   },
 } as const;
@@ -1115,8 +1353,6 @@ export function getCostCalculatorModels(asOf: Date | string = new Date()) {
     "gpt-5.6-terra",
     "sonnet-5",
     "composer-2.5",
-    "opus-4.8",
-    "opus-5",
     "kimi-k3",
     "gpt-5.6-sol",
     "claude-fable-5",
@@ -1143,7 +1379,6 @@ export function getContextWindowModels() {
     "gpt-5.6-terra",
     "gpt-5.6-luna",
     "claude-fable-5",
-    "opus-5",
     "kimi-k3",
     "gemini-flash",
     "sonnet-5",
@@ -1165,7 +1400,6 @@ export function getPickerModels() {
     "gpt-5.6-terra",
     "gpt-5.6-sol",
     "claude-fable-5",
-    "opus-5",
     "kimi-k3",
   ];
   return [...new Set([...CURRENT_MODEL_IDS, ...ids])].map((id) => {
@@ -1273,8 +1507,6 @@ export function getTinderModels() {
   const ids = [
     "gemini-flash",
     "sonnet-5",
-    "opus-4.8",
-    "opus-5",
     "kimi-k3",
     "composer-2.5",
     "gpt-5.6-luna",
@@ -1315,7 +1547,7 @@ export const BENCHMARK_CHECKS: BenchmarkCheck[] = [
 
 /** Models shown as columns in DevBenchmark */
 export function getDevBenchmarkColumns() {
-  const ids = ["gpt-5.6-luna", "gpt-5.6-terra", "gpt-5.6-sol", "claude-fable-5", "opus-5", "kimi-k3"];
+  const ids = ["gpt-5.6-luna", "gpt-5.6-terra", "gpt-5.6-sol", "claude-fable-5", "kimi-k3"];
   return [...new Set([...CURRENT_MODEL_IDS, ...ids])].map((id) => {
     const m = MODEL_BY_ID[id];
     return {

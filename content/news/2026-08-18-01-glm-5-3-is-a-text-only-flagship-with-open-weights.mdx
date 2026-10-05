@@ -1,0 +1,22 @@
+---
+title: "GLM-5.3 is a text-only flagship with open weights"
+publishedAt: '2026-08-18'
+lastVerifiedAt: '2026-10-05'
+primarySourceUrl: 'https://docs.z.ai/guides/llm/glm-5.3'
+indexable: true
+---
+Send **GLM-5.3** a screenshot and it has nothing to look at. Z.ai's current flagship takes text, and only text. That is an unusual choice in a year when most new models read images by default, and it tells you what the model is for: code and agent work.
+
+Z.ai's [release notes](https://docs.z.ai/release-notes/new-released) date GLM-5.3 to August 18 and a second model, GLM-5.3-Flash, to August 26. This entry is late. It was added during the October catch-up, with every figure checked against the live documentation on the verification date above.
+
+The API model is `glm-5.3`. It has a **1M-token context** and up to 128K output tokens. It always reasons, at `low`, `high`, or `max` effort, and Z.ai says reasoning can no longer be switched off. Plan for that on small edits, because every request pays for some thinking. [Model documentation](https://docs.z.ai/guides/llm/glm-5.3).
+
+The list price is **$1.40 input / $4.40 output per million tokens**, with cached input at $0.26. That output rate is less than half of Sonnet 5.5's $10. Whether a finished task is cheaper depends on how many reasoning tokens the model spends getting there. [Z.ai pricing](https://docs.z.ai/guides/overview/pricing).
+
+Z.ai reports a 50% gain over GLM-5.2 on its own Code Bench, Terminal-Bench 3.0 rising from 4.6 to 28.3, and DeepSWE v1.1 rising from 46.2 to 66.9. It also reports 84.5% on CyberGym and a doubled ExploitBench score. These are vendor results, and one of the benchmarks is the vendor's own. Use them as a reason to run a trial.
+
+The weights are on [Hugging Face](https://huggingface.co/zai-org/GLM-5.3): a 753B-parameter mixture-of-experts model under a license the card calls the GLM-5.3 license. Read that license and size the hardware before treating self-hosting as a real option. The hosted API is the simpler way to find out whether the model suits your work.
+
+If you need images, look at **GLM-5.3-Flash** instead. It accepts video, images, files, and text, keeps the 1M context, and lists at $0.15 / $0.50 per million tokens. Z.ai describes a 320B-parameter model with 18B active. A faster FlashX variant costs $0.37 / $1.25. [Flash documentation](https://docs.z.ai/guides/llm/glm-5.3-flash).
+
+GLM-5.3 is now in the [model tools](/chapters/reasoning-vs-fast), marked text-only and “not tested.” Flash is not in the calculators yet. A fair first trial is a text-only bug with a failing test: fix the effort level, record the output tokens, and compare the patch with the one your current model writes.

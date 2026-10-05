@@ -1,7 +1,7 @@
 ---
 title: "Astra raises the bar for a finished task"
 publishedAt: '2026-09-03'
-lastVerifiedAt: '2026-09-11'
+lastVerifiedAt: '2026-10-05'
 primarySourceUrl: 'https://developers.openai.com/api/docs/models/gpt-6-astra'
 indexable: true
 ---
@@ -14,5 +14,7 @@ The API model is `gpt-6-astra`. It supports text and image input, text output, a
 At **$10 input / $50 output per million tokens**, Astra costs more per token than Sol. Prompts above 272K input tokens also trigger higher rates for the full request. Our [context calculator](/chapters/max-mode) includes those thresholds. OpenAI's guide reports examples where fewer output tokens reduce the cost of a completed task, but that is something to test on your workload. [Pricing](https://developers.openai.com/api/docs/pricing), [model guide](https://developers.openai.com/api/docs/guides/latest-model).
 
 There is another change worth keeping in view: the GPT-5.6 tiers are cheaper now. Luna is $0.20 / $1.20, Terra $2 / $12, and Sol $4 / $20 per million input/output tokens at standard short-context rates. Astra's arrival does not remove those choices.
+
+Two things have changed since launch. OpenAI added an Ultrafast processing tier for Astra on September 29, and [GPT-6.1 Sol](/chapters/what-is-happening/2026-09-29-01-gpt-6-1-sol-arrives-a-week-after-gpt-6-sol) now sits below it at one-fifth of the standard token rates. Astra's own specifications and prices are unchanged.
 
 Try the migration that your normal model keeps getting stuck on. Keep the acceptance tests intact, record the total spend, and review the actual artifact. Astra is now in the site's tools, with its local benchmark results marked “not tested.” A new release deserves a fair trial before it earns a default.

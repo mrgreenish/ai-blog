@@ -1,0 +1,28 @@
+---
+title: "Sonnet 5.5 keeps the price and changes the contract"
+publishedAt: '2026-09-28'
+lastVerifiedAt: '2026-10-05'
+primarySourceUrl: 'https://www.anthropic.com/claude-sonnet-5-5'
+indexable: true
+---
+If your code forces a specific tool call, **Claude Sonnet 5.5** returns an error where Sonnet 5 complied. The price is unchanged, but this is not a drop-in swap.
+
+Anthropic released Sonnet 5.5 on September 28, six days after Opus 5.5, as the faster and lower-cost model in the same family. It stays at **$2 input / $10 output per million tokens**, with cached reads at $0.20. The context is 1M tokens and the output limit is 128K. [Model page](https://platform.claude.com/docs/en/models/sonnet-5-5/overview).
+
+The model page lists five breaking changes for code that already runs on Sonnet 5:
+
+- Forced tool use returns an error.
+- The lowest thinking setting is now `between_tools`, which turns off up-front thinking and works at `high` effort or below.
+- Thinking blocks are tied to the model and conversation that produced them.
+- The older `computer_20251124` computer-use tool is not accepted on the Claude API or Google Cloud.
+- The advisor tool rejects Opus 4.8, Opus 4.7, and Sonnet 5 as advisors.
+
+A sixth change fails no request and is easier to miss. Text the model writes between tool calls now comes back inside `thinking` blocks. An app that streams that text to users goes quiet between tool calls until it sets a `display` value or turns off up-front thinking. [What's new](https://platform.claude.com/docs/en/models/sonnet-5-5/whats-new-sonnet-5-5).
+
+Anthropic says Sonnet 5.5 generates output more than 30% faster than Sonnet 5 and costs up to 30% less per task, because it needs fewer tokens at the same rates. Its reported Terminal-Bench 4.0 score is 70.6%, up from 10.3% for Sonnet 5 and above the 66.4% it reported for Opus 5.5 a week earlier. It also reports 55.5% on CursorBench 4.0 (Sonnet 5: 34.1%) and 80.1% on OSWorld 2.1 (Sonnet 5: 57.0%). These are vendor results. [Announcement](https://www.anthropic.com/claude-sonnet-5-5).
+
+Default effort differs by surface: `high` on the Claude Platform and medium in the Claude apps. The same prompt can therefore think for a different length of time depending on where you run it.
+
+Sonnet 5 remains available, with retirement no sooner than June 30, 2027. Sonnet 4.5 was deprecated on September 30 and retires on **November 30, 2026**; Anthropic names Sonnet 5.5 as the replacement. Anthropic also says Haiku 5.5 will follow in the coming weeks. [Deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations).
+
+Sonnet 5.5 is now the Sonnet recommended in the [guidelines](/ai-model-guidelines) and the default in the context calculator. Sonnet 5 keeps its own scenario results, because those sessions ran on Sonnet 5. Before switching, search your code for forced tool choice and for any UI that streams text between tool calls, then replay a real task.

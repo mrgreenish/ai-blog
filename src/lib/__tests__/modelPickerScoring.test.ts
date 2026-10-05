@@ -15,7 +15,7 @@ const MODELS: ModelStub[] = [
   { id: "gemini-flash", name: "Gemini Flash", why: { targeted: "Fast targeted edits", vision: "Best vision model" } },
   { id: "sonnet-5", name: "Sonnet 5", why: { multifile: "Great at multi-file", writing: "Strong writing" } },
   { id: "opus-4.8", name: "Opus 4.8", why: { critical: "Best for critical systems", reasoning: "Deep reasoning" } },
-  { id: "opus-5", name: "Opus 5", why: { critical: "Rigorous critical review", reasoning: "Review-grade reasoning" } },
+  { id: "opus-5.5", name: "Opus 5.5", why: { critical: "Rigorous critical review", reasoning: "Review-grade reasoning" } },
   {
     id: "composer-2.5",
     name: "Composer 2.5",
@@ -249,7 +249,7 @@ describe("getRecommendation()", () => {
       task: "reasoning", scope: "architecture", stakes: "critical",
       priority: "accuracy", autonomy: "gaps",
     });
-    expect(rec.model.id).toBe("opus-5");
+    expect(rec.model.id).toBe("opus-5.5");
   });
 
   it("returns a runner-up different from the winner", () => {
@@ -360,12 +360,12 @@ describe("real-world scenarios", () => {
     expect(rec.model.id).toBe("sonnet-5");
   });
 
-  it("critical system design: reasoning + architecture + critical + accuracy + gaps → opus-5", () => {
+  it("critical system design: reasoning + architecture + critical + accuracy + gaps → opus-5.5", () => {
     const rec = getRecommendation(MODELS, {
       task: "reasoning", scope: "architecture", stakes: "critical",
       priority: "accuracy", autonomy: "gaps",
     });
-    expect(rec.model.id).toBe("opus-5");
+    expect(rec.model.id).toBe("opus-5.5");
   });
 
   it("full autonomous agent task: coding + autonomous + prototype + speed + drive → composer-2", () => {
@@ -418,6 +418,11 @@ describe("scoreDimensions()", () => {
       "composer-2.5-fast",
       "opus-fast",
       "opus-5",
+      "opus-5.5",
+      "sonnet-5.5",
+      "gpt-6.1-sol",
+      "gpt-6-luna",
+      "glm-5.3",
       "kimi-k3",
     ];
     const answers = allAnswers({
@@ -675,5 +680,31 @@ describe("scenarioLabData", () => {
   it("getScenarioById returns undefined for unknown id", async () => {
     const { getScenarioById } = await import("../scenarioLabData");
     expect(getScenarioById("does-not-exist")).toBeUndefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// October 2026 additions
+// ---------------------------------------------------------------------------
+describe("October 2026 model additions", () => {
+  it("ranks each successor at or above the version it follows on its home turf", () => {
+    const review = allAnswers({
+      task: "reasoning", scope: "architecture", stakes: "critical", priority: "accuracy",
+    });
+    expect(score("opus-5.5", review)).toBeGreaterThanOrEqual(score("opus-5", review));
+
+    const everyday = allAnswers({ task: "coding", scope: "multifile" });
+    expect(score("sonnet-5.5", everyday)).toBeGreaterThan(score("sonnet-5", everyday));
+
+    const loop = allAnswers({ scope: "autonomous", autonomy: "drive" });
+    expect(score("gpt-6.1-sol", loop)).toBeGreaterThan(score("gpt-5.6-sol", loop));
+
+    const narrow = allAnswers({ stakes: "internal", autonomy: "targeted" });
+    expect(score("gpt-6-luna", narrow)).toBeGreaterThan(score("gpt-5.6-luna", narrow));
+  });
+
+  it("steers visual tasks away from text-only GLM-5.3", () => {
+    const vision = scoreDimensions("glm-5.3", allAnswers({ task: "vision" }));
+    expect(vision.dimensions.find((d) => d.dimension === "task")?.points).toBeLessThan(0);
   });
 });

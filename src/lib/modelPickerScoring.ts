@@ -177,6 +177,71 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
       "A candidate for sustained execution with review checkpoints");
   }
 
+  if (modelId === "opus-5.5") {
+    dim("task", task === "reasoning" ? 5 : task === "coding" ? 5 : task === "analysis" ? 4 : task === "writing" ? 3 : 0,
+      "Anthropic's recommended starting point for demanding coding and knowledge work; verify on your own task");
+    dim("scope", scope === "architecture" ? 5 : scope === "multifile" ? 4 : scope === "autonomous" ? 4 : 0,
+      "Positioned for long-running agentic coding with a million-token context");
+    dim("stakes", stakes === "critical" ? 6 : stakes === "production" ? 3 : stakes === "prototype" ? -3 : 0,
+      "Use explicit acceptance checks before trusting a consequential result");
+    dim("priority", priority === "accuracy" ? 6 : priority === "balance" ? 2 : priority === "speed" ? -3 : 0,
+      priority === "speed" ? "Thinking is always on; a lighter model answers sooner" : "Lower token rates than Opus 5 for review-grade work");
+    dim("autonomy", autonomy === "gaps" ? 3 : autonomy === "drive" ? 3 : autonomy === "targeted" ? -1 : 0,
+      "A candidate for sustained execution with review checkpoints");
+  }
+
+  if (modelId === "sonnet-5.5") {
+    dim("task", task === "coding" ? 3 : task === "reasoning" ? 2 : task === "writing" ? 3 : task === "analysis" ? 3 : 0,
+      "Anthropic positions Sonnet 5.5 for everyday coding, bug fixes, and documents");
+    dim("scope", scope === "multifile" ? 3 : scope === "architecture" ? 3 : scope === "autonomous" ? 1 : 0,
+      "Million-token context at Sonnet 5's list price");
+    dim("stakes", stakes === "production" ? 2 : stakes === "internal" ? 2 : 0,
+      "A reasonable default for production work with normal review");
+    dim("priority", priority === "balance" ? 3 : priority === "accuracy" ? 2 : 0,
+      "The balanced tier in the current Claude lineup");
+    dim("autonomy", autonomy === "gaps" ? 3 : autonomy === "drive" ? 2 : 0,
+      "Provider-reported agentic gains over Sonnet 5; not yet tested locally");
+  }
+
+  if (modelId === "gpt-6.1-sol") {
+    dim("task", task === "coding" ? 5 : task === "reasoning" ? 5 : task === "analysis" ? 4 : task === "vision" ? 3 : 0,
+      "OpenAI positions GPT-6.1 Sol for complex coding and professional work below Astra pricing");
+    dim("scope", scope === "autonomous" ? 7 : scope === "multifile" ? 5 : scope === "architecture" ? 5 : scope === "targeted" ? -2 : 0,
+      scope === "targeted" ? "A pointed edit rarely needs this tier" : "Computer use, hosted shell, and a 1.05M-token context for multi-stage work");
+    dim("stakes", stakes === "production" ? 4 : stakes === "critical" ? 4 : stakes === "prototype" ? -3 : 0,
+      "Keep success checks external until you have local results");
+    dim("priority", priority === "accuracy" ? 5 : priority === "balance" ? 2 : priority === "speed" ? -2 : 0,
+      priority === "balance" ? "Half the standard token rate of GPT-5.6 Sol" : "");
+    dim("autonomy", autonomy === "drive" ? 7 : autonomy === "gaps" ? 4 : autonomy === "targeted" ? -2 : 0,
+      "A candidate for long tool-use loops with review checkpoints");
+  }
+
+  if (modelId === "gpt-6-luna") {
+    dim("task", task === "coding" ? 3 : task === "analysis" ? 2 : task === "writing" ? 2 : task === "vision" ? 2 : 0,
+      "OpenAI's most efficient current model for focused work");
+    dim("scope", scope === "targeted" ? 5 : scope === "autonomous" ? -3 : scope === "architecture" ? -3 : 0,
+      scope === "targeted" ? "Aimed at narrow tasks with an objective success check" : "Too light for strategy-heavy work");
+    dim("stakes", stakes === "prototype" ? 3 : stakes === "internal" ? 3 : stakes === "critical" ? -3 : 0,
+      "Low cost suits repeatable, low-risk steps");
+    dim("priority", priority === "speed" ? 6 : priority === "balance" ? 3 : priority === "accuracy" ? -2 : 0,
+      priority === "accuracy" ? "Use a heavier tier when accuracy dominates" : "Half the token rate of GPT-5.6 Luna");
+    dim("autonomy", autonomy === "targeted" ? 5 : autonomy === "drive" ? -3 : 0,
+      autonomy === "targeted" ? "Suited to pointed edits with a cheap check" : "Escalate long autonomous loops to GPT-6.1 Sol");
+  }
+
+  if (modelId === "glm-5.3") {
+    dim("task", task === "coding" ? 4 : task === "reasoning" ? 3 : task === "analysis" ? 2 : task === "vision" ? -4 : 0,
+      task === "vision" ? "Text-only input; use GLM-5.3-Flash or another model for images" : "Z.ai's flagship for software engineering and agent work");
+    dim("scope", scope === "multifile" ? 4 : scope === "autonomous" ? 4 : scope === "architecture" ? 2 : scope === "targeted" ? -1 : 0,
+      "Million-token context with always-on reasoning");
+    dim("stakes", stakes === "internal" ? 3 : stakes === "prototype" ? 2 : stakes === "production" ? 2 : stakes === "critical" ? -2 : 0,
+      "Start with tasks whose output you can check cheaply");
+    dim("priority", priority === "balance" ? 4 : priority === "accuracy" ? 1 : priority === "speed" ? -1 : 0,
+      "Low token rates for a model that always reasons");
+    dim("autonomy", autonomy === "gaps" ? 3 : autonomy === "drive" ? 3 : 0,
+      "Built for agent harnesses; verify tool behavior before a long run");
+  }
+
   if (modelId === "gemini-3.8-flash" || modelId === "deepseek-v4.1-flash") {
     const gemini = modelId === "gemini-3.8-flash";
     dim("task", task === "vision" ? (gemini ? 7 : 5) : task === "coding" ? 4 : task === "analysis" ? 4 : 2,
@@ -450,10 +515,10 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
     if (modelId === "composer-2.5") dims.push({ dimension: "interaction", points: -2, reason: "Dampen double-counting: autonomous scope + drive autonomy overlap" });
   }
   if (stakes === "critical" && scope === "autonomous") {
-    if (modelId === "opus-4.8" || modelId === "opus-5") dims.push({ dimension: "interaction", points: 2, reason: "Critical stakes + autonomous scope: frontier reasoning earns its cost" });
+    if (modelId === "opus-4.8" || modelId === "opus-5" || modelId === "opus-5.5") dims.push({ dimension: "interaction", points: 2, reason: "Critical stakes + autonomous scope: frontier reasoning earns its cost" });
   }
   if (stakes === "critical" && priority === "accuracy") {
-    if (modelId === "opus-4.8" || modelId === "opus-5") dims.push({ dimension: "interaction", points: 2, reason: "Critical + accuracy: strongest quality signal — Opus is the right choice" });
+    if (modelId === "opus-4.8" || modelId === "opus-5" || modelId === "opus-5.5") dims.push({ dimension: "interaction", points: 2, reason: "Critical + accuracy: strongest quality signal — Opus is the right choice" });
     if (modelId === "composer-2.5") dims.push({ dimension: "interaction", points: -1, reason: "Critical + accuracy: autonomy risk outweighs speed benefit" });
   }
 
@@ -536,7 +601,7 @@ export function getRanking<
       cautionMessage =
         "Composer 2.5 is tighter than 2.0, but for critical systems still add explicit checkpoints and review every diff before merging.";
     }
-    if (answers.stakes === "critical" && winner.model.id === "sonnet-5") {
+    if (answers.stakes === "critical" && (winner.model.id === "sonnet-5" || winner.model.id === "sonnet-5.5")) {
       hasCaution = true;
       cautionMessage =
         "Sonnet's scope drift is risky in critical systems. Set explicit constraints: 'do not modify files outside X' and review the full diff carefully.";
