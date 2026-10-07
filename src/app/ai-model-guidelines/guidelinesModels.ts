@@ -1,7 +1,6 @@
 import {
   MODEL_BY_ID,
   PRICING_META,
-  getEffectiveModelPricing,
   estimateModelCost,
   type ModelSpec,
 } from "@/lib/modelSpecs";
@@ -79,9 +78,11 @@ export function formatPricePer1M(inputPer1M: number, outputPer1M: number): strin
 
 export function formatPriceForModel(id: GuidelinesModelId): string {
   const m = getGuidelinesModel(id);
-  const effective = getEffectiveModelPricing(m);
-  const label = effective.label ? ` (${effective.label})` : "";
-  return formatPricePer1M(effective.inputPer1M, effective.outputPer1M) + label;
+  const standard = formatPricePer1M(m.inputPer1M, m.outputPer1M);
+  const promotion = m.promotionalPricing;
+  // This document is prerendered and exported: keep dated offers independent of build time.
+  if (!promotion) return standard;
+  return `${standard} (standard); ${formatPricePer1M(promotion.inputPer1M, promotion.outputPer1M)} (${promotion.startsAt}–${promotion.endsAt} inclusive; ${promotion.label})`;
 
 }
 

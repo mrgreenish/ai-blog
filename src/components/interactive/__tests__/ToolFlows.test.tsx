@@ -18,10 +18,15 @@ import { ModelCompare } from "../ModelCompare";
 import { getTinderModels } from "@/lib/modelSpecs";
 import { QUESTIONS } from "@/lib/modelPickerScoring";
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.useRealTimers();
+});
 
 describe("Useful tool outputs", () => {
   it("makes the pricing offer visible beside the Mistral estimate", () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-10-07T12:00:00Z"));
     render(<QuickEstimate />);
     expect(screen.getByText(/50% launch offer; calendar interpretation: Oct 6–19 inclusive/)).toBeVisible();
     expect(screen.getByText(/Mistral checked separately 2026-10-07/)).toBeVisible();
