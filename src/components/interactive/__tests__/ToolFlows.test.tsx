@@ -21,6 +21,21 @@ import { QUESTIONS } from "@/lib/modelPickerScoring";
 afterEach(cleanup);
 
 describe("Useful tool outputs", () => {
+  it("makes the pricing offer visible beside the Mistral estimate", () => {
+    render(<QuickEstimate />);
+    expect(screen.getByText(/50% launch offer; calendar interpretation: Oct 6–19 inclusive/)).toBeVisible();
+    expect(screen.getByText(/Mistral checked separately 2026-10-07/)).toBeVisible();
+  });
+
+  it("shows Mistral's preview profile and clearly labelled scripted example", async () => {
+    const user = userEvent.setup();
+    render(<ModelTinder />);
+    expect(screen.getByRole("heading", { name: "Mistral Large 4" })).toBeVisible();
+    await user.click(screen.getByRole("button", { name: /Explore a scripted example/ }));
+    expect(screen.getByText(/A scripted illustration, not a live conversation/)).toBeVisible();
+    expect(screen.getByText(CHAT_SCRIPTS["mistral-large-4"][0].modelMessage)).toBeVisible();
+  });
+
   it("keeps every saved profile, including after finishing a scripted example", async () => {
     const user = userEvent.setup();
     const models = getTinderModels();

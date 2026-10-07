@@ -262,7 +262,7 @@ export function QuickEstimate() {
               "",
               ...rows.map(
                 (row) =>
-                  `${row.name}: ${formatEstimateCost(row.perRun)}/run; ${formatEstimateCost(row.monthly)}/month`,
+                  `${row.name}: ${formatEstimateCost(row.perRun)}/run; ${formatEstimateCost(row.monthly)}/month${row.pricingLabel ? ` (${row.pricingLabel})` : ""}`,
               ),
               "",
               "Token-only estimates. Check context and output capacity before sending a request.",
@@ -286,6 +286,11 @@ export function QuickEstimate() {
               >
                 <div className={`estimate-model font-mono text-xs ${m.color}`}>
                   {m.name}
+                  {m.pricingLabel ? (
+                    <span className="mt-1 block text-[10px] leading-relaxed text-fg-muted">
+                      {m.pricingLabel}
+                    </span>
+                  ) : null}
                 </div>
                 <div className="estimate-bar relative h-7 overflow-hidden rounded bg-bg-elevated">
                   <motion.div
@@ -334,7 +339,7 @@ export function QuickEstimate() {
       {/* Footer — data source attribution */}
       <div className="px-3 py-3 sm:px-5 bg-bg-surface border-t border-border-default">
         <p className="text-[11px] text-fg-muted">
-          Prices from official API docs, verified {PRICING_META.verifiedDate}.{" "}
+          Full registry checked {PRICING_META.verifiedDate}; Mistral checked separately 2026-10-07. Monthly estimates hold the current rate constant.{" "}
           {(Object.entries(PRICING_META.urls) as [string, string][]).map(
             ([provider, url], i, arr) => (
               <span key={provider}>

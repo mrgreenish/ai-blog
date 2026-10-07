@@ -428,7 +428,7 @@ export function ScenarioLab() {
       <div className="px-3 py-3 sm:px-5 bg-bg-surface border-t border-border-default">
         <p className="text-[11px] text-stone-400">
           Existing excerpts are retained as qualitative examples; original run logs are not included. New models have no local results yet. Prices checked{" "}
-          {PRICING_META.verifiedDate}.{" "}
+          {PRICING_META.verifiedDate}; Mistral checked separately 2026-10-07, with its 50% launch offer interpreted as October 6–19 inclusive.{" "}
           {(Object.entries(PRICING_META.urls) as [string, string][]).map(([provider, url], i, arr) => (
             <span key={provider}>
               <a

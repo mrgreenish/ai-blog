@@ -52,6 +52,7 @@ describe("time-dependent model pricing", () => {
 
 describe("current frontier model registry", () => {
   const expected = [
+    { id: "mistral-large-4", input: 1.36, output: 4.18, tier: "reasoning", context: 1_000_000 },
     { id: "gemini-3.8-flash", input: 1.5, output: 7.5, tier: "fast", context: 1_048_576 },
     { id: "deepseek-v4.1-flash", input: 0.3, output: 1.2, tier: "fast", context: 1_000_000 },
     { id: "gpt-6-astra", input: 10, output: 50, tier: "reasoning", context: 1_050_000 },
@@ -105,5 +106,31 @@ describe("current frontier model registry", () => {
     for (const id of ["gemini-3.8-flash", "deepseek-v4.1-flash", "gpt-6-astra", "claude-fable-5.1", "opus-5", "kimi-k3"]) {
       expect(Object.values(MODEL_BY_ID[id].benchmark)).toEqual([null, null, null, null]);
     }
+  });
+});
+
+
+describe("Mistral public-preview pricing", () => {
+  const model = MODEL_BY_ID["mistral-large-4"];
+
+  it.each([
+    ["2026-10-05", 1.36, 4.18, false],
+    ["2026-10-06", 0.68, 2.09, true],
+    ["2026-10-19", 0.68, 2.09, true],
+    ["2026-10-20", 1.36, 4.18, false],
+  ] as const)("resolves the launch offer on %s", (date, input, output, promotional) => {
+    expect(getEffectiveModelPricing(model, date)).toMatchObject({
+      inputPer1M: input, outputPer1M: output, isPromotional: promotional,
+    });
+    expect(estimateModelCost(model.id, 100_000, 10_000, date)).toBeCloseTo(
+      (100_000 * input + 10_000 * output) / 1_000_000,
+    );
+  });
+
+  it("labels the calendar assumption and leaves developer checks untested", () => {
+    expect(model.promotionalPricing?.label).toContain("calendar interpretation");
+    expect(Object.values(model.benchmark)).toEqual([null, null, null, null]);
+    expect(getDevBenchmarkColumns().find((column) => column.id === model.id)?.benchmark)
+      .toEqual(model.benchmark);
   });
 });

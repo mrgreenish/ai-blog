@@ -9,6 +9,7 @@ import { formatCost } from "@/lib/scenarioLabData";
 
 /** All model IDs referenced by the guidelines document — must exist in MODEL_REGISTRY */
 export const GUIDELINES_MODEL_IDS = [
+  "mistral-large-4",
   "gemini-3.8-flash",
   "deepseek-v4.1-flash",
   "gpt-6-astra",
@@ -29,6 +30,7 @@ export type GuidelinesModelId = (typeof GUIDELINES_MODEL_IDS)[number];
 
 /** Ordered list for the pricing table */
 export const GUIDELINES_PRICING_MODEL_IDS: GuidelinesModelId[] = [
+  "mistral-large-4",
   "composer-2.5",
   "composer-2.5-fast",
   "gpt-5.6-luna",

@@ -13,6 +13,20 @@ interface ChatRound {
 const MODELS = getTinderModels();
 
 export const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
+  "mistral-large-4": [
+    {
+      modelMessage: "Give me the screenshot, relevant code, and one acceptance check. We can compare this public preview with your current model on the same task.",
+      replies: ["Try the visual bug", "Start with a coding task"],
+    },
+    {
+      modelMessage: "I can work with images and call tools through your harness. Keep the scope fixed and record the retries, tokens, and actual result.",
+      replies: ["Check the result", "Can I self-host it?"],
+    },
+    {
+      modelMessage: "API access is in public preview; weights are forthcoming as of October 7. A passing local check is more useful than treating an announcement as a production guarantee.",
+      replies: [],
+    },
+  ],
   "gemini-3.8-flash": [
     {
       modelMessage:

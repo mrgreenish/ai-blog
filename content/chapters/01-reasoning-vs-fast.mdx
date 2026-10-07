@@ -2,7 +2,7 @@
 title: "Reasoning vs Fast Models"
 subtitle: "When to choose reasoning models vs fast models for different coding tasks"
 publishedAt: "2026-04-17"
-updatedAt: "2026-09-11"
+updatedAt: "2026-10-07"
 relatedSlugs: [model-personalities, max-mode, spec-to-pr]
 chapter: 1
 part: understanding-models
@@ -24,7 +24,7 @@ Everything below is an operating heuristic from my own coding sessions, not a pe
 
 The tools below now include **GPT-6 Astra, Claude Fable 5.1, Gemini 3.8 Flash, DeepSeek-V4.1-Flash, and Kimi K3**. Their specs come from provider documentation; the new releases do not yet have local scenario results. The earlier sessions described here keep the model versions used at the time.
 
-Start with a task you can check. Compare Luna, Gemini 3.8 Flash, or DeepSeek for a narrow step; evaluate Astra or Fable 5.1 when the problem needs more sustained reasoning. Kimi K3 adds an open-weight option for long-context work. The [September release notes](/chapters/what-is-happening) explain what changed and link to the sources.
+Start with a task you can check. Compare Luna, Gemini 3.8 Flash, or DeepSeek for a narrow step; evaluate Astra or Fable 5.1 when the problem needs more sustained reasoning. Kimi K3 adds an open-weight option for long-context work. Mistral Large 4 adds a public-preview candidate for coding, document analysis, and visual workflows. Compare it on the same checks before adopting it. The [release notes](/chapters/what-is-happening) explain availability and pricing.
 
 Token prices alone miss two costs: how much the model generates and how many attempts it needs. The calculators use explicit token assumptions and documented long-context surcharges. They cannot predict the number of retries your task will take.
 
@@ -45,6 +45,14 @@ Reach for GPT-5.6 Luna, Haiku, or Flash when:
 - **Boilerplate generation.** Component scaffolding, test stubs, migration files — anything where the structure is known and the model just needs to fill in the blanks.
 - **Structured data extraction.** Pulling JSON from unstructured text, classifying support tickets, parsing log lines. Fast models follow extraction schemas reliably without "improving" them.
 - **Pipeline steps where latency compounds.** If the model runs in a loop — processing files, transforming records, generating variants — even small per-call overhead adds up fast. A 3-second Haiku call vs. a 30-second o3 call, repeated 50 times, is the difference between 2.5 minutes and 25.
+
+## When the pipeline only needs a decision
+
+A returns photo does not always need a written explanation. Sometimes the next step needs a probability of visible damage, a choice of queue, or a score against a rubric.
+
+OpenAI's Decisions API takes text and inline images and returns those bounded answers. That can fit a classification or routing step before a broader agent runs. The application still handles refusals and chooses what happens next; a model's confidence needs checking against labelled examples.
+
+The [Decisions API release note](/chapters/what-is-happening/2026-10-06-02-decisions-api-turns-images-into-typed-answers) includes a vision request example and endpoint-specific pricing. Keep that pricing separate from the general model-token estimates below.
 
 ## The model mixer approach
 

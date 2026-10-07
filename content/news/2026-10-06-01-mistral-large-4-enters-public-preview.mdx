@@ -1,0 +1,16 @@
+---
+title: "Mistral Large 4 enters public preview"
+publishedAt: '2026-10-06'
+lastVerifiedAt: '2026-10-07'
+primarySourceUrl: 'https://docs.mistral.ai/resources/changelogs'
+indexable: true
+---
+Give a model the screenshot of a broken page, the component behind it, and a test that defines the fix. That is a useful first trial for **Mistral Large 4**, now available through Mistral's API in public preview.
+
+The October 6 release combines multimodal input, a million-token context window, function calling, and structured output. Those capabilities let a harness put visual evidence and code into one workflow. They do not tell us whether the resulting patch passes. [Model documentation](https://docs.mistral.ai/models/mistral-large).
+
+There is an availability detail worth getting right: **API access is available; the open weights are forthcoming**. The [official changelog](https://docs.mistral.ai/resources/changelogs) separates those milestones. If your requirement is deployment on your own hardware, the preview endpoint does not satisfy it yet.
+
+Standard uncached input/output rates are **$1.36 / $4.18 per million tokens**. The launch offer halves them to **$0.68 / $2.09** for two weeks. Our calculators interpret that as October 6–19 inclusive, with standard rates returning October 20. That end date is our calendar interpretation of the announcement, not a separately published cutoff. [Official pricing](https://docs.mistral.ai/inference/pricing).
+
+Try the same task against your current model. Record retries, total cost, and what needed correcting. The [model tools](/chapters/reasoning-vs-fast) now include Large 4, while its developer benchmark results remain untested. A low token bill is interesting; a verified result is the useful part.

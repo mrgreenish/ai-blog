@@ -6,7 +6,7 @@
 // ---------------------------------------------------------------------------
 
 export type Tier = "fast" | "balanced" | "reasoning";
-export type Provider = "Anthropic" | "OpenAI" | "Google" | "DeepSeek" | "Moonshot AI" | "Cursor";
+export type Provider = "Anthropic" | "OpenAI" | "Google" | "DeepSeek" | "Moonshot AI" | "Cursor" | "Mistral";
 /** Rough latency band for a typical developer task */
 export type LatencyBand = "instant" | "fast" | "moderate" | "slow";
 /** How aggressively the model expands scope beyond what was asked */
@@ -93,6 +93,57 @@ export interface ModelSpec {
 // ---------------------------------------------------------------------------
 
 export const MODEL_REGISTRY: ModelSpec[] = [
+  {
+    id: "mistral-large-4",
+    name: "Mistral Large 4",
+    provider: "Mistral",
+    inputPer1M: 1.36,
+    outputPer1M: 4.18,
+    promotionalPricing: {
+      inputPer1M: 0.68,
+      outputPer1M: 2.09,
+      startsAt: "2026-10-06",
+      endsAt: "2026-10-19",
+      label: "50% launch offer; calendar interpretation: Oct 6–19 inclusive",
+    },
+    pricingNote: "Public preview API. Standard uncached rates; weights forthcoming as of October 7, 2026. The documented two-week offer is interpreted as Oct 6–19 inclusive.",
+    tier: "reasoning",
+    contextWindowTokens: 1000000,
+    tagline: "The European Preview",
+    emoji: "🌍",
+    gradientFrom: "from-orange-600",
+    gradientTo: "to-amber-500",
+    accentColor: "text-orange-600",
+    contextBarColor: "bg-orange-500",
+    costColor: "text-orange-400",
+    why: {
+      coding: "Mistral Large 4 supports function calling and structured output. Compare it on a fixed coding task before adopting this public preview.",
+      analysis: "A million-token context can hold broad document inputs; keep the evidence relevant and verify the answer against it.",
+      vision: "Multimodal input lets you combine screenshots and text for analysis. Check visual conclusions against the original image.",
+      reasoning: "A reasoning-tier candidate with lower token rates than many flagship models; capability and task latency still need local evaluation.",
+      multifile: "Large context and tool support make coordinated edits worth testing with external acceptance checks.",
+    },
+    whenWrong: "When you need established production behavior or published weights today. API access is in public preview and the weights are still forthcoming.",
+    traits: [
+      "Public preview with multimodal input",
+      "1M context, function calling, and structured output",
+      "Announced open weights are forthcoming",
+    ],
+    bestFor: "Evaluating coding, document analysis, and visual workflows against a fixed baseline",
+    worstFor: "Unvalidated production migrations or immediate self-hosting",
+    latencyBand: "moderate",
+    initiativeStyle: "measured",
+    scopeDiscipline: "good",
+    pickWhen: "You want to evaluate a European multimodal model with tools and broad context",
+    avoidWhen: "You need a proven production default or downloadable weights today",
+    benchmark: {
+      correctServerAction: null,
+      followedConstraints: null,
+      madeUpDocs: null,
+      hiddenBugsInRefactor: null,
+    },
+  },
+
   {
     id: "gemini-flash",
     name: "Gemini 3 Flash Preview",
@@ -993,7 +1044,7 @@ export const MODEL_REGISTRY: ModelSpec[] = [
 // Lookup helpers
 // ---------------------------------------------------------------------------
 
-export const CURRENT_MODEL_IDS = ["gemini-3.8-flash","claude-fable-5.1","gpt-6-astra","deepseek-v4.1-flash","kimi-k3"] as const;
+export const CURRENT_MODEL_IDS = ["mistral-large-4","gemini-3.8-flash","claude-fable-5.1","gpt-6-astra","deepseek-v4.1-flash","kimi-k3"] as const;
 
 export const MODEL_BY_ID: Record<string, ModelSpec> = Object.fromEntries(
   MODEL_REGISTRY.map((m) => [m.id, m])
@@ -1090,6 +1141,7 @@ export const PRICING_META = {
   source: "Official API pricing pages",
   notes: [
     "Standard uncached text-token estimates. Excludes cache writes/reads, tool fees, taxes, and platform-specific charges. Reasoning tokens count as output.",
+    "Mistral Large 4 checked separately on 2026-10-07: public preview, $1.36/$4.18 standard input/output; $0.68/$2.09 launch rates. The two-week offer is interpreted as October 6–19 inclusive. Other models retain the full-registry verification date above.",
     "Sonnet 5 remains $2/$10; its planned September increase was cancelled. GPT-5.6 Luna, Terra, and Sol are now $0.20/$1.20, $2/$12, and $4/$20.",
     "Gemini 3.8 Flash is $0.75/$3.75 through December 31, 2026, then $1.50/$7.50. Google API rates are used; Cursor currently lists a different output rate.",
     "DeepSeek-V4.1-Flash estimates use peak uncached rates ($0.30/$1.20). Off-peak rates are half. Retired V4-Flash rates are historical only.",
@@ -1097,6 +1149,7 @@ export const PRICING_META = {
     "Context windows describe provider API capacity, not a universal Cursor default. Availability and limits vary by platform.",
   ],
   urls: {
+    Mistral: "https://docs.mistral.ai/inference/pricing",
     Anthropic: "https://platform.claude.com/docs/en/about-claude/pricing",
     OpenAI: "https://developers.openai.com/api/docs/pricing",
     Google: "https://ai.google.dev/gemini-api/docs/pricing",

@@ -568,9 +568,12 @@ export function GuidelinesDocument({ variant }: { variant: GuidelinesVariant }) 
 
       {isSp ? <h2 style={SP.h2}>Example Pricing</h2> : <h2>Example Pricing</h2>}
       <p style={isSp ? SP.p : undefined}>
-        Approximate Cursor model prices, per 1M tokens, as of {formatPricingVerifiedDate()}:
+        Provider API estimates per 1M text tokens. Full registry checked in {formatPricingVerifiedDate()}; Mistral Large 4 checked separately on October 7, 2026:
       </p>
       {pricingTable}
+      <p style={isSp ? SP.p : undefined}>
+        Mistral Large 4 is a public-preview evaluation candidate, not an established production recommendation. Compare it on the same acceptance checks before switching. Its launch offer is interpreted as October 6–19 inclusive; standard rates resume October 20 in these estimates. Availability in Cursor must be checked separately.
+      </p>
       <p style={isSp ? SP.p : undefined}>{PRICING_DISCLAIMER}</p>
 
       {COST_EXAMPLES.map((ex) => (

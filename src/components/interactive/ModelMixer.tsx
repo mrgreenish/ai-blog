@@ -598,7 +598,7 @@ function PipelineBuilder() {
         </div>
         <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
           <p className="max-w-lg text-xs text-fg-muted">
-            Provider API estimates, checked {PRICING_META.verifiedDate}.
+            Provider API estimates. Full registry checked {PRICING_META.verifiedDate}; Mistral checked separately 2026-10-07. Mistral’s 50% launch offer is interpreted as October 6–19 inclusive.
             Excludes subscription allowances, caching, and tool fees.
           </p>
           <CopyButton
