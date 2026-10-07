@@ -13,6 +13,7 @@ import {
   getScenarioLabModels,
   getTinderModels,
 } from "../modelSpecs";
+import { getRanking, score, type Answers } from "../modelPickerScoring";
 
 describe("time-dependent model pricing", () => {
   const sonnet = MODEL_BY_ID["sonnet-5"];
@@ -47,6 +48,44 @@ describe("time-dependent model pricing", () => {
   it("applies OpenAI long-context rates only above 272K input tokens", () => {
     expect(estimateModelCost("gpt-6-astra", 272_000, 10_000)).toBeCloseTo(3.22);
     expect(estimateModelCost("gpt-6-astra", 272_001, 10_000)).toBeCloseTo(6.19002);
+    expect(estimateModelCost("gpt-6.1-sol", 272_000, 10_000)).toBeCloseTo(0.644);
+    expect(estimateModelCost("gpt-6.1-sol", 272_001, 10_000)).toBeCloseTo(1.238004);
+  });
+
+  it("prices Opus fast mode at the Opus 5.5 rate", () => {
+    expect(MODEL_BY_ID["opus-fast"]).toMatchObject({
+      name: "Claude Opus 5.5 Fast",
+      inputPer1M: 8,
+      outputPer1M: 40,
+    });
+  });
+});
+
+describe("superseded Opus versions", () => {
+  const superseded = ["opus-4.8", "opus-5"];
+
+  it("keeps their historical rates for the scenario examples", () => {
+    for (const id of superseded) {
+      expect(MODEL_BY_ID[id]).toMatchObject({ retired: true, inputPer1M: 5, outputPer1M: 25 });
+    }
+    expect(getScenarioLabModels().map((model) => model.id)).toEqual(
+      expect.arrayContaining(superseded)
+    );
+  });
+
+  it("leaves them out of every current recommendation surface", () => {
+    const current = [
+      ...getMixerModels(),
+      ...getCostCalculatorModels(),
+      ...getPickerModels(),
+      ...getPickerModelsV2(),
+      ...getFailureGalleryModels(),
+      ...getTinderModels(),
+      ...getDevBenchmarkColumns(),
+    ].map((model) => model.id);
+    expect(current).not.toEqual(expect.arrayContaining(["opus-4.8"]));
+    expect(current).not.toEqual(expect.arrayContaining(["opus-5"]));
+    expect(getContextWindowModels().map((model) => model.name)).not.toContain("Claude Opus 5");
   });
 });
 
@@ -61,7 +100,11 @@ describe("current frontier model registry", () => {
     { id: "gpt-5.6-terra", input: 2, output: 12, tier: "balanced", context: 1_050_000 },
     { id: "gpt-5.6-sol", input: 4, output: 20, tier: "reasoning", context: 1_050_000 },
     { id: "claude-fable-5", input: 10, output: 50, tier: "reasoning", context: 1_000_000 },
-    { id: "opus-5", input: 5, output: 25, tier: "reasoning", context: 1_000_000 },
+    { id: "opus-5.5", input: 4, output: 20, tier: "reasoning", context: 1_000_000 },
+    { id: "sonnet-5.5", input: 2, output: 10, tier: "balanced", context: 1_000_000 },
+    { id: "gpt-6.1-sol", input: 2, output: 10, tier: "reasoning", context: 1_050_000 },
+    { id: "gpt-6-luna", input: 0.1, output: 0.5, tier: "fast", context: 1_050_000 },
+    { id: "glm-5.3", input: 1.4, output: 4.4, tier: "reasoning", context: 1_000_000 },
     { id: "kimi-k3", input: 3, output: 15, tier: "reasoning", context: 1_048_576 },
   ] as const;
 
@@ -103,7 +146,7 @@ describe("current frontier model registry", () => {
   });
 
   it("marks models without local developer checks as not tested", () => {
-    for (const id of ["gemini-3.8-flash", "deepseek-v4.1-flash", "gpt-6-astra", "claude-fable-5.1", "opus-5", "kimi-k3"]) {
+    for (const id of ["gemini-3.8-flash", "deepseek-v4.1-flash", "gpt-6-astra", "claude-fable-5.1", "opus-5.5", "sonnet-5.5", "gpt-6.1-sol", "gpt-6-luna", "glm-5.3", "kimi-k3"]) {
       expect(Object.values(MODEL_BY_ID[id].benchmark)).toEqual([null, null, null, null]);
     }
   });
@@ -132,5 +175,40 @@ describe("Mistral public-preview pricing", () => {
     expect(Object.values(model.benchmark)).toEqual([null, null, null, null]);
     expect(getDevBenchmarkColumns().find((column) => column.id === model.id)?.benchmark)
       .toEqual(model.benchmark);
+  });
+});
+
+describe("picker ties between a model and its successor", () => {
+  const cases: { label: string; answers: Answers; older: string; current: string }[] = [
+    {
+      label: "speed-focused architecture work",
+      answers: { task: "coding", scope: "architecture", stakes: "production", priority: "speed", autonomy: "drive" },
+      older: "gpt-5.6-sol",
+      current: "gpt-6.1-sol",
+    },
+    {
+      label: "a targeted prototype optimized for speed",
+      answers: { task: "coding", scope: "targeted", stakes: "prototype", priority: "speed", autonomy: "targeted" },
+      older: "gpt-5.6-luna",
+      current: "gpt-6-luna",
+    },
+  ];
+
+  it.each(cases)("ranks the current version first for $label", ({ answers, older, current }) => {
+    expect(score(current, answers)).toBe(score(older, answers));
+
+    const ranked = getRanking(getPickerModelsV2(), answers).top3.map((entry) => entry.model.id);
+    expect(ranked).toContain(current);
+    if (ranked.includes(older)) {
+      expect(ranked.indexOf(current)).toBeLessThan(ranked.indexOf(older));
+    }
+  });
+
+  it("lists current models ahead of older ones", () => {
+    const ids = getPickerModelsV2().map((model) => model.id);
+    expect(ids.indexOf("gpt-6.1-sol")).toBeLessThan(ids.indexOf("gpt-5.6-sol"));
+    expect(ids.indexOf("gpt-6-luna")).toBeLessThan(ids.indexOf("gpt-5.6-luna"));
+    expect(ids.indexOf("sonnet-5.5")).toBeLessThan(ids.indexOf("sonnet-5"));
+    expect(ids.indexOf("claude-fable-5.1")).toBeLessThan(ids.indexOf("claude-fable-5"));
   });
 });

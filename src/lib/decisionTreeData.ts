@@ -55,7 +55,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F50D}",
           description:
             "Use AI to catch mechanical bugs, type errors, and security issues before human review.",
-          model: "Claude Opus 5 / GPT-5.6 Sol",
+          model: "Claude Opus 5.5 / GPT-6.1 Sol",
           tools: ["Cursor BugBot", "Codex on GitHub", "GitHub PR"],
           steps: [
             {
@@ -184,7 +184,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F3A8}",
           description:
             "Go from Figma design to production component with typed props, design tokens, and Storybook stories.",
-          model: "Claude Sonnet 5",
+          model: "Claude Sonnet 5.5",
           tools: ["Figma MCP", "Cursor", "Storybook", "SKILL.md"],
           steps: [
             {
@@ -495,7 +495,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F41B}",
           description:
             "You can\u2019t reproduce it yet \u2014 start by building a reliable repro before fixing anything.",
-          model: "GPT-5.6 Sol / Kimi K3",
+          model: "GPT-6.1 Sol / Kimi K3",
           tools: ["Cursor", "Claude Code"],
           steps: [
             {
@@ -560,7 +560,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F5B1}\uFE0F",
           description:
             "Configure Cursor with project rules and optimized settings for AI-assisted development.",
-          model: "Claude Sonnet 5 (in Cursor)",
+          model: "Claude Sonnet 5.5 (in Cursor)",
           tools: ["Cursor", ".cursor/rules/*.mdc"],
           steps: [
             {
@@ -606,7 +606,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F4BB}",
           description:
             "Set up Claude Code CLI and Codex for terminal-based AI development with CLAUDE.md project context.",
-          model: "Claude Fable 5.1 / Claude Opus 5 / Sonnet 5",
+          model: "Claude Fable 5.1 / Claude Opus 5.5 / Sonnet 5.5",
           tools: ["Claude Code CLI", "CLAUDE.md", "GitHub Codex"],
           steps: [
             {
@@ -659,7 +659,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F308}",
           description:
             "Connect Figma to your AI development tools via Model Context Protocol for design-to-code workflows.",
-          model: "Claude Sonnet 5",
+          model: "Claude Sonnet 5.5",
           tools: ["Figma MCP", "Cursor"],
           steps: [
             {

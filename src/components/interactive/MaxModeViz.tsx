@@ -16,7 +16,7 @@ const MODELS = MODEL_REGISTRY.filter((model) => !model.retired);
 
 export function MaxModeViz() {
   const prefix = useId();
-  const [modelId, setModelId] = useState("sonnet-5");
+  const [modelId, setModelId] = useState("sonnet-5.5");
   const [inputTokens, setInputTokens] = useState(200_000);
   const [outputTokens, setOutputTokens] = useState(20_000);
   const [budget, setBudget] = useState(20);

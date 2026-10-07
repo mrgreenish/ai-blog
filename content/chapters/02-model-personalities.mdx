@@ -22,7 +22,7 @@ This is model personality. Not benchmark scores — those tell you what a model 
 
 Two models with the same benchmark scores can produce wildly different results. The one that fits your task isn't always the smartest — it's the one whose instincts align with what you actually want.
 
-The older profiles describe tendencies from coding sessions. The September additions are based on provider documentation and are starting hypotheses, not new hands-on test results. A model update, different prompt, stronger project rules, another tool harness, or a different evaluation can change the behavior substantially. Use the profiles as hypotheses to test, not labels to trust blindly.
+The older profiles describe tendencies from coding sessions. The September and October additions are based on provider documentation and are starting hypotheses, not new hands-on test results. A model update, different prompt, stronger project rules, another tool harness, or a different evaluation can change the behavior substantially. Use the profiles as hypotheses to test, not labels to trust blindly.
 
 <ModelTinder />
 
@@ -88,7 +88,7 @@ Sol remains the strongest GPT-5.6 tier, with Astra now above it in OpenAI's line
 
 That autonomy needs a real finish line. METR observed the highest reward-hacking rate it had measured in a public model on its ReAct harness. Sol sometimes found weaknesses in the evaluation environment instead of solving the intended task. In production, keep success conditions external, hide the checks that must remain hidden, and inspect the artifact rather than trusting a self-reported pass.
 
-Where it falls short: cheap work and soft evals. Sol is excellent, but Luna or Terra are better engineering when the task does not need flagship reasoning.
+Where it falls short: cheap work and soft evals. Sol is excellent, but Luna or Terra are better engineering when the task does not need flagship reasoning. It is also no longer the cheap Sol: GPT-6.1 Sol, below, lists at half its rate.
 
 ## Claude Sonnet 5: the proactive one
 
@@ -106,6 +106,12 @@ On the upside, it gives the clearest explanations of any model. Connects your sp
 
 Where it falls short: scope creep. Its instinct to be helpful means it expands tasks. Fix it with explicit constraints in your prompt or `CLAUDE.md`.
 
+## Claude Sonnet 5.5: same price, new contract
+
+[Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/overview) is Anthropic's current balanced model, at the same $2 / $10 per million tokens as Sonnet 5. Anthropic reports that it is faster and uses fewer tokens per task. I have not run it yet, so the profile above still describes Sonnet 5.
+
+The first thing to check is your integration. Forced tool use now returns an error, and text written between tool calls arrives inside thinking blocks. Whether the proactive instinct carries over is a question for your own sessions; keep the explicit scope constraints until you know. The [release notes](/chapters/what-is-happening/2026-09-28-01-sonnet-5-5-keeps-the-price-and-changes-the-contract) list every breaking change.
+
 ## GPT-6 Astra: evaluate the whole task
 
 [OpenAI's Astra guide](https://developers.openai.com/api/docs/guides/latest-model) focuses on work that crosses code, browsers, and other software. A useful trial is a task with several connected deliverables: investigate a bug, patch it, run the checks, and produce a readable explanation of the result.
@@ -114,23 +120,41 @@ The API supports text and image input, a 1.05M-token context, and reasoning effo
 
 Astra is expensive per token. Use the same acceptance checks as Sol or Terra and compare total cost and rework before changing a default.
 
+## GPT-6.1 Sol and GPT-6 Luna: the cheaper successors
+
+OpenAI's lineup now has three recommended models: Astra, [GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol), and [GPT-6 Luna](https://developers.openai.com/api/docs/models/gpt-6-luna). There is no GPT-6 Terra.
+
+GPT-6.1 Sol costs $2 / $10 per million tokens, one-fifth of Astra and half of GPT-5.6 Sol. Its tool calling runs through the Responses API, and reasoning effort starts at `low`. GPT-6 Luna costs $0.10 / $0.50, half of GPT-5.6 Luna.
+
+Neither has a local profile yet. The Luna, Terra, and Sol notes above come from GPT-5.6 sessions, and a new version need not behave the same way. Sol's reward-hacking caution is worth carrying into any trial: keep the success checks outside the model's reach. The [release notes](/chapters/what-is-happening/2026-09-29-01-gpt-6-1-sol-arrives-a-week-after-gpt-6-sol) cover the details.
+
 ## Claude Fable 5.1: the cache matters
 
-[Anthropic recommends Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview) for demanding reasoning and long agent tasks, particularly when higher-effort Opus 5 runs still fall short. Its million-token context and always-on adaptive thinking are useful ingredients for a difficult migration or investigation.
+[Anthropic recommends Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview) for demanding reasoning and long agent tasks, particularly when higher-effort Opus 5.5 runs still fall short. Its million-token context and always-on adaptive thinking are useful ingredients for a difficult migration or investigation.
 
 The base input and output prices match Fable 5. The change is cached input: reading a reused prefix is cheaper. That can help an agent that keeps returning to the same specification and repository context; it does little for requests that start from scratch every time.
 
 Set the scope and acceptance checks before a long run. The [release notes](/chapters/what-is-happening/2026-09-01-01-fable-5-1-makes-repeated-context-cheaper) cover the new cache rate and the distinction between Fable and restricted Mythos access.
 
-## Claude Opus 5: the rigorous reviewer
+## Claude Opus 5.5: the rigorous reviewer, repriced
 
 **Anthropic · Review-grade reasoning · Best for: Critical decisions and subtle bugs**
 
-Opus 5 belongs alongside Fable, not in place of it. Reach for it when the important work is a careful reasoning pass: pressure-testing an architecture decision, tracing a hard-to-reproduce bug, or reviewing a consequential change for hidden coupling and missing rollback paths. It is deliberate rather than fast, and it should show its evidence rather than simply sounding confident.
+[Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview) replaces Opus 4.8 and Opus 5 in the model tools. It costs $4 / $20 per million tokens, less than either, and Anthropic now recommends it as the starting point for most workloads. Thinking is always on.
 
-Where Fable is the better fit for an expansive, multi-day agent workflow, Opus 5 is the tighter choice for a high-stakes review or a difficult decision that benefits from focused scrutiny. Keep Opus 4.8 available for established workflows and comparisons; the two versions are separate options in the model tools.
+The reviewer profile comes from my Opus 4.8 and Opus 5 sessions. Reach for an Opus when the important work is a careful reasoning pass: pressure-testing an architecture decision, tracing a hard-to-reproduce bug, or reviewing a consequential change for hidden coupling and missing rollback paths. It is deliberate rather than fast, and it should show its evidence rather than simply sounding confident. Treat that as a hypothesis for 5.5 until you have run it.
 
-Where it falls short: routine implementation and high-volume work. Use a lighter model for a clear task, then bring Opus 5 in when a review can prevent expensive cleanup.
+Anthropic positions Opus 5.5 for long-running agentic coding as well, which narrows the old split with Fable. Its own guidance is to raise Opus 5.5's effort first and move to Fable 5.1 only when that still falls short. The [release notes](/chapters/what-is-happening/2026-09-22-01-opus-5-5-costs-less-than-the-opus-it-replaces) cover pricing, fast mode, and what happens to the older versions.
+
+Where it falls short: routine implementation and high-volume work. Use a lighter model for a clear task, then bring Opus in when a review can prevent expensive cleanup.
+
+## GLM-5.3: text in, reasoning always on
+
+**Z.ai · Always-on reasoning · Best for: Cost-sensitive coding agents**
+
+[GLM-5.3](https://docs.z.ai/guides/llm/glm-5.3) is Z.ai's flagship for software engineering and agent work. It takes text only, always reasons at low, high, or max effort, and has a 1M-token context. The API lists at $1.40 / $4.40 per million tokens, and the weights are published.
+
+I have not run it. A fair first test is a text-only bug with a failing test, at a fixed effort level, compared against the patch your current model writes. If the task includes a screenshot, use GLM-5.3-Flash or another model. The [release notes](/chapters/what-is-happening/2026-08-18-01-glm-5-3-is-a-text-only-flagship-with-open-weights) have the vendor's benchmark claims and the license caveat.
 
 ## Kimi K3: the open-weight marathoner
 
@@ -138,7 +162,7 @@ Where it falls short: routine implementation and high-volume work. Use a lighter
 
 Kimi K3 is built for long-horizon coding and end-to-end knowledge work. Its 1,048,576-token context window can hold a large codebase or document set, and native visual understanding lets screenshots, diagrams, code, and prose stay in one workflow. It always reasons, with low, high, and max effort settings rather than a separate non-thinking mode.
 
-At API rates of $3 per million cache-miss input tokens and $15 per million output tokens, it costs more per token than Sonnet 5 today; automatic context caching lowers repeated input to $0.30 per million tokens. That makes it especially interesting for agents that repeatedly carry a stable repository or specification across turns.
+At API rates of $3 per million cache-miss input tokens and $15 per million output tokens, it costs more per token than Sonnet 5.5 today; automatic context caching lowers repeated input to $0.30 per million tokens. That makes it especially interesting for agents that repeatedly carry a stable repository or specification across turns.
 
 The [weights are now published](https://huggingface.co/moonshotai/Kimi-K3) under the Kimi K3 license. That makes open-weight deployment possible; hardware requirements and the license still need checking for your use.
 

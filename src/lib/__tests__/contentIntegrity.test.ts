@@ -170,7 +170,7 @@ describe("Dated news entry schema", () => {
     expect(news.map((entry) => entry.slug).slice(0, 3)).toEqual([
       "2026-10-06-01-mistral-large-4-enters-public-preview",
       "2026-10-06-02-decisions-api-turns-images-into-typed-answers",
-      "2026-10-03-01-kolibri-1-focuses-on-german-and-english",
+      "2026-10-03-01-kolibri-brings-a-german-first-model-to-open-weights",
     ]);
     for (const entry of news.slice(0, 3)) {
       expect(sitemap()).toContainEqual(expect.objectContaining({
@@ -180,11 +180,11 @@ describe("Dated news entry schema", () => {
     }
   });
 
-  it("keeps the focused news index at 29 entries", () => {
+  it("keeps the focused news index at 33 entries", () => {
     const indexable = entries.filter(
       ({ frontmatter }) => frontmatter.indexable === true,
     );
-    expect(indexable).toHaveLength(29);
+    expect(indexable).toHaveLength(33);
   });
 
   it("keeps visible metadata out of entry bodies", () => {

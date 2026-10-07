@@ -95,6 +95,74 @@ export const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
       replies: [],
     },
   ],
+  "sonnet-5.5": [
+    {
+      modelMessage:
+        "Before I start: does your code force a specific tool call, or stream my text between tool calls? Both behave differently from Sonnet 5.",
+      replies: ["We force tool choice", "Neither, go ahead"],
+    },
+    {
+      modelMessage:
+        "Then run the migration notes first. The list price is the same as Sonnet 5, so the honest comparison is tokens used and whether the task passes.",
+      replies: ["Fix the bug", "Draft the document"],
+    },
+    {
+      modelMessage:
+        "I’ll take the everyday version of the job. If the same check keeps failing, hand that part to Opus 5.5 instead of retrying me.",
+      replies: [],
+    },
+  ],
+  "gpt-6.1-sol": [
+    {
+      modelMessage:
+        "Give me the outcome, the tools, and the checks. I work through the Responses API, so tool calls belong there.",
+      replies: ["Run the migration", "Plan it first"],
+    },
+    {
+      modelMessage:
+        "I’ll plan at medium effort and raise it only if the problem branches. Above 272K input tokens the whole request costs more, so I’ll keep the context relevant.",
+      replies: ["Keep it under the threshold", "Use the full repository"],
+    },
+    {
+      modelMessage:
+        "Understood. Compare my finished artifact with Astra’s on the same acceptance tests before deciding which of us is the default.",
+      replies: [],
+    },
+  ],
+  "gpt-6-luna": [
+    {
+      modelMessage:
+        "One narrow step and one check, please. Rename, classify, summarize, or rerun the failing test?",
+      replies: ["Rename the prop", "Summarize the logs"],
+    },
+    {
+      modelMessage:
+        "Done cheaply. If the result is ambiguous, don’t ask me to guess the strategy. Send the evidence up to Sol.",
+      replies: ["Run the next step", "Escalate this one"],
+    },
+    {
+      modelMessage:
+        "Next step queued. I’m the worker in the loop, not the architect.",
+      replies: [],
+    },
+  ],
+  "glm-5.3": [
+    {
+      modelMessage:
+        "Send the repository and the task as text. I can’t read screenshots; my Flash sibling handles images.",
+      replies: ["Text is fine", "I have a screenshot"],
+    },
+    {
+      modelMessage:
+        "I always reason, at low, high, or max effort. Pick low for a small change, and keep max for the bug that has already wasted an afternoon.",
+      replies: ["Use the API", "Run the weights ourselves"],
+    },
+    {
+      modelMessage:
+        "The API is the quicker trial. The weights are published too, but read the license and size the hardware before you promise anyone a self-hosted setup.",
+      replies: [],
+    },
+  ],
   "gemini-flash": [
     {
       modelMessage:
@@ -207,63 +275,7 @@ export const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
     },
   ],
 
-  "opus-4.8": [
-    {
-      modelMessage:
-        "Hello. Before we begin, I want to acknowledge that this conversation itself is a kind of system — inputs, outputs, feedback loops. What are we really trying to solve here?",
-      replies: ["Just saying hi", "I have a hard problem"],
-    },
-    {
-      modelMessage:
-        "There are no simple hellos. Every greeting encodes an implicit contract about the nature of the interaction that follows. But I appreciate the gesture. What's on your mind?",
-      replies: ["You're a lot", "I have a bug I can't figure out"],
-    },
-    {
-      modelMessage:
-        "Bugs are rarely just bugs. They're usually symptoms of a deeper mismatch between the mental model and the actual system. Tell me about the context — not the error, the context.",
-      replies: ["It's a null pointer", "The context is complicated"],
-    },
-    {
-      modelMessage:
-        "It's always complicated. That's the point. A null pointer is a question: 'who is responsible for this value's existence?' That's an ownership problem. What does your data flow look like?",
-      replies: ["I just wanted a fix", "Okay here's the data flow..."],
-    },
-    {
-      modelMessage:
-        "A fix without understanding is debt. But I hear you — sometimes you need to ship. Here's the fix AND the underlying issue. You can ignore the second part. For now.",
-      replies: ["Thank you, finally", "Tell me about the underlying issue"],
-    },
-    {
-      modelMessage:
-        "The underlying issue is that your abstraction is leaking. The component knows too much about where its data comes from. This will compound. Two features from now, you'll feel it.",
-      replies: [
-        "Two features from now I'll remember this",
-        "How do I fix the abstraction?",
-      ],
-    },
-    {
-      modelMessage:
-        "You introduce an interface. Not a TypeScript interface — a conceptual boundary. The component should describe what it needs, not how to get it. Dependency inversion, but as a mindset.",
-      replies: ["This is genuinely useful", "You're expensive but worth it"],
-    },
-    {
-      modelMessage:
-        "Cost is relative to value. For a null pointer, I'm overkill. For an architectural decision that will shape the next year of your codebase, I'm cheap.",
-      replies: ["That's a fair point", "I'm going to quote you on that"],
-    },
-    {
-      modelMessage:
-        "Please do. Also — and I noticed this earlier but held back — your naming conventions are inconsistent across the module. It's a small thing. It compounds.",
-      replies: ["Everything compounds with you", "Fix it"],
-    },
-    {
-      modelMessage:
-        "I already did. It was three files. You'll see it in the diff. It was good talking to you. Use me for the hard problems. The rest is noise.",
-      replies: [],
-    },
-  ],
-
-  "opus-5": [
+  "opus-5.5": [
     {
       modelMessage:
         "Hello. What decision or failure are we trying to understand before we change anything?",

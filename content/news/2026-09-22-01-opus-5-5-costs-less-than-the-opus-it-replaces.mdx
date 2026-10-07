@@ -1,0 +1,24 @@
+---
+title: "Opus 5.5 costs less than the Opus it replaces"
+publishedAt: '2026-09-22'
+lastVerifiedAt: '2026-10-05'
+primarySourceUrl: 'https://www.anthropic.com/news/claude-opus-5-5'
+indexable: true
+---
+A new flagship usually costs more than the last one. **Claude Opus 5.5** goes the other way: $4 input and $20 output per million tokens, against $5 and $25 for Opus 5. Cached reads fall from $0.50 to $0.20. [Claude pricing](https://platform.claude.com/docs/en/about-claude/pricing).
+
+Anthropic released it on September 22 as the first model in a new Claude 5.5 family. The company says it works at the level of Fable 5.1 on most tasks, generates output more than 30% faster than Opus 5, and, at default settings, costs about 40% less than Opus 5 on typical workloads. [Announcement](https://www.anthropic.com/news/claude-opus-5-5).
+
+That 40% is larger than the price cut alone, which is 20%. The rest has to come from cheaper cache reads and fewer tokens per task. Both depend on your workload, so measure them on a task you already run.
+
+Anthropic's own benchmark table puts Opus 5.5 at 66.4% on Terminal-Bench 4.0, ahead of Opus 5 (52.3%), Fable 5.1 (55.8%), and GPT-6 Astra (57.9%). On OSWorld 2.1 it reports 81.8% against 74.0% for Opus 5. The same table has Astra slightly ahead on AutomationBench, 41.4% to 40.0%. These are vendor numbers from the vendor's harness.
+
+The API model is `claude-opus-5-5`. It keeps the **1M-token context** at standard rates across the whole window and allows 128K output tokens. Thinking is always on and cannot be disabled; effort defaults to `medium`. Anthropic's model guide now says to start with Opus 5.5 for most workloads and to try Fable 5.1 when a higher-effort Opus 5.5 run still falls short. [Model overview](https://platform.claude.com/docs/en/about-claude/models/overview).
+
+Fast mode moved with it. In research preview on the first-party Claude API, Opus 5.5 fast mode costs **$8 / $40 per million tokens**, twice the standard rate. Fast mode on Opus 5 and Opus 4.8 stays at $10 / $50.
+
+Opus 5 and Opus 4.8 are still served at $5 / $25. Anthropic's [deprecations page](https://platform.claude.com/docs/en/about-claude/model-deprecations) lists both as active, with retirement no sooner than July 24, 2027 and May 28, 2027. According to the announcement, requests that trip the new model's safeguards fall back to another model, and most cybersecurity tasks are re-routed to Opus 4.8. An older model can therefore still answer part of a session.
+
+On this site, Opus 5.5 now replaces Opus 4.8 and Opus 5 in the [model tools](/chapters/reasoning-vs-fast). The two older versions appear only in the scenario examples where they were actually run, labelled as superseded. Opus 5.5 has no local results yet and is marked “not tested.”
+
+A useful trial is the review you last gave to Opus 5. Run the same diff with the same acceptance checks, then compare three things: the issues found, the output tokens, and the wall-clock time.

@@ -11,7 +11,7 @@ wonderQuestion: "Have you ever wondered why the same task costs 15x more on one 
 interactiveTools: [scenario-lab, model-picker, model-mixer, cost-calculator]
 illustrationPlaceholders:
   - "Side-by-side diagram: a reasoning model building a chain of thought for a multi-constraint refactoring problem vs a fast model instantly returning a boilerplate snippet. Show thinking tokens accumulating on the left, instant output on the right."
-  - "Cost comparison infographic: common developer tasks mapped against cost per task on GPT-5.6 Luna, Terra, and Sol; GPT-6 Astra; Claude Fable 5.1, Opus 5, and Sonnet 5; Kimi K3; Gemini 3.8 Flash; and DeepSeek-V4.1-Flash."
+  - "Cost comparison infographic: common developer tasks mapped against cost per task on GPT-6 Luna, GPT-6.1 Sol, and GPT-6 Astra; Claude Fable 5.1, Opus 5.5, and Sonnet 5.5; GLM-5.3; Kimi K3; Gemini 3.8 Flash; and DeepSeek-V4.1-Flash."
 ---
 
 The first time I used o3 for a coding task, I was impressed — then I checked the latency and the bill. 40 seconds and 15× the cost of Sonnet, for a task Sonnet would have nailed. That moment is what started me keeping notes on *when* the expensive reasoning models actually earn their cost — and when they're just burning money.
@@ -20,11 +20,11 @@ I'm Filip van Harreveld, a senior creative developer at [iO](https://www.iodigit
 
 Everything below is an operating heuristic from my own coding sessions, not a permanent ranking. Model behavior shifts with the version, prompt, tool harness, repository context, and how success is measured. Treat the examples as patterns to test against your work.
 
-## The September model shortlist
+## The current model shortlist
 
-The tools below now include **GPT-6 Astra, Claude Fable 5.1, Gemini 3.8 Flash, DeepSeek-V4.1-Flash, and Kimi K3**. Their specs come from provider documentation; the new releases do not yet have local scenario results. The earlier sessions described here keep the model versions used at the time.
+The tools below now include **Claude Opus 5.5 and Sonnet 5.5, GPT-6.1 Sol and GPT-6 Luna, GLM-5.3, GPT-6 Astra, Claude Fable 5.1, Gemini 3.8 Flash, DeepSeek-V4.1-Flash, and Kimi K3**. Their specs come from provider documentation; the new releases do not yet have local scenario results. Opus 5.5 replaces Opus 4.8 and Opus 5, which now appear only in the scenario examples where they were run. The earlier sessions described here keep the model versions used at the time.
 
-Start with a task you can check. Compare Luna, Gemini 3.8 Flash, or DeepSeek for a narrow step; evaluate Astra or Fable 5.1 when the problem needs more sustained reasoning. Kimi K3 adds an open-weight option for long-context work. Mistral Large 4 adds a public-preview candidate for coding, document analysis, and visual workflows. Compare it on the same checks before adopting it. The [release notes](/chapters/what-is-happening) explain availability and pricing.
+Start with a task you can check. Compare GPT-6 Luna, Gemini 3.8 Flash, or DeepSeek for a narrow step. Try Sonnet 5.5 or GPT-6.1 Sol for everyday implementation, and Opus 5.5 before Astra or Fable 5.1 when the problem needs more sustained reasoning. GLM-5.3 and Kimi K3 are the open-weight options; GLM-5.3 takes text only. Mistral Large 4 adds a public-preview candidate for coding, document analysis, and visual workflows. Compare it on the same checks before adopting it. The [release notes](/chapters/what-is-happening) explain what changed and link to the sources.
 
 Token prices alone miss two costs: how much the model generates and how many attempts it needs. The calculators use explicit token assumptions and documented long-context surcharges. They cannot predict the number of retries your task will take.
 
