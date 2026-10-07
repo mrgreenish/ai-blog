@@ -683,6 +683,24 @@ describe("scenarioLabData", () => {
   });
 });
 
+
+describe("Mistral preview suitability", () => {
+  it("scores a visual multi-file evaluation above a quick latency-sensitive edit", () => {
+    const evaluation = allAnswers({ task: "vision", scope: "multifile", stakes: "internal", priority: "balance", autonomy: "gaps" });
+    const quick = allAnswers({ task: "coding", scope: "targeted", stakes: "prototype", priority: "speed", autonomy: "targeted" });
+    expect(score("mistral-large-4", evaluation)).toBeGreaterThan(score("mistral-large-4", quick));
+    expect(scoreDimensions("mistral-large-4", evaluation).dimensions.map((d) => d.reason).join(" "))
+      .toContain("public preview");
+  });
+
+  it("reduces suitability for consequential use while keeping the preview caveat", () => {
+    expect(score("mistral-large-4", allAnswers({ stakes: "critical" })))
+      .toBeLessThan(score("mistral-large-4", allAnswers({ stakes: "internal" })));
+    expect(scoreDimensions("mistral-large-4", allAnswers({ stakes: "production" })).dimensions)
+      .toContainEqual(expect.objectContaining({ dimension: "stakes", points: -3, reason: expect.stringContaining("Public preview") }));
+  });
+});
+
 // ---------------------------------------------------------------------------
 // October 2026 additions
 // ---------------------------------------------------------------------------

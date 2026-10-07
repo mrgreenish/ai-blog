@@ -1,0 +1,36 @@
+---
+title: "Decisions API turns images into typed answers"
+publishedAt: '2026-10-06'
+lastVerifiedAt: '2026-10-07'
+primarySourceUrl: 'https://developers.openai.com/api/docs/guides/decisions'
+indexable: true
+---
+A returns workflow receives a photo of a cracked lamp. It needs one answer before routing the case: does the image show damage?
+
+OpenAI's **Decisions API** is built for that kind of bounded question. The October 6 public beta uses `gpt-6-luna` with text and image inputs. Questions return predicates, choices from predefined options, or numeric scores. OpenAI reports answers up to 10× faster than using Luna through the Responses API; that is a provider claim, not a latency measurement from this site. [API changelog](https://developers.openai.com/api/docs/changelog).
+
+Here is an illustrative request body for `POST /v1/decisions`. Replace the image placeholder with actual base64-encoded JPEG bytes:
+
+```json
+{
+  "model": "gpt-6-luna",
+  "input": [{
+    "role": "user",
+    "content": [
+      {"type": "input_text", "text": "Inspect the lamp in this returns photo."},
+      {"type": "input_image", "image_url": "data:image/jpeg;base64,<JPEG_BYTES>"}
+    ]
+  }],
+  "questions": [{
+    "type": "predicate",
+    "name": "visible_crack",
+    "instructions": "Is there a visible crack in the lamp? Ignore reflections and damage to the packaging."
+  }]
+}
+```
+
+Images must use inline data URLs. External image URLs and file IDs are not supported. Read the answer's type before its value: a predicate provides a probability, while a refusal provides no scored answer. Route refusals and uncertain cases to review rather than quietly interpreting them as “no damage.” [Request reference](https://developers.openai.com/api/reference/resources/decisions/methods/create).
+
+The [guide](https://developers.openai.com/api/docs/guides/decisions) lists **$0.10 per million input tokens**, with no output, cache-read, or cache-write charge for this endpoint. Regional premiums and long-context multipliers apply. These are Decisions API rates; they are not general Luna prices for other endpoints.
+
+Your application still chooses the next action. Test the classifier against labelled photos, including glare and ambiguous damage, before deciding which answers can be routed automatically.

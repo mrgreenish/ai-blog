@@ -2,7 +2,7 @@
 title: "Model Personalities"
 subtitle: "How different models approach the same task, and when to lean into that"
 publishedAt: "2026-04-17"
-updatedAt: "2026-10-05"
+updatedAt: "2026-10-07"
 relatedSlugs: [reasoning-vs-fast, prompting-and-pitfalls, spec-to-pr]
 chapter: 2
 part: understanding-models
@@ -51,6 +51,14 @@ Try it on work with mixed inputs, such as a bug report with screenshots and logs
 [DeepSeek's current API](https://api-docs.deepseek.com/quick_start/pricing/) adds native vision to its low-cost Flash option. It supports thinking and non-thinking modes, tool calls, and a million-token context. Use `deepseek-flash`; the older V4-Flash aliases now serve V4.1.
 
 The practical test is a small, checkable task: pass it the same failing case as your current model and compare the patch. Its price changes between peak and off-peak hours. Our calculators use peak uncached rates so a budget does not depend on when the job runs.
+
+## Mistral Large 4: a preview worth comparing
+
+Give it a screenshot, the relevant code, and a fixed acceptance test. Mistral Large 4's [public-preview API](https://docs.mistral.ai/models/mistral-large) supports multimodal input, function calling, structured output, and a million-token context. That makes it a candidate for visual debugging and document analysis alongside coding.
+
+We do not yet have a measured personality profile for this release. The picker uses cautious editorial suitability signals; its developer benchmark results remain untested. Compare retries, scope changes, and total task cost against your established model before changing a default.
+
+Where it falls short today: established production evidence and immediate self-hosting. API access is available, while the announced weights are forthcoming. The [October release note](/chapters/what-is-happening/2026-10-06-01-mistral-large-4-enters-public-preview) explains that distinction and the temporary launch pricing.
 
 ## GPT-5.6 Luna: the fast operator
 

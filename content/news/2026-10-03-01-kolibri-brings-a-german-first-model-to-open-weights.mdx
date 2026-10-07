@@ -1,8 +1,8 @@
 ---
 title: "Kolibri brings a German-first model to open weights"
 publishedAt: '2026-10-03'
-lastVerifiedAt: '2026-10-05'
-primarySourceUrl: 'https://aleph-alpha.com/en/blog/kolibri-has-landed-a-sovereign-open-weight-model/'
+lastVerifiedAt: '2026-10-07'
+primarySourceUrl: 'https://huggingface.co/Aleph-Alpha/Kolibri-1'
 indexable: true
 ---
 Ask a model about a clause that is not in the contract you gave it. Most will produce an answer anyway. Aleph Alpha says **Kolibri** is trained to decline instead.
@@ -13,7 +13,7 @@ Kolibri is a mixture-of-experts model with **78.1B total parameters and about 3.
 
 It is bilingual by design. German makes up 21.3% of a 20-trillion-token pre-training mix, alongside English and code, and Aleph Alpha built a new tokenizer that it says compresses German text better than the alternatives it tested. The model takes text only. If your work involves scanned forms or screenshots, something else has to read them first.
 
-The context window needs a careful reading. Kolibri handles **262,144 tokens** as trained. The model card documents a vLLM override that raises the limit to 1,048,576 tokens, which relies on the model extrapolating beyond the lengths it was trained on. Test the longer setting on your own documents before depending on it.
+Context needs a careful distinction. Aleph Alpha validates up to **1,048,576 tokens**, but recommends **262,144 or fewer** for serving efficiency and complex tasks. Start with the relevant documents rather than treating the maximum window as a target. Test the longer setting on your own documents before depending on it.
 
 Reasoning has four effort levels, from none to high, and tool calling is supported. Both run through Aleph Alpha's `aleph-alpha-inference` plugin for vLLM, so a plain vLLM install is not enough.
 

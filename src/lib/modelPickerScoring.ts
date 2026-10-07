@@ -356,6 +356,19 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
       "Strong for reviewing and refining a plan; use Fable or Sol for long autonomous execution");
   }
 
+  if (modelId === "mistral-large-4") {
+    dim("task", task === "coding" || task === "reasoning" || task === "analysis" ? 5 : task === "vision" ? 4 : task === "writing" ? 2 : 0,
+      "Multimodal input, function calling, and structured output make this public preview worth evaluating on your own task");
+    dim("scope", scope === "autonomous" || scope === "multifile" ? 6 : scope === "architecture" ? 4 : scope === "targeted" ? -2 : 0,
+      "A million-token context can hold broad inputs; verify coordinated changes with external checks");
+    dim("stakes", stakes === "production" || stakes === "critical" ? -3 : stakes === "prototype" || stakes === "internal" ? 3 : 0,
+      "Public preview: evaluate against an established baseline before production use");
+    dim("priority", priority === "accuracy" ? 4 : priority === "balance" ? 3 : priority === "speed" ? -4 : 0,
+      "Compare total task cost and latency; lower token rates do not establish output quality");
+    dim("autonomy", autonomy === "drive" ? 6 : autonomy === "gaps" ? 4 : autonomy === "targeted" ? -2 : 0,
+      "Tool support enables a harness-driven loop with explicit scope and acceptance checks");
+  }
+
   if (modelId === "kimi-k3") {
     dim("task", task === "coding" ? 5 : task === "reasoning" ? 5 : task === "analysis" ? 5 : task === "vision" ? 4 : task === "writing" ? 2 : 0,
       task === "coding" ? "Built for long-horizon coding with tools and structured outputs"
