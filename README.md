@@ -4,7 +4,14 @@ A Next.js blog about AI coding tools — models, workflows, and tooling — with
 
 ## Development
 
+Use Node.js 22.23.4 or a newer patched 22.x release, or Node.js 24.22.1
+or newer within 24.x. These minimums include the
+[October 2026 Node.js security fixes](https://vercel.com/kb/bulletin/node-js-security-advisory).
+Vercel uses its managed Node.js 24.x runtime and manages patch updates.
+
 ```bash
+nvm install
+nvm use
 pnpm install
 pnpm dev
 ```
