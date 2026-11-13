@@ -24,15 +24,15 @@ afterEach(() => {
 });
 
 describe("Useful tool outputs", () => {
-  it("makes the pricing offer visible beside the Mistral estimate", () => {
+  it("shows a dated promotional label beside the estimate while it applies", () => {
     vi.useFakeTimers({ toFake: ["Date"] });
-    vi.setSystemTime(new Date("2026-10-07T12:00:00Z"));
+    vi.setSystemTime(new Date("2026-11-12T12:00:00Z"));
     render(<QuickEstimate />);
-    expect(screen.getByText(/50% launch offer; calendar interpretation: Oct 6–19 inclusive/)).toBeVisible();
-    expect(screen.getByText(/Mistral checked separately 2026-10-07/)).toBeVisible();
+    expect(screen.getByText(/Introductory pricing through December 31, 2026/)).toBeVisible();
+    expect(screen.getByText(/Full registry checked 2026-11-12/)).toBeVisible();
   });
 
-  it("shows Mistral's preview profile and clearly labelled scripted example", async () => {
+  it("shows Mistral's profile and clearly labelled scripted example", async () => {
     const user = userEvent.setup();
     render(<ModelTinder />);
     expect(screen.getByRole("heading", { name: "Mistral Large 4" })).toBeVisible();

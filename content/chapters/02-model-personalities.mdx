@@ -2,7 +2,7 @@
 title: "Model Personalities"
 subtitle: "How different models approach the same task, and when to lean into that"
 publishedAt: "2026-04-17"
-updatedAt: "2026-10-07"
+updatedAt: "2026-11-13"
 relatedSlugs: [reasoning-vs-fast, prompting-and-pitfalls, spec-to-pr]
 chapter: 2
 part: understanding-models
@@ -46,19 +46,27 @@ Google now positions Flash for sustained coding and agent work. That is a reason
 
 Try it on work with mixed inputs, such as a bug report with screenshots and logs. Measure whether it finishes cleanly and how many tokens it uses. Google explicitly says the model can spend more tokens on difficult tasks, so the Flash name alone does not tell you the bill.
 
+## Gemini 4 Argon and Carbon: two tiers, one price for now
+
+Google's new generation comes in two tiers. [Argon](https://aistudio.google.com/docs/models/gemini-4-argon) is the one Google recommends for most software engineering and knowledge work. [Carbon](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-carbon-now-available/) is for the tasks that push a model hardest, and it uses more tokens than Argon to reason and verify. Both take text, images, video, audio, and PDFs, and both have a million-token context window that input and output share.
+
+Until November 30 both cost $2 / $10 per million tokens; from December 1 they cost $4 / $20. Because the rate is the same, the per-token price will not tell you which one is cheaper. Compare tokens per completed task, and estimate anything long-running at the December rate.
+
+Neither has a local profile yet. The careful-Gemini notes above come from earlier sessions, and a new generation need not behave the same way.
+
 ## DeepSeek-V4.1-Flash: cheap enough to compare
 
 [DeepSeek's current API](https://api-docs.deepseek.com/quick_start/pricing/) adds native vision to its low-cost Flash option. It supports thinking and non-thinking modes, tool calls, and a million-token context. Use `deepseek-flash`; the older V4-Flash aliases now serve V4.1.
 
 The practical test is a small, checkable task: pass it the same failing case as your current model and compare the patch. Its price changes between peak and off-peak hours. Our calculators use peak uncached rates so a budget does not depend on when the job runs.
 
-## Mistral Large 4: a preview worth comparing
+## Mistral Large 4: open weights worth comparing
 
-Give it a screenshot, the relevant code, and a fixed acceptance test. Mistral Large 4's [public-preview API](https://docs.mistral.ai/models/mistral-large) supports multimodal input, function calling, structured output, and a million-token context. That makes it a candidate for visual debugging and document analysis alongside coding.
+Give it a screenshot, the relevant code, and a fixed acceptance test. Mistral Large 4's [API](https://docs.mistral.ai/models/mistral-large-4-0) supports multimodal input, function calling, structured output, and a million-token context. That makes it a candidate for visual debugging and document analysis alongside coding.
 
 We do not yet have a measured personality profile for this release. The picker uses cautious editorial suitability signals; its developer benchmark results remain untested. Compare retries, scope changes, and total task cost against your established model before changing a default.
 
-Where it falls short today: established production evidence and immediate self-hosting. API access is available, while the announced weights are forthcoming. The [October release note](/chapters/what-is-happening/2026-10-06-01-mistral-large-4-enters-public-preview) explains that distinction and the temporary launch pricing.
+Where it falls short today: established production evidence. The weights are now published, and the API price fell to $0.70 / $2.10 per million tokens when they shipped. Self-hosting a model this size is still a multi-GPU job, and offering it as a service needs a separate Mistral license. The [release note](/chapters/what-is-happening/2026-10-29-01-mistral-large-4-weights-arrive-with-a-lower-api-price) covers the price and license terms.
 
 ## GPT-5.6 Luna: the fast operator
 
@@ -112,6 +120,14 @@ Where it falls short: scope creep. Its instinct to be helpful means it expands t
 
 The first thing to check is your integration. Forced tool use now returns an error, and text written between tool calls arrives inside thinking blocks. Whether the proactive instinct carries over is a question for your own sessions; keep the explicit scope constraints until you know. The [release notes](/chapters/what-is-happening/2026-09-28-01-sonnet-5-5-keeps-the-price-and-changes-the-contract) list every breaking change.
 
+## Claude Haiku 5.5: the high-volume Claude
+
+[Haiku 5.5](https://www.anthropic.com/news/claude-haiku-5-5) is Anthropic's fastest current model and the first Haiku with an effort setting; it defaults to medium. Anthropic pitches it for summaries, extraction, classification, and routing, and as a subagent next to Sonnet or Opus. For complex agentic coding, Anthropic itself still points to Sonnet 5.5 and Opus 5.5.
+
+The price has a cliff. Prompts up to 100K tokens cost $0.10 / $0.50 per million tokens; longer prompts cost five times as much. That is cheap for short, repeated jobs, and a reason to keep each request small.
+
+The fast-model notes in [Chapter 1](/chapters/reasoning-vs-fast) come from earlier Haiku sessions. Treat them as a hypothesis for 5.5 until you have run it.
+
 ## GPT-6 Astra: evaluate the whole task
 
 [OpenAI's Astra guide](https://developers.openai.com/api/docs/guides/latest-model) focuses on work that crosses code, browsers, and other software. A useful trial is a task with several connected deliverables: investigate a bug, patch it, run the checks, and produce a readable explanation of the result.
@@ -128,13 +144,13 @@ GPT-6.1 Sol costs $2 / $10 per million tokens, one-fifth of Astra and half of GP
 
 Neither has a local profile yet. The Luna, Terra, and Sol notes above come from GPT-5.6 sessions, and a new version need not behave the same way. Sol's reward-hacking caution is worth carrying into any trial: keep the success checks outside the model's reach. The [release notes](/chapters/what-is-happening/2026-09-29-01-gpt-6-1-sol-arrives-a-week-after-gpt-6-sol) cover the details.
 
-## Claude Fable 5.1: the cache matters
+## Claude Fable 5.2: the top tier, repriced
 
-[Anthropic recommends Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview) for demanding reasoning and long agent tasks, particularly when higher-effort Opus 5.5 runs still fall short. Its million-token context and always-on adaptive thinking are useful ingredients for a difficult migration or investigation.
+[Anthropic positions Fable 5.2](https://platform.claude.com/docs/en/models/fable-5-2/whats-new-fable-5-2) for demanding reasoning and long-horizon agent work, and still says to start with Opus 5.5 and move up only when a higher-effort Opus run falls short. Its million-token context and always-on adaptive thinking are useful ingredients for a difficult migration or investigation.
 
-The base input and output prices match Fable 5. The change is cached input: reading a reused prefix is cheaper. That can help an agent that keeps returning to the same specification and repository context; it does little for requests that start from scratch every time.
+It replaces Fable 5.1 in the model tools and costs $8 / $40 per million tokens, a fifth less. Cache reads fall to $0.20, which helps an agent that keeps returning to the same specification and repository context. Anthropic's notes also warn that on long tasks the model sometimes stops with a list of what remains, so say in the prompt that the whole task should be finished.
 
-Set the scope and acceptance checks before a long run. The [release notes](/chapters/what-is-happening/2026-09-01-01-fable-5-1-makes-repeated-context-cheaper) cover the new cache rate and the distinction between Fable and restricted Mythos access.
+Set the scope and acceptance checks before a long run. The [release notes](/chapters/what-is-happening/2026-11-09-01-fable-5-2-lowers-the-price-of-the-top-claude-tier) cover pricing, the API changes, and the distinction between Fable and restricted Mythos access.
 
 ## Claude Opus 5.5: the rigorous reviewer, repriced
 
@@ -144,7 +160,7 @@ Set the scope and acceptance checks before a long run. The [release notes](/chap
 
 The reviewer profile comes from my Opus 4.8 and Opus 5 sessions. Reach for an Opus when the important work is a careful reasoning pass: pressure-testing an architecture decision, tracing a hard-to-reproduce bug, or reviewing a consequential change for hidden coupling and missing rollback paths. It is deliberate rather than fast, and it should show its evidence rather than simply sounding confident. Treat that as a hypothesis for 5.5 until you have run it.
 
-Anthropic positions Opus 5.5 for long-running agentic coding as well, which narrows the old split with Fable. Its own guidance is to raise Opus 5.5's effort first and move to Fable 5.1 only when that still falls short. The [release notes](/chapters/what-is-happening/2026-09-22-01-opus-5-5-costs-less-than-the-opus-it-replaces) cover pricing, fast mode, and what happens to the older versions.
+Anthropic positions Opus 5.5 for long-running agentic coding as well, which narrows the old split with Fable. Its own guidance is to raise Opus 5.5's effort first and move to Fable 5.2 only when that still falls short. The [release notes](/chapters/what-is-happening/2026-09-22-01-opus-5-5-costs-less-than-the-opus-it-replaces) cover pricing, fast mode, and what happens to the older versions.
 
 Where it falls short: routine implementation and high-volume work. Use a lighter model for a clear task, then bring Opus in when a review can prevent expensive cleanup.
 
@@ -156,15 +172,15 @@ Where it falls short: routine implementation and high-volume work. Use a lighter
 
 I have not run it. A fair first test is a text-only bug with a failing test, at a fixed effort level, compared against the patch your current model writes. If the task includes a screenshot, use GLM-5.3-Flash or another model. The [release notes](/chapters/what-is-happening/2026-08-18-01-glm-5-3-is-a-text-only-flagship-with-open-weights) have the vendor's benchmark claims and the license caveat.
 
-## Kimi K3: the open-weight marathoner
+## Kimi K3.1 Pro: the open-weight marathoner
 
 **Moonshot AI · Always-on reasoning · Best for: Long-context coding and knowledge work**
 
-Kimi K3 is built for long-horizon coding and end-to-end knowledge work. Its 1,048,576-token context window can hold a large codebase or document set, and native visual understanding lets screenshots, diagrams, code, and prose stay in one workflow. It always reasons, with low, high, and max effort settings rather than a separate non-thinking mode.
+[Kimi K3.1 Pro](https://www.kimi.com/en/blog/kimi-k3-1-pro) is a post-trained version of Kimi K3 and replaces it in the model tools. Its 1,048,576-token context window can hold a large codebase or document set, and screenshots, diagrams, code, and prose can stay in one workflow. It always reasons, with low, high, and max effort settings; the API defaults to max, so set a lower effort for routine steps.
 
-At API rates of $3 per million cache-miss input tokens and $15 per million output tokens, it costs more per token than Sonnet 5.5 today; automatic context caching lowers repeated input to $0.30 per million tokens. That makes it especially interesting for agents that repeatedly carry a stable repository or specification across turns.
+It also costs less than K3: $2 per million input tokens and $10 per million output tokens, the same per-token rate as Sonnet 5.5. Cached input is $0.20 per million tokens, which helps agents that carry a stable repository or specification across turns. A Highspeed variant runs two to three times faster at $4 / $20.
 
-The [weights are now published](https://huggingface.co/moonshotai/Kimi-K3) under the Kimi K3 license. That makes open-weight deployment possible; hardware requirements and the license still need checking for your use.
+The [weights are published](https://huggingface.co/moonshotai/Kimi-K3.1-Pro) under the Kimi K3.1 Pro License. That makes open-weight deployment possible; hardware requirements and the license still need checking for your use. My earlier sessions were with K3, so treat the profile as a starting hypothesis for 3.1 Pro.
 
 Where it falls short: small, latency-sensitive work. Always-on reasoning is useful when the task branches, but it is unnecessary overhead for a one-line edit with an obvious test.
 
@@ -182,7 +198,7 @@ Not limited to open files either. It navigates the project, finds relevant files
 
 Cursor's [May 2026 launch post](https://cursor.com/blog/composer-2-5) presents its benchmark results as an improvement over Composer 2 and says the new model follows complex instructions more reliably. Those are vendor results from Cursor's harness, so use them as a reason to run the same task against your current model, not as a universal ranking.
 
-Where it falls short: autonomy still has a cost, and a low token rate does not guarantee a cheap completed task. Compare Composer with Sol, Astra, or Fable 5.1 when a task keeps stalling. Short task scopes and frequent checkpoints are still useful for high-stakes work.
+Where it falls short: autonomy still has a cost, and a low token rate does not guarantee a cheap completed task. Compare Composer with Sol, Astra, or Fable 5.2 when a task keeps stalling. Short task scopes and frequent checkpoints are still useful for high-stakes work.
 
 ## How personality affects prompting
 

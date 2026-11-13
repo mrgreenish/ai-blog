@@ -1,0 +1,27 @@
+---
+title: "Fable 5.2 lowers the price of the top Claude tier"
+publishedAt: '2026-11-09'
+lastVerifiedAt: '2026-11-12'
+primarySourceUrl: 'https://www.anthropic.com/news/claude-fable-and-mythos-5-2'
+indexable: true
+---
+**Claude Fable 5.2** costs $8 input and $40 output per million tokens. Fable 5.1 cost $10 and $50, so both rates drop by a fifth. Cache reads go from $0.25 to $0.20, which is the same rate Opus 5.5 charges for a cache hit. [Claude pricing](https://platform.claude.com/docs/en/about-claude/pricing).
+
+Anthropic released it on November 9 together with Claude Mythos 5.2, the same model with different safeguards. Mythos 5.2 stays limited to organizations in Anthropic's verification programs. Fable 5.2 is open to every API customer and is also on Amazon Bedrock, Google Cloud, and Microsoft Foundry. [Announcement](https://www.anthropic.com/news/claude-fable-and-mythos-5-2).
+
+The announcement says output arrives up to 30% faster than on Fable 5.1. Its benchmark table puts Fable 5.2 at 49.1% on FrontierCode 2.0, against 32.4% for Fable 5.1 and 45.5% for Opus 5.5. On FrontierSWE v2 the figures are 69.9%, 56.3%, and 62.3%. On AutomationBench they are 51.4%, 31.4%, and 42.5%. These are vendor numbers from the vendor's harness.
+
+Anthropic's advice has not changed: start with Opus 5.5 for most coding and knowledge work, and move to Fable when a higher-effort Opus run still falls short. At $8 / $40, Fable 5.2 still costs twice as much per token as Opus 5.5.
+
+The API model is `claude-fable-5-2`. It has a **1M-token context window** and allows 128K output tokens. Thinking is always on, and the API's default effort is `high`. Claude apps and Claude Code default to `medium`. Fast mode costs **$16 / $80 per million tokens**. [What's new in Fable 5.2](https://platform.claude.com/docs/en/models/fable-5-2/whats-new-fable-5-2).
+
+If your own code builds the requests, read the migration notes before switching the model ID. Four changes can break an integration that worked on Fable 5.1:
+
+- The API rejects a request when an earlier turn changed after the model wrote its thinking. Fable 5.1 enforced this only on newer accounts; Fable 5.2 enforces it on every account. Keep `system`, `tools`, and earlier messages unchanged, and only append.
+- Only Fable 5.2 and Mythos 5.2 can read Fable 5.2's thinking blocks. A fallback or router that moves a conversation to another model loses that reasoning.
+- The older `computer_20251124` computer-use tool returns an error everywhere except Amazon Bedrock. Use `computer_toolset_20260801`.
+- With the advisor tool, a Fable 5.2 executor accepts only Fable 5.2 or Mythos 5.2 as its advisor.
+
+Anthropic's notes also describe a behavior change. On long, multistep tasks the model sometimes stops with a list of what remains, especially at `low` and `medium` effort. Say in the prompt that the whole task should be finished, and keep acceptance checks that tell you when it is.
+
+On this site, Fable 5.2 replaces Fable 5.1 in the [model tools](/chapters/reasoning-vs-fast). Fable 5.1 is still listed at $10 / $50 but no longer appears in the recommendations. Fable 5.2 has no local results yet and is marked “not tested.”

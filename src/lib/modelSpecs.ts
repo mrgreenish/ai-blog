@@ -97,19 +97,12 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     id: "mistral-large-4",
     name: "Mistral Large 4",
     provider: "Mistral",
-    inputPer1M: 1.36,
-    outputPer1M: 4.18,
-    promotionalPricing: {
-      inputPer1M: 0.68,
-      outputPer1M: 2.09,
-      startsAt: "2026-10-06",
-      endsAt: "2026-10-19",
-      label: "50% launch offer; calendar interpretation: Oct 6–19 inclusive",
-    },
-    pricingNote: "Public preview API. Standard uncached rates; weights forthcoming as of October 7, 2026. The documented two-week offer is interpreted as Oct 6–19 inclusive.",
+    inputPer1M: 0.7,
+    outputPer1M: 2.1,
+    pricingNote: "Rates since the open-weight release in late October 2026. Cached input is $0.07 per million tokens.",
     tier: "reasoning",
     contextWindowTokens: 1000000,
-    tagline: "The European Preview",
+    tagline: "The European Open-Weight Model",
     emoji: "🌍",
     gradientFrom: "from-orange-600",
     gradientTo: "to-amber-500",
@@ -117,25 +110,25 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     contextBarColor: "bg-orange-500",
     costColor: "text-orange-400",
     why: {
-      coding: "Mistral Large 4 supports function calling and structured output. Compare it on a fixed coding task before adopting this public preview.",
+      coding: "Mistral Large 4 supports function calling and structured output. Compare it on a fixed coding task before adopting it.",
       analysis: "A million-token context can hold broad document inputs; keep the evidence relevant and verify the answer against it.",
       vision: "Multimodal input lets you combine screenshots and text for analysis. Check visual conclusions against the original image.",
       reasoning: "A reasoning-tier candidate with lower token rates than many flagship models; capability and task latency still need local evaluation.",
       multifile: "Large context and tool support make coordinated edits worth testing with external acceptance checks.",
     },
-    whenWrong: "When you need established production behavior or published weights today. API access is in public preview and the weights are still forthcoming.",
+    whenWrong: "When you need established production behavior. The weights are published, but serving a model this size takes a multi-GPU server, and offering it as a service needs a separate Mistral license.",
     traits: [
-      "Public preview with multimodal input",
+      "Open weights under Mistral's own license",
       "1M context, function calling, and structured output",
-      "Announced open weights are forthcoming",
+      "Multimodal input",
     ],
     bestFor: "Evaluating coding, document analysis, and visual workflows against a fixed baseline",
-    worstFor: "Unvalidated production migrations or immediate self-hosting",
+    worstFor: "Unvalidated production migrations",
     latencyBand: "moderate",
     initiativeStyle: "measured",
     scopeDiscipline: "good",
     pickWhen: "You want to evaluate a European multimodal model with tools and broad context",
-    avoidWhen: "You need a proven production default or downloadable weights today",
+    avoidWhen: "You need a proven production default",
     benchmark: {
       correctServerAction: null,
       followedConstraints: null,
@@ -545,15 +538,15 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     contextBarColor: "bg-rose-500",
     costColor: "text-rose-300",
     why: {
-      coding: "Fable 5 supports ambitious coding and long agent workflows. Fable 5.1 is the newer option with cheaper cache reads.",
+      coding: "Fable 5 supports ambitious coding and long agent workflows. Fable 5.2 is the newer option with lower rates and cheaper cache reads.",
       architecture: "Fable is the choice when the model must understand the system, challenge its own assumptions, delegate work, and validate the result across stages.",
       critical: "For high-consequence review, Fable's deeper reasoning and self-checking justify the premium when missed issues would cost more than the tokens.",
       multifile: "Fable can sustain large, asynchronous projects for days, coordinating subagents and checking its own work instead of handing control back at every step.",
       reasoning: "This is the maximum-depth Claude tier: thorough, proactive, and designed for problems earlier models could not finish reliably."
     },
-    whenWrong: "For new deployments, evaluate Fable 5.1 first. Routine implementation usually does not justify the Fable token rates.",
+    whenWrong: "For new deployments, evaluate Fable 5.2 first. Routine implementation usually does not justify the Fable token rates.",
     traits: [
-      "Previous Fable version; Fable 5.1 is now available",
+      "Previous Fable version; Fable 5.2 is now available",
       "Can run complex agent workflows for days",
       "Plans, delegates, writes tests, and validates its own work"
     ],
@@ -707,7 +700,9 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       followedConstraints: null,
       madeUpDocs: null,
       hiddenBugsInRefactor: null
-    }
+    },
+    retired: true,
+    pricingNote: "Superseded by Kimi K3.1 Pro ($2/$10). Moonshot still serves K3 at these rates; kept here for the original scenario examples."
   },
   {
     id: "gpt-5.5",
@@ -954,7 +949,51 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       followedConstraints: null,
       madeUpDocs: null,
       hiddenBugsInRefactor: null
-    }
+    },
+    retired: true,
+    pricingNote: "Superseded by Claude Fable 5.2 ($8/$40). Anthropic still serves Fable 5.1 at these rates; kept here for reference only."
+  },
+  {
+    id: "claude-fable-5.2",
+    name: "Claude Fable 5.2",
+    provider: "Anthropic",
+    inputPer1M: 8,
+    outputPer1M: 40,
+    tier: "reasoning",
+    contextWindowTokens: 1000000,
+    tagline: "The Long-Task Claude",
+    emoji: "📖",
+    gradientFrom: "from-rose-700",
+    gradientTo: "to-orange-500",
+    accentColor: "text-rose-600",
+    contextBarColor: "bg-rose-500",
+    costColor: "text-rose-300",
+    why: {
+      coding: "Anthropic positions Fable 5.2 for demanding reasoning and long-horizon agentic work, at lower rates than Fable 5.1.",
+      reasoning: "Evaluate Fable 5.2 when a higher-effort Opus 5.5 run still falls short.",
+      architecture: "A candidate for complex migrations with explicit acceptance checks and review checkpoints.",
+      autonomous: "Built for long agent runs; on multistep tasks, tell it to finish the whole task and keep checkpoints in the loop."
+    },
+    whenWrong: "For routine implementation. Anthropic still recommends starting with Opus 5.5 for most coding and knowledge work.",
+    traits: [
+      "1M context and 128K maximum output",
+      "Always-on adaptive thinking; API effort defaults to high",
+      "Cache reads at $0.20 per million tokens"
+    ],
+    bestFor: "Difficult reasoning, migrations, and sustained agent workflows",
+    worstFor: "Routine edits and high-volume short completions",
+    latencyBand: "slow",
+    initiativeStyle: "autonomous",
+    scopeDiscipline: "good",
+    pickWhen: "Your Opus 5.5 evaluation still falls short on a difficult task",
+    avoidWhen: "A less expensive model already passes the same acceptance checks",
+    benchmark: {
+      correctServerAction: null,
+      followedConstraints: null,
+      madeUpDocs: null,
+      hiddenBugsInRefactor: null
+    },
+    pricingNote: "Standard uncached rates. Cache reads are $0.20 per million tokens; fast mode is $16/$80."
   },
   {
     id: "gpt-6-astra",
@@ -1060,7 +1099,7 @@ export const MODEL_REGISTRY: ModelSpec[] = [
     costColor: "text-amber-300",
     why: {
       coding: "Anthropic positions Opus 5.5 for long-running agentic coding and now recommends it as the starting point for most workloads.",
-      reasoning: "Thinking is always on and effort defaults to medium; raise the effort before reaching for Fable 5.1.",
+      reasoning: "Thinking is always on and effort defaults to medium; raise the effort before reaching for Fable 5.2.",
       architecture: "A candidate for design review and cross-system changes, with explicit acceptance checks.",
       multifile: "A million-token context and 128K output leave room for broad repository work.",
       critical: "Use it for a consequential review when the evidence matters more than the response time.",
@@ -1261,6 +1300,192 @@ export const MODEL_REGISTRY: ModelSpec[] = [
       hiddenBugsInRefactor: null
     },
     pricingNote: "Z.ai API list rates; cached input is $0.26 per million tokens. GLM-5.3-Flash is a separate multimodal model at $0.15/$0.50."
+  },
+  {
+    id: "haiku-5.5",
+    name: "Claude Haiku 5.5",
+    provider: "Anthropic",
+    inputPer1M: 0.1,
+    outputPer1M: 0.5,
+    tier: "fast",
+    contextWindowTokens: 1000000,
+    tagline: "The High-Volume Claude",
+    emoji: "🌸",
+    gradientFrom: "from-rose-600",
+    gradientTo: "to-pink-500",
+    accentColor: "text-rose-600",
+    contextBarColor: "bg-pink-500",
+    costColor: "text-emerald-600",
+    why: {
+      coding: "Anthropic pitches Haiku 5.5 as a fast subagent next to Opus 5.5 or Sonnet 5.5, not as the main model for complex agentic coding.",
+      analysis: "Built for summaries, extraction, classification, and routing, where volume and latency matter more than depth.",
+      speed: "Anthropic's fastest current model, and the first Haiku with an effort setting; it defaults to medium.",
+      cost: "Prompts up to 100K tokens cost $0.10 / $0.50 per million tokens. Above that, every token costs five times as much."
+    },
+    whenWrong: "For complex agentic coding or long reasoning. Anthropic itself says Sonnet 5.5 and Opus 5.5 remain the better choices there.",
+    traits: [
+      "1M context and 128K maximum output",
+      "Adaptive thinking; effort defaults to medium",
+      "5× rates on prompts over 100K tokens"
+    ],
+    bestFor: "High-volume classification, extraction, summaries, and subagent work",
+    worstFor: "Complex agentic coding and architecture decisions",
+    latencyBand: "instant",
+    initiativeStyle: "measured",
+    scopeDiscipline: "good",
+    pickWhen: "You run many short, well-defined requests and latency or cost compounds",
+    avoidWhen: "The task needs sustained reasoning, or the prompt routinely exceeds 100K tokens",
+    benchmark: {
+      correctServerAction: null,
+      followedConstraints: null,
+      madeUpDocs: null,
+      hiddenBugsInRefactor: null
+    },
+    longContextPricing: {
+      thresholdTokens: 100000,
+      inputMultiplier: 5,
+      outputMultiplier: 5
+    },
+    pricingNote: "Rates for prompts up to 100K tokens. Longer prompts cost $0.50 / $2.50 per million tokens."
+  },
+  {
+    id: "gemini-4-argon",
+    name: "Gemini 4 Argon",
+    provider: "Google",
+    inputPer1M: 4,
+    outputPer1M: 20,
+    tier: "balanced",
+    contextWindowTokens: 1048576,
+    tagline: "The Everyday Gemini 4",
+    emoji: "💎",
+    gradientFrom: "from-blue-700",
+    gradientTo: "to-sky-500",
+    accentColor: "text-sky-600",
+    contextBarColor: "bg-sky-500",
+    costColor: "text-sky-400",
+    why: {
+      coding: "Google calls Argon the right choice for most software engineering and knowledge work, with lower token spend per turn than Carbon.",
+      vision: "Takes text, image, video, audio, and PDF input with text output.",
+      multifile: "A 1,048,576-token context window, shared between input and output, leaves room for broad repository context.",
+      cost: "Introductory pricing of $2 / $10 runs through November 30, 2026; from December 1 the rate is $4 / $20."
+    },
+    whenWrong: "When the task is mechanical enough for a Flash model, or when you plan a long run past November 30 and price is the deciding factor.",
+    traits: [
+      "1M shared input-and-output context",
+      "65,536-token default output cap",
+      "Paid tier only on the Gemini API"
+    ],
+    bestFor: "Everyday coding, document analysis, and multimodal knowledge work",
+    worstFor: "Cheap high-volume steps that a Flash model already handles",
+    latencyBand: "moderate",
+    initiativeStyle: "measured",
+    scopeDiscipline: "good",
+    pickWhen: "You want Google's current default for most engineering work",
+    avoidWhen: "Gemini 3.8 Flash or another lighter model already passes the same checks",
+    benchmark: {
+      correctServerAction: null,
+      followedConstraints: null,
+      madeUpDocs: null,
+      hiddenBugsInRefactor: null
+    },
+    promotionalPricing: {
+      inputPer1M: 2,
+      outputPer1M: 10,
+      startsAt: "2026-10-13",
+      endsAt: "2026-11-30",
+      label: "Introductory pricing through November 30, 2026"
+    }
+  },
+  {
+    id: "gemini-4-carbon",
+    name: "Gemini 4 Carbon",
+    provider: "Google",
+    inputPer1M: 4,
+    outputPer1M: 20,
+    tier: "reasoning",
+    contextWindowTokens: 1048576,
+    tagline: "The Deep-Reasoning Gemini",
+    emoji: "💎",
+    gradientFrom: "from-slate-800",
+    gradientTo: "to-blue-600",
+    accentColor: "text-blue-700",
+    contextBarColor: "bg-blue-700",
+    costColor: "text-blue-300",
+    why: {
+      coding: "Google positions Carbon for complex, multi-step coding and debugging, using more tokens than Argon to reason and verify.",
+      reasoning: "Google's strongest Gemini model, built for tasks that test the limits of a model's intelligence.",
+      architecture: "A candidate for architectural redesigns and cross-subsystem investigations, with explicit acceptance checks.",
+      autonomous: "Designed for long-horizon agent work; Google's own guidance pairs it with lighter models for the parallel parts."
+    },
+    whenWrong: "For most everyday engineering work. Google itself recommends Argon there, and Carbon spends more tokens per task.",
+    traits: [
+      "Same per-token rate as Argon, more tokens per task",
+      "1M shared input-and-output context",
+      "Default thinking level medium"
+    ],
+    bestFor: "Hard multi-step coding, debugging, and research",
+    worstFor: "Routine edits where Argon or Flash already passes",
+    latencyBand: "slow",
+    initiativeStyle: "autonomous",
+    scopeDiscipline: "good",
+    pickWhen: "An Argon run still falls short on a genuinely hard task",
+    avoidWhen: "Argon passes the same acceptance checks with fewer tokens",
+    benchmark: {
+      correctServerAction: null,
+      followedConstraints: null,
+      madeUpDocs: null,
+      hiddenBugsInRefactor: null
+    },
+    promotionalPricing: {
+      inputPer1M: 2,
+      outputPer1M: 10,
+      startsAt: "2026-11-10",
+      endsAt: "2026-11-30",
+      label: "Introductory pricing through November 30, 2026"
+    }
+  },
+  {
+    id: "kimi-k3.1-pro",
+    name: "Kimi K3.1 Pro",
+    provider: "Moonshot AI",
+    inputPer1M: 2,
+    outputPer1M: 10,
+    tier: "reasoning",
+    contextWindowTokens: 1048576,
+    tagline: "The Open-Weight Marathoner",
+    emoji: "🌙",
+    gradientFrom: "from-violet-700",
+    gradientTo: "to-fuchsia-500",
+    accentColor: "text-violet-700",
+    contextBarColor: "bg-violet-500",
+    costColor: "text-violet-300",
+    why: {
+      coding: "Moonshot's post-trained successor to K3, positioned for long-horizon coding with tools and structured output.",
+      analysis: "A 1M-token context and always-on reasoning suit large document sets and research-heavy analysis.",
+      multifile: "The full context window leaves room for broad codebase analysis and coordinated multi-file changes.",
+      autonomous: "Moonshot positions K3.1 Pro for multi-step agent work; keep acceptance checks outside the model's reach.",
+      reasoning: "Reasoning is always on, with low, high, and max effort; the API defaults to max."
+    },
+    whenWrong: "For narrow, latency-sensitive edits. Reasoning is always on and defaults to max effort, so set a lower effort or use a lighter model for short tasks.",
+    traits: [
+      "Always-on reasoning; effort defaults to max",
+      "1M-token context, cached input at $0.20",
+      "Open weights under Moonshot's own license"
+    ],
+    bestFor: "Long-horizon coding, large codebase analysis, and self-hosted deployments",
+    worstFor: "Tiny, latency-sensitive edits that do not need a reasoning pass",
+    latencyBand: "slow",
+    initiativeStyle: "autonomous",
+    scopeDiscipline: "good",
+    pickWhen: "You want frontier-level open weights, or long-context reasoning at Sonnet-class API rates",
+    avoidWhen: "The task is small enough that always-on reasoning only adds latency and tokens",
+    benchmark: {
+      correctServerAction: null,
+      followedConstraints: null,
+      madeUpDocs: null,
+      hiddenBugsInRefactor: null
+    },
+    pricingNote: "Standard API rates. Cached input is $0.20 per million tokens; the Highspeed variant costs $4 / $20."
   }
 ];
 
@@ -1271,7 +1496,7 @@ export const MODEL_REGISTRY: ModelSpec[] = [
 export const CURRENT_MODEL_IDS = [
   "mistral-large-4",
   "gemini-3.8-flash",
-  "claude-fable-5.1",
+  "claude-fable-5.2",
   "opus-5.5",
   "sonnet-5.5",
   "gpt-6-astra",
@@ -1279,7 +1504,10 @@ export const CURRENT_MODEL_IDS = [
   "gpt-6-luna",
   "deepseek-v4.1-flash",
   "glm-5.3",
-  "kimi-k3",
+  "kimi-k3.1-pro",
+  "gemini-4-carbon",
+  "gemini-4-argon",
+  "haiku-5.5",
 ] as const;
 
 export const MODEL_BY_ID: Record<string, ModelSpec> = Object.fromEntries(
@@ -1369,19 +1597,23 @@ export function getMixerModels(asOf: Date | string = new Date()) {
 
 // ---------------------------------------------------------------------------
 // Pricing metadata — single source of truth for data attribution
-// Prices checked against official provider sources on 2026-10-05
+// Prices checked against official provider sources on 2026-11-12
 // ---------------------------------------------------------------------------
 
 export const PRICING_META = {
-  verifiedDate: "2026-10-05", // Full registry cross-check against provider API pages and current product docs
+  verifiedDate: "2026-11-12", // Full registry cross-check against provider API pages and current product docs
   source: "Official API pricing pages",
   notes: [
     "Standard uncached text-token estimates. Excludes cache writes/reads, tool fees, taxes, and platform-specific charges. Reasoning tokens count as output.",
-    "Mistral Large 4 checked separately on 2026-10-07: public preview, $1.36/$4.18 standard input/output; $0.68/$2.09 launch rates. The two-week offer is interpreted as October 6–19 inclusive. Other models retain the full-registry verification date above.",
+    "Mistral Large 4 is $0.70/$2.10 since its open-weight release in late October 2026. The October preview rates ($1.36/$4.18, with a $0.68/$2.09 launch offer) no longer apply.",
+    "Claude Fable 5.2 is $8/$40 (fast mode $16/$80) and replaces Fable 5.1 ($10/$50) in the calculators.",
+    "Claude Haiku 5.5 is $0.10/$0.50 for prompts up to 100K tokens and 5× that above; the calculators apply the higher rate to the whole request.",
     "Claude Opus 5.5 is $4/$20 and Sonnet 5.5 is $2/$10. Opus 5 and Opus 4.8 remain available at $5/$25 and appear only in historical examples. Opus 5.5 fast mode is $8/$40.",
-    "GPT-6.1 Sol is $2/$10 and GPT-6 Luna is $0.10/$0.50. GPT-5.6 Luna, Terra, and Sol remain $0.20/$1.20, $2/$12, and $4/$20; OpenAI calls the Sol rate promotional through at least November 21, 2026.",
+    "GPT-6.1 Sol is $2/$10 and GPT-6 Luna is $0.10/$0.50. GPT-5.6 Luna, Terra, and Sol remain $0.20/$1.20, $2/$12, and $4/$20; OpenAI lists the GPT-5.6 Sol rate as promotional through November 30, 2026.",
+    "Kimi K3.1 Pro is $2/$10 and replaces Kimi K3 ($3/$15), which now appears only in historical examples.",
     "GLM-5.3 uses Z.ai API list rates ($1.40/$4.40). GLM-5.3-Flash ($0.15/$0.50) is not in the calculators.",
-    "Gemini 3.8 Flash is $0.75/$3.75 through December 31, 2026, then $1.50/$7.50. Google API rates are used; Cursor currently lists a different output rate.",
+    "Gemini 4 Argon and Carbon are $2/$10 through November 30, 2026, then $4/$20. Gemini 4 has no long-context surcharge.",
+    "Gemini 3.8 Flash is $0.75/$3.75 through December 31, 2026, then $1.50/$7.50. Cursor lists the same introductory rates.",
     "DeepSeek-V4.1-Flash estimates use peak uncached rates ($0.30/$1.20). Off-peak rates are half. Retired V4-Flash rates are historical only.",
     "OpenAI requests above 272K input tokens use 2× input and 1.5× output rates. Gemini 3.1 Pro applies those multipliers above 200K.",
     "Context windows describe provider API capacity, not a universal Cursor default. Availability and limits vary by platform.",
@@ -1392,7 +1624,7 @@ export const PRICING_META = {
     OpenAI: "https://developers.openai.com/api/docs/pricing",
     Google: "https://ai.google.dev/gemini-api/docs/pricing",
     DeepSeek: "https://api-docs.deepseek.com/quick_start/pricing/",
-    "Moonshot AI": "https://platform.kimi.ai/",
+    "Moonshot AI": "https://platform.kimi.ai/docs/pricing/chat",
     "Z.ai": "https://docs.z.ai/guides/overview/pricing",
     Cursor: "https://cursor.com/docs/models-and-pricing",
   },
@@ -1407,7 +1639,6 @@ export function getCostCalculatorModels(asOf: Date | string = new Date()) {
     "gpt-5.6-terra",
     "sonnet-5",
     "composer-2.5",
-    "kimi-k3",
     "gpt-5.6-sol",
     "claude-fable-5",
   ];
@@ -1433,7 +1664,6 @@ export function getContextWindowModels() {
     "gpt-5.6-terra",
     "gpt-5.6-luna",
     "claude-fable-5",
-    "kimi-k3",
     "gemini-flash",
     "sonnet-5",
   ];
@@ -1454,7 +1684,6 @@ export function getPickerModels() {
     "gpt-5.6-terra",
     "gpt-5.6-sol",
     "claude-fable-5",
-    "kimi-k3",
   ];
   return [...new Set([...CURRENT_MODEL_IDS, ...ids])].map((id) => {
     const m = MODEL_BY_ID[id];
@@ -1568,7 +1797,6 @@ export function getTinderModels() {
   const ids = [
     "gemini-flash",
     "sonnet-5",
-    "kimi-k3",
     "composer-2.5",
     "gpt-5.6-luna",
     "gpt-5.6-terra",
@@ -1608,7 +1836,7 @@ export const BENCHMARK_CHECKS: BenchmarkCheck[] = [
 
 /** Models shown as columns in DevBenchmark */
 export function getDevBenchmarkColumns() {
-  const ids = ["gpt-5.6-luna", "gpt-5.6-terra", "gpt-5.6-sol", "claude-fable-5", "kimi-k3"];
+  const ids = ["gpt-5.6-luna", "gpt-5.6-terra", "gpt-5.6-sol", "claude-fable-5"];
   return [...new Set([...CURRENT_MODEL_IDS, ...ids])].map((id) => {
     const m = MODEL_BY_ID[id];
     return {

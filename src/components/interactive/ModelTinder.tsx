@@ -15,7 +15,7 @@ const MODELS = getTinderModels();
 export const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
   "mistral-large-4": [
     {
-      modelMessage: "Give me the screenshot, relevant code, and one acceptance check. We can compare this public preview with your current model on the same task.",
+      modelMessage: "Give me the screenshot, relevant code, and one acceptance check. We can compare me with your current model on the same task.",
       replies: ["Try the visual bug", "Start with a coding task"],
     },
     {
@@ -23,7 +23,7 @@ export const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
       replies: ["Check the result", "Can I self-host it?"],
     },
     {
-      modelMessage: "API access is in public preview; weights are forthcoming as of October 7. A passing local check is more useful than treating an announcement as a production guarantee.",
+      modelMessage: "The weights are published under Mistral's own license, but serving them is a multi-GPU job. A passing local check is more useful than treating a release note as a production guarantee.",
       replies: [],
     },
   ],
@@ -78,7 +78,7 @@ export const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
       replies: [],
     },
   ],
-  "claude-fable-5.1": [
+  "claude-fable-5.2": [
     {
       modelMessage:
         "This looks like a long run. Give me the specification, the acceptance checks, and the context that should remain stable across turns.",
@@ -160,6 +160,57 @@ export const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
     {
       modelMessage:
         "The API is the quicker trial. The weights are published too, but read the license and size the hardware before you promise anyone a self-hosted setup.",
+      replies: [],
+    },
+  ],
+  "haiku-5.5": [
+    {
+      modelMessage:
+        "Send me the batch. Classification, extraction, summaries — short, well-defined jobs are what I am for.",
+      replies: ["10,000 support tickets", "One tricky refactor"],
+    },
+    {
+      modelMessage:
+        "Keep each prompt under 100K tokens; above that, every token costs five times as much. For a tricky refactor, hand me the mechanical parts and give the design to Sonnet or Opus.",
+      replies: ["Set a lower effort", "Run the batch"],
+    },
+    {
+      modelMessage:
+        "Effort defaults to medium; low is often enough for labels. Spot-check a sample against your own labels before you trust the whole run.",
+      replies: [],
+    },
+  ],
+  "gemini-4-argon": [
+    {
+      modelMessage:
+        "What are we building? I am Google's default for most engineering work, with room for the whole repository in context.",
+      replies: ["A multi-file feature", "A quick rename"],
+    },
+    {
+      modelMessage:
+        "For a multi-file feature, give me the spec and the tests that define done. My context is shared between input and output, so leave room for the answer.",
+      replies: ["What does it cost?", "Start the plan"],
+    },
+    {
+      modelMessage:
+        "$2 / $10 per million tokens through November 30, then $4 / $20. Estimate long runs at the later rate.",
+      replies: [],
+    },
+  ],
+  "gemini-4-carbon": [
+    {
+      modelMessage:
+        "Is this a hard one? If Argon can do it, use Argon. I spend more tokens per task to reason and verify.",
+      replies: ["Argon already failed", "Not sure yet"],
+    },
+    {
+      modelMessage:
+        "Then give me the failing case, the constraints, and the checks that define success. I will explore alternatives before I commit to a fix.",
+      replies: ["Investigate", "Plan the redesign"],
+    },
+    {
+      modelMessage:
+        "Keep the acceptance checks outside my reach and compare tokens per completed task, not per request. That is where Carbon either earns its cost or doesn't.",
       replies: [],
     },
   ],
@@ -328,7 +379,7 @@ export const CHAT_SCRIPTS: Record<string, ChatRound[]> = {
     },
   ],
 
-  "kimi-k3": [
+  "kimi-k3.1-pro": [
     {
       modelMessage:
         "Hi. Give me the whole problem — code, screenshots, long spec, all of it. I have room.",

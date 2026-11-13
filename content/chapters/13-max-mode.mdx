@@ -2,7 +2,7 @@
 title: "Cursor Max Mode"
 subtitle: "When the 1M token context window earns its cost"
 publishedAt: "2026-04-17"
-updatedAt: "2026-10-05"
+updatedAt: "2026-11-13"
 relatedSlugs: [reasoning-vs-fast, spec-files, model-personalities]
 chapter: 13
 part: tools-infrastructure
@@ -20,7 +20,7 @@ That's the problem Max Mode solves.
 
 ## What Max Mode actually does
 
-Max Mode is a feature of Cursor's legacy request-based plans. It extends supported models beyond their standard context limits, which vary by model rather than sharing one universal default. Cursor currently documents million-token Max context for models including Claude Fable 5.1, Claude Sonnet 5, and Gemini 3.1 Pro. Check the [legacy-plan documentation](https://cursor.com/docs/account/pricing/request-based-legacy) for the current model matrix.
+Max Mode is a feature of Cursor's legacy request-based plans. It extends supported models beyond their standard context limits, which vary by model rather than sharing one universal default. Cursor currently documents million-token Max context for models including Claude Fable 5.2, Claude Sonnet 5.5, and Gemini 3.1 Pro. Check the [legacy-plan documentation](https://cursor.com/docs/account/pricing/request-based-legacy) for the current model matrix.
 
 The catch is billing, and the exact behavior depends on your Cursor plan, model, and current pricing policy. Large-context requests process more tokens and can consume included usage or metered spend quickly. Check Cursor's live [models and pricing documentation](https://cursor.com/docs/models-and-pricing) before treating any fixed allowance or surcharge as universal.
 
@@ -46,9 +46,9 @@ For a selected model, the main technical effect is broader context, not differen
 
 ## The cost reality
 
-Cursor's allowances, usage pools, and overage rules vary by plan and can change. The stable part is the token math: a larger context means more input tokens billed at the selected model's applicable rate. Using the provider API rates checked on October 5, 2026:
+Cursor's allowances, usage pools, and overage rules vary by plan and can change. The stable part is the token math: a larger context means more input tokens billed at the selected model's applicable rate. Using the provider API rates checked on November 13, 2026:
 
-- At raw API rates, a 400K-input / 60K-output session is about $0.125 on GPT-6 Luna, $2.50 on GPT-6.1 Sol, $2.68 on GPT-5.6 Terra, $12.50 on Astra, $1.40 on Sonnet 5.5, $2.80 on Opus 5.5, $7.00 on Fable 5.1, $0.82 on GLM-5.3, $2.10 on Kimi K3, $0.525 on Gemini 3.8 Flash, and $0.192 on DeepSeek-V4.1-Flash at peak rates before caching, tool fees, or platform charges. Gemini uses its introductory rate through December 31. OpenAI applies 2× input and 1.5× output pricing to the full request above 272K input tokens.
+- At raw API rates, a 400K-input / 60K-output session is about $0.125 on GPT-6 Luna, $2.50 on GPT-6.1 Sol, $2.68 on GPT-5.6 Terra, $12.50 on Astra, $1.40 on Sonnet 5.5, $2.80 on Opus 5.5, $5.60 on Fable 5.2, $0.82 on GLM-5.3, $1.40 on Kimi K3.1 Pro, $1.40 on Gemini 4 Argon or Carbon at introductory rates ($2.80 from December 1), $0.35 on Haiku 5.5, $0.525 on Gemini 3.8 Flash, and $0.192 on DeepSeek-V4.1-Flash at peak rates before caching, tool fees, or platform charges. Gemini uses its introductory rate through December 31. OpenAI applies 2× input and 1.5× output pricing to the full request above 272K input tokens.
 - Run that three or four times a day and the spend compounds quickly
 - Whether that usage comes from an included pool or metered overage depends on your current plan settings
 

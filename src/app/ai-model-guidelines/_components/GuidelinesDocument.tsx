@@ -198,10 +198,10 @@ function CostExampleSection({
             {formatAboutCost("gemini-3.8-flash", 120_000, 20_000)}
           </li>
           <li>
-            Total with {getModelDisplayName("claude-fable-5.1")} planning:{" "}
+            Total with {getModelDisplayName("claude-fable-5.2")} planning:{" "}
             about{" "}
             {formatCost(
-              calcGuidelinesCost("claude-fable-5.1", 300_000, 20_000) +
+              calcGuidelinesCost("claude-fable-5.2", 300_000, 20_000) +
                 calcGuidelinesCost("gemini-3.8-flash", 120_000, 20_000)
             )}
           </li>
@@ -217,8 +217,8 @@ function CostExampleSection({
         )}
         <ul style={variant === "sharepoint" ? { margin: "0 0 12px", paddingLeft: "24px" } : undefined}>
           <li>
-            Doing the whole task with {getModelDisplayName("claude-fable-5.1")} with the full context:{" "}
-            {formatAboutCost("claude-fable-5.1", 420_000, 40_000)} or more
+            Doing the whole task with {getModelDisplayName("claude-fable-5.2")} with the full context:{" "}
+            {formatAboutCost("claude-fable-5.2", 420_000, 40_000)} or more
           </li>
         </ul>
       </>
@@ -228,8 +228,8 @@ function CostExampleSection({
     example.totalLine && example.id === "complex" ? (
       <ul style={variant === "sharepoint" ? { margin: "0 0 12px", paddingLeft: "24px" } : undefined}>
         <li>
-          {getModelDisplayName("claude-fable-5.1")} planning:{" "}
-          {formatAboutCost("claude-fable-5.1", 300_000, 20_000)}
+          {getModelDisplayName("claude-fable-5.2")} planning:{" "}
+          {formatAboutCost("claude-fable-5.2", 300_000, 20_000)}
         </li>
         <li>
           {getModelDisplayName("gpt-5.6-terra")} implementation:{" "}
@@ -238,7 +238,7 @@ function CostExampleSection({
         <li>
           Total: about{" "}
           {formatCost(
-            calcGuidelinesCost("claude-fable-5.1", 300_000, 20_000) +
+            calcGuidelinesCost("claude-fable-5.2", 300_000, 20_000) +
               calcGuidelinesCost("gpt-5.6-terra", 120_000, 20_000)
           )}
         </li>
@@ -528,7 +528,7 @@ export function GuidelinesDocument({ variant }: { variant: GuidelinesVariant }) 
         But do not use Max Mode for small tasks. It can cost much more because the model reads and reasons over more tokens.
       </p>
       <p style={isSp ? SP.p : undefined}>
-        Doing everything with {getModelDisplayName("claude-fable-5.1")} in Max Mode can get really expensive very quickly. Do not do this by default. Use it only when the task truly benefits from deep context and stronger reasoning.
+        Doing everything with {getModelDisplayName("claude-fable-5.2")} in Max Mode can get really expensive very quickly. Do not do this by default. Use it only when the task truly benefits from deep context and stronger reasoning.
       </p>
 
       {isSp ? <h3 style={SP.h3}>Fast Mode</h3> : <h3>Fast Mode</h3>}
@@ -568,11 +568,11 @@ export function GuidelinesDocument({ variant }: { variant: GuidelinesVariant }) 
 
       {isSp ? <h2 style={SP.h2}>Example Pricing</h2> : <h2>Example Pricing</h2>}
       <p style={isSp ? SP.p : undefined}>
-        Provider API estimates per 1M text tokens. Full registry checked in {formatPricingVerifiedDate()}; Mistral Large 4 checked separately on October 7, 2026:
+        Provider API estimates per 1M text tokens. Full registry checked in {formatPricingVerifiedDate()}:
       </p>
       {pricingTable}
       <p style={isSp ? SP.p : undefined}>
-        Mistral Large 4 is a public-preview evaluation candidate, not an established production recommendation. Compare it on the same acceptance checks before switching. Its launch offer is interpreted as October 6–19 inclusive; standard rates resume October 20 in these estimates. Availability in Cursor must be checked separately.
+        Mistral Large 4 has no local results yet, so treat it as an evaluation candidate rather than an established production recommendation. Compare it on the same acceptance checks before switching. Availability in Cursor must be checked separately.
       </p>
       <p style={isSp ? SP.p : undefined}>{PRICING_DISCLAIMER}</p>
 

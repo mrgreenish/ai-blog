@@ -162,29 +162,32 @@ describe("Dated news entry schema", () => {
     ).toEqual([]);
   });
 
-  it("includes the October releases in date order and in the sitemap", async () => {
+  it("includes the recent releases in date order and in the sitemap", async () => {
     const { getNewsEntries } = await import("../content");
     const { default: sitemap } = await import("../../app/sitemap");
     const { SITE_URL } = await import("../siteConfig");
     const news = getNewsEntries();
-    expect(news.map((entry) => entry.slug).slice(0, 3)).toEqual([
+    expect(news.map((entry) => entry.slug).slice(0, 6)).toEqual([
+      "2026-11-10-01-gemini-4-carbon-and-argon-share-a-price-until-december",
+      "2026-11-09-01-fable-5-2-lowers-the-price-of-the-top-claude-tier",
+      "2026-10-29-01-mistral-large-4-weights-arrive-with-a-lower-api-price",
+      "2026-10-23-01-kimi-k3-1-pro-costs-less-than-the-k3-it-replaces",
+      "2026-10-07-01-haiku-5-5-is-cheap-until-the-prompt-gets-long",
       "2026-10-06-01-mistral-large-4-enters-public-preview",
-      "2026-10-06-02-decisions-api-turns-images-into-typed-answers",
-      "2026-10-03-01-kolibri-brings-a-german-first-model-to-open-weights",
     ]);
-    for (const entry of news.slice(0, 3)) {
+    for (const entry of news.slice(0, 6).filter((e) => e.frontmatter.indexable)) {
       expect(sitemap()).toContainEqual(expect.objectContaining({
         url: `${SITE_URL}/chapters/what-is-happening/${entry.slug}`,
-        lastModified: "2026-10-07",
+        lastModified: entry.frontmatter.lastVerifiedAt,
       }));
     }
   });
 
-  it("keeps the focused news index at 33 entries", () => {
+  it("keeps the focused news index at 37 entries", () => {
     const indexable = entries.filter(
       ({ frontmatter }) => frontmatter.indexable === true,
     );
-    expect(indexable).toHaveLength(33);
+    expect(indexable).toHaveLength(37);
   });
 
   it("keeps visible metadata out of entry bodies", () => {

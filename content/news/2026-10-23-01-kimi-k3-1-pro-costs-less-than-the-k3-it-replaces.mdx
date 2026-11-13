@@ -1,0 +1,18 @@
+---
+title: "Kimi K3.1 Pro costs less than the K3 it replaces"
+publishedAt: '2026-10-23'
+lastVerifiedAt: '2026-11-13'
+primarySourceUrl: 'https://www.kimi.com/en/blog/kimi-k3-1-pro'
+indexable: true
+---
+**Kimi K3.1 Pro** is a post-trained version of Kimi K3, and it is cheaper. Moonshot's API lists it at $2 input and $10 output per million tokens, with cached input at $0.20. K3 stays at $3 / $15. [Kimi API pricing](https://platform.kimi.ai/docs/pricing/chat).
+
+Moonshot calls it the first model in a new K3.1 series and its most capable open-weight model so far. The context window is 1,048,576 tokens, and pricing is flat across it; there is no long-context surcharge. Reasoning is always on, with `low`, `high`, and `max` effort, and the API defaults to `max`. [Announcement](https://www.kimi.com/en/blog/kimi-k3-1-pro).
+
+A **Highspeed** variant runs two to three times faster at $4 / $20. That is twice the standard rate, so use it where waiting costs you more than the tokens do.
+
+Moonshot's own results put K3.1 Pro at 65.7% on Terminal-Bench 4.0, ahead of GPT-6 Astra (58.2%) and just behind Opus 5.5 (66.4%). On its internal long-horizon coding benchmark it scores 61.2%, against 55.95% for K3. These are vendor numbers from the vendor's harness.
+
+The weights followed the API, as promised. They are on [Hugging Face](https://huggingface.co/moonshotai/Kimi-K3.1-Pro) under the Kimi K3.1 Pro License, so check the terms before planning a hosted product around them.
+
+On this site, K3.1 Pro replaces K3 in the [model tools](/chapters/reasoning-vs-fast). K3 appears only in the scenario examples where it was run. K3.1 Pro has no local results yet and is marked “not tested.”

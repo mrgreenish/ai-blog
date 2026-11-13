@@ -310,7 +310,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F4DD}",
           description:
             "Go from a developer spec to a working PR with tests, following a plan-first approach.",
-          model: "Claude Fable 5.1 / GPT-6 Astra / Kimi K3",
+          model: "Claude Fable 5.2 / GPT-6 Astra / Kimi K3.1 Pro",
           tools: ["Cursor", "Claude Code", "GitHub Actions"],
           steps: [
             {
@@ -495,7 +495,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F41B}",
           description:
             "You can\u2019t reproduce it yet \u2014 start by building a reliable repro before fixing anything.",
-          model: "GPT-6.1 Sol / Kimi K3",
+          model: "GPT-6.1 Sol / Kimi K3.1 Pro",
           tools: ["Cursor", "Claude Code"],
           steps: [
             {
@@ -606,7 +606,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F4BB}",
           description:
             "Set up Claude Code CLI and Codex for terminal-based AI development with CLAUDE.md project context.",
-          model: "Claude Fable 5.1 / Claude Opus 5.5 / Sonnet 5.5",
+          model: "Claude Fable 5.2 / Claude Opus 5.5 / Sonnet 5.5",
           tools: ["Claude Code CLI", "CLAUDE.md", "GitHub Codex"],
           steps: [
             {
@@ -716,7 +716,7 @@ export const TREE_NODES: Record<string, TreeNode> = {
           emoji: "\u{1F916}",
           description:
             "Set up AI agents with proper guardrails and learn the skills ecosystem for safe autonomous operation.",
-          model: "Claude Fable 5.1 / GPT-6 Astra / Kimi K3",
+          model: "Claude Fable 5.2 / GPT-6 Astra / Kimi K3.1 Pro",
           tools: ["Claude Code", "SKILL.md", "GitHub Actions"],
           steps: [
             {

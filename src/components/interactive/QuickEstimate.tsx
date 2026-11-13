@@ -9,7 +9,6 @@ import {
 } from "@/lib/modelSpecs";
 import { CopyButton } from "@/components/ui/WorkflowPrimitives";
 
-const COST_MODELS = getCostCalculatorModels();
 
 interface Scenario {
   id: string;
@@ -109,7 +108,8 @@ export function QuickEstimate() {
   const frequency =
     FREQUENCIES.find((f) => f.id === frequencyId) ?? FREQUENCIES[2];
 
-  const rows = COST_MODELS.map((m) => {
+  // Resolve rates at render time so promotional labels start and end on schedule.
+  const rows = getCostCalculatorModels().map((m) => {
     const perRun = estimateModelCost(m.id, inputTokens, outputTokens);
     const monthly = perRun * frequency.runsPerDay * 30;
     return { ...m, perRun, monthly };
@@ -339,7 +339,7 @@ export function QuickEstimate() {
       {/* Footer — data source attribution */}
       <div className="px-3 py-3 sm:px-5 bg-bg-surface border-t border-border-default">
         <p className="text-[11px] text-fg-muted">
-          Full registry checked {PRICING_META.verifiedDate}; Mistral checked separately 2026-10-07. Monthly estimates hold the current rate constant.{" "}
+          Full registry checked {PRICING_META.verifiedDate}. Monthly estimates hold the current rate constant.{" "}
           {(Object.entries(PRICING_META.urls) as [string, string][]).map(
             ([provider, url], i, arr) => (
               <span key={provider}>

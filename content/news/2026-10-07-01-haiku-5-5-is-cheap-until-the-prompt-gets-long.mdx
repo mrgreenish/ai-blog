@@ -1,0 +1,18 @@
+---
+title: "Haiku 5.5 is cheap until the prompt gets long"
+publishedAt: '2026-10-07'
+lastVerifiedAt: '2026-11-13'
+primarySourceUrl: 'https://www.anthropic.com/news/claude-haiku-5-5'
+indexable: true
+---
+**Claude Haiku 5.5** costs $0.10 input and $0.50 output per million tokens. Haiku 4.5 costs $1 and $5. That is a tenth of the price per token, and Anthropic says the new model costs around 75% less to run on average. [Announcement](https://www.anthropic.com/news/claude-haiku-5-5).
+
+The low rate has a condition: it applies to prompts up to 100,000 tokens. Above that, every token costs five times as much, $0.50 / $2.50. A 150K-token prompt does not pay the higher rate only on the last 50K; the whole request moves to the higher tier. [Claude pricing](https://platform.claude.com/docs/en/about-claude/pricing).
+
+Anthropic released it on October 7 as the last of the Claude 5.5 models, after Opus 5.5 and Sonnet 5.5. It is the company's fastest current model and the first Haiku with an effort setting, which defaults to `medium`. The API model is `claude-haiku-5-5`, with a **1M-token context window** and up to 128K output tokens. [Model overview](https://platform.claude.com/docs/en/about-claude/models/overview).
+
+Anthropic positions it for high-volume work: summaries, compaction, database queries, classification, and routing. It also suggests using it as a subagent next to Opus 5.5 or Sonnet 5.5, and says those two remain the better choice for complex agentic coding.
+
+The useful test is a batch you already run on Haiku 4.5 or another cheap model. Keep the prompts the same, check a sample of the outputs by hand, and watch the prompt length. A pipeline that quietly grows past 100K tokens per request loses most of the price advantage.
+
+On this site, Haiku 5.5 joins the [model tools](/chapters/reasoning-vs-fast) with the prompt-length tier built into the estimates. Haiku 4.5 stays, because the local benchmark results come from it. Haiku 5.5 has no local results yet and is marked “not tested.”

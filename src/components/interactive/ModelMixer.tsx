@@ -165,8 +165,8 @@ const TEMPLATES: Template[] = [
         label: "Plan",
         description: "Break spec into files, decisions, approach",
         defaultTier: "reasoning",
-        defaultModelId: "claude-fable-5.1",
-        recommendedModelId: "claude-fable-5.1",
+        defaultModelId: "claude-fable-5.2",
+        recommendedModelId: "claude-fable-5.2",
         inputTokens: 1500,
         outputTokens: 2000,
       },
@@ -431,7 +431,7 @@ function PipelineBuilder() {
     () =>
       calcTotalCost(
         Object.fromEntries(
-          template.steps.map((s) => [s.id, "claude-fable-5.1"]),
+          template.steps.map((s) => [s.id, "claude-fable-5.2"]),
         ),
         template.steps,
       ),
@@ -519,7 +519,7 @@ function PipelineBuilder() {
           <PipelineCostBar
             label={
               retries === 1
-                ? "All Fable 5.1"
+                ? "All Fable 5.2"
                 : `All Fable (${retries} attempts)`
             }
             cost={fableCost}
@@ -598,7 +598,7 @@ function PipelineBuilder() {
         </div>
         <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
           <p className="max-w-lg text-xs text-fg-muted">
-            Provider API estimates. Full registry checked {PRICING_META.verifiedDate}; Mistral checked separately 2026-10-07. Mistral’s 50% launch offer is interpreted as October 6–19 inclusive.
+            Provider API estimates. Full registry checked {PRICING_META.verifiedDate}.
             Excludes subscription allowances, caching, and tool fees.
           </p>
           <CopyButton
@@ -614,7 +614,7 @@ function PipelineBuilder() {
                 ),
                 "",
                 `Mixed pipeline: ${mixedAttempts} attempt(s), ${formatCost(mixedCost)} per workflow.`,
-                `Single-model alternatives: ${retries} attempt(s), Sonnet 5.5 ${formatCost(sonnetCost)}, Fable 5.1 ${formatCost(fableCost)}.`,
+                `Single-model alternatives: ${retries} attempt(s), Sonnet 5.5 ${formatCost(sonnetCost)}, Fable 5.2 ${formatCost(fableCost)}.`,
                 "Estimates assume full-workflow retries, not guaranteed success. API token rates only.",
               ].join("\n")
             }

@@ -163,7 +163,7 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
   }
 
   // Editorial suitability scores, not measured benchmark results.
-  if (modelId === "gpt-6-astra" || modelId === "claude-fable-5.1") {
+  if (modelId === "gpt-6-astra" || modelId === "claude-fable-5.2") {
     const astra = modelId === "gpt-6-astra";
     dim("task", task === "reasoning" ? 7 : task === "coding" ? 6 : task === "analysis" ? 6 : task === "vision" && astra ? 4 : 2,
       "Provider positions this model for difficult reasoning and sustained work; verify on your own task");
@@ -285,6 +285,47 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
       "Can fill reasonable gaps while staying more measured than autonomous coding models");
   }
 
+  // Editorial suitability scores from provider positioning; none of these has local results yet.
+  if (modelId === "gemini-4-argon") {
+    dim("task", task === "coding" ? 4 : task === "reasoning" ? 3 : task === "vision" ? 3 : task === "analysis" ? 3 : task === "writing" ? 2 : 0,
+      "Google's recommended Gemini 4 model for most software engineering and knowledge work; verify on your own task");
+    dim("scope", scope === "multifile" ? 4 : scope === "architecture" ? 3 : scope === "autonomous" ? 2 : scope === "targeted" ? 1 : 0,
+      "A 1M shared input-and-output context leaves room for broad repository work");
+    dim("stakes", stakes === "production" ? 3 : stakes === "internal" ? 2 : stakes === "critical" ? 0 : 0,
+      "A reasonable everyday default with normal review");
+    dim("priority", priority === "balance" ? 3 : priority === "accuracy" ? 3 : priority === "speed" ? -1 : 0,
+      priority === "speed" ? "A Flash model answers sooner for mechanical work" : "Lower token spend per turn than Carbon; introductory rates end November 30");
+    dim("autonomy", autonomy === "gaps" ? 2 : autonomy === "drive" ? 2 : 0,
+      "Supports tool use for agent loops with explicit checks");
+  }
+
+  if (modelId === "gemini-4-carbon") {
+    dim("task", task === "reasoning" ? 5 : task === "coding" ? 5 : task === "analysis" ? 4 : task === "vision" ? 3 : 0,
+      "Google's strongest Gemini model, positioned for complex coding, debugging, and research");
+    dim("scope", scope === "architecture" ? 5 : scope === "autonomous" ? 5 : scope === "multifile" ? 4 : scope === "targeted" ? -3 : 0,
+      scope === "targeted" ? "Spends more tokens than Argon; heavy for a pointed edit" : "Built for long-horizon, multi-step agent work");
+    dim("stakes", stakes === "critical" ? 5 : stakes === "production" ? 3 : stakes === "prototype" ? -3 : 0,
+      "Use explicit acceptance checks before trusting a consequential result");
+    dim("priority", priority === "accuracy" ? 6 : priority === "balance" ? 0 : priority === "speed" ? -4 : 0,
+      priority === "speed" ? "Reasons longer and uses more tokens per task than Argon" : "Same per-token rate as Argon, more tokens per task");
+    dim("autonomy", autonomy === "drive" ? 4 : autonomy === "gaps" ? 3 : autonomy === "targeted" ? -1 : 0,
+      "A candidate for sustained execution with review checkpoints");
+  }
+
+  if (modelId === "haiku-5.5") {
+    dim("task", task === "analysis" ? 3 : task === "coding" ? 2 : task === "writing" ? 2 : task === "reasoning" ? -2 : 0,
+      task === "reasoning" ? "Anthropic recommends Sonnet 5.5 or Opus 5.5 for complex reasoning"
+      : "Positioned for summaries, extraction, classification, and subagent work");
+    dim("scope", scope === "targeted" ? 3 : scope === "autonomous" ? -2 : scope === "architecture" ? -2 : 0,
+      scope === "targeted" ? "Fastest current Claude model for short, well-defined tasks" : "");
+    dim("stakes", stakes === "prototype" ? 2 : stakes === "internal" ? 2 : stakes === "critical" ? -2 : 0,
+      "Cost-effective for high-volume pipelines");
+    dim("priority", priority === "speed" ? 5 : priority === "balance" ? 2 : priority === "accuracy" ? -1 : 0,
+      priority === "speed" ? "Fastest current Claude model; latency compounds at scale" : "Prompts over 100K tokens cost five times as much");
+    dim("autonomy", autonomy === "targeted" ? 3 : autonomy === "drive" ? -3 : 0,
+      autonomy === "targeted" ? "Best for quick structured tasks in a loop" : "");
+  }
+
   if (modelId === "haiku-4.5") {
     dim("task", task === "coding" ? 2 : 0,
       "Retains Claude's instruction-following quality at high speed");
@@ -358,24 +399,24 @@ export function scoreDimensions(modelId: string, answers: Answers): ModelScore {
 
   if (modelId === "mistral-large-4") {
     dim("task", task === "coding" || task === "reasoning" || task === "analysis" ? 5 : task === "vision" ? 4 : task === "writing" ? 2 : 0,
-      "Multimodal input, function calling, and structured output make this public preview worth evaluating on your own task");
+      "Multimodal input, function calling, and structured output make this open-weight model worth evaluating on your own task");
     dim("scope", scope === "autonomous" || scope === "multifile" ? 6 : scope === "architecture" ? 4 : scope === "targeted" ? -2 : 0,
       "A million-token context can hold broad inputs; verify coordinated changes with external checks");
     dim("stakes", stakes === "production" || stakes === "critical" ? -3 : stakes === "prototype" || stakes === "internal" ? 3 : 0,
-      "Public preview: evaluate against an established baseline before production use");
+      "No local results yet: evaluate against an established baseline before production use");
     dim("priority", priority === "accuracy" ? 4 : priority === "balance" ? 3 : priority === "speed" ? -4 : 0,
       "Compare total task cost and latency; lower token rates do not establish output quality");
     dim("autonomy", autonomy === "drive" ? 6 : autonomy === "gaps" ? 4 : autonomy === "targeted" ? -2 : 0,
       "Tool support enables a harness-driven loop with explicit scope and acceptance checks");
   }
 
-  if (modelId === "kimi-k3") {
+  if (modelId === "kimi-k3" || modelId === "kimi-k3.1-pro") {
     dim("task", task === "coding" ? 5 : task === "reasoning" ? 5 : task === "analysis" ? 5 : task === "vision" ? 4 : task === "writing" ? 2 : 0,
       task === "coding" ? "Built for long-horizon coding with tools and structured outputs"
       : task === "analysis" ? "A 1M context window and always-on reasoning suit large research and knowledge-work inputs"
       : task === "vision" ? "Native visual understanding keeps screenshots and diagrams in the same reasoning workflow" : "");
     dim("scope", scope === "autonomous" ? 6 : scope === "multifile" ? 6 : scope === "architecture" ? 4 : scope === "targeted" ? -2 : 0,
-      scope === "autonomous" ? "Moonshot positions K3 for long-horizon, end-to-end work"
+      scope === "autonomous" ? "Moonshot positions the K3 family for long-horizon, end-to-end work"
       : scope === "multifile" ? "Its 1M context can hold broad codebase context for coordinated changes" : "");
     dim("stakes", stakes === "production" ? 3 : stakes === "critical" ? 3 : stakes === "prototype" ? -3 : 0,
       stakes === "production" ? "Strong context and tool support fit production workflows with external verification" : "");
